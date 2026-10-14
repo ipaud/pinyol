@@ -14,7 +14,7 @@
 <link rel="icon" href="img/icon.png">
 <link rel="preload" href="fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-<script src="site.js" defer></script>
+<script src="site.js" defer></script><script type="module" src="vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Saltar al contenido</a>
@@ -32,7 +32,7 @@
 <h1 id="hero-title">Un motor, doce épocas</h1>
 <p class="lede">pinyol hace juegos con la cara de las consolas de los 80 y 90 y los mueve a 60 fps en una consola de bolsillo con un ESP32‑S3. Dile a tu agente de código qué aspecto quieres y lo construye. Aquí puedes jugarlos todos.</p>
 <div class="actions"><a class="btn btn-primary" href="#aspectos">Jugar ahora</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol">Ver el código</a></div>
-<p class="meta">Código MIT · arte y sonido CC0 · 28 juegos de ejemplo</p>
+<p class="meta">Código MIT · arte y sonido CC0 · 31 juegos de ejemplo</p>
 </div>
 <div><div class="device" data-live role="img" aria-label="La consola mostrando, uno tras otro, los doce aspectos"><div class="screen"><img src="img/looks/neogeo.png" alt="" width="480" height="320" style="animation-delay:0s" fetchpriority=high decoding="async"><img src="img/looks/cps2.png" alt="" width="480" height="320" style="animation-delay:3s" loading=lazy decoding="async"><img src="img/looks/gameboy.png" alt="" width="480" height="320" style="animation-delay:6s" loading=lazy decoding="async"><img src="img/looks/spectrum.png" alt="" width="480" height="320" style="animation-delay:9s" loading=lazy decoding="async"><img src="img/looks/pico8.png" alt="" width="480" height="320" style="animation-delay:12s" loading=lazy decoding="async"><img src="img/looks/lcd.png" alt="" width="480" height="320" style="animation-delay:15s" loading=lazy decoding="async"><img src="img/looks/32bits.png" alt="" width="480" height="320" style="animation-delay:18s" loading=lazy decoding="async"><img src="img/looks/16bits.png" alt="" width="480" height="320" style="animation-delay:21s" loading=lazy decoding="async"><img src="img/looks/vector.png" alt="" width="480" height="320" style="animation-delay:24s" loading=lazy decoding="async"><img src="img/looks/gba.png" alt="" width="480" height="320" style="animation-delay:27s" loading=lazy decoding="async"><img src="img/looks/vertical.png" alt="" width="480" height="320" style="animation-delay:30s" loading=lazy decoding="async"><img src="img/looks/firstperson.png" alt="" width="480" height="320" style="animation-delay:33s" loading=lazy decoding="async"></div></div>
 <p class="screen-label pixel">480×320 · 60 fps · en la placa</p></div>
@@ -107,7 +107,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Medido en la consola, no prometido</h2>
 <p class="intro">Cada cifra de esta sección sale de la placa: un firmware que juega solo con un guion y escribe una línea de rendimiento por segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emulador. Un frame a 60 fps tiene 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="94" data-dec="0">94</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="100" data-dec="0">100</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
 <p>El segundo más lento y el más rápido de cada ejemplo jugado en la consola. En gris, la primera medida, antes de optimizar.</p></figcaption>
@@ -225,16 +225,50 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 </ol>
 <div class="aside-note"><b>¿Sin programar?</b> El <a href="editor/">editor web</a> dibuja los sprites píxel a píxel, pinta los mapas y prueba el juego en el mismo navegador.</div>
 </div></section>
+<section id="codex" aria-labelledby="codex-t"><div class="wrap">
+<h2 id="codex-t">Tres encargos, tres juegos</h2>
+<p class="intro">Un clon limpio del repositorio, una frase cada uno y ninguna pregunta contestada. Codex leyó AGENTS.md, compiló el motor, siguió la receta del aspecto y escribió un guion que juega su juego hasta que pasó. Las tres sesiones a la vez, con Codex 0.155 con gpt-6-sol, razonamiento medio.</p>
+<ul class="jobs"><li class="cart job">
+<div class="shot"><img src="img/codex/raton_de_biblioteca.png" alt="Un ratón saltando entre estanterías de una biblioteca, en cuatro tonos de verde" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Game Boy</p><h3>Ratón de biblioteca</h3>
+<blockquote><p>Hazme un juego con aspecto de Game Boy: un ratón que recorre una biblioteca saltando entre estanterías y recogiendo trozos de queso, con gatos que patrullan. Que funcione y se vea bien. No me preguntes nada, decide tú.</p></blockquote>
+<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 comandos</li><li class="chip">78 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<p class="after">Retocado después: a pantalla completa, sin el marco de consola.</p>
+<div class="row"><a class="play" href="play/player.html?game=../games/raton_de_biblioteca.zip" aria-label="Jugar a Ratón de biblioteca">Jugar</a>
+<a class="zip" href="games/raton_de_biblioteca.zip" download aria-label="Descargar Ratón de biblioteca para la consola">Descargar .zip</a></div></div></li><li class="cart job">
+<div class="shot"><img src="img/codex/oxigeno.png" alt="La pantalla de carga: un astronauta con una botella de oxígeno ante una estación espacial" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">ZX Spectrum</p><h3>Oxígeno 48K</h3>
+<blockquote><p>Quiero un juego con aspecto de ZX Spectrum, con su pantalla de carga de cinta: un astronauta en una estación espacial que recoge botellas de oxígeno antes de que se le acabe el aire, esquivando robots. No me preguntes nada, decide tú.</p></blockquote>
+<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 comandos</li><li class="chip">104 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<p class="after">Retocado después: el título de la portada y los textos, dentro de sus cuadros.</p>
+<div class="row"><a class="play" href="play/player.html?game=../games/oxigeno.zip" aria-label="Jugar a Oxígeno 48K">Jugar</a>
+<a class="zip" href="games/oxigeno.zip" download aria-label="Descargar Oxígeno 48K para la consola">Descargar .zip</a></div></div></li><li class="cart job">
+<div class="shot"><img src="img/codex/museo_nocturno.png" alt="Un pasillo de museo en primera persona con un cuadro al fondo" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Primera persona</p><h3>Museo de medianoche</h3>
+<blockquote><p>Hazme un juego en primera persona tipo Wolfenstein: un museo de noche, buscas cinco cuadros robados mientras esquivas a los vigilantes. No me preguntes nada, decide tú.</p></blockquote>
+<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 comandos</li><li class="chip">84 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<p class="after">Retocado después: el texto de la pantalla final.</p>
+<div class="row"><a class="play" href="play/player.html?game=../games/museo_nocturno.zip" aria-label="Jugar a Museo de medianoche">Jugar</a>
+<a class="zip" href="games/museo_nocturno.zip" download aria-label="Descargar Museo de medianoche para la consola">Descargar .zip</a></div></div></li></ul>
+</div></section>
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">La consola</h2>
 <p class="intro">Una placa de desarrollo con pantalla que se compra hecha. El motor la exprime: dibuja directamente en franjas, reparte el trabajo entre los dos núcleos y guarda en la tarjeta lo que no cabe.</p>
 <div class="hw"><dl class="spec"><dt>Placa</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, dos núcleos a 240 MHz</dd><dt>Memoria</dt><dd>512 KB de RAM interna, 8 MB de PSRAM, 16 MB de flash</dd><dt>Pantalla</dt><dd>3,5″, 480×320, ST77922 por QSPI, táctil</dd><dt>Sonido</dt><dd>ES8311 con altavoz</dd><dt>Lo demás</dt><dd>microSD, batería, USB</dd></dl>
-<div class="pending"><h3>La carcasa, en preparación</h3><p>Carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, la placa sola ya juega.</p>
-<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md">Cómo conectarla</a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display">La placa de Freenove</a></p></div></div>
+<div class="side"><div class="install" id="instalar"><h3>Instálala desde el navegador</h3>
+<ol><li>Conecta la placa al ordenador por USB.</li><li>Pulsa el botón y elige el puerto de la placa.</li>
+<li>Espera unos minutos: arranca con 15 juegos en la memoria.</li></ol>
+<esp-web-install-button manifest="firmware/manifest.json">
+<button slot="activate" class="btn btn-primary" type="button">Instalar en la consola</button>
+<span slot="unsupported" class="note">Este navegador no puede hablar con la placa por USB: ábrela en Chrome o Edge, en un ordenador.</span>
+<span slot="not-allowed" class="note">Instalar necesita la página en https.</span>
+</esp-web-install-button>
+<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0">los archivos, para esptool</a></p></div><div class="pending"><h3>La carcasa, en preparación</h3><p>Carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, la placa sola ya juega.</p>
+<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md">Cómo conectarla</a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display">La placa de Freenove</a></p></div></div></div>
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15095" data-dec="0">15.095</b><span>líneas de C en el motor</span></li><li><b data-count="28" data-dec="0">28</b><span>juegos de ejemplo</span></li><li><b data-count="94" data-dec="0">94</b><span>pruebas en cada cambio</span></li><li><b data-count="122" data-dec="0">122</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15095" data-dec="0">15.095</b><span>líneas de C en el motor</span></li><li><b data-count="31" data-dec="0">31</b><span>juegos de ejemplo</span></li><li><b data-count="100" data-dec="0">100</b><span>pruebas en cada cambio</span></li><li><b data-count="124" data-dec="0">124</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía con lo que la placa decía.</p>
 <p><strong>El arte, generado y encajado.</strong> Los aspectos que lo piden (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Unas herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos pequeños se dibujan con código.</p>

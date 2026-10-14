@@ -1,0 +1,5 @@
+*.bin binary
+*.wasm binary
+*.zip binary
+*.png binary
+*.woff2 binary
