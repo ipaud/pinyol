@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>pinyol · un motor, doce épocas</title>
 <meta name="description" content="pinyol: un motor de juegos libre con doce aspectos retro (Game Boy, Neo Geo, CPS2, PlayStation…) que corre a 60 fps en una consola ESP32-S3 y en el navegador.">
 <meta property="og:title" content="pinyol · un motor, doce épocas">
@@ -22,8 +22,8 @@
 <a class="logo" href="#top" aria-label="pinyol, inicio"><img src="img/logo.png" alt="" width="64" height="42"></a>
 <nav aria-label="Secciones"><ul>
 <li class="keep"><a href="#aspectos">Juegos</a></li><li><a href="#rendimiento">Rendimiento</a></li>
-<li><a href="#hazlo">Haz uno</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Cómo se hizo</a></li>
-<li class="keep"><a href="https://github.com/ipaud/pinyol">GitHub</a></li></ul></nav>
+<li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Haz uno</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Cómo se hizo</a></li>
+<li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></nav>
 </div></header>
 <main id="main">
 <section class="hero" id="top" aria-labelledby="hero-title"><div class="wrap">
@@ -31,7 +31,7 @@
 <p class="kicker pixel">Motor de juegos libre · ESP32-S3</p>
 <h1 id="hero-title">Un motor, doce épocas</h1>
 <p class="lede">pinyol hace juegos con la cara de las consolas de los 80 y 90 y los mueve a 60 fps en una consola de bolsillo con un ESP32‑S3. Dile a tu agente de código qué aspecto quieres y lo construye. Aquí puedes jugarlos todos.</p>
-<div class="actions"><a class="btn btn-primary" href="#aspectos">Jugar ahora</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol">Ver el código</a></div>
+<div class="actions"><a class="btn btn-primary" href="#aspectos">Jugar ahora</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">Ver el código<span class="sr"> (se abre en una pestaña nueva)</span></a></div>
 <p class="meta">Código MIT · arte y sonido CC0 · 31 juegos de ejemplo</p>
 </div>
 <div><div class="device" data-live role="img" aria-label="La consola mostrando, uno tras otro, los doce aspectos"><div class="screen"><img src="img/looks/neogeo.png" alt="" width="480" height="320" style="animation-delay:0s" fetchpriority=high decoding="async"><img src="img/looks/cps2.png" alt="" width="480" height="320" style="animation-delay:3s" loading=lazy decoding="async"><img src="img/looks/gameboy.png" alt="" width="480" height="320" style="animation-delay:6s" loading=lazy decoding="async"><img src="img/looks/spectrum.png" alt="" width="480" height="320" style="animation-delay:9s" loading=lazy decoding="async"><img src="img/looks/pico8.png" alt="" width="480" height="320" style="animation-delay:12s" loading=lazy decoding="async"><img src="img/looks/lcd.png" alt="" width="480" height="320" style="animation-delay:15s" loading=lazy decoding="async"><img src="img/looks/32bits.png" alt="" width="480" height="320" style="animation-delay:18s" loading=lazy decoding="async"><img src="img/looks/16bits.png" alt="" width="480" height="320" style="animation-delay:21s" loading=lazy decoding="async"><img src="img/looks/vector.png" alt="" width="480" height="320" style="animation-delay:24s" loading=lazy decoding="async"><img src="img/looks/gba.png" alt="" width="480" height="320" style="animation-delay:27s" loading=lazy decoding="async"><img src="img/looks/vertical.png" alt="" width="480" height="320" style="animation-delay:30s" loading=lazy decoding="async"><img src="img/looks/firstperson.png" alt="" width="480" height="320" style="animation-delay:33s" loading=lazy decoding="async"></div></div>
@@ -44,70 +44,70 @@
 <div class="shot"><img src="img/looks/neogeo.png" alt="Un juego de lucha de Neo Geo: dos luchadores grandes en un muelle al atardecer" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1990 · luchadores enormes</p><h3>Neo Geo</h3><p class="what">Lucha uno contra uno en un muelle al atardecer.</p>
 <ul class="chips"><li class="chip fps">60–61 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/duelo.zip" aria-label="Jugar a duelo (Neo Geo)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/duelo.zip" aria-label="Jugar a duelo (Neo Geo) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/duelo.zip" download aria-label="Descargar duelo para la consola">Descargar .zip</a></div></div></li><li class="cart big" style="--hue:#e8344e">
 <div class="shot"><img src="img/looks/cps2.png" alt="Un juego de lucha de CPS2: luchadores de quince colores sobre un suelo en perspectiva" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1993 · quince colores por luchador</p><h3>CPS2</h3><p class="what">Lucha con un suelo en perspectiva dibujado en bandas.</p>
 <ul class="chips"><li class="chip fps">60–61 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/torneo.zip" aria-label="Jugar a torneo (CPS2)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/torneo.zip" aria-label="Jugar a torneo (CPS2) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/torneo.zip" download aria-label="Descargar torneo para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#8bac0f">
 <div class="shot"><img src="img/looks/gameboy.png" alt="Un plataformas en cuatro tonos de verde a pantalla completa" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1989 · cuatro verdes, pantalla entera</p><h3>Game Boy</h3><p class="what">Un plataformas con la paleta de la Game Boy, a pantalla completa.</p>
 <ul class="chips"><li class="chip fps">61 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/bolsillo.zip" aria-label="Jugar a bolsillo (Game Boy)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/bolsillo.zip" aria-label="Jugar a bolsillo (Game Boy) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/bolsillo.zip" download aria-label="Descargar bolsillo para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#ff3b3b">
 <div class="shot"><img src="img/looks/spectrum.png" alt="Una sala de ZX Spectrum: bloques de dos colores, un minero y un guardián" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1982 · dos colores por bloque</p><h3>ZX Spectrum</h3><p class="what">Con su carga de cinta, franjas de colores incluidas.</p>
 <ul class="chips"><li class="chip fps low">49–61 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/cinta.zip" aria-label="Jugar a cinta (ZX Spectrum)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/cinta.zip" aria-label="Jugar a cinta (ZX Spectrum) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/cinta.zip" download aria-label="Descargar cinta para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#ff77a8">
 <div class="shot"><img src="img/looks/pico8.png" alt="Un rompeladrillos de PICO-8 en dieciséis colores" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2015 · 128×128 · dieciséis colores</p><h3>PICO-8</h3><p class="what">Un rompeladrillos en la paleta de la fantasy console.</p>
 <ul class="chips"><li class="chip fps">56–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/ladrillos.zip" aria-label="Jugar a ladrillos (PICO-8)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/ladrillos.zip" aria-label="Jugar a ladrillos (PICO-8) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/ladrillos.zip" download aria-label="Descargar ladrillos para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#9aa58c">
 <div class="shot"><img src="img/looks/lcd.png" alt="Una maquinita LCD: un cocinero recogiendo huevos, figuras encendidas o apagadas" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1980 · figuras que se encienden</p><h3>Maquinita LCD</h3><p class="what">Un cocinero que recoge huevos, figura a figura.</p>
 <ul class="chips"><li class="chip fps">61 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/huevos.zip" aria-label="Jugar a huevos (Maquinita LCD)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/huevos.zip" aria-label="Jugar a huevos (Maquinita LCD) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/huevos.zip" download aria-label="Descargar huevos para la consola">Descargar .zip</a></div></div></li><li class="cart big" style="--hue:#b388ff">
 <div class="shot"><img src="img/looks/32bits.png" alt="La sala de un castillo gótico: brillos de vela, un fantasma y una cazadora con látigo" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1997 · 256 colores, luz mezclada</p><h3>PlayStation · Saturn 2D</h3><p class="what">Un castillo de noche: velas que brillan y un fantasma a medias.</p>
 <ul class="chips"><li class="chip fps">59–61 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/gotico.zip" aria-label="Jugar a gotico (PlayStation · Saturn 2D)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/gotico.zip" aria-label="Jugar a gotico (PlayStation · Saturn 2D) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/gotico.zip" download aria-label="Descargar gotico para la consola">Descargar .zip</a></div></div></li><li class="cart big" style="--hue:#2f7bff">
 <div class="shot"><img src="img/looks/16bits.png" alt="Un plataformas de 16 bits: tierra a cuadros y un mar movido línea a línea" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1991 · velocidad y scroll por línea</p><h3>Super Nintendo · Mega Drive</h3><p class="what">Un pangolín muy rápido y un mar que se mueve línea a línea.</p>
 <ul class="chips"><li class="chip fps low">40–59 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/veloz.zip" aria-label="Jugar a veloz (Super Nintendo · Mega Drive)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/veloz.zip" aria-label="Jugar a veloz (Super Nintendo · Mega Drive) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/veloz.zip" download aria-label="Descargar veloz para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#7cf7ff">
 <div class="shot"><img src="img/looks/vector.png" alt="Un juego vectorial: líneas brillantes sobre negro" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1979 · solo líneas que brillan</p><h3>Vectorial</h3><p class="what">Rocas y una nave hechas de líneas sobre negro.</p>
 <ul class="chips"><li class="chip fps">61 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/rocas.zip" aria-label="Jugar a rocas (Vectorial)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/rocas.zip" aria-label="Jugar a rocas (Vectorial) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/rocas.zip" download aria-label="Descargar rocas para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
 <div class="shot"><img src="img/looks/gba.png" alt="Un plataformas de Game Boy Advance con montañas en paralaje y agua" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2001 · capas, sprites, agua que ondula</p><h3>Game Boy Advance</h3><p class="what">Paralaje, agua transparente y monedas.</p>
 <ul class="chips"><li class="chip fps">61 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/plataformas.zip" aria-label="Jugar a plataformas (Game Boy Advance)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/plataformas.zip" aria-label="Jugar a plataformas (Game Boy Advance) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/plataformas.zip" download aria-label="Descargar plataformas para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#4dd2a1">
 <div class="shot"><img src="img/looks/vertical.png" alt="Un matamarcianos vertical, girado: se juega con la consola de lado" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1985 · la pantalla girada</p><h3>Recreativa vertical</h3><p class="what">Un matamarcianos para jugar con la consola de lado.</p>
 <ul class="chips"><li class="chip fps low">30 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/tormenta.zip" aria-label="Jugar a tormenta (Recreativa vertical)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/tormenta.zip" aria-label="Jugar a tormenta (Recreativa vertical) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/tormenta.zip" download aria-label="Descargar tormenta para la consola">Descargar .zip</a></div></div></li><li class="cart" style="--hue:#c08a5a">
 <div class="shot"><img src="img/looks/firstperson.png" alt="Un laberinto en primera persona: pasillos de piedra y un fantasma" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1992 · a lo Wolfenstein 3D</p><h3>Primera persona</h3><p class="what">Un laberinto visto desde dentro, con fantasmas y gemas.</p>
 <ul class="chips"><li class="chip fps low">38–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
-<div class="row"><a class="play" href="play/player.html?game=../games/laberinto.zip" aria-label="Jugar a laberinto (Primera persona)">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/laberinto.zip" aria-label="Jugar a laberinto (Primera persona) (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/laberinto.zip" download aria-label="Descargar laberinto para la consola">Descargar .zip</a></div></div></li></ul>
-<div class="more"><h3>Y 16 ejemplos más</h3><ul><li><a href="play/player.html?game=../games/asalto.zip">Asalto al cañón</a></li><li><a href="play/player.html?game=../games/calle.zip">Calle de neón</a></li><li><a href="play/player.html?game=../games/nubes.zip">Sobre las nubes</a></li><li><a href="play/player.html?game=../games/futbol.zip">Gol de oro</a></li><li><a href="play/player.html?game=../games/moto.zip">Moto costa</a></li><li><a href="play/player.html?game=../games/mazmorra.zip">La mazmorra</a></li><li><a href="play/player.html?game=../games/carreras.zip">Carreras</a></li><li><a href="play/player.html?game=../games/naves.zip">Naves</a></li><li><a href="play/player.html?game=../games/aldea.zip">La aldea</a></li><li><a href="play/player.html?game=../games/puzle.zip">Puzle</a></li><li><a href="play/player.html?game=../games/inventos.zip">Inventos</a></li><li><a href="play/player.html?game=../games/estilos.zip">Estilos</a></li><li><a href="play/player.html?game=../games/sonidos.zip">Sonidos</a></li><li><a href="play/player.html?game=../games/control.zip">Control</a></li><li><a href="play/player.html?game=../games/juntos.zip">Juntos</a></li><li><a href="play/player.html?game=../games/hola.zip">Hola pinyol</a></li></ul></div>
+<div class="more"><h3>Y 16 ejemplos más</h3><ul><li><a href="play/player.html?game=../games/asalto.zip" target="_blank" rel="noopener">Asalto al cañón<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/calle.zip" target="_blank" rel="noopener">Calle de neón<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/nubes.zip" target="_blank" rel="noopener">Sobre las nubes<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/futbol.zip" target="_blank" rel="noopener">Gol de oro<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/moto.zip" target="_blank" rel="noopener">Moto costa<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/mazmorra.zip" target="_blank" rel="noopener">La mazmorra<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/carreras.zip" target="_blank" rel="noopener">Carreras<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/naves.zip" target="_blank" rel="noopener">Naves<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/aldea.zip" target="_blank" rel="noopener">La aldea<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/puzle.zip" target="_blank" rel="noopener">Puzle<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/inventos.zip" target="_blank" rel="noopener">Inventos<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/estilos.zip" target="_blank" rel="noopener">Estilos<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/sonidos.zip" target="_blank" rel="noopener">Sonidos<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/control.zip" target="_blank" rel="noopener">Control<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/juntos.zip" target="_blank" rel="noopener">Juntos<span class="sr"> (se abre en una pestaña nueva)</span></a></li><li><a href="play/player.html?game=../games/hola.zip" target="_blank" rel="noopener">Hola pinyol<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></div>
 </div></section>
 <section id="rendimiento" class="perf" aria-labelledby="perf-t"><div class="wrap">
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Medido en la consola, no prometido</h2>
 <p class="intro">Cada cifra de esta sección sale de la placa: un firmware que juega solo con un guion y escribe una línea de rendimiento por segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emulador. Un frame a 60 fps tiene 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="100" data-dec="0">100</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="101" data-dec="0">101</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
 <p>El segundo más lento y el más rápido de cada ejemplo jugado en la consola. En gris, la primera medida, antes de optimizar.</p></figcaption>
@@ -211,7 +211,7 @@
 <span class="bar" style="--w:12.12%"></span></div><span class="val">48,5 MB/s</span></td></tr><tr style="--n:3"><th scope="row">PSRAM → PSRAM</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:7.98%"></span></div><span class="val">31,9 MB/s</span></td></tr></tbody></table>
 </figure>
-<p class="source">Fuente: <a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md">docs/measurements.md</a>, con el método y cada medida desde el primer día. Mídelo en tu placa:
+<p class="source">Fuente: <a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">docs/measurements.md<span class="sr"> (se abre en una pestaña nueva)</span></a>, con el método y cada medida desde el primer día. Mídelo en tu placa:
 <code>idf.py -DBP_BENCH=ON build flash monitor</code></p>
 </div></section>
 <section id="hazlo" aria-labelledby="hazlo-t"><div class="wrap">
@@ -223,7 +223,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <li><h3>Pídeselo a tu agente</h3><p>Abre la carpeta con tu agente y dile qué quieres, en tu idioma.</p><div class="code"><pre><code>Hazme un plataformas con aspecto Game Boy: un ratón que busca queso en una biblioteca.</code></pre><button class="copy" type="button" aria-label="Copiar: Hazme un plataformas con aspecto Game Boy: un ratón que busca queso en una biblioteca.">Copiar</button></div></li>
 <li><h3>Juégalo</h3><p>En tu pantalla, o pásalo a la consola por USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copiar: ./build/pinyol_sim --game games/raton">Copiar</button></div></li>
 </ol>
-<div class="aside-note"><b>¿Sin programar?</b> El <a href="editor/">editor web</a> dibuja los sprites píxel a píxel, pinta los mapas y prueba el juego en el mismo navegador.</div>
+<div class="aside-note"><b>¿Sin programar?</b> El <a href="editor/" target="_blank" rel="noopener">editor web<span class="sr"> (se abre en una pestaña nueva)</span></a> dibuja los sprites píxel a píxel, pinta los mapas y prueba el juego en el mismo navegador.</div>
 </div></section>
 <section id="codex" aria-labelledby="codex-t"><div class="wrap">
 <h2 id="codex-t">Tres encargos, tres juegos</h2>
@@ -234,22 +234,29 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <blockquote><p>Hazme un juego con aspecto de Game Boy: un ratón que recorre una biblioteca saltando entre estanterías y recogiendo trozos de queso, con gatos que patrullan. Que funcione y se vea bien. No me preguntes nada, decide tú.</p></blockquote>
 <ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 comandos</li><li class="chip">78 mil tokens</li><li class="chip">su test: PASS</li></ul>
 <p class="after">Retocado después: a pantalla completa, sin el marco de consola.</p>
-<div class="row"><a class="play" href="play/player.html?game=../games/raton_de_biblioteca.zip" aria-label="Jugar a Ratón de biblioteca">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/raton_de_biblioteca.zip" aria-label="Jugar a Ratón de biblioteca (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/raton_de_biblioteca.zip" download aria-label="Descargar Ratón de biblioteca para la consola">Descargar .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="img/codex/oxigeno.png" alt="La pantalla de carga: un astronauta con una botella de oxígeno ante una estación espacial" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">ZX Spectrum</p><h3>Oxígeno 48K</h3>
 <blockquote><p>Quiero un juego con aspecto de ZX Spectrum, con su pantalla de carga de cinta: un astronauta en una estación espacial que recoge botellas de oxígeno antes de que se le acabe el aire, esquivando robots. No me preguntes nada, decide tú.</p></blockquote>
 <ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 comandos</li><li class="chip">104 mil tokens</li><li class="chip">su test: PASS</li></ul>
 <p class="after">Retocado después: el título de la portada y los textos, dentro de sus cuadros.</p>
-<div class="row"><a class="play" href="play/player.html?game=../games/oxigeno.zip" aria-label="Jugar a Oxígeno 48K">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/oxigeno.zip" aria-label="Jugar a Oxígeno 48K (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/oxigeno.zip" download aria-label="Descargar Oxígeno 48K para la consola">Descargar .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="img/codex/museo_nocturno.png" alt="Un pasillo de museo en primera persona con un cuadro al fondo" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">Primera persona</p><h3>Museo de medianoche</h3>
 <blockquote><p>Hazme un juego en primera persona tipo Wolfenstein: un museo de noche, buscas cinco cuadros robados mientras esquivas a los vigilantes. No me preguntes nada, decide tú.</p></blockquote>
 <ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 comandos</li><li class="chip">84 mil tokens</li><li class="chip">su test: PASS</li></ul>
 <p class="after">Retocado después: el texto de la pantalla final.</p>
-<div class="row"><a class="play" href="play/player.html?game=../games/museo_nocturno.zip" aria-label="Jugar a Museo de medianoche">Jugar</a>
+<div class="row"><a class="play" href="play/player.html?game=../games/museo_nocturno.zip" aria-label="Jugar a Museo de medianoche (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/museo_nocturno.zip" download aria-label="Descargar Museo de medianoche para la consola">Descargar .zip</a></div></div></li></ul>
+</div></section>
+<section id="biblioteca" aria-labelledby="biblioteca-t"><div class="wrap">
+<h2 id="biblioteca-t">La Biblioteca</h2>
+<p class="intro">Juegos hechos por la gente con pinyol: se juegan aquí y se descargan para la consola. ¿Has hecho uno? Súbelo con un formulario: un robot lo abre, lo juega diez segundos y, cuando lo revisamos, aparece aquí.</p>
+<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Sube tu juego<span class="sr"> (se abre en una pestaña nueva)</span></a><a class="btn btn-ghost" href="#hazlo">Cómo se hace un juego</a></div>
+<div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol">
+<p class="lib-state">La Biblioteca necesita JavaScript para cargarse. Sus juegos también están en <a href="https://github.com/ipaud/pinyol/tree/main/library" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a>.</p></div>
 </div></section>
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">La consola</h2>
@@ -263,22 +270,22 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <span slot="unsupported" class="note">Este navegador no puede hablar con la placa por USB: ábrela en Chrome o Edge, en un ordenador.</span>
 <span slot="not-allowed" class="note">Instalar necesita la página en https.</span>
 </esp-web-install-button>
-<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0">los archivos, para esptool</a></p></div><div class="pending"><h3>La carcasa, en preparación</h3><p>Carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, la placa sola ya juega.</p>
-<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md">Cómo conectarla</a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display">La placa de Freenove</a></p></div></div></div>
+<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">los archivos, para esptool<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div><div class="pending"><h3>La carcasa, en preparación</h3><p>Carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, la placa sola ya juega.</p>
+<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Cómo conectarla<span class="sr"> (se abre en una pestaña nueva)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div></div></div>
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15095" data-dec="0">15.095</b><span>líneas de C en el motor</span></li><li><b data-count="31" data-dec="0">31</b><span>juegos de ejemplo</span></li><li><b data-count="100" data-dec="0">100</b><span>pruebas en cada cambio</span></li><li><b data-count="124" data-dec="0">124</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15095" data-dec="0">15.095</b><span>líneas de C en el motor</span></li><li><b data-count="31" data-dec="0">31</b><span>juegos de ejemplo</span></li><li><b data-count="101" data-dec="0">101</b><span>pruebas en cada cambio</span></li><li><b data-count="129" data-dec="0">129</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía con lo que la placa decía.</p>
 <p><strong>El arte, generado y encajado.</strong> Los aspectos que lo piden (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Unas herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos pequeños se dibujan con código.</p>
 <p><strong>Medido antes de darlo por bueno.</strong> Cada ejemplo tiene un guion que lo juega solo. En el ordenador compara la suma de control de cada frame con la guardada; en la placa escribe los fps de cada segundo. Las optimizaciones no cambian ni un píxel.</p>
 <p><strong>Libre de verdad.</strong> El código es MIT; el arte, el sonido y los vídeos de los ejemplos, CC0. Cógelo, cámbialo, haz tu consola.</p>
 </div>
-<p class="source">Todo el proceso está en el repositorio: <a href="https://github.com/ipaud/pinyol/blob/main/docs/art.md">cómo se hace el arte</a>, <a href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md">la API de Lua</a>, <a href="https://github.com/ipaud/pinyol/blob/main/AGENTS.md">las instrucciones para agentes</a>.</p>
+<p class="source">Todo el proceso está en el repositorio: <a href="https://github.com/ipaud/pinyol/blob/main/docs/art.md" target="_blank" rel="noopener">cómo se hace el arte<span class="sr"> (se abre en una pestaña nueva)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">la API de Lua<span class="sr"> (se abre en una pestaña nueva)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/AGENTS.md" target="_blank" rel="noopener">las instrucciones para agentes<span class="sr"> (se abre en una pestaña nueva)</span></a>.</p>
 </div></section>
 </main>
 <footer><div class="wrap"><img src="img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
-<span>Código MIT · arte y sonido CC0</span><a href="https://github.com/ipaud/pinyol">GitHub</a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md">Mediciones</a></div></footer>
+<span>Código MIT · arte y sonido CC0</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Mediciones<span class="sr"> (se abre en una pestaña nueva)</span></a></div></footer>
 </body>
 </html>
