@@ -11,6 +11,11 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
 <meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="img/icon.png">
 <link rel="preload" href="fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
@@ -24,6 +29,7 @@
 <li class="keep"><a href="#aspectos">Juegos</a></li><li><a href="#rendimiento">Rendimiento</a></li>
 <li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Haz uno</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Cómo se hizo</a></li>
 <li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="./" lang="es" hreflang="es" aria-label="Español" aria-current="page">ES</a></li><li class="keep"><a href="ca/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="en/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
 </div></header>
 <main id="main">
 <section class="hero" id="top" aria-labelledby="hero-title"><div class="wrap">
@@ -32,7 +38,7 @@
 <h1 id="hero-title">Un motor, doce épocas</h1>
 <p class="lede">pinyol hace juegos con la cara de las consolas de los 80 y 90 y los mueve a 60 fps en una consola de bolsillo con un ESP32‑S3. Dile a tu agente de código qué aspecto quieres y lo construye. Aquí puedes jugarlos todos.</p>
 <div class="actions"><a class="btn btn-primary" href="#aspectos">Jugar ahora</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">Ver el código<span class="sr"> (se abre en una pestaña nueva)</span></a></div>
-<p class="meta">Código MIT · arte y sonido CC0 · 31 juegos de ejemplo</p>
+<p class="meta">Código MIT · arte y sonido CC0 · 33 juegos de ejemplo</p>
 </div>
 <div><div class="board" data-live role="img" aria-label="La consola, una placa Freenove FNK0104N, con su pantalla mostrando uno tras otro los doce aspectos">
 <span class="hole tl"></span><span class="hole bl"></span><span class="hole tr"></span><span class="hole br"></span>
@@ -110,7 +116,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Medido en la consola, no prometido</h2>
 <p class="intro">Cada cifra de esta sección sale de la placa: un firmware que juega solo con un guion y escribe una línea de rendimiento por segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emulador. Un frame a 60 fps tiene 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="101" data-dec="0">101</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="106" data-dec="0">106</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
 <p>El segundo más lento y el más rápido de cada ejemplo jugado en la consola. En gris, la primera medida, antes de optimizar.</p></figcaption>
@@ -229,36 +235,56 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <div class="aside-note"><b>¿Sin programar?</b> El <a href="editor/" target="_blank" rel="noopener">editor web<span class="sr"> (se abre en una pestaña nueva)</span></a> dibuja los sprites píxel a píxel, pinta los mapas y prueba el juego en el mismo navegador.</div>
 </div></section>
 <section id="codex" aria-labelledby="codex-t"><div class="wrap">
-<h2 id="codex-t">Tres encargos, tres juegos</h2>
-<p class="intro">Un clon limpio del repositorio, una frase cada uno y ninguna pregunta contestada. Codex leyó AGENTS.md, compiló el motor, siguió la receta del aspecto y escribió un guion que juega su juego hasta que pasó. Las tres sesiones a la vez, con Codex 0.155 con gpt-6-sol, razonamiento medio.</p>
+<h2 id="codex-t">La escalera: cinco encargos</h2>
+<p class="intro">De lo más sencillo a lo más difícil. Un clon limpio del repositorio, una frase cada vez y ninguna pregunta contestada: Codex leyó AGENTS.md, compiló el motor, siguió la receta del aspecto y escribió un guion que juega su juego hasta que pasó. Luego cada juego se midió en la consola, jugando ese guion. Con Codex 0.155 con gpt-6-sol, razonamiento medio.</p>
+<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Pong</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:17.50%"></span></div><span class="val">3 min 30 s · 61 fps</span></td></tr><tr style="--n:1"><th scope="row">2 · Ratón de biblioteca</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:24.00%"></span></div><span class="val">4 min 49 s · 59 fps</span></td></tr><tr style="--n:2"><th scope="row">3 · Oxígeno 48K</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:25.00%"></span></div><span class="val">5 min 2 s · 30–60 fps</span></td></tr><tr style="--n:3"><th scope="row">4 · Museo de medianoche</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:30.50%"></span></div><span class="val">6 min 8 s · 42 fps</span></td></tr><tr style="--n:4"><th scope="row">5 · Ardilla Relámpago</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:93.00%"></span></div><span class="val">18 min 34 s · 59 fps</span></td></tr></tbody></table>
 <ul class="jobs"><li class="cart job">
+<div class="shot"><img src="img/codex/pong.png" alt="Un Pong vectorial: dos palas, la pelota y el marcador" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivel 1 · Vectorial</p><h3>Pong</h3>
+<blockquote><p>Hazme un Pong contra la consola: dos palas, una pelota y un marcador hasta 7 puntos. No me preguntes nada, decide tú.</p></blockquote>
+<ul class="chips"><li class="chip fps">3 min 30 s</li><li class="chip">29 comandos</li><li class="chip">73 mil tokens</li><li class="chip fps">61 fps en la consola</li></ul>
+<p class="after">Sin retoques.</p>
+<div class="row"><a class="play" href="play/player.html?game=../games/pong.zip" aria-label="Jugar a Pong (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
+<a class="zip" href="games/pong.zip" download aria-label="Descargar Pong para la consola">Descargar .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="img/codex/raton_de_biblioteca.png" alt="Un ratón saltando entre estanterías de una biblioteca, en cuatro tonos de verde" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Game Boy</p><h3>Ratón de biblioteca</h3>
+<div class="label"><p class="era pixel">Nivel 2 · Game Boy</p><h3>Ratón de biblioteca</h3>
 <blockquote><p>Hazme un juego con aspecto de Game Boy: un ratón que recorre una biblioteca saltando entre estanterías y recogiendo trozos de queso, con gatos que patrullan. Que funcione y se vea bien. No me preguntes nada, decide tú.</p></blockquote>
-<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 comandos</li><li class="chip">78 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 comandos</li><li class="chip">78 mil tokens</li><li class="chip fps">59 fps en la consola</li></ul>
 <p class="after">Retocado después: a pantalla completa, sin el marco de consola.</p>
 <div class="row"><a class="play" href="play/player.html?game=../games/raton_de_biblioteca.zip" aria-label="Jugar a Ratón de biblioteca (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/raton_de_biblioteca.zip" download aria-label="Descargar Ratón de biblioteca para la consola">Descargar .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="img/codex/oxigeno.png" alt="La pantalla de carga: un astronauta con una botella de oxígeno ante una estación espacial" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">ZX Spectrum</p><h3>Oxígeno 48K</h3>
+<div class="label"><p class="era pixel">Nivel 3 · ZX Spectrum</p><h3>Oxígeno 48K</h3>
 <blockquote><p>Quiero un juego con aspecto de ZX Spectrum, con su pantalla de carga de cinta: un astronauta en una estación espacial que recoge botellas de oxígeno antes de que se le acabe el aire, esquivando robots. No me preguntes nada, decide tú.</p></blockquote>
-<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 comandos</li><li class="chip">104 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 comandos</li><li class="chip">104 mil tokens</li><li class="chip fps low">30–60 fps en la consola</li></ul>
 <p class="after">Retocado después: el título de la portada y los textos, dentro de sus cuadros.</p>
 <div class="row"><a class="play" href="play/player.html?game=../games/oxigeno.zip" aria-label="Jugar a Oxígeno 48K (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
 <a class="zip" href="games/oxigeno.zip" download aria-label="Descargar Oxígeno 48K para la consola">Descargar .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="img/codex/museo_nocturno.png" alt="Un pasillo de museo en primera persona con un cuadro al fondo" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Primera persona</p><h3>Museo de medianoche</h3>
+<div class="label"><p class="era pixel">Nivel 4 · Primera persona</p><h3>Museo de medianoche</h3>
 <blockquote><p>Hazme un juego en primera persona tipo Wolfenstein: un museo de noche, buscas cinco cuadros robados mientras esquivas a los vigilantes. No me preguntes nada, decide tú.</p></blockquote>
-<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 comandos</li><li class="chip">84 mil tokens</li><li class="chip">su test: PASS</li></ul>
+<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 comandos</li><li class="chip">84 mil tokens</li><li class="chip fps low">42 fps en la consola</li></ul>
 <p class="after">Retocado después: el texto de la pantalla final.</p>
 <div class="row"><a class="play" href="play/player.html?game=../games/museo_nocturno.zip" aria-label="Jugar a Museo de medianoche (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
-<a class="zip" href="games/museo_nocturno.zip" download aria-label="Descargar Museo de medianoche para la consola">Descargar .zip</a></div></div></li></ul>
+<a class="zip" href="games/museo_nocturno.zip" download aria-label="Descargar Museo de medianoche para la consola">Descargar .zip</a></div></div></li><li class="cart job">
+<div class="shot"><img src="img/codex/costa_relampago.png" alt="Una ardilla corriendo por una costa con palmeras, colinas y el mar" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivel 5 · Mega Drive</p><h3>Ardilla Relámpago</h3>
+<blockquote><p>Hazme un plataformas de velocidad con aspecto de Mega Drive: una ardilla que corre por una costa con rampas y bucles, varias capas de fondo moviéndose a distintas velocidades, el mar del fondo ondulando línea a línea, enemigos y frutas que recoger. Que vaya rápido y se vea bien. No me preguntes nada, decide tú.</p></blockquote>
+<ul class="chips"><li class="chip fps">18 min 34 s</li><li class="chip">102 comandos</li><li class="chip">252 mil tokens</li><li class="chip fps">59 fps en la consola</li></ul>
+<p class="after">Tres encargos: el juego (4 min 41 s), su arte generado con imágenes (10 min 8 s, iba a 30 fps) y hacerlo ir a 60 en la consola con un suelo propio (3 min 45 s). Sin retoques a mano.</p>
+<div class="row"><a class="play" href="play/player.html?game=../games/costa_relampago.zip" aria-label="Jugar a Ardilla Relámpago (se abre en una pestaña nueva)" target="_blank" rel="noopener">Jugar</a>
+<a class="zip" href="games/costa_relampago.zip" download aria-label="Descargar Ardilla Relámpago para la consola">Descargar .zip</a></div></div></li></ul>
 </div></section>
 <section id="biblioteca" aria-labelledby="biblioteca-t"><div class="wrap">
 <h2 id="biblioteca-t">La Biblioteca</h2>
 <p class="intro">Juegos hechos por la gente con pinyol: se juegan aquí y se descargan para la consola. ¿Has hecho uno? Súbelo con un formulario: un robot lo abre, lo juega diez segundos y, cuando lo revisamos, aparece aquí.</p>
 <div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Sube tu juego<span class="sr"> (se abre en una pestaña nueva)</span></a><a class="btn btn-ghost" href="#hazlo">Cómo se hace un juego</a></div>
-<div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol">
+<div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol" data-play="play/player.html">
 <p class="lib-state">La Biblioteca necesita JavaScript para cargarse. Sus juegos también están en <a href="https://github.com/ipaud/pinyol/tree/main/library" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a>.</p></div>
 </div></section>
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
@@ -278,7 +304,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15095" data-dec="0">15.095</b><span>líneas de C en el motor</span></li><li><b data-count="31" data-dec="0">31</b><span>juegos de ejemplo</span></li><li><b data-count="101" data-dec="0">101</b><span>pruebas en cada cambio</span></li><li><b data-count="129" data-dec="0">129</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="106" data-dec="0">106</b><span>pruebas en cada cambio</span></li><li><b data-count="131" data-dec="0">131</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía con lo que la placa decía.</p>
 <p><strong>El arte, generado y encajado.</strong> Los aspectos que lo piden (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Unas herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos pequeños se dibujan con código.</p>
