@@ -250,20 +250,20 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <section id="codex" aria-labelledby="codex-t"><div class="wrap">
 <h2 id="codex-t">The ladder: five requests</h2>
 <p class="intro">From the simplest to the hardest. A clean clone of the repository, one sentence each time and no question answered: Codex read AGENTS.md, built the engine, followed the look's recipe and wrote a script that plays its game until it passed. Then each game was measured on the console, playing that script. With Codex 0.155 and gpt-6-sol, medium reasoning. (The requests were written in Spanish; here, translated.)</p>
-<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Pong</th><td><div class="track" aria-hidden="true">
+<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Paletes</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:17.50%"></span></div><span class="val">3 min 30 s · 61 fps</span></td></tr><tr style="--n:1"><th scope="row">2 · Ratón de biblioteca</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:24.00%"></span></div><span class="val">4 min 49 s · 59 fps</span></td></tr><tr style="--n:2"><th scope="row">3 · Oxígeno 48K</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:25.00%"></span></div><span class="val">5 min 2 s · 30–60 fps</span></td></tr><tr style="--n:3"><th scope="row">4 · Museo de medianoche</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:30.50%"></span></div><span class="val">6 min 8 s · 42 fps</span></td></tr><tr style="--n:4"><th scope="row">5 · Ardilla Relámpago</th><td><div class="track" aria-hidden="true">
 <span class="bar" style="--w:93.00%"></span></div><span class="val">18 min 34 s · 59 fps</span></td></tr></tbody></table>
 <ul class="jobs"><li class="cart job">
-<div class="shot"><img src="../img/codex/pong.png" alt="A vector Pong: two paddles, the ball and the score" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 1 · Vector</p><h3>Pong</h3>
+<div class="shot"><img src="../img/codex/paletes.png" alt="Paletes, in vectors: two paddles, the ball and the score" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 1 · Vector</p><h3>Paletes</h3>
 <blockquote><p>Make me a Pong against the console: two paddles, a ball and a score up to 7 points. Don't ask me anything, you decide.</p></blockquote>
 <ul class="chips"><li class="chip fps">3 min 30 s</li><li class="chip">29 commands</li><li class="chip">73k tokens</li><li class="chip fps">61 fps on the console</li></ul>
 <p class="after">No retouching.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/pong.zip" aria-label="Play Pong (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/pong.zip" download aria-label="Download Pong for the console">Download .zip</a></div></div></li><li class="cart job">
+<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/paletes.zip" aria-label="Play Paletes (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../games/paletes.zip" download aria-label="Download Paletes for the console">Download .zip</a></div></div></li><li class="cart job">
 <div class="shot"><img src="../img/codex/raton_de_biblioteca.png" alt="A mouse jumping between library shelves, in four shades of green" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">Level 2 · Game Boy</p><h3>Ratón de biblioteca</h3>
 <blockquote><p>Make me a Game Boy-look game: a mouse that roams a library jumping between shelves and picking up bits of cheese, with cats on patrol. Make it work and look good. Don't ask me anything, you decide.</p></blockquote>
@@ -297,6 +297,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <h2 id="biblioteca-t">The Library</h2>
 <p class="intro">Games people made with pinyol: play them here and download them for the console. Made one? Send it with a form: a robot opens it, plays it for ten seconds and, once we review it, it shows up here.</p>
 <div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Send your game<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="#hazlo">How a game is made</a></div>
+<p class="sub">Something of yours published here without your permission, or something that should not be here? <a href="https://github.com/ipaud/pinyol/issues/new?title=Retirar%3A%20" target="_blank" rel="noopener">Ask us to take it down<span class="sr"> (opens in a new tab)</span></a>.</p>
 <figure class="tutorial"><video src="../video/subir.mp4" poster="../video/subir.jpg" width="960" height="600" controls preload="none" playsinline aria-describedby="subir-cap"></video>
 <figcaption id="subir-cap">Tutorial, from your game to the Library: download the .zip from the editor, fill in the form and attach it; a robot checks it and, once approved, it plays here. The waits, sped up.</figcaption></figure>
 <div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol" data-play="../play/player.html">
@@ -319,7 +320,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">How it was made</h2>
-<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="110" data-dec="0">110</b><span>tests on every change</span></li><li><b data-count="150" data-dec="0">150</b><span>commits in the repository</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="110" data-dec="0">110</b><span>tests on every change</span></li><li><b data-count="152" data-dec="0">152</b><span>commits in the repository</span></li></ul>
 <div class="story">
 <p><strong>One person and Claude.</strong> The engine, the examples, the tools and this site were written talking with Claude Code: every idea was tried in the simulator, measured on the board and corrected with what the board said.</p>
 <p><strong>The art, generated and fitted.</strong> The looks that need it (Neo Geo, CPS2, 32-bit) use AI-generated images. The engine's tools cut them out, scale them to the right height, split the frames and reduce them to the console's palette. The small looks are drawn with code.</p>
@@ -330,6 +331,6 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 </div></section>
 </main>
 <footer><div class="wrap"><img src="../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
-<span>MIT code · CC0 art and sound</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a></div></footer>
+<span>MIT code · CC0 art and sound</span><span>Game Boy, PICO-8, Neo Geo and the other consoles named here are trademarks of their owners; pinyol and Cirera are not affiliated with them.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a></div></footer>
 </body>
 </html>
