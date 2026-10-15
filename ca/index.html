@@ -18,8 +18,8 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=9300113f">
-<script src="../site.js?v=4fce9c0c" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
+<link rel="stylesheet" href="../styles.css?v=ccda327f">
+<script src="../site.js?v=dd19a3c7" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Salta al contingut</a>
@@ -27,7 +27,7 @@
 <a class="logo" href="#top" aria-label="pinyol, inici"><img src="../img/logo.png" alt="" width="80" height="52"></a>
 <nav aria-label="Seccions"><ul>
 <li class="keep"><a href="#aspectos">Jocs</a></li><li><a href="#rendimiento">Rendiment</a></li>
-<li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Fes-ne un</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Com es va fer</a></li>
+<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Fes-ne un</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Com es va fer</a></li>
 <li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a></li></ul></nav>
 <nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../ca/" lang="ca" hreflang="ca" aria-label="Català" aria-current="page">CA</a></li><li class="keep"><a href="../en/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
 </div></header>
@@ -37,7 +37,7 @@
 <p class="kicker pixel">Motor de jocs lliure · ESP32-S3</p>
 <h1 id="hero-title">Un motor, dotze èpoques</h1>
 <p class="lede"><img class="wordmark" src="../img/wordmark.png" alt="pinyol" width="65" height="26"> fa jocs amb la cara de les consoles dels 80 i 90 i els mou a 60 fps en una consola de butxaca amb un ESP32‑S3. Digues al teu agent de codi quin aspecte vols i el construeix. Aquí els pots jugar tots.</p>
-<div class="actions"><a class="btn btn-primary" href="#aspectos">Juga ara</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">Mira el codi<span class="sr"> (s'obre en una pestanya nova)</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="#aspectos">Juga ara</a><a class="btn btn-ghost" href="#crear">Crea un joc</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">Mira el codi<span class="sr"> (s'obre en una pestanya nova)</span></a></div>
 <p class="meta">Codi MIT · art i so CC0 · 33 jocs d'exemple</p>
 </div>
 <div><div class="board" data-live role="img" aria-label="La consola, una placa Freenove FNK0104N, amb la pantalla mostrant un rere l&#x27;altre els dotze aspectes">
@@ -116,7 +116,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Mesurat a la consola, no promès</h2>
 <p class="intro">Cada xifra d'aquesta secció surt de la placa: un firmware que juga sol amb un guió i escriu una línia de rendiment per segon, o un banc de proves que repeteix cada escena cinc vegades. Res d'emulador. Un frame a 60 fps té 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli en l'escena més pesada: afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un frame sencer al panell; el cable sol ja són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so mentre es juga</span></li><li><b><span data-count="109" data-dec="0">109</span><small></small></b><span>proves que juguen soles i comparen cada frame, a cada canvi</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli en l'escena més pesada: afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un frame sencer al panell; el cable sol ja són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so mentre es juga</span></li><li><b><span data-count="110" data-dec="0">110</span><small></small></b><span>proves que juguen soles i comparen cada frame, a cada canvi</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Dotze aspectes, en fotogrames per segon</h3>
 <p>El segon més lent i el més ràpid de cada exemple jugat a la consola. En gris, la primera mesura, abans d'optimitzar.</p></figcaption>
@@ -232,7 +232,20 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 <li><h3>Demana-ho al teu agent</h3><p>Obre la carpeta amb el teu agent i digues-li què vols, en el teu idioma.</p><div class="code"><pre><code>Fes-me un joc de plataformes amb aspecte de Game Boy: un ratolí que busca formatge en una biblioteca.</code></pre><button class="copy" type="button" aria-label="Copia: Fes-me un joc de plataformes amb aspecte de Game Boy: un ratolí que busca formatge en una biblioteca.">Copia</button></div></li>
 <li><h3>Juga-hi</h3><p>A la teva pantalla, o passa'l a la consola per USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copia: ./build/pinyol_sim --game games/raton">Copia</button></div></li>
 </ol>
-<div class="aside-note"><b>Sense programar?</b> L' <a href="../editor/?lang=ca" target="_blank" rel="noopener">editor web<span class="sr"> (s'obre en una pestanya nova)</span></a> dibuixa els sprites píxel a píxel, pinta els mapes i prova el joc al mateix navegador.</div>
+<div class="aside-note"><b>Sense programar?</b> L' <a href="#crear">editor web</a> fa el mateix amb dibuixos i blocs, al navegador.</div>
+</div></section>
+<section id="crear" class="editor-sec" aria-labelledby="crear-t"><div class="wrap editor-grid">
+<div class="editor-copy">
+<p class="era pixel">Sense programar · al navegador</p>
+<h2 id="crear-t">L'editor</h2>
+<p class="intro">Dibuixa els personatges píxel a píxel, pinta els mapes, posa les regles amb blocs i juga-hi a l'instant. Comença de zero o des d'una plantilla, com Abella o LÍNEA 0.</p>
+<ul class="features"><li><b>Aspecte de consola</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum o 16 bits: els seus colors i la seva lletra</span></li><li><b>Dibuixos que es mouen</b> <span>píxel a píxel, amb animacions per estar quiet, caminar o rebre un cop</span></li><li><b>Regles amb blocs</b> <span>vides, compte enrere, diàlegs, rècords que es desen</span></li><li><b>So</b> <span>efectes amb receptes, una música composta en una quadrícula o un .mod</span></li><li><b>A la consola</b> <span>pel cable USB, o el .zip per a la targeta</span></li><li><b>En tres idiomes</b> <span>castellano, català i English</span></li></ul>
+<div class="actions"><a class="btn btn-primary btn-big" href="../editor/?lang=ca" target="_blank" rel="noopener">Obre l'editor<span class="sr"> (s'obre en una pestanya nova)</span></a><a class="btn btn-ghost" href="#biblioteca">Jocs fets amb ell</a></div>
+</div>
+<figure class="editor-video">
+<video src="../video/linea0.mp4" poster="../video/linea0.jpg" width="1280" height="800" controls muted loop playsinline autoplay preload="metadata" aria-describedby="linea0-cap"></video>
+<figcaption id="linea0-cap">LÍNEA 0, un joc de Game Boy Advance fet sencer amb l'editor, en directe: dibuixos, mapes, regles i a jugar. El muntatge, vuit vegades més ràpid; la partida, a velocitat real.</figcaption>
+</figure>
 </div></section>
 <section id="codex" aria-labelledby="codex-t"><div class="wrap">
 <h2 id="codex-t">L'escala: cinc encàrrecs</h2>
@@ -304,7 +317,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Com es va fer</h2>
-<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="109" data-dec="0">109</b><span>proves a cada canvi</span></li><li><b data-count="144" data-dec="0">144</b><span>commits al repositori</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="110" data-dec="0">110</b><span>proves a cada canvi</span></li><li><b data-count="145" data-dec="0">145</b><span>commits al repositori</span></li></ul>
 <div class="story">
 <p><strong>Una persona i Claude.</strong> El motor, els exemples, les eines i aquesta web es van escriure parlant amb Claude Code: cada idea es provava al simulador, es mesurava a la placa i es corregia amb el que deia la placa.</p>
 <p><strong>L'art, generat i encaixat.</strong> Els aspectes que ho demanen (Neo Geo, CPS2, 32 bits) fan servir imatges generades amb IA. Unes eines del motor les retallen, les escalen a l'alçada justa, en separen els fotogrames i les redueixen a la paleta de la consola. Els aspectes petits es dibuixen amb codi.</p>
