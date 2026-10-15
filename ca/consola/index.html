@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Consola · pinyol</title>
+<meta name="description" content="La consola Cirera, el seu firmware per instal·lar des del navegador, i pinyol a RetroArch i RetroPie.">
+<meta property="og:title" content="Consola · pinyol">
+<meta property="og:description" content="La consola Cirera, el seu firmware per instal·lar des del navegador, i pinyol a RetroArch i RetroPie.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
+<meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/ca/consola/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/consola/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/consola/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/consola/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/consola/">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css?v=af3307ca">
+<script src="../../site.js?v=8ad24a2d" defer></script>
+<script src="../../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script><script type="module" src="../../vendor/esp-web-tools/install-button.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Salta al contingut</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="../" aria-label="pinyol, inici"><span class="logo-anim"><img class="l-leaves" src="../../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Seccions"><ul><li><a href="../">Inici</a></li><li><a href="../juegos/">Jocs</a></li><li><a href="../crear/">Crear</a></li><li><a href="../consola/" aria-current="page">Consola</a></li><li><a href="../como-se-hizo/">Com es va fer</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../../consola/" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../../ca/consola/" lang="ca" hreflang="ca" aria-label="Català" aria-current="page">CA</a></li><li class="keep"><a href="../../en/consola/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
+</div></header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Consola</h1><p class="lede">La Cirera, el seu firmware per instal·lar des del navegador i altres maneres de jugar als mateixos jocs, com RetroArch.</p>
+</div></section>
+<section id="consola" aria-labelledby="consola-t"><div class="wrap">
+<h2 id="consola-t">La Cirera</h2>
+<p class="intro">Una placa de desenvolupament amb pantalla, que es compra ja muntada. El motor l'esprem: dibuixa directament en franges, reparteix la feina entre els dos nuclis i guarda a la targeta el que no cap a la memòria.</p>
+<figure class="renders"><img src="../../img/console/cirera_frente.webp" alt="La consola Cirera de cara: carcassa marfil, creueta verda, botons A, B i C de color terracota, MENU i START grisos i un combat de Neo Geo a la pantalla" width="1200" height="800" loading="lazy" decoding="async"><img src="../../img/console/cirera_detras.webp" alt="La part del darrere: una placa fosca amb CIRERA i una cirera de píxels, el model S3-01, la bateria de 3,7 V i 3000 mAh i USB-C a 5 V" width="1200" height="800" loading="lazy" decoding="async"><figcaption>La carcassa Cirera v1.0, en render: imatges generades amb IA a partir del seu model 3D. Encara no s'ha imprès.</figcaption></figure>
+<figure class="tutorial"><video src="../../video/montaje.mp4" poster="../../video/montaje.jpg" width="960" height="540" controls muted preload="none" playsinline aria-describedby="montaje-cap"></video><figcaption id="montaje-cap">El muntatge de la v1.0, animat a partir del seu model 3D: la carcassa, la placa, les dues plaques de coure dels botons, els cables, la bateria i l'altaveu.</figcaption></figure>
+<div class="hw"><dl class="spec"><dt>Placa</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, dos nuclis a 240 MHz</dd><dt>Memòria</dt><dd>512 KB de RAM interna, 8 MB de PSRAM, 16 MB de flash</dd><dt>Pantalla</dt><dd>3,5″, 480×320, ST77922 per QSPI, tàctil</dd><dt>So</dt><dd>ES8311 amb altaveu</dd><dt>La resta</dt><dd>microSD, bateria, USB</dd></dl>
+<div class="side"><div class="install" id="instalar"><h3>Instal·la el firmware des del navegador</h3>
+<ol><li>Connecta la placa a l'ordinador per USB.</li><li>Prem el botó i tria el port de la placa.</li>
+<li>Espera uns minuts: arrenca amb 15 jocs a la memòria.</li></ol>
+<esp-web-install-button manifest="../../firmware/manifest.json">
+<button slot="activate" class="btn btn-primary" type="button" data-goatcounter-click="instalar-consola">Instal·la a la consola</button>
+<span slot="unsupported" class="note">Aquest navegador no pot parlar amb la placa per USB: obre aquesta pàgina a Chrome o Edge, en un ordinador.</span>
+<span slot="not-allowed" class="note">Per instal·lar, cal obrir la pàgina amb https.</span>
+</esp-web-install-button>
+<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">els fitxers, per a esptool<span class="sr"> (s'obre en una pestanya nova)</span></a></p></div><div class="pending"><h3>La carcassa v1.0, dissenyada</h3><p>Falta imprimir-la i provar-la. Llavors se'n publicaran els fitxers per imprimir (CC BY 4.0), la llista de peces i el muntatge. Mentrestant, ja es pot jugar amb la placa sola.</p>
+<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Com connectar-la<span class="sr"> (s'obre en una pestanya nova)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (s'obre en una pestanya nova)</span></a></p></div></div></div>
+</div></section>
+<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
+<h2 id="retroarch-t">A RetroArch i RetroPie</h2>
+<p class="intro">Sense la consola? El motor també és un nucli de libretro: els jocs de pinyol es juguen a RetroArch i a tot el que s'hi basa, com RetroPie o Lakka en una Raspberry Pi, Batocera, Recalbox, les portàtils que el porten o un ordinador. És el mateix motor, així que el joc és el mateix.</p>
+<ol class="steps">
+<li><h3>Instal·la'l a RetroPie</h3><p>A la Raspberry Pi, aquesta ordre descarrega el nucli ja compilat (una Pi 1 o Zero el compila, en uns minuts) i afegeix Pinyol a EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
+curl -fsSL --create-dirs \
+  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
+  https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
+sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="button" aria-label="Copia: cd ~/RetroPie-Setup">Copia</button></div></li>
+<li><h3>Copia els jocs</h3><p>El .zip de qualsevol joc, com els que es descarreguen aquí, va a la seva carpeta.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copia: ~/RetroPie/roms/pinyol/">Copia</button></div></li>
+<li><h3>Juga</h3><p>Reinicia EmulationStation i apareix Pinyol amb els seus jocs. Al comandament, X o Y fan de C, i SELECT de MENU.</p></li>
+</ol>
+<div class="aside-note"><b>Un altre RetroArch?</b> En un ordinador amb Linux, Batocera o Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">el nucli ja compilat<span class="sr"> (s'obre en una pestanya nova)</span></a> va a la carpeta de nuclis de RetroArch; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">la guia<span class="sr"> (s'obre en una pestanya nova)</span></a> ho explica. Provat a RetroArch i amb el sistema de RetroPie emulat, encara no en una Raspberry Pi de debò: si el proves, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">explica'ns com va<span class="sr"> (s'obre en una pestanya nova)</span></a>.</div>
+</div></section>
+</main>
+<footer><div class="wrap"><img src="../../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
+<span>Codi MIT · art i so CC0</span><span>Game Boy, PICO-8, Neo Geo i les altres consoles esmentades són marques dels seus propietaris; pinyol i Cirera no hi tenen cap relació.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Mesures<span class="sr"> (s'obre en una pestanya nova)</span></a><span>Les visites, les partides i el temps jugat es compten amb <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (s'obre en una pestanya nova)</span></a>, sense galetes ni dades personals.</span><span>Els comentaris i els vots de cada joc es desen a GitHub i es carreguen amb giscus només si els demanes.</span><span>La Biblioteca, el rànquing i les xifres de cada joc es llegeixen de GitHub en obrir la pàgina.</span></div></footer>
+</body>
+</html>

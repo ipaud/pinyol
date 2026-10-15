@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Cómo se hizo · pinyol</title>
+<meta name="description" content="Cómo se hicieron pinyol y su web con Claude, y su rendimiento medido en la consola.">
+<meta property="og:title" content="Cómo se hizo · pinyol">
+<meta property="og:description" content="Cómo se hicieron pinyol y su web con Claude, y su rendimiento medido en la consola.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
+<meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/como-se-hizo/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/como-se-hizo/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/como-se-hizo/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/como-se-hizo/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/como-se-hizo/">
+<link rel="icon" href="../img/icon.png">
+<link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../styles.css?v=af3307ca">
+<script src="../site.js?v=8ad24a2d" defer></script>
+<script src="../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../vendor/goatcounter/count.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="../" aria-label="pinyol, inicio"><span class="logo-anim"><img class="l-leaves" src="../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Secciones"><ul><li><a href="../">Inicio</a></li><li><a href="../juegos/">Juegos</a></li><li><a href="../crear/">Crear</a></li><li><a href="../consola/">Consola</a></li><li><a href="../como-se-hizo/" aria-current="page">Cómo se hizo</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../como-se-hizo/" lang="es" hreflang="es" aria-label="Español" aria-current="page">ES</a></li><li class="keep"><a href="../ca/como-se-hizo/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../en/como-se-hizo/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
+</div></header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+<p class="kicker pixel">Una persona y Claude</p><h1 class="page-title">Cómo se hizo</h1><p class="lede">El motor, los juegos y esta web, hechos hablando con Claude Code y medidos en la placa de verdad.</p>
+</div></section>
+<section id="making" aria-labelledby="making-t"><div class="wrap">
+<h2 id="making-t" class="sr">En cifras</h2>
+<ul class="stats reveal"><li><b data-count="15386" data-dec="0">15.386</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="113" data-dec="0">113</b><span>pruebas en cada cambio</span></li><li><b data-count="193" data-dec="0">193</b><span>commits en el repositorio</span></li></ul>
+<div class="story">
+<p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía según lo que mostraban las mediciones.</p>
+<p><strong>El arte, generado y ajustado.</strong> Los aspectos que lo necesitan (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Las herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos de baja resolución se dibujan con código.</p>
+<p><strong>Medido antes de darlo por bueno.</strong> Cada ejemplo tiene un guion que lo juega solo. En el ordenador, el guion compara la suma de control de cada fotograma con la guardada; en la placa, anota los fps de cada segundo. Así se comprueba que las optimizaciones no cambian ni un píxel.</p>
+<p><strong>Libre de verdad.</strong> El código tiene licencia MIT; el arte, el sonido y los vídeos de los ejemplos, CC0. Cógelo, cámbialo y haz tu propia consola.</p>
+</div>
+<figure class="pipeline reveal" aria-labelledby="pipe-t">
+<figcaption><h3 id="pipe-t">Un enemigo, del encargo al juego</h3>
+<p>El goblin del juego mazmorra, paso a paso, con las imágenes reales.</p></figcaption>
+<ol class="pipe"><li><h4>1 · El encargo</h4><blockquote><p>Un goblin original para un beat 'em up de fantasía: pequeño, enjuto y encorvado, piel verde, orejas enormes, un taparrabos raído y un puñal curvo oxidado. De cuerpo entero, mirando a la izquierda. Estilo: sprite de recreativa de mediados de los noventa, píxeles nítidos, contorno oscuro, unos 15 colores. Fondo transparente.</p></blockquote><p>Resumido y traducido del encargo, que se escribió en inglés.</p></li><li><h4>2 · La referencia</h4><img src="../img/making/goblin_ref.webp" alt="El goblin solo, de cuerpo entero: verde, con orejas puntiagudas y un puñal curvo" width="360" height="356" loading="lazy" decoding="async"><p>El personaje solo. Se adjunta a cada encargo siguiente para que no cambie de un dibujo a otro.</p></li><li><h4>3 · La hoja de poses</h4><img src="../img/making/goblin_sheet.jpg" alt="Diez poses del goblin en dos filas, sobre un fondo oscuro difuminado" width="720" height="480" loading="lazy" decoding="async"><p>Diez poses: andar, apuñalar, encajar un golpe y caer. El fondo se pidió transparente y salió pintado.</p></li><li><h4>4 · El recorte</h4><img class="px" src="../img/making/goblin_frames.png" alt="Los diez fotogramas recortados, a la misma escala y con los pies en la misma línea" width="535" height="200" loading="lazy" decoding="async"><p>Las herramientas del motor quitan el fondo, separan los fotogramas, los dejan a la misma escala con los pies alineados y los reducen a 15 colores. Luego se revisa cada uno a ojo.</p></li><li><h4>5 · En el juego</h4><img class="px" src="../img/making/mazmorra.png" alt="Alba, la espadachina, frente a dos goblins en el pasillo de la mazmorra" width="480" height="320" loading="lazy" decoding="async"><p>En mazmorra salen en grupo, a 60 fps en la consola.</p></li></ol>
+</figure>
+<div class="days reveal"><h3>Cinco días en el repositorio</h3><ol><li><time datetime="2026-10-11">11 oct.</time><p>El motor nace de dos juegos de aventuras y se mide en la placa: la imagen va directa al panel, por franjas.</p></li><li><time datetime="2026-10-12">12 oct.</time><p>Un procesador de imagen virtual, como el de la Game Boy Advance, y juegos en Lua de cualquier género.</p></li><li><time datetime="2026-10-13">13 oct.</time><p>Medición y optimización en la consola. El editor web, para hacer juegos sin programar.</p></li><li><time datetime="2026-10-14">14 oct.</time><p>Los aspectos de doce consolas, la vista en primera persona, las instrucciones para que un agente haga juegos, la web y la Biblioteca.</p></li><li><time datetime="2026-10-15">15 oct.</time><p>La web y el editor en tres idiomas, los juegos de Codex e IL·LUSTRES en la Biblioteca.</p></li></ol></div>
+<p class="source">Todo el proceso está en el repositorio: <a href="https://github.com/ipaud/pinyol/blob/main/docs/art.md" target="_blank" rel="noopener">cómo se hace el arte<span class="sr"> (se abre en una pestaña nueva)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">la API de Lua<span class="sr"> (se abre en una pestaña nueva)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/AGENTS.md" target="_blank" rel="noopener">las instrucciones para agentes<span class="sr"> (se abre en una pestaña nueva)</span></a>.</p>
+</div></section>
+<section id="rendimiento" class="perf" aria-labelledby="perf-t"><div class="wrap">
+<p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
+<h2 id="perf-t">Medido en la consola, no prometido</h2>
+<p class="intro">Cada cifra de esta sección sale de la placa: o un firmware que juega solo siguiendo un guion y anota el rendimiento cada segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emuladores. A 60 fps, cada fotograma dispone de 16,6 ms.</p>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: capa afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para enviar un fotograma entero al panel; solo el cable se lleva 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="113" data-dec="0">113</span><small></small></b><span>pruebas que juegan solas y comparan cada fotograma, en cada cambio</span></li></ul>
+<figure class="chart reveal" id="chart-looks">
+<figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
+<p>El segundo más lento y el más rápido de cada ejemplo, jugando en la consola. En gris, la primera medición, antes de optimizar.</p></figcaption>
+<table class="ranges"><thead><tr><th scope="col">Aspecto</th><th scope="col"><span class="sr">fps</span><div class="axis" aria-hidden="true"><span style="--x:0.00%">0</span><span style="--x:46.88%">30</span><span style="--x:93.75%">60</span></div></th></tr></thead>
+<tbody><tr style="--n:0"><th scope="row">Neo Geo<small>duelo</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
+<span class="val">60–61 fps</span></td></tr><tr style="--n:1"><th scope="row">CPS2<small>torneo</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
+<span class="val">60–61 fps</span></td></tr><tr style="--n:2"><th scope="row">Game Boy<small>bolsillo</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:90.62%;--b:95.31%"></span></div>
+<span class="val">58–61 fps</span></td></tr><tr style="--n:3"><th scope="row">ZX Spectrum<small>cinta</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now mid" style="--a:64.06%;--b:96.88%"></span></div>
+<span class="val">41–62 fps</span></td></tr><tr style="--n:4"><th scope="row">PICO-8<small>ladrillos</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:71.88%;--b:85.94%"></span><span class="rg now mid" style="--a:73.44%;--b:93.75%"></span></div>
+<span class="val">47–60 fps, antes 46–55</span></td></tr><tr style="--n:5"><th scope="row">Maquinita LCD<small>huevos</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
+<span class="val">60–61 fps</span></td></tr><tr style="--n:6"><th scope="row">PlayStation · Saturn 2D<small>gotico</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:46.88%;--b:48.44%"></span><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
+<span class="val">60–61 fps, antes 30–31</span></td></tr><tr style="--n:7"><th scope="row">Super Nintendo · Mega Drive<small>veloz</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now mid" style="--a:62.50%;--b:92.19%"></span></div>
+<span class="val">40–59 fps</span></td></tr><tr style="--n:8"><th scope="row">Vectorial<small>rocas</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:95.31%;--b:96.88%"></span></div>
+<span class="val">61 fps</span></td></tr><tr style="--n:9"><th scope="row">Game Boy Advance<small>plataformas</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:95.31%;--b:96.88%"></span></div>
+<span class="val">61 fps</span></td></tr><tr style="--n:10"><th scope="row">Recreativa vertical<small>tormenta</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:31.25%;--b:32.81%"></span><span class="rg now low" style="--a:46.88%;--b:48.44%"></span></div>
+<span class="val">30 fps, antes 20</span></td></tr><tr style="--n:11"><th scope="row">Primera persona<small>laberinto</small></th>
+<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:31.25%;--b:48.44%"></span><span class="rg now mid" style="--a:59.38%;--b:93.75%"></span></div>
+<span class="val">38–60 fps, antes 20–31</span></td></tr></tbody></table>
+<div class="legend" aria-hidden="true"><span><span class="key now"></span>ahora</span> <span><span class="key was"></span>antes</span> <span><span class="key line"></span>60 fps</span></div>
+</figure>
+<figure class="chart reveal" id="chart-traces">
+<figcaption><h3>Segundo a segundo</h3>
+<p>Cada punto es un segundo de partida en la placa, mientras un guion juega solo. La línea discontinua es la primera medición; la continua, la actual. El primer segundo carga la escena y no cuenta en las cifras.</p></figcaption>
+<ul class="traces"><li class="trace">
+<p class="who"><b>gotico</b> <span>32 bits · la sala</span></p>
+<svg viewBox="0 -4 300 118" role="img" aria-label="gotico: antes entre 30 y 31 fps, ahora entre 60 y 61" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,62.4 37.5,58.1 75.0,57.2 112.5,57.2 150.0,57.2 187.5,57.4 225.0,57.2 262.5,57.2 300.0,57.4"/><polyline class="now" pathLength="1" points="0.0,28.5 75.0,4.6 150.0,6.2 225.0,6.4 300.0,4.6"/></svg>
+<p class="ms"><span class="from">32,0</span><span class="arrow" aria-hidden="true">→</span><b data-count="17.2" data-from="32.0" data-dec="1">17,2</b> <small>ms por fotograma</small></p>
+</li><li class="trace">
+<p class="who"><b>laberinto</b> <span>primera persona · andar</span></p>
+<svg viewBox="0 -4 300 118" role="img" aria-label="laberinto: antes entre 20 y 31 fps, ahora entre 38 y 60" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,59.0 16.7,60.7 33.3,75.5 50.0,74.9 66.7,74.4 83.3,71.3 100.0,58.1 116.7,57.2 133.3,57.2 150.0,67.2 166.7,74.2 183.3,73.7 200.0,74.2 216.7,73.7 233.3,73.7 250.0,74.2 266.7,63.1 283.3,57.4 300.0,71.0"/><polyline class="now" pathLength="1" points="0.0,21.1 23.1,44.9 46.2,30.2 69.2,21.3 92.3,6.2 115.4,18.4 138.5,26.6 161.5,28.4 184.6,19.9 207.7,16.7 230.8,28.2 253.8,26.8 276.9,26.8 300.0,26.8"/></svg>
+<p class="ms"><span class="from">40,9</span><span class="arrow" aria-hidden="true">→</span><b data-count="20.3" data-from="40.9" data-dec="1">20,3</b> <small>ms por fotograma</small></p>
+</li><li class="trace">
+<p class="who"><b>ladrillos</b> <span>PICO-8 · jugando</span></p>
+<svg viewBox="0 -4 300 118" role="img" aria-label="ladrillos: antes entre 46 y 55 fps, ahora entre 47 y 60" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,19.6 30.0,30.2 60.0,21.7 90.0,14.8 120.0,16.5 150.0,15.0 180.0,15.0 210.0,16.5 240.0,15.0 270.0,15.0 300.0,16.5"/><polyline class="now" pathLength="1" points="0.0,14.6 33.3,29.7 66.7,13.2 100.0,7.9 133.3,6.4 166.7,6.4 200.0,8.1 233.3,6.4 266.7,6.4 300.0,8.2"/></svg>
+<p class="ms"><span class="from">18,8</span><span class="arrow" aria-hidden="true">→</span><b data-count="17.6" data-from="18.8" data-dec="1">17,6</b> <small>ms por fotograma</small></p>
+</li><li class="trace">
+<p class="who"><b>tormenta</b> <span>vertical · oleadas</span></p>
+<svg viewBox="0 -4 300 118" role="img" aria-label="tormenta: antes 20 fps, ahora 30" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,74.9 7.1,74.9 14.3,74.9 21.4,76.0 28.6,75.5 35.7,75.5 42.9,75.5 50.0,75.5 57.1,76.0 64.3,75.5 71.4,75.5 78.6,75.5 85.7,76.0 92.9,75.5 100.0,75.5 107.1,74.9 114.3,76.0 121.4,75.5 128.6,75.5 135.7,75.5 142.9,75.5 150.0,76.0 157.1,74.9 164.3,75.5 171.4,75.5 178.6,76.0 185.7,75.5 192.9,75.5 200.0,75.5 207.1,75.5 214.3,76.0 221.4,75.5 228.6,75.5 235.7,76.0 242.9,75.5 250.0,75.5 257.1,75.5 264.3,75.5 271.4,76.0 278.6,75.5 285.7,74.9 292.9,75.5 300.0,75.5"/><polyline class="now" pathLength="1" points="0.0,58.1 10.7,59.0 21.4,58.3 32.1,58.1 42.9,58.3 53.6,59.1 64.3,58.3 75.0,58.3 85.7,59.1 96.4,58.3 107.1,58.3 117.9,59.1 128.6,58.3 139.3,58.3 150.0,59.1 160.7,58.1 171.4,59.0 182.1,58.3 192.9,58.3 203.6,58.1 214.3,59.1 225.0,58.1 235.7,59.1 246.4,58.1 257.1,58.3 267.9,59.1 278.6,58.3 289.3,58.3 300.0,58.3"/></svg>
+<p class="ms"><span class="from">48,7</span><span class="arrow" aria-hidden="true">→</span><b data-count="32.3" data-from="48.7" data-dec="1">32,3</b> <small>ms por fotograma</small></p>
+</li></ul>
+<p class="sub">No hizo falta optimizarlos:</p>
+<ul class="steady"><li><span class="who"><b>torneo</b> CPS2</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="torneo: entre 60 y 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.7 12.3,1.7 24.6,1.7 36.9,1.7 49.2,2.3 61.5,1.7 73.8,1.7 86.2,1.7 98.5,1.8 110.8,1.8 123.1,1.7 135.4,1.8 147.7,1.8 160.0,1.8"/></svg><span class="v">60–61</span></li><li><span class="who"><b>mazmorra</b> CPS2</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="mazmorra: 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.8 17.8,1.7 35.6,1.8 53.3,1.7 71.1,1.8 88.9,1.8 106.7,1.7 124.4,1.8 142.2,1.7 160.0,1.7"/></svg><span class="v">61</span></li><li><span class="who"><b>rocas</b> vectorial</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="rocas: 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,2.1 17.8,1.7 35.6,1.7 53.3,1.7 71.1,1.8 88.9,1.7 106.7,1.7 124.4,1.7 142.2,1.7 160.0,1.7"/></svg><span class="v">61</span></li><li><span class="who"><b>bolsillo</b> Game Boy</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="bolsillo: entre 58 y 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,3.4 2.0,1.6 4.1,1.6 6.1,1.6 8.1,1.6 10.1,1.6 12.2,1.6 14.2,1.6 16.2,3.4 18.2,1.6 20.3,1.6 22.3,1.6 24.3,1.6 26.3,1.6 28.4,1.6 30.4,1.6 32.4,3.4 34.4,1.6 36.5,1.6 38.5,1.6 40.5,1.6 42.5,1.6 44.6,1.6 46.6,1.6 48.6,3.4 50.6,1.6 52.7,1.6 54.7,1.7 56.7,1.7 58.7,1.6 60.8,1.7 62.8,1.6 64.8,3.4 66.8,1.6 68.9,1.6 70.9,1.7 72.9,1.7 74.9,1.6 77.0,1.6 79.0,1.6 81.0,3.6 83.0,1.7 85.1,1.7 87.1,1.7 89.1,1.6 91.1,1.7 93.2,1.7 95.2,1.7 97.2,3.6 99.2,1.7 101.3,1.7 103.3,1.7 105.3,1.7 107.3,1.7 109.4,1.7 111.4,1.7 113.4,3.5 115.4,1.7 117.5,1.7 119.5,1.7 121.5,1.7 123.5,1.7 125.6,1.7 127.6,1.7 129.6,3.6 131.6,1.7 133.7,1.7 135.7,1.7 137.7,1.7 139.7,1.7 141.8,1.7 143.8,1.7 145.8,3.6 147.8,1.7 149.9,1.7 151.9,1.7 153.9,1.7 155.9,1.7 158.0,1.7 160.0,1.7"/></svg><span class="v">58–61</span></li><li><span class="who"><b>huevos</b> LCD</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="huevos: entre 60 y 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,2.4 17.8,2.3 35.6,1.7 53.3,1.7 71.1,1.7 88.9,1.7 106.7,1.7 124.4,1.7 142.2,1.7 160.0,1.7"/></svg><span class="v">60–61</span></li><li><span class="who"><b>cinta</b> Spectrum</span>
+<svg viewBox="0 -4 160 48" role="img" aria-label="cinta: entre 41 y 62 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.6 2.3,3.5 4.6,1.6 7.0,1.7 9.3,1.7 11.6,4.1 13.9,13.9 16.2,1.5 18.6,3.5 20.9,1.6 23.2,1.7 25.5,1.7 27.8,4.2 30.1,13.9 32.5,1.6 34.8,3.5 37.1,1.6 39.4,1.7 41.7,1.7 44.1,4.2 46.4,13.9 48.7,1.6 51.0,3.6 53.3,1.6 55.7,1.8 58.0,1.7 60.3,4.2 62.6,14.2 64.9,1.6 67.2,3.6 69.6,1.6 71.9,1.7 74.2,1.7 76.5,4.2 78.8,13.8 81.2,1.6 83.5,3.6 85.8,1.7 88.1,1.8 90.4,1.8 92.8,4.2 95.1,13.8 97.4,1.6 99.7,3.6 102.0,1.7 104.3,1.8 106.7,1.8 109.0,4.2 111.3,13.8 113.6,1.6 115.9,3.6 118.3,1.7 120.6,1.8 122.9,1.8 125.2,4.2 127.5,13.8 129.9,1.6 132.2,3.6 134.5,1.7 136.8,1.8 139.1,1.8 141.4,4.2 143.8,14.4 146.1,1.6 148.4,3.6 150.7,1.7 153.0,1.8 155.4,1.8 157.7,4.2 160.0,13.8"/></svg><span class="v">41–62</span></li></ul>
+</figure>
+<figure class="chart reveal" id="chart-strips">
+<figcaption><h3>Cómo llega un fotograma a la pantalla</h3>
+<p>Nunca hay un fotograma entero en memoria: la pantalla se dibuja en 15 franjas de 32 columnas. Los dos núcleos se reparten cada franja en la RAM interna, uno la mitad izquierda y otro la derecha, mientras la franja anterior sale por DMA hacia el panel.</p></figcaption>
+<div class="strips" data-live style="--shot:url('../img/looks/neogeo.png');--shot2:url('../img/looks/32bits.png')" role="img" aria-label="Animación: la pantalla dividida en 15 franjas; cada una se llena desde arriba, mitad por el núcleo 0 y mitad por el núcleo 1, y luego aparece en el panel mientras se dibuja la siguiente"><i style="--i:0;--p:0.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:1;--p:7.143%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:2;--p:14.286%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:3;--p:21.429%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:4;--p:28.571%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:5;--p:35.714%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:6;--p:42.857%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:7;--p:50.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:8;--p:57.143%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:9;--p:64.286%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:10;--p:71.429%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:11;--p:78.571%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:12;--p:85.714%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:13;--p:92.857%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:14;--p:100.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i></div>
+<div class="legend" aria-hidden="true"><span><span class="key c0"></span>núcleo 0</span> <span><span class="key c1"></span>núcleo 1</span> <span><span class="key dma"></span>ya en el panel</span></div>
+<p class="sub">A cámara lenta: un fotograma de verdad tarda 16,6 ms; aquí, 2,4 segundos. Enviar uno entero cuesta 8,1 ms, de los que el cable se lleva 7,7.</p>
+</figure>
+<figure class="chart reveal" id="chart-profile">
+<figcaption><h3>Cómo se encuentra lo que más cuesta</h3>
+<p>Se repite la misma escena quitando una cosa cada vez. En gotico, los dos rayos de luna, mezclados en tiempo real, se comían 13 ms por fotograma: ahora vienen ya pintados en el fondo, y el juego pasó de 31 a 60 fps.</p></figcaption>
+<div class="two"><div><p class="sub">gotico, antes del arreglo (ms por fotograma)</p><table class="bars marked" style="--m:48.03%"><thead><tr><th><span class="sr">Medición</span></th><td><div class="axis"><span style="--x:48.03%">16,6 ms = 60 fps</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">todo</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:92.59%"></span></div><span class="val">32,0 ms</span></td></tr><tr style="--n:1"><th scope="row">sin columnas</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:88.25%"></span></div><span class="val">30,5 ms</span></td></tr><tr style="--n:2"><th scope="row">sin rayos de luna</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:54.98%"></span></div><span class="val">19,0 ms</span></td></tr><tr style="--n:3"><th scope="row">sin rayos ni brillos</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:47.16%"></span></div><span class="val">16,3 ms</span></td></tr><tr style="--n:4"><th scope="row">sin nada encima</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:46.87%"></span></div><span class="val">16,2 ms</span></td></tr></tbody></table></div>
+<div><p class="sub">laberinto: el raycast antes y después de optimizarlo (ms por fotograma)</p><table class="bars marked" style="--m:39.41%"><thead><tr><th><span class="sr">Medición</span></th><td><div class="axis"><span style="--x:39.41%">16,6 ms</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">todo · antes</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:92.59%"></span></div><span class="val">39,0 ms</span></td></tr><tr style="--n:1"><th scope="row">todo · ahora</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:57.93%"></span></div><span class="val">24,4 ms</span></td></tr><tr style="--n:2"><th scope="row">solo raycast · antes</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:82.15%"></span></div><span class="val">34,6 ms</span></td></tr><tr style="--n:3"><th scope="row">solo raycast · ahora</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:52.47%"></span></div><span class="val">22,1 ms</span></td></tr><tr style="--n:4"><th scope="row">solo la imagen · antes</th><td><div class="track" aria-hidden="true">
+<span class="bar over" style="--w:45.11%"></span></div><span class="val">19,0 ms</span></td></tr><tr style="--n:5"><th scope="row">solo la imagen · ahora</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:38.70%"></span></div><span class="val">16,3 ms</span></td></tr></tbody></table></div></div>
+</figure>
+<figure class="chart reveal" id="chart-cost">
+<figcaption><h3>Lo que cuesta dibujar, en un núcleo</h3>
+<p>Un fotograma lógico de 240×160 con contenido de prueba, el mejor de cinco intentos. El porcentaje es sobre el tiempo de un núcleo a 60 fps; la consola tiene dos.</p></figcaption>
+<table class="bars marked" style="--m:100.00%"><thead><tr><th><span class="sr">Medición</span></th><td><div class="axis"><span style="--x:100.00%">un núcleo entero</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">Una capa de tiles</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:11.80%"></span></div><span class="val">1,96 ms · 11,8 %</span></td></tr><tr style="--n:1"><th scope="row">128 sprites de 16×16</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:13.50%"></span></div><span class="val">2,24 ms · 13,5 %</span></td></tr><tr style="--n:2"><th scope="row">Una capa afín a pantalla completa</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:20.00%"></span></div><span class="val">3,34 ms · 20,0 %</span></td></tr><tr style="--n:3"><th scope="row">Mezcla alfa de dos fotogramas enteros</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:24.20%"></span></div><span class="val">4,03 ms · 24,2 %</span></td></tr><tr style="--n:4"><th scope="row">Modo 7: una capa afín y 64 sprites</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:37.70%"></span></div><span class="val">6,28 ms · 37,7 %</span></td></tr><tr style="--n:5"><th scope="row">4 capas de tiles</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:39.00%"></span></div><span class="val">6,50 ms · 39,0 %</span></td></tr><tr style="--n:6"><th scope="row">GBA modo 0: 4 capas, 128 sprites</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:51.90%"></span></div><span class="val">8,64 ms · 51,9 %</span></td></tr><tr style="--n:7"><th scope="row">Todo: capa afín, 4 capas, 128 sprites</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:71.30%"></span></div><span class="val">11,88 ms · 71,3 %</span></td></tr></tbody></table>
+<p class="sub">Y por qué casi todo se dibuja en la RAM interna: la velocidad al copiar 1 MB.</p>
+<table class="bars"><tbody><tr style="--n:0"><th scope="row">RAM interna → RAM interna</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:95.25%"></span></div><span class="val">381,0 MB/s</span></td></tr><tr style="--n:1"><th scope="row">PSRAM → RAM interna</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:21.18%"></span></div><span class="val">84,7 MB/s</span></td></tr><tr style="--n:2"><th scope="row">RAM interna → PSRAM</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:12.12%"></span></div><span class="val">48,5 MB/s</span></td></tr><tr style="--n:3"><th scope="row">PSRAM → PSRAM</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:7.98%"></span></div><span class="val">31,9 MB/s</span></td></tr></tbody></table>
+</figure>
+<p class="source">Fuente: <a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">docs/measurements.md<span class="sr"> (se abre en una pestaña nueva)</span></a>, con el método y cada medición desde el primer día. Mídelo en tu placa:
+<code>idf.py -DBP_BENCH=ON build flash monitor</code></p>
+</div></section>
+</main>
+<footer><div class="wrap"><img src="../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
+<span>Código MIT · arte y sonido CC0</span><span>Game Boy, PICO-8, Neo Geo y las demás consolas que se nombran son marcas de sus dueños; pinyol y Cirera no tienen relación con ellos.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Mediciones<span class="sr"> (se abre en una pestaña nueva)</span></a><span>Las visitas, las partidas y el tiempo jugado se cuentan con <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (se abre en una pestaña nueva)</span></a>, sin cookies ni datos personales.</span><span>Los comentarios y los votos de cada juego se guardan en GitHub y se cargan con giscus solo si los pides.</span><span>La Biblioteca, el ranking y las cifras de cada juego se leen de GitHub al abrir la página.</span></div></footer>
+</body>
+</html>

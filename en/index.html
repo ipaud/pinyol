@@ -18,18 +18,16 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=8365cd0e">
-<script src="../site.js?v=45a56782" defer></script>
-<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../vendor/goatcounter/count.js"></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
+<link rel="stylesheet" href="../styles.css?v=af3307ca">
+<script src="../site.js?v=8ad24a2d" defer></script>
+<script src="../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../vendor/goatcounter/count.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="logo" href="#top" aria-label="pinyol, home"><span class="logo-anim"><img class="l-leaves" src="../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../img/logo/word.png" alt="" width="83" height="52"></span></a>
-<nav aria-label="Sections"><ul>
-<li class="keep"><a href="#aspectos">Games</a></li><li><a href="#rendimiento">Performance</a></li>
-<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Library</a></li><li><a href="#hazlo">Make a game</a></li><li><a href="#consola">The console</a></li><li><a href="#retroarch">RetroPie</a></li><li><a href="#making">How it was made</a></li>
-<li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a></li></ul></nav>
+<a class="logo" href="./" aria-label="pinyol, home"><span class="logo-anim"><img class="l-leaves" src="../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Sections"><ul><li><a href="./" aria-current="page">Home</a></li><li><a href="./juegos/">Games</a></li><li><a href="./crear/">Make</a></li><li><a href="./consola/">Console</a></li><li><a href="./como-se-hizo/">How it was made</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a></li></ul></nav>
 <nav class="langs" aria-label="Language"><ul><li class="keep"><a href="../" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../ca/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../en/" lang="en" hreflang="en" aria-label="English" aria-current="page">EN</a></li></ul></nav>
 </div></header>
 <main id="main">
@@ -38,7 +36,7 @@
 <p class="kicker pixel">Free game engine · ESP32-S3</p>
 <h1 id="hero-title">One engine, twelve eras</h1>
 <p class="lede"><img class="wordmark" src="../img/wordmark.png" alt="pinyol" width="65" height="26"> makes games that look like 80s and 90s consoles and runs them at 60 fps on a handheld console built on an ESP32‑S3. Tell your coding agent the look you want and it builds the game. You can play them all here.</p>
-<div class="actions"><a class="btn btn-primary" href="#aspectos">Play now</a><a class="btn btn-ghost" href="#crear">Make a game</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">See the code<span class="sr"> (opens in a new tab)</span></a></div>
+<div class="actions"><a class="btn btn-primary" href="./juegos/">Play now</a><a class="btn btn-ghost" href="./crear/">Make a game</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">See the code<span class="sr"> (opens in a new tab)</span></a></div>
 <p class="meta">MIT code · CC0 art and sound · 33 example games</p>
 </div>
 <div><div class="board" data-live role="img" aria-label="The console, a Freenove FNK0104N board, starting up: the pinyol intro, the Cirera menu with its games, and some of them running">
@@ -47,313 +45,67 @@
 <div class="glass"><div class="screen"><video class="boot" src="../video/consola.mp4" poster="../video/consola.jpg" width="720" height="480" autoplay muted loop playsinline preload="auto"></video></div></div></div>
 <p class="screen-label pixel">Freenove FNK0104N · 480×320 · 60 fps on the board <button class="screen-toggle" type="button" aria-pressed="false">Pause</button></p></div>
 </div></section>
-<section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
-<h2 id="aspectos-t">Twelve looks, one engine</h2>
-<p class="intro">Each cartridge is a playable example that follows its console's rules: resolution, colours, layers. Play with the keyboard (arrow keys, Z and X) or the on-screen buttons on a phone. The fps figures were measured on the real console, during play.</p>
-<ul class="shelf"><li class="cart big" style="--hue:#ffc94a">
+<section id="portada" class="featured" aria-labelledby="portada-t" hidden><div class="wrap feat">
+<a class="feat-shot" id="feat-shot" tabindex="-1" aria-hidden="true"><img id="feat-img" alt="" width="480" height="320"></a>
+<div class="feat-info"><p class="kicker pixel" id="portada-t">Cover of the week</p>
+<h2 class="feat-title" id="feat-title"></h2><p class="feat-why" id="feat-why"></p>
+<div class="actions"><a class="btn btn-primary" id="feat-play">Play</a><a class="btn btn-ghost" id="feat-page">See the details</a></div></div>
+</div></section>
+<section class="doors-sec" aria-labelledby="doors-t"><div class="wrap"><h2 id="doors-t" class="sr">The sections</h2><ul class="doors"><li class="door"><img src="../img/looks/neogeo.png" alt="" width="480" height="320" loading="lazy" decoding="async">
+<div><h3><a class="stretch" href="./juegos/">Play</a> <span class="arrow" aria-hidden="true">→</span></h3><p>Twelve console looks, people's games and the ranking.</p></div></li><li class="door"><img src="../video/linea0.jpg" alt="" width="480" height="320" loading="lazy" decoding="async">
+<div><h3><a class="stretch" href="./crear/">Make</a> <span class="arrow" aria-hidden="true">→</span></h3><p>With your coding agent or with the editor, no coding, and send it to the Library.</p></div></li><li class="door"><img src="../img/console/cirera_frente.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
+<div><h3><a class="stretch" href="./consola/">The console</a> <span class="arrow" aria-hidden="true">→</span></h3><p>The Cirera, its firmware and other ways to play, like RetroArch.</p></div></li></ul></div></section>
+<section id="destacados" aria-labelledby="destacados-t"><div class="wrap">
+<h2 id="destacados-t">Six to start with</h2>
+<p class="intro">Six of the twelve looks, to play right now in the browser. The fps figures were measured playing on the real console.</p>
+<ul class="jobs"><li class="cart" style="--hue:#ffc94a">
 <div class="shot"><img src="../img/looks/neogeo.png" alt="A Neo Geo fighting game: two big fighters on a pier at sunset" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1990 · huge fighters</p><h3>Neo Geo</h3><p class="what">One-on-one fighting on a pier at sunset.</p>
 <ul class="chips"><li class="chip fps">60–61 fps on the console</li><li class="chip">AI-generated art</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/duelo.zip" data-goatcounter-click="jugar/duelo" aria-label="Play duelo (Neo Geo) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/duelo.zip" download data-goatcounter-click="descargar/duelo" aria-label="Download duelo for the console">Download .zip</a></div></div></li><li class="cart big" style="--hue:#e8344e">
+<a class="zip" href="../games/duelo.zip" download data-goatcounter-click="descargar/duelo" aria-label="Download duelo for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/duelo/" aria-label="Details: duelo (Neo Geo)">Details</a></div></div></li><li class="cart" style="--hue:#e8344e">
 <div class="shot"><img src="../img/looks/cps2.png" alt="A CPS2 fighting game: fifteen-colour fighters on a perspective floor" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1993 · fifteen colours per fighter</p><h3>CPS2</h3><p class="what">Fighting on a perspective floor drawn in bands.</p>
 <ul class="chips"><li class="chip fps">60–61 fps on the console</li><li class="chip">AI-generated art</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/torneo.zip" data-goatcounter-click="jugar/torneo" aria-label="Play torneo (CPS2) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/torneo.zip" download data-goatcounter-click="descargar/torneo" aria-label="Download torneo for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#8bac0f">
+<a class="zip" href="../games/torneo.zip" download data-goatcounter-click="descargar/torneo" aria-label="Download torneo for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/torneo/" aria-label="Details: torneo (CPS2)">Details</a></div></div></li><li class="cart" style="--hue:#8bac0f">
 <div class="shot"><img src="../img/looks/gameboy.png" alt="A platformer in four shades of green, full screen" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1989 · four greens, full screen</p><h3>Game Boy</h3><p class="what">A platformer in the Game Boy's palette, full screen.</p>
 <ul class="chips"><li class="chip fps">58–61 fps on the console</li><li class="chip">drawn with code</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/bolsillo.zip" data-goatcounter-click="jugar/bolsillo" aria-label="Play bolsillo (Game Boy) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/bolsillo.zip" download data-goatcounter-click="descargar/bolsillo" aria-label="Download bolsillo for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#ff3b3b">
+<a class="zip" href="../games/bolsillo.zip" download data-goatcounter-click="descargar/bolsillo" aria-label="Download bolsillo for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/bolsillo/" aria-label="Details: bolsillo (Game Boy)">Details</a></div></div></li><li class="cart" style="--hue:#ff3b3b">
 <div class="shot"><img src="../img/looks/spectrum.png" alt="A ZX Spectrum room: two-colour blocks, a miner and a guardian" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1982 · two colours per block</p><h3>ZX Spectrum</h3><p class="what">Complete with tape loading, coloured stripes and all.</p>
 <ul class="chips"><li class="chip fps low">41–62 fps on the console</li><li class="chip">drawn with code</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/cinta.zip" data-goatcounter-click="jugar/cinta" aria-label="Play cinta (ZX Spectrum) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/cinta.zip" download data-goatcounter-click="descargar/cinta" aria-label="Download cinta for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#ff77a8">
-<div class="shot"><img src="../img/looks/pico8.png" alt="A PICO-8 brick breaker in sixteen colours" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">2015 · 128×128 · sixteen colours</p><h3>PICO-8</h3><p class="what">A brick breaker in this fantasy console's palette.</p>
-<ul class="chips"><li class="chip fps low">47–60 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/ladrillos.zip" data-goatcounter-click="jugar/ladrillos" aria-label="Play ladrillos (PICO-8) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/ladrillos.zip" download data-goatcounter-click="descargar/ladrillos" aria-label="Download ladrillos for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#9aa58c">
-<div class="shot"><img src="../img/looks/lcd.png" alt="An LCD handheld: a cook catching eggs, each figure either on or off" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1980 · figures that light up</p><h3>LCD handheld</h3><p class="what">A cook catching eggs, moving figure by figure.</p>
-<ul class="chips"><li class="chip fps">60–61 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/huevos.zip" data-goatcounter-click="jugar/huevos" aria-label="Play huevos (LCD handheld) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/huevos.zip" download data-goatcounter-click="descargar/huevos" aria-label="Download huevos for the console">Download .zip</a></div></div></li><li class="cart big" style="--hue:#b388ff">
+<a class="zip" href="../games/cinta.zip" download data-goatcounter-click="descargar/cinta" aria-label="Download cinta for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/cinta/" aria-label="Details: cinta (ZX Spectrum)">Details</a></div></div></li><li class="cart" style="--hue:#b388ff">
 <div class="shot"><img src="../img/looks/32bits.png" alt="A gothic castle hall: glowing candles, a ghost and a huntress with a whip" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1997 · 256 colours, translucent lights</p><h3>PlayStation · Saturn 2D</h3><p class="what">A castle at night: glowing candles and a see-through ghost.</p>
 <ul class="chips"><li class="chip fps">60–61 fps on the console</li><li class="chip">AI-generated art</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/gotico.zip" data-goatcounter-click="jugar/gotico" aria-label="Play gotico (PlayStation · Saturn 2D) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/gotico.zip" download data-goatcounter-click="descargar/gotico" aria-label="Download gotico for the console">Download .zip</a></div></div></li><li class="cart big" style="--hue:#2f7bff">
-<div class="shot"><img src="../img/looks/16bits.png" alt="A 16-bit platformer: chequered ground and a sea that moves line by line" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1991 · speed and per-line scrolling</p><h3>Super Nintendo · Mega Drive</h3><p class="what">A very fast pangolin and a sea that moves line by line.</p>
-<ul class="chips"><li class="chip fps low">40–59 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/veloz.zip" data-goatcounter-click="jugar/veloz" aria-label="Play veloz (Super Nintendo · Mega Drive) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/veloz.zip" download data-goatcounter-click="descargar/veloz" aria-label="Download veloz for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#7cf7ff">
-<div class="shot"><img src="../img/looks/vector.png" alt="A vector game: glowing lines on black" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1979 · only glowing lines</p><h3>Vector</h3><p class="what">Rocks and a ship made of lines on black.</p>
-<ul class="chips"><li class="chip fps">61 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/rocas.zip" data-goatcounter-click="jugar/rocas" aria-label="Play rocas (Vector) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/rocas.zip" download data-goatcounter-click="descargar/rocas" aria-label="Download rocas for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
+<a class="zip" href="../games/gotico.zip" download data-goatcounter-click="descargar/gotico" aria-label="Download gotico for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/gotico/" aria-label="Details: gotico (PlayStation · Saturn 2D)">Details</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
 <div class="shot"><img src="../img/looks/gba.png" alt="A Game Boy Advance platformer with parallax mountains and water" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2001 · layers, sprites, rippling water</p><h3>Game Boy Advance</h3><p class="what">Parallax mountains, see-through water and coins.</p>
 <ul class="chips"><li class="chip fps">61 fps on the console</li><li class="chip">drawn with code</li></ul>
 <div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/plataformas.zip" data-goatcounter-click="jugar/plataformas" aria-label="Play plataformas (Game Boy Advance) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/plataformas.zip" download data-goatcounter-click="descargar/plataformas" aria-label="Download plataformas for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#4dd2a1">
-<div class="shot"><img src="../img/looks/vertical.png" alt="A vertical shoot-&#x27;em-up on a rotated screen: you hold the console on its side" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1985 · rotated screen</p><h3>Vertical arcade</h3><p class="what">A shoot-'em-up to play with the console on its side.</p>
-<ul class="chips"><li class="chip fps low">30 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/tormenta.zip" data-goatcounter-click="jugar/tormenta" aria-label="Play tormenta (Vertical arcade) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/tormenta.zip" download data-goatcounter-click="descargar/tormenta" aria-label="Download tormenta for the console">Download .zip</a></div></div></li><li class="cart" style="--hue:#c08a5a">
-<div class="shot"><img src="../img/looks/firstperson.png" alt="A first-person maze: stone corridors and a ghost" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1992 · Wolfenstein 3D style</p><h3>First person</h3><p class="what">A maze seen from inside, with ghosts and gems.</p>
-<ul class="chips"><li class="chip fps low">38–60 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/laberinto.zip" data-goatcounter-click="jugar/laberinto" aria-label="Play laberinto (First person) (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/laberinto.zip" download data-goatcounter-click="descargar/laberinto" aria-label="Download laberinto for the console">Download .zip</a></div></div></li></ul>
-<div class="more"><h3>And 16 more examples</h3><ul><li><a href="../play/player.html?lang=en&amp;game=../games/asalto.zip" target="_blank" rel="noopener">Asalto al cañón<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/calle.zip" target="_blank" rel="noopener">Calle de neón<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/nubes.zip" target="_blank" rel="noopener">Sobre las nubes<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/futbol.zip" target="_blank" rel="noopener">Gol de oro<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/moto.zip" target="_blank" rel="noopener">Moto costa<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/mazmorra.zip" target="_blank" rel="noopener">La mazmorra<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/carreras.zip" target="_blank" rel="noopener">Carreras<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/naves.zip" target="_blank" rel="noopener">Naves<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/aldea.zip" target="_blank" rel="noopener">La aldea<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/puzle.zip" target="_blank" rel="noopener">Puzle<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/inventos.zip" target="_blank" rel="noopener">Inventos<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/estilos.zip" target="_blank" rel="noopener">Estilos<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/sonidos.zip" target="_blank" rel="noopener">Sonidos<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/control.zip" target="_blank" rel="noopener">Control<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/juntos.zip" target="_blank" rel="noopener">Juntos<span class="sr"> (opens in a new tab)</span></a></li><li><a href="../play/player.html?lang=en&amp;game=../games/hola.zip" target="_blank" rel="noopener">Hola pinyol<span class="sr"> (opens in a new tab)</span></a></li></ul></div>
+<a class="zip" href="../games/plataformas.zip" download data-goatcounter-click="descargar/plataformas" aria-label="Download plataformas for the console">Download .zip</a>
+<a class="sheet-link" href="./juegos/plataformas/" aria-label="Details: plataformas (Game Boy Advance)">Details</a></div></div></li></ul>
+<p class="more-link"><a class="btn btn-ghost" href="./juegos/">See all the games</a></p>
 </div></section>
-<section id="rendimiento" class="perf" aria-labelledby="perf-t"><div class="wrap">
-<p class="kicker pixel">ESP32-S3R8 · 240 MHz · octal PSRAM at 80 MHz · QSPI screen at 80 MHz</p>
-<h2 id="perf-t">Measured on the console, not promised</h2>
-<p class="intro">Every figure in this section comes from the board: firmware that plays each game from a script and logs a performance line every second, or a benchmark that runs each scene five times. No emulator. At 60 fps, each frame has a 16.6 ms budget.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>of one core in the heaviest scene: affine, four layers and 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>to send a whole frame to the panel; the wire alone takes 7.7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>of one core for sound during play</span></li><li><b><span data-count="112" data-dec="0">112</span><small></small></b><span>self-playing tests that check every frame, run on every change</span></li></ul>
-<figure class="chart reveal" id="chart-looks">
-<figcaption><h3>Twelve looks, in frames per second</h3>
-<p>The slowest and fastest second of each example, played on the console. In grey: the first measurement, before optimisation.</p></figcaption>
-<table class="ranges"><thead><tr><th scope="col">Look</th><th scope="col"><span class="sr">fps</span><div class="axis" aria-hidden="true"><span style="--x:0.00%">0</span><span style="--x:46.88%">30</span><span style="--x:93.75%">60</span></div></th></tr></thead>
-<tbody><tr style="--n:0"><th scope="row">Neo Geo<small>duelo</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
-<span class="val">60–61 fps</span></td></tr><tr style="--n:1"><th scope="row">CPS2<small>torneo</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
-<span class="val">60–61 fps</span></td></tr><tr style="--n:2"><th scope="row">Game Boy<small>bolsillo</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:90.62%;--b:95.31%"></span></div>
-<span class="val">58–61 fps</span></td></tr><tr style="--n:3"><th scope="row">ZX Spectrum<small>cinta</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now mid" style="--a:64.06%;--b:96.88%"></span></div>
-<span class="val">41–62 fps</span></td></tr><tr style="--n:4"><th scope="row">PICO-8<small>ladrillos</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:71.88%;--b:85.94%"></span><span class="rg now mid" style="--a:73.44%;--b:93.75%"></span></div>
-<span class="val">47–60 fps, was 46–55</span></td></tr><tr style="--n:5"><th scope="row">LCD handheld<small>huevos</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
-<span class="val">60–61 fps</span></td></tr><tr style="--n:6"><th scope="row">PlayStation · Saturn 2D<small>gotico</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:46.88%;--b:48.44%"></span><span class="rg now ok" style="--a:93.75%;--b:95.31%"></span></div>
-<span class="val">60–61 fps, was 30–31</span></td></tr><tr style="--n:7"><th scope="row">Super Nintendo · Mega Drive<small>veloz</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now mid" style="--a:62.50%;--b:92.19%"></span></div>
-<span class="val">40–59 fps</span></td></tr><tr style="--n:8"><th scope="row">Vector<small>rocas</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:95.31%;--b:96.88%"></span></div>
-<span class="val">61 fps</span></td></tr><tr style="--n:9"><th scope="row">Game Boy Advance<small>plataformas</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg now ok" style="--a:95.31%;--b:96.88%"></span></div>
-<span class="val">61 fps</span></td></tr><tr style="--n:10"><th scope="row">Vertical arcade<small>tormenta</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:31.25%;--b:32.81%"></span><span class="rg now low" style="--a:46.88%;--b:48.44%"></span></div>
-<span class="val">30 fps, was 20</span></td></tr><tr style="--n:11"><th scope="row">First person<small>laberinto</small></th>
-<td><div class="track" aria-hidden="true"><span class="rg was" style="--a:31.25%;--b:48.44%"></span><span class="rg now mid" style="--a:59.38%;--b:93.75%"></span></div>
-<span class="val">38–60 fps, was 20–31</span></td></tr></tbody></table>
-<div class="legend" aria-hidden="true"><span><span class="key now"></span>now</span> <span><span class="key was"></span>before</span> <span><span class="key line"></span>60 fps</span></div>
-</figure>
-<figure class="chart reveal" id="chart-traces">
-<figcaption><h3>Second by second</h3>
-<p>Each point is one second of play on the board, from the performance line logged every second while a script plays the game. Dashed: the first measurement; solid: today's. The first second loads the scene and doesn't count in the figures.</p></figcaption>
-<ul class="traces"><li class="trace">
-<p class="who"><b>gotico</b> <span>32-bit · the hall</span></p>
-<svg viewBox="0 -4 300 118" role="img" aria-label="gotico: before, 30 to 31 fps; now 60 to 61" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,62.4 37.5,58.1 75.0,57.2 112.5,57.2 150.0,57.2 187.5,57.4 225.0,57.2 262.5,57.2 300.0,57.4"/><polyline class="now" pathLength="1" points="0.0,28.5 75.0,4.6 150.0,6.2 225.0,6.4 300.0,4.6"/></svg>
-<p class="ms"><span class="from">32,0</span><span class="arrow" aria-hidden="true">→</span><b data-count="17.2" data-from="32.0" data-dec="1">17,2</b> <small>ms per frame</small></p>
-</li><li class="trace">
-<p class="who"><b>laberinto</b> <span>first person · walking</span></p>
-<svg viewBox="0 -4 300 118" role="img" aria-label="laberinto: before, 20 to 31 fps; now 38 to 60" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,59.0 16.7,60.7 33.3,75.5 50.0,74.9 66.7,74.4 83.3,71.3 100.0,58.1 116.7,57.2 133.3,57.2 150.0,67.2 166.7,74.2 183.3,73.7 200.0,74.2 216.7,73.7 233.3,73.7 250.0,74.2 266.7,63.1 283.3,57.4 300.0,71.0"/><polyline class="now" pathLength="1" points="0.0,21.1 23.1,44.9 46.2,30.2 69.2,21.3 92.3,6.2 115.4,18.4 138.5,26.6 161.5,28.4 184.6,19.9 207.7,16.7 230.8,28.2 253.8,26.8 276.9,26.8 300.0,26.8"/></svg>
-<p class="ms"><span class="from">40,9</span><span class="arrow" aria-hidden="true">→</span><b data-count="20.3" data-from="40.9" data-dec="1">20,3</b> <small>ms per frame</small></p>
-</li><li class="trace">
-<p class="who"><b>ladrillos</b> <span>PICO-8 · playing</span></p>
-<svg viewBox="0 -4 300 118" role="img" aria-label="ladrillos: before, 46 to 55 fps; now 47 to 60" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,19.6 30.0,30.2 60.0,21.7 90.0,14.8 120.0,16.5 150.0,15.0 180.0,15.0 210.0,16.5 240.0,15.0 270.0,15.0 300.0,16.5"/><polyline class="now" pathLength="1" points="0.0,14.6 33.3,29.7 66.7,13.2 100.0,7.9 133.3,6.4 166.7,6.4 200.0,8.1 233.3,6.4 266.7,6.4 300.0,8.2"/></svg>
-<p class="ms"><span class="from">18,8</span><span class="arrow" aria-hidden="true">→</span><b data-count="17.6" data-from="18.8" data-dec="1">17,6</b> <small>ms per frame</small></p>
-</li><li class="trace">
-<p class="who"><b>tormenta</b> <span>vertical · waves</span></p>
-<svg viewBox="0 -4 300 118" role="img" aria-label="tormenta: before, 20 fps; now 30" preserveAspectRatio="none"><line class="grid" x1="0" x2="300" y1="58.4" y2="58.4"/><text x="300" y="55.4">30</text><line class="grid" x1="0" x2="300" y1="6.9" y2="6.9"/><text x="300" y="3.9">60</text><polyline class="was" pathLength="1" points="0.0,74.9 7.1,74.9 14.3,74.9 21.4,76.0 28.6,75.5 35.7,75.5 42.9,75.5 50.0,75.5 57.1,76.0 64.3,75.5 71.4,75.5 78.6,75.5 85.7,76.0 92.9,75.5 100.0,75.5 107.1,74.9 114.3,76.0 121.4,75.5 128.6,75.5 135.7,75.5 142.9,75.5 150.0,76.0 157.1,74.9 164.3,75.5 171.4,75.5 178.6,76.0 185.7,75.5 192.9,75.5 200.0,75.5 207.1,75.5 214.3,76.0 221.4,75.5 228.6,75.5 235.7,76.0 242.9,75.5 250.0,75.5 257.1,75.5 264.3,75.5 271.4,76.0 278.6,75.5 285.7,74.9 292.9,75.5 300.0,75.5"/><polyline class="now" pathLength="1" points="0.0,58.1 10.7,59.0 21.4,58.3 32.1,58.1 42.9,58.3 53.6,59.1 64.3,58.3 75.0,58.3 85.7,59.1 96.4,58.3 107.1,58.3 117.9,59.1 128.6,58.3 139.3,58.3 150.0,59.1 160.7,58.1 171.4,59.0 182.1,58.3 192.9,58.3 203.6,58.1 214.3,59.1 225.0,58.1 235.7,59.1 246.4,58.1 257.1,58.3 267.9,59.1 278.6,58.3 289.3,58.3 300.0,58.3"/></svg>
-<p class="ms"><span class="from">48,7</span><span class="arrow" aria-hidden="true">→</span><b data-count="32.3" data-from="48.7" data-dec="1">32,3</b> <small>ms per frame</small></p>
-</li></ul>
-<p class="sub">These needed no optimising:</p>
-<ul class="steady"><li><span class="who"><b>torneo</b> CPS2</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="torneo: 60 to 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.7 12.3,1.7 24.6,1.7 36.9,1.7 49.2,2.3 61.5,1.7 73.8,1.7 86.2,1.7 98.5,1.8 110.8,1.8 123.1,1.7 135.4,1.8 147.7,1.8 160.0,1.8"/></svg><span class="v">60–61</span></li><li><span class="who"><b>mazmorra</b> CPS2</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="mazmorra: 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.8 17.8,1.7 35.6,1.8 53.3,1.7 71.1,1.8 88.9,1.8 106.7,1.7 124.4,1.8 142.2,1.7 160.0,1.7"/></svg><span class="v">61</span></li><li><span class="who"><b>rocas</b> vector</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="rocas: 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,2.1 17.8,1.7 35.6,1.7 53.3,1.7 71.1,1.8 88.9,1.7 106.7,1.7 124.4,1.7 142.2,1.7 160.0,1.7"/></svg><span class="v">61</span></li><li><span class="who"><b>bolsillo</b> Game Boy</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="bolsillo: 58 to 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,3.4 2.0,1.6 4.1,1.6 6.1,1.6 8.1,1.6 10.1,1.6 12.2,1.6 14.2,1.6 16.2,3.4 18.2,1.6 20.3,1.6 22.3,1.6 24.3,1.6 26.3,1.6 28.4,1.6 30.4,1.6 32.4,3.4 34.4,1.6 36.5,1.6 38.5,1.6 40.5,1.6 42.5,1.6 44.6,1.6 46.6,1.6 48.6,3.4 50.6,1.6 52.7,1.6 54.7,1.7 56.7,1.7 58.7,1.6 60.8,1.7 62.8,1.6 64.8,3.4 66.8,1.6 68.9,1.6 70.9,1.7 72.9,1.7 74.9,1.6 77.0,1.6 79.0,1.6 81.0,3.6 83.0,1.7 85.1,1.7 87.1,1.7 89.1,1.6 91.1,1.7 93.2,1.7 95.2,1.7 97.2,3.6 99.2,1.7 101.3,1.7 103.3,1.7 105.3,1.7 107.3,1.7 109.4,1.7 111.4,1.7 113.4,3.5 115.4,1.7 117.5,1.7 119.5,1.7 121.5,1.7 123.5,1.7 125.6,1.7 127.6,1.7 129.6,3.6 131.6,1.7 133.7,1.7 135.7,1.7 137.7,1.7 139.7,1.7 141.8,1.7 143.8,1.7 145.8,3.6 147.8,1.7 149.9,1.7 151.9,1.7 153.9,1.7 155.9,1.7 158.0,1.7 160.0,1.7"/></svg><span class="v">58–61</span></li><li><span class="who"><b>huevos</b> LCD</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="huevos: 60 to 61 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,2.4 17.8,2.3 35.6,1.7 53.3,1.7 71.1,1.7 88.9,1.7 106.7,1.7 124.4,1.7 142.2,1.7 160.0,1.7"/></svg><span class="v">60–61</span></li><li><span class="who"><b>cinta</b> Spectrum</span>
-<svg viewBox="0 -4 160 48" role="img" aria-label="cinta: 41 to 62 fps" preserveAspectRatio="none"><line class="grid" x1="0" x2="160" y1="21.2" y2="21.2"/><line class="grid" x1="0" x2="160" y1="2.5" y2="2.5"/><polyline class="now" pathLength="1" points="0.0,1.6 2.3,3.5 4.6,1.6 7.0,1.7 9.3,1.7 11.6,4.1 13.9,13.9 16.2,1.5 18.6,3.5 20.9,1.6 23.2,1.7 25.5,1.7 27.8,4.2 30.1,13.9 32.5,1.6 34.8,3.5 37.1,1.6 39.4,1.7 41.7,1.7 44.1,4.2 46.4,13.9 48.7,1.6 51.0,3.6 53.3,1.6 55.7,1.8 58.0,1.7 60.3,4.2 62.6,14.2 64.9,1.6 67.2,3.6 69.6,1.6 71.9,1.7 74.2,1.7 76.5,4.2 78.8,13.8 81.2,1.6 83.5,3.6 85.8,1.7 88.1,1.8 90.4,1.8 92.8,4.2 95.1,13.8 97.4,1.6 99.7,3.6 102.0,1.7 104.3,1.8 106.7,1.8 109.0,4.2 111.3,13.8 113.6,1.6 115.9,3.6 118.3,1.7 120.6,1.8 122.9,1.8 125.2,4.2 127.5,13.8 129.9,1.6 132.2,3.6 134.5,1.7 136.8,1.8 139.1,1.8 141.4,4.2 143.8,14.4 146.1,1.6 148.4,3.6 150.7,1.7 153.0,1.8 155.4,1.8 157.7,4.2 160.0,13.8"/></svg><span class="v">41–62</span></li></ul>
-</figure>
-<figure class="chart reveal" id="chart-strips">
-<figcaption><h3>How a frame reaches the screen</h3>
-<p>There is never a whole frame in memory: the screen is drawn in 15 strips of 32 columns. The two cores split each strip, left half and right half, in internal RAM, while DMA sends the previous strip to the panel.</p></figcaption>
-<div class="strips" data-live style="--shot:url('../img/looks/neogeo.png');--shot2:url('../img/looks/32bits.png')" role="img" aria-label="Animation: the screen split into 15 strips; each fills from the top, half by core 0 and half by core 1, then appears on the panel while the next is drawn"><i style="--i:0;--p:0.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:1;--p:7.143%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:2;--p:14.286%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:3;--p:21.429%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:4;--p:28.571%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:5;--p:35.714%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:6;--p:42.857%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:7;--p:50.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:8;--p:57.143%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:9;--p:64.286%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:10;--p:71.429%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:11;--p:78.571%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:12;--p:85.714%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:13;--p:92.857%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i><i style="--i:14;--p:100.000%"><b class="c0"></b><b class="c1"></b><b class="next"></b><b class="back"></b></i></div>
-<div class="legend" aria-hidden="true"><span><span class="key c0"></span>core 0</span> <span><span class="key c1"></span>core 1</span> <span><span class="key dma"></span>on the panel</span></div>
-<p class="sub">In slow motion: a real frame takes 16.6 ms; here, 2.4 seconds. Sending a whole frame takes 8.1 ms, 7.7 of which is the wire itself.</p>
-</figure>
-<figure class="chart reveal" id="chart-profile">
-<figcaption><h3>Finding what's expensive</h3>
-<p>The same scene, replayed with one thing removed each time. In gotico, blending the two moonbeams on the fly ate 13 ms a frame: now they come pre-painted into the background, and the game went from 31 to 60 fps.</p></figcaption>
-<div class="two"><div><p class="sub">gotico, before the fix (ms per frame)</p><table class="bars marked" style="--m:48.03%"><thead><tr><th><span class="sr">Measurement</span></th><td><div class="axis"><span style="--x:48.03%">16.6 ms = 60 fps</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">everything</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:92.59%"></span></div><span class="val">32.0 ms</span></td></tr><tr style="--n:1"><th scope="row">no columns</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:88.25%"></span></div><span class="val">30.5 ms</span></td></tr><tr style="--n:2"><th scope="row">no moonbeams</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:54.98%"></span></div><span class="val">19.0 ms</span></td></tr><tr style="--n:3"><th scope="row">no moonbeams or glows</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:47.16%"></span></div><span class="val">16.3 ms</span></td></tr><tr style="--n:4"><th scope="row">nothing on top</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:46.87%"></span></div><span class="val">16.2 ms</span></td></tr></tbody></table></div>
-<div><p class="sub">laberinto: the raycast before and after optimising it (ms per frame)</p><table class="bars marked" style="--m:39.41%"><thead><tr><th><span class="sr">Measurement</span></th><td><div class="axis"><span style="--x:39.41%">16.6 ms</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">everything · before</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:92.59%"></span></div><span class="val">39.0 ms</span></td></tr><tr style="--n:1"><th scope="row">everything · now</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:57.93%"></span></div><span class="val">24.4 ms</span></td></tr><tr style="--n:2"><th scope="row">raycast only · before</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:82.15%"></span></div><span class="val">34.6 ms</span></td></tr><tr style="--n:3"><th scope="row">raycast only · now</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:52.47%"></span></div><span class="val">22.1 ms</span></td></tr><tr style="--n:4"><th scope="row">image only · before</th><td><div class="track" aria-hidden="true">
-<span class="bar over" style="--w:45.11%"></span></div><span class="val">19.0 ms</span></td></tr><tr style="--n:5"><th scope="row">image only · now</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:38.70%"></span></div><span class="val">16.3 ms</span></td></tr></tbody></table></div></div>
-</figure>
-<figure class="chart reveal" id="chart-cost">
-<figcaption><h3>What drawing costs, on one core</h3>
-<p>A 240×160 logical frame of synthetic content, best of five runs, as a share of one core's time at 60 fps. The console has two cores.</p></figcaption>
-<table class="bars marked" style="--m:100.00%"><thead><tr><th><span class="sr">Measurement</span></th><td><div class="axis"><span style="--x:100.00%">one whole core</span></div><span></span></td></tr></thead><tbody><tr style="--n:0"><th scope="row">One tile layer</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:11.80%"></span></div><span class="val">1.96 ms · 11.8 %</span></td></tr><tr style="--n:1"><th scope="row">128 sprites, 16×16</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:13.50%"></span></div><span class="val">2.24 ms · 13.5 %</span></td></tr><tr style="--n:2"><th scope="row">One full-screen affine layer</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:20.00%"></span></div><span class="val">3.34 ms · 20.0 %</span></td></tr><tr style="--n:3"><th scope="row">Alpha blend of two whole frames</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:24.20%"></span></div><span class="val">4.03 ms · 24.2 %</span></td></tr><tr style="--n:4"><th scope="row">Mode 7: one affine layer, 64 sprites</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:37.70%"></span></div><span class="val">6.28 ms · 37.7 %</span></td></tr><tr style="--n:5"><th scope="row">4 tile layers</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:39.00%"></span></div><span class="val">6.50 ms · 39.0 %</span></td></tr><tr style="--n:6"><th scope="row">GBA mode 0: 4 layers, 128 sprites</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:51.90%"></span></div><span class="val">8.64 ms · 51.9 %</span></td></tr><tr style="--n:7"><th scope="row">Everything: affine layer, 4 layers, 128 sprites</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:71.30%"></span></div><span class="val">11.88 ms · 71.3 %</span></td></tr></tbody></table>
-<p class="sub">And why nearly everything is drawn in internal RAM: the speed of copying 1 MB.</p>
-<table class="bars"><tbody><tr style="--n:0"><th scope="row">internal RAM → internal RAM</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:95.25%"></span></div><span class="val">381.0 MB/s</span></td></tr><tr style="--n:1"><th scope="row">PSRAM → internal RAM</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:21.18%"></span></div><span class="val">84.7 MB/s</span></td></tr><tr style="--n:2"><th scope="row">internal RAM → PSRAM</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:12.12%"></span></div><span class="val">48.5 MB/s</span></td></tr><tr style="--n:3"><th scope="row">PSRAM → PSRAM</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:7.98%"></span></div><span class="val">31.9 MB/s</span></td></tr></tbody></table>
-</figure>
-<p class="source">Source: <a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">docs/measurements.md<span class="sr"> (opens in a new tab)</span></a>, with the method and every measurement since day one. Measure it on your own board:
-<code>idf.py -DBP_BENCH=ON build flash monitor</code></p>
-</div></section>
-<section id="hazlo" aria-labelledby="hazlo-t"><div class="wrap">
-<h2 id="hazlo-t">Make your own game</h2>
-<p class="intro">pinyol is designed to be used with a coding agent such as Codex or Claude Code. The agent reads the repository's instructions, installs whatever is missing, follows the recipe for the look you ask for and tests the game before handing it over.</p>
-<ol class="steps">
-<li><h3>Get the engine</h3><p>On a Mac with Homebrew, or on Linux.</p><div class="code"><pre><code>git clone https://github.com/ipaud/pinyol.git
-cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git clone https://github.com/ipaud/pinyol.git">Copy</button></div></li>
-<li><h3>Ask your agent</h3><p>Open the folder in your agent and tell it what you want, in your own language.</p><div class="code"><pre><code>Make me a platformer with a Game Boy look: a mouse looking for cheese in a library.</code></pre><button class="copy" type="button" aria-label="Copy: Make me a platformer with a Game Boy look: a mouse looking for cheese in a library.">Copy</button></div></li>
-<li><h3>Play it</h3><p>On the computer, or send it to the console over USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copy: ./build/pinyol_sim --game games/raton">Copy</button></div></li>
-</ol>
-<div class="aside-note"><b>No coding?</b> <a href="#crear">The web editor</a> does the same with drawings and blocks, in the browser.</div>
-</div></section>
-<section id="crear" class="editor-sec" aria-labelledby="crear-t"><div class="wrap editor-grid">
-<div class="editor-copy">
-<p class="era pixel">No coding · in the browser</p>
-<h2 id="crear-t">The editor</h2>
-<p class="intro">Draw your characters pixel by pixel, paint the maps, set the rules with blocks and play straight away. Start from scratch or from a template such as Abella or LÍNEA 0.</p>
-<ul class="features"><li><b>Console look</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum or 16-bit, with its colours and font</span></li><li><b>Drawings that move</b> <span>pixel by pixel, with animations for standing, walking or getting hit</span></li><li><b>Rules with blocks</b> <span>lives, a countdown, dialogue, saved high scores</span></li><li><b>Sound</b> <span>effects from recipes, music composed on a grid, or a .mod</span></li><li><b>To the console</b> <span>over the USB cable, or as a .zip for the microSD card</span></li><li><b>In three languages</b> <span>castellano, català and English</span></li></ul>
-<div class="actions"><a class="btn btn-primary btn-big" href="../editor/?lang=en" target="_blank" rel="noopener">Open the editor<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="#biblioteca">Games made with it</a></div>
-</div>
-<figure class="editor-video">
-<video src="../video/linea0.mp4" poster="../video/linea0.jpg" width="1280" height="800" controls muted loop playsinline autoplay preload="metadata" aria-describedby="linea0-cap"></video>
-<figcaption id="linea0-cap">LÍNEA 0, a Game Boy Advance game made entirely in the editor, recorded live: drawings, maps, rules, then play. The building is sped up eight times; the playing is at real speed.</figcaption>
-</figure>
-</div></section>
-<section id="codex" aria-labelledby="codex-t"><div class="wrap">
-<h2 id="codex-t">The ladder: five requests</h2>
-<p class="intro">From simplest to hardest. A clean clone of the repository, one request at a time and no questions answered: Codex read AGENTS.md, built the engine, followed the recipe for the look and wrote a script that plays its game, iterating until it passed. Each game was then measured on the console, running that script. Codex 0.155 with gpt-6-sol, medium reasoning. (The requests were written in Spanish and are translated here.)</p>
-<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Paletes</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:17.50%"></span></div><span class="val">3 min 30 s · 61 fps</span></td></tr><tr style="--n:1"><th scope="row">2 · Ratón de biblioteca</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:24.00%"></span></div><span class="val">4 min 49 s · 59 fps</span></td></tr><tr style="--n:2"><th scope="row">3 · Oxígeno 48K</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:25.00%"></span></div><span class="val">5 min 2 s · 30–60 fps</span></td></tr><tr style="--n:3"><th scope="row">4 · Museo de medianoche</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:30.50%"></span></div><span class="val">6 min 8 s · 42 fps</span></td></tr><tr style="--n:4"><th scope="row">5 · Ardilla Relámpago</th><td><div class="track" aria-hidden="true">
-<span class="bar" style="--w:93.00%"></span></div><span class="val">18 min 34 s · 59 fps</span></td></tr></tbody></table>
-<ul class="jobs"><li class="cart job">
-<div class="shot"><img src="../img/codex/paletes.png" alt="Paletes, in vector lines: two paddles, the ball and the score" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 1 · Vector</p><h3>Paletes</h3>
-<blockquote><p>Make me a Pong game against the console: two paddles, a ball and a score, first to 7 points. Don't ask me anything, you decide.</p></blockquote>
-<ul class="chips"><li class="chip fps">3 min 30 s</li><li class="chip">29 commands</li><li class="chip">73k tokens</li><li class="chip fps">61 fps on the console</li></ul>
-<p class="after">No touch-ups.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/paletes.zip" aria-label="Play Paletes (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/paletes.zip" download aria-label="Download Paletes for the console">Download .zip</a></div></div></li><li class="cart job">
-<div class="shot"><img src="../img/codex/raton_de_biblioteca.png" alt="A mouse jumping between library shelves, in four shades of green" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 2 · Game Boy</p><h3>Ratón de biblioteca</h3>
-<blockquote><p>Make me a game with a Game Boy look: a mouse that roams a library, jumping between shelves and picking up bits of cheese, with cats on patrol. Make it work and look good. Don't ask me anything, you decide.</p></blockquote>
-<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 commands</li><li class="chip">78k tokens</li><li class="chip fps">59 fps on the console</li></ul>
-<p class="after">Touched up afterwards: full screen, without the console bezel.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/raton_de_biblioteca.zip" aria-label="Play Ratón de biblioteca (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/raton_de_biblioteca.zip" download aria-label="Download Ratón de biblioteca for the console">Download .zip</a></div></div></li><li class="cart job">
-<div class="shot"><img src="../img/codex/oxigeno.png" alt="The loading screen: an astronaut with an oxygen tank in front of a space station" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 3 · ZX Spectrum</p><h3>Oxígeno 48K</h3>
-<blockquote><p>I want a game with a ZX Spectrum look, including its tape loading screen: an astronaut on a space station collecting oxygen tanks before the air runs out, dodging robots. Don't ask me anything, you decide.</p></blockquote>
-<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 commands</li><li class="chip">104k tokens</li><li class="chip fps low">30–60 fps on the console</li></ul>
-<p class="after">Touched up afterwards: the title screen's title, and the text kept inside its boxes.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/oxigeno.zip" aria-label="Play Oxígeno 48K (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/oxigeno.zip" download aria-label="Download Oxígeno 48K for the console">Download .zip</a></div></div></li><li class="cart job">
-<div class="shot"><img src="../img/codex/museo_nocturno.png" alt="A first-person museum corridor with a painting at the end" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 4 · First person</p><h3>Museo de medianoche</h3>
-<blockquote><p>Make me a Wolfenstein-style first-person game: a museum at night where you look for five stolen paintings while dodging the guards. Don't ask me anything, you decide.</p></blockquote>
-<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 commands</li><li class="chip">84k tokens</li><li class="chip fps low">42 fps on the console</li></ul>
-<p class="after">Touched up afterwards: the text on the end screen.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/museo_nocturno.zip" aria-label="Play Museo de medianoche (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/museo_nocturno.zip" download aria-label="Download Museo de medianoche for the console">Download .zip</a></div></div></li><li class="cart job">
-<div class="shot"><img src="../img/codex/costa_relampago.png" alt="A squirrel running along a coast with palm trees, hills and the sea" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">Level 5 · Mega Drive</p><h3>Ardilla Relámpago</h3>
-<blockquote><p>Make me a speed platformer with a Mega Drive look: a squirrel running along a coast with ramps and loops, several background layers scrolling at different speeds, the sea in the background rippling line by line, enemies and fruit to collect. Make it run fast and look good. Don't ask me anything, you decide.</p></blockquote>
-<ul class="chips"><li class="chip fps">18 min 34 s</li><li class="chip">102 commands</li><li class="chip">252k tokens</li><li class="chip fps">59 fps on the console</li></ul>
-<p class="after">Three requests: the game (4 min 41 s), its AI-generated art (10 min 8 s; it then ran at 30 fps), and getting it to 60 fps on the console with its own ground layer (3 min 45 s). No touch-ups by hand.</p>
-<div class="row"><a class="play" href="../play/player.html?lang=en&amp;game=../games/costa_relampago.zip" aria-label="Play Ardilla Relámpago (opens in a new tab)" target="_blank" rel="noopener">Play</a>
-<a class="zip" href="../games/costa_relampago.zip" download aria-label="Download Ardilla Relámpago for the console">Download .zip</a></div></div></li></ul>
-</div></section>
-<section id="biblioteca" aria-labelledby="biblioteca-t"><div class="wrap">
-<h2 id="biblioteca-t">The Library</h2>
-<p class="intro">Games people have made with pinyol: play them here or download them for the console. Made one? Submit it through a form: a robot opens it and plays it for ten seconds and, once we've reviewed it, it shows up here.</p>
-<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Submit your game<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="#hazlo">How a game is made</a></div>
-<p class="sub">Is something of yours here without your permission, or something that shouldn't be here? <a href="https://github.com/ipaud/pinyol/issues/new?title=Retirar%3A%20" target="_blank" rel="noopener">Ask us to take it down<span class="sr"> (opens in a new tab)</span></a>.</p>
-<figure class="tutorial"><video src="../video/subir.mp4" poster="../video/subir.jpg" width="960" height="600" controls preload="none" playsinline aria-describedby="subir-cap"></video>
-<figcaption id="subir-cap">Tutorial, from your game to the Library: download the .zip from the editor, fill in the form and attach it; a robot checks it and, once it's approved, it's playable here. Waiting times sped up.</figcaption></figure>
-<div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol" data-play="../play/player.html">
-<p class="lib-state">The Library needs JavaScript to load. Its games are also on <a href="https://github.com/ipaud/pinyol/tree/main/library" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a>.</p></div>
-</div></section>
-<section id="consola" aria-labelledby="consola-t"><div class="wrap">
-<h2 id="consola-t">The console</h2>
-<p class="intro">An off-the-shelf development board with a screen. The engine gets the most out of it: it draws straight into strips, splits the work between the two cores and keeps whatever doesn't fit on the microSD card.</p>
-<figure class="renders"><img src="../img/console/cirera_frente.webp" alt="The Cirera console from the front: ivory case, green D-pad, terracotta A, B and C buttons, grey MENU and START, and a Neo Geo fight on the screen" width="1200" height="800" loading="lazy" decoding="async"><img src="../img/console/cirera_detras.webp" alt="The back: a dark plate with CIRERA and a pixel cherry, model S3-01, the 3.7 V 3000 mAh battery and USB-C at 5 V" width="1200" height="800" loading="lazy" decoding="async"><figcaption>The Cirera v1.0 case, rendered: AI-generated images made from its 3D model. It hasn't been printed yet.</figcaption></figure>
-<figure class="tutorial"><video src="../video/montaje.mp4" poster="../video/montaje.jpg" width="960" height="540" controls muted preload="none" playsinline aria-describedby="montaje-cap"></video><figcaption id="montaje-cap">The v1.0 assembly, animated from its 3D model: the case, the board, the two copper boards for the buttons, the wires, the battery and the speaker.</figcaption></figure>
-<div class="hw"><dl class="spec"><dt>Board</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, two cores at 240 MHz</dd><dt>Memory</dt><dd>512 KB of internal RAM, 8 MB of PSRAM, 16 MB of flash</dd><dt>Screen</dt><dd>3.5″, 480×320, ST77922 over QSPI, touch</dd><dt>Sound</dt><dd>ES8311 with speaker</dd><dt>The rest</dt><dd>microSD, battery, USB</dd></dl>
-<div class="side"><div class="install" id="instalar"><h3>Install the firmware from the browser</h3>
-<ol><li>Connect the board to your computer over USB.</li><li>Press the button and choose the board's port.</li>
-<li>Wait a few minutes: it boots up with 15 games in memory.</li></ol>
-<esp-web-install-button manifest="../firmware/manifest.json">
-<button slot="activate" class="btn btn-primary" type="button" data-goatcounter-click="instalar-consola">Install on the console</button>
-<span slot="unsupported" class="note">This browser can't talk to the board over USB: open this page in Chrome or Edge on a computer.</span>
-<span slot="not-allowed" class="note">Installing requires HTTPS.</span>
-</esp-web-install-button>
-<p class="note">Firmware 82e1a96 · 13.7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">the files for esptool<span class="sr"> (opens in a new tab)</span></a></p></div><div class="pending"><h3>The v1.0 case, designed</h3><p>It still has to be printed and tested. Then its print files (CC BY 4.0), the parts list and the assembly guide will be published. In the meantime, the bare board already runs the games.</p>
-<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">How to wire it<span class="sr"> (opens in a new tab)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">The Freenove board<span class="sr"> (opens in a new tab)</span></a></p></div></div></div>
-</div></section>
-<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
-<h2 id="retroarch-t">In RetroArch and RetroPie</h2>
-<p class="intro">No console? The engine is also a libretro core: pinyol games play in RetroArch and in everything built on it, such as RetroPie or Lakka on a Raspberry Pi, Batocera, Recalbox, the handhelds that run it, or a computer. It is the same engine, so the game is the same.</p>
-<ol class="steps">
-<li><h3>Install it on RetroPie</h3><p>On the Raspberry Pi, this command downloads the core already built (a Pi 1 or Zero builds it, in a few minutes) and adds Pinyol to EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
-curl -fsSL --create-dirs \
-  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
-  https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
-sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="button" aria-label="Copy: cd ~/RetroPie-Setup">Copy</button></div></li>
-<li><h3>Copy the games</h3><p>Any game's .zip, like the ones you can download here, goes in its folder.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copy: ~/RetroPie/roms/pinyol/">Copy</button></div></li>
-<li><h3>Play</h3><p>Restart EmulationStation and Pinyol shows up with its games. On the gamepad, X or Y act as C, and SELECT as MENU.</p></li>
-</ol>
-<div class="aside-note"><b>Another RetroArch?</b> On a computer with Linux, Batocera or Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">the core already built<span class="sr"> (opens in a new tab)</span></a> goes in RetroArch's cores folder; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">the guide<span class="sr"> (opens in a new tab)</span></a> explains it. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
-</div></section>
-<section id="making" aria-labelledby="making-t"><div class="wrap">
-<h2 id="making-t">How it was made</h2>
-<ul class="stats reveal"><li><b data-count="15386" data-dec="0">15.386</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="112" data-dec="0">112</b><span>tests on every change</span></li><li><b data-count="190" data-dec="0">190</b><span>commits in the repository</span></li></ul>
-<div class="story">
-<p><strong>One person and Claude.</strong> The engine, examples, tools and this site were written in conversation with Claude Code: every idea was tried in the simulator, measured on the board and corrected based on what the board showed.</p>
-<p><strong>The art, generated and made to fit.</strong> The looks that call for it (Neo Geo, CPS2, 32-bit) use AI-generated images. The engine's tools cut them out, scale them to the right height, split them into frames and reduce them to the console's palette. The low-res looks are drawn with code.</p>
-<p><strong>Measured before calling it done.</strong> Every example has a script that plays it automatically. On the computer, it checks each frame's checksum against the stored one; on the board, it logs the fps every second. Optimisations don't change a single pixel.</p>
-<p><strong>Truly free.</strong> The code is MIT; the examples' art, sound and videos are CC0. Take it, change it, build your own console.</p>
-</div>
-<figure class="pipeline reveal" aria-labelledby="pipe-t">
-<figcaption><h3 id="pipe-t">One enemy, from request to game</h3>
-<p>The goblin from mazmorra, step by step, with the actual images.</p></figcaption>
-<ol class="pipe"><li><h4>1 · The request</h4><blockquote><p>An original goblin enemy for a fantasy beat-em-up: small, wiry and hunched, green skin, huge pointed ears, a ragged brown loincloth, a rusty curved dagger. Full body, facing left. Style: a mid-1990s arcade sprite, crisp hard pixel edges, a bold dark outline, about 15 colours. Transparent background.</p></blockquote><p>Shortened from the original English request.</p></li><li><h4>2 · The reference</h4><img src="../img/making/goblin_ref.webp" alt="The goblin alone, full body: green, with pointed ears and a curved dagger" width="360" height="356" loading="lazy" decoding="async"><p>The character alone. It's attached to every later request, so it doesn't change from one image to the next.</p></li><li><h4>3 · The sprite sheet</h4><img src="../img/making/goblin_sheet.jpg" alt="Ten poses of the goblin in two rows, on a blurred dark background" width="720" height="480" loading="lazy" decoding="async"><p>Ten poses: walking, stabbing, taking a hit and falling. A transparent background was requested; it came out painted.</p></li><li><h4>4 · Cut out</h4><img class="px" src="../img/making/goblin_frames.png" alt="The ten frames cut out, at the same scale and with their feet on the same line" width="535" height="200" loading="lazy" decoding="async"><p>The engine's tools remove the background, split the frames, bring them to the same scale with their feet on the same line, and reduce them to 15 colours. Then each one is checked by eye.</p></li><li><h4>5 · In the game</h4><img class="px" src="../img/making/mazmorra.png" alt="Alba the swordswoman facing two goblins in a dungeon corridor" width="480" height="320" loading="lazy" decoding="async"><p>In mazmorra they come in groups, at 60 fps on the console.</p></li></ol>
-</figure>
-<div class="days reveal"><h3>Five days in the repository</h3><ol><li><time datetime="2026-10-11">Oct 11</time><p>The engine grows out of two adventure games and is measured on the board: the image goes straight to the panel, in strips.</p></li><li><time datetime="2026-10-12">Oct 12</time><p>A virtual picture processing unit, like the Game Boy Advance's, and Lua games of any genre.</p></li><li><time datetime="2026-10-13">Oct 13</time><p>Measured on the console and optimised. The web editor, for making games without coding.</p></li><li><time datetime="2026-10-14">Oct 14</time><p>The looks of twelve consoles, first person, instructions for agents to make games, the site and the Library.</p></li><li><time datetime="2026-10-15">Oct 15</time><p>The site and editor in three languages; Codex's games and IL·LUSTRES join the Library.</p></li></ol></div>
-<p class="source">The whole process is in the repository: <a href="https://github.com/ipaud/pinyol/blob/main/docs/art.md" target="_blank" rel="noopener">how the art is made<span class="sr"> (opens in a new tab)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">the Lua API<span class="sr"> (opens in a new tab)</span></a>, <a href="https://github.com/ipaud/pinyol/blob/main/AGENTS.md" target="_blank" rel="noopener">the instructions for agents<span class="sr"> (opens in a new tab)</span></a>.</p>
+<section id="ranking" aria-labelledby="ranking-t"><div class="wrap">
+<h2 id="ranking-t">Most voted</h2>
+<p class="intro">The most voted games. You vote with a reaction on each game's page; the numbers are updated once a day.</p>
+<div class="rank" id="rank" data-src="https://raw.githubusercontent.com/ipaud/pinyol/stats/stats.json" data-top="5"><p class="lib-state">The ranking needs JavaScript to load.</p></div>
+<p class="more-link"><a class="btn btn-ghost" href="./juegos/#ranking">See the whole ranking</a></p>
+<script type="application/json" id="catalog">[{"id":"duelo","title":"Duelo en el puerto","image":"img/looks/neogeo.png","kind":"look","zip":"../games/duelo.zip"},{"id":"torneo","title":"Torneo del castillo","image":"img/looks/cps2.png","kind":"look","zip":"../games/torneo.zip"},{"id":"bolsillo","title":"Bolsillo","image":"img/looks/gameboy.png","kind":"look","zip":"../games/bolsillo.zip"},{"id":"cinta","title":"Cinta","image":"img/looks/spectrum.png","kind":"look","zip":"../games/cinta.zip"},{"id":"ladrillos","title":"Ladrillos","image":"img/looks/pico8.png","kind":"look","zip":"../games/ladrillos.zip"},{"id":"huevos","title":"Huevos","image":"img/looks/lcd.png","kind":"look","zip":"../games/huevos.zip"},{"id":"gotico","title":"Gótico","image":"img/looks/32bits.png","kind":"look","zip":"../games/gotico.zip"},{"id":"veloz","title":"Pangolín veloz","image":"img/looks/16bits.png","kind":"look","zip":"../games/veloz.zip"},{"id":"rocas","title":"Rocas","image":"img/looks/vector.png","kind":"look","zip":"../games/rocas.zip"},{"id":"plataformas","title":"Plataformas","image":"img/looks/gba.png","kind":"look","zip":"../games/plataformas.zip"},{"id":"tormenta","title":"Tormenta","image":"img/looks/vertical.png","kind":"look","zip":"../games/tormenta.zip"},{"id":"laberinto","title":"Laberinto","image":"img/looks/firstperson.png","kind":"look","zip":"../games/laberinto.zip"},{"id":"paletes","title":"Paletes","image":"img/codex/paletes.png","kind":"codex","zip":"../games/paletes.zip"},{"id":"raton_de_biblioteca","title":"Ratón de biblioteca","image":"img/codex/raton_de_biblioteca.png","kind":"codex","zip":"../games/raton_de_biblioteca.zip"},{"id":"oxigeno","title":"Oxígeno 48K","image":"img/codex/oxigeno.png","kind":"codex","zip":"../games/oxigeno.zip"},{"id":"museo_nocturno","title":"Museo de medianoche","image":"img/codex/museo_nocturno.png","kind":"codex","zip":"../games/museo_nocturno.zip"},{"id":"costa_relampago","title":"Ardilla Relámpago","image":"img/codex/costa_relampago.png","kind":"codex","zip":"../games/costa_relampago.zip"},{"id":"asalto","title":"Asalto al cañón","image":"img/covers/asalto.png","kind":"example","zip":"../games/asalto.zip"},{"id":"calle","title":"Calle de neón","image":"img/covers/calle.png","kind":"example","zip":"../games/calle.zip"},{"id":"nubes","title":"Sobre las nubes","image":"img/covers/nubes.png","kind":"example","zip":"../games/nubes.zip"},{"id":"futbol","title":"Gol de oro","image":"img/covers/futbol.png","kind":"example","zip":"../games/futbol.zip"},{"id":"moto","title":"Moto costa","image":"img/covers/moto.png","kind":"example","zip":"../games/moto.zip"},{"id":"mazmorra","title":"La mazmorra","image":"img/covers/mazmorra.png","kind":"example","zip":"../games/mazmorra.zip"},{"id":"carreras","title":"Carreras","image":"img/covers/carreras.png","kind":"example","zip":"../games/carreras.zip"},{"id":"naves","title":"Naves","image":"img/covers/naves.png","kind":"example","zip":"../games/naves.zip"},{"id":"aldea","title":"La aldea","image":"img/covers/aldea.png","kind":"example","zip":"../games/aldea.zip"},{"id":"puzle","title":"Puzle","image":"img/covers/puzle.png","kind":"example","zip":"../games/puzle.zip"},{"id":"inventos","title":"Inventos","image":"img/covers/inventos.png","kind":"example","zip":"../games/inventos.zip"},{"id":"estilos","title":"Estilos","image":"img/covers/estilos.png","kind":"example","zip":"../games/estilos.zip"},{"id":"sonidos","title":"Sonidos","image":"img/covers/sonidos.png","kind":"example","zip":"../games/sonidos.zip"},{"id":"control","title":"Control","image":"img/covers/control.png","kind":"example","zip":"../games/control.zip"},{"id":"juntos","title":"Juntos","image":"img/covers/juntos.png","kind":"example","zip":"../games/juntos.zip"},{"id":"hola","title":"Hola pinyol","image":"img/covers/hola.png","kind":"example","zip":"../games/hola.zip"},{"id":"linea_0","title":"LÍNEA 0","image":"img/covers/linea_0.png","kind":"library","zip":"https://raw.githubusercontent.com/ipaud/pinyol/main/library/linea_0/game.zip"},{"id":"ilustres","title":"IL·LUSTRES: Combat de Llegenda","image":"img/covers/ilustres.png","kind":"library","zip":"https://raw.githubusercontent.com/ipaud/pinyol/main/library/ilustres/game.zip"},{"id":"abella","title":"Abella","image":"img/covers/abella.png","kind":"library","zip":"https://raw.githubusercontent.com/ipaud/pinyol/main/library/abella/game.zip"}]</script>
 </div></section>
 </main>
 <footer><div class="wrap"><img src="../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
-<span>MIT code · CC0 art and sound</span><span>Game Boy, PICO-8, Neo Geo and the other consoles named here are trademarks of their owners; pinyol and Cirera are not affiliated with them.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a><span>Visits are counted with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (opens in a new tab)</span></a>, without cookies or personal data.</span></div></footer>
+<span>MIT code · CC0 art and sound</span><span>Game Boy, PICO-8, Neo Geo and the other consoles named here are trademarks of their owners; pinyol and Cirera are not affiliated with them.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a><span>Visits, plays and time played are counted with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (opens in a new tab)</span></a>, without cookies or personal data.</span><span>Each game's comments and votes are kept on GitHub and loaded with giscus only if you ask for them.</span><span>The Library, the ranking and each game's numbers are read from GitHub when the page opens.</span></div></footer>
 </body>
 </html>

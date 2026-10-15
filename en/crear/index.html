@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Make · pinyol</title>
+<meta name="description" content="Make a game with pinyol: with your coding agent or with the web editor, no coding, and send it to the Library.">
+<meta property="og:title" content="Make · pinyol">
+<meta property="og:description" content="Make a game with pinyol: with your coding agent or with the web editor, no coding, and send it to the Library.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
+<meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/en/crear/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/crear/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/crear/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/crear/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/crear/">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css?v=af3307ca">
+<script src="../../site.js?v=8ad24a2d" defer></script>
+<script src="../../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="../" aria-label="pinyol, home"><span class="logo-anim"><img class="l-leaves" src="../../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Sections"><ul><li><a href="../">Home</a></li><li><a href="../juegos/">Games</a></li><li><a href="../crear/" aria-current="page">Make</a></li><li><a href="../consola/">Console</a></li><li><a href="../como-se-hizo/">How it was made</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Language"><ul><li class="keep"><a href="../../crear/" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../../ca/crear/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../../en/crear/" lang="en" hreflang="en" aria-label="English" aria-current="page">EN</a></li></ul></nav>
+</div></header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+<p class="kicker pixel">With your agent or no coding</p><h1 class="page-title">Make</h1><p class="lede">Ask your coding agent for it, or draw it and give it rules in the editor. When it's ready, send it to the Library.</p>
+</div></section>
+<section id="hazlo" aria-labelledby="hazlo-t"><div class="wrap">
+<h2 id="hazlo-t">Make your own game</h2>
+<p class="intro">pinyol is designed to be used with a coding agent such as Codex or Claude Code. The agent reads the repository's instructions, installs whatever is missing, follows the recipe for the look you ask for and tests the game before handing it over.</p>
+<ol class="steps">
+<li><h3>Get the engine</h3><p>On a Mac with Homebrew, or on Linux.</p><div class="code"><pre><code>git clone https://github.com/ipaud/pinyol.git
+cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git clone https://github.com/ipaud/pinyol.git">Copy</button></div></li>
+<li><h3>Ask your agent</h3><p>Open the folder in your agent and tell it what you want, in your own language.</p><div class="code"><pre><code>Make me a platformer with a Game Boy look: a mouse looking for cheese in a library.</code></pre><button class="copy" type="button" aria-label="Copy: Make me a platformer with a Game Boy look: a mouse looking for cheese in a library.">Copy</button></div></li>
+<li><h3>Play it</h3><p>On the computer, or send it to the console over USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copy: ./build/pinyol_sim --game games/raton">Copy</button></div></li>
+</ol>
+<div class="aside-note"><b>No coding?</b> <a href="#crear">The web editor</a> does the same with drawings and blocks, in the browser.</div>
+</div></section>
+<section id="crear" class="editor-sec" aria-labelledby="crear-t"><div class="wrap editor-grid">
+<div class="editor-copy">
+<p class="era pixel">No coding · in the browser</p>
+<h2 id="crear-t">The editor</h2>
+<p class="intro">Draw your characters pixel by pixel, paint the maps, set the rules with blocks and play straight away. Start from scratch or from a template such as Abella or LÍNEA 0.</p>
+<ul class="features"><li><b>Console look</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum or 16-bit, with its colours and font</span></li><li><b>Drawings that move</b> <span>pixel by pixel, with animations for standing, walking or getting hit</span></li><li><b>Rules with blocks</b> <span>lives, a countdown, dialogue, saved high scores</span></li><li><b>Sound</b> <span>effects from recipes, music composed on a grid, or a .mod</span></li><li><b>To the console</b> <span>over the USB cable, or as a .zip for the microSD card</span></li><li><b>In three languages</b> <span>castellano, català and English</span></li></ul>
+<div class="actions"><a class="btn btn-primary btn-big" href="../../editor/?lang=en" target="_blank" rel="noopener">Open the editor<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="../juegos/#biblioteca">Games made with it</a></div>
+</div>
+<figure class="editor-video">
+<video src="../../video/linea0.mp4" poster="../../video/linea0.jpg" width="1280" height="800" controls muted loop playsinline autoplay preload="metadata" aria-describedby="linea0-cap"></video>
+<figcaption id="linea0-cap">LÍNEA 0, a Game Boy Advance game made entirely in the editor, recorded live: drawings, maps, rules, then play. The building is sped up eight times; the playing is at real speed.</figcaption>
+</figure>
+</div></section>
+<section id="codex" aria-labelledby="codex-t"><div class="wrap">
+<h2 id="codex-t">The ladder: five requests</h2>
+<p class="intro">From simplest to hardest. A clean clone of the repository, one request at a time and no questions answered: Codex read AGENTS.md, built the engine, followed the recipe for the look and wrote a script that plays its game, iterating until it passed. Each game was then measured on the console, running that script. Codex 0.155 with gpt-6-sol, medium reasoning. (The requests were written in Spanish and are translated here.)</p>
+<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Paletes</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:17.50%"></span></div><span class="val">3 min 30 s · 61 fps</span></td></tr><tr style="--n:1"><th scope="row">2 · Ratón de biblioteca</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:24.00%"></span></div><span class="val">4 min 49 s · 59 fps</span></td></tr><tr style="--n:2"><th scope="row">3 · Oxígeno 48K</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:25.00%"></span></div><span class="val">5 min 2 s · 30–60 fps</span></td></tr><tr style="--n:3"><th scope="row">4 · Museo de medianoche</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:30.50%"></span></div><span class="val">6 min 8 s · 42 fps</span></td></tr><tr style="--n:4"><th scope="row">5 · Ardilla Relámpago</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:93.00%"></span></div><span class="val">18 min 34 s · 59 fps</span></td></tr></tbody></table>
+<ul class="jobs"><li class="cart job">
+<div class="shot"><img src="../../img/codex/paletes.png" alt="Paletes, in vector lines: two paddles, the ball and the score" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 1 · Vector</p><h3>Paletes</h3>
+<blockquote><p>Make me a Pong game against the console: two paddles, a ball and a score, first to 7 points. Don't ask me anything, you decide.</p></blockquote>
+<ul class="chips"><li class="chip fps">3 min 30 s</li><li class="chip">29 commands</li><li class="chip">73k tokens</li><li class="chip fps">61 fps on the console</li></ul>
+<p class="after">No touch-ups.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=en&amp;game=../games/paletes.zip" aria-label="Play Paletes (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../../games/paletes.zip" download aria-label="Download Paletes for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/paletes/" aria-label="Details: Paletes">Details</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/raton_de_biblioteca.png" alt="A mouse jumping between library shelves, in four shades of green" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 2 · Game Boy</p><h3>Ratón de biblioteca</h3>
+<blockquote><p>Make me a game with a Game Boy look: a mouse that roams a library, jumping between shelves and picking up bits of cheese, with cats on patrol. Make it work and look good. Don't ask me anything, you decide.</p></blockquote>
+<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 commands</li><li class="chip">78k tokens</li><li class="chip fps">59 fps on the console</li></ul>
+<p class="after">Touched up afterwards: full screen, without the console bezel.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=en&amp;game=../games/raton_de_biblioteca.zip" aria-label="Play Ratón de biblioteca (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../../games/raton_de_biblioteca.zip" download aria-label="Download Ratón de biblioteca for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/raton_de_biblioteca/" aria-label="Details: Ratón de biblioteca">Details</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/oxigeno.png" alt="The loading screen: an astronaut with an oxygen tank in front of a space station" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 3 · ZX Spectrum</p><h3>Oxígeno 48K</h3>
+<blockquote><p>I want a game with a ZX Spectrum look, including its tape loading screen: an astronaut on a space station collecting oxygen tanks before the air runs out, dodging robots. Don't ask me anything, you decide.</p></blockquote>
+<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 commands</li><li class="chip">104k tokens</li><li class="chip fps low">30–60 fps on the console</li></ul>
+<p class="after">Touched up afterwards: the title screen's title, and the text kept inside its boxes.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=en&amp;game=../games/oxigeno.zip" aria-label="Play Oxígeno 48K (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../../games/oxigeno.zip" download aria-label="Download Oxígeno 48K for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/oxigeno/" aria-label="Details: Oxígeno 48K">Details</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/museo_nocturno.png" alt="A first-person museum corridor with a painting at the end" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 4 · First person</p><h3>Museo de medianoche</h3>
+<blockquote><p>Make me a Wolfenstein-style first-person game: a museum at night where you look for five stolen paintings while dodging the guards. Don't ask me anything, you decide.</p></blockquote>
+<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 commands</li><li class="chip">84k tokens</li><li class="chip fps low">42 fps on the console</li></ul>
+<p class="after">Touched up afterwards: the text on the end screen.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=en&amp;game=../games/museo_nocturno.zip" aria-label="Play Museo de medianoche (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../../games/museo_nocturno.zip" download aria-label="Download Museo de medianoche for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/museo_nocturno/" aria-label="Details: Museo de medianoche">Details</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/costa_relampago.png" alt="A squirrel running along a coast with palm trees, hills and the sea" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Level 5 · Mega Drive</p><h3>Ardilla Relámpago</h3>
+<blockquote><p>Make me a speed platformer with a Mega Drive look: a squirrel running along a coast with ramps and loops, several background layers scrolling at different speeds, the sea in the background rippling line by line, enemies and fruit to collect. Make it run fast and look good. Don't ask me anything, you decide.</p></blockquote>
+<ul class="chips"><li class="chip fps">18 min 34 s</li><li class="chip">102 commands</li><li class="chip">252k tokens</li><li class="chip fps">59 fps on the console</li></ul>
+<p class="after">Three requests: the game (4 min 41 s), its AI-generated art (10 min 8 s; it then ran at 30 fps), and getting it to 60 fps on the console with its own ground layer (3 min 45 s). No touch-ups by hand.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=en&amp;game=../games/costa_relampago.zip" aria-label="Play Ardilla Relámpago (opens in a new tab)" target="_blank" rel="noopener">Play</a>
+<a class="zip" href="../../games/costa_relampago.zip" download aria-label="Download Ardilla Relámpago for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/costa_relampago/" aria-label="Details: Ardilla Relámpago">Details</a></div></div></li></ul>
+</div></section>
+<section id="subir" aria-labelledby="subir-t"><div class="wrap">
+<h2 id="subir-t">Send it to the Library</h2>
+<p class="intro">When your game is ready, send it with the form: a robot opens it and plays it for ten seconds, and once we have reviewed it, it can be played on the site and downloaded for the console.</p>
+<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Submit your game<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="../juegos/#biblioteca">The Library</a></div>
+<figure class="tutorial"><video src="../../video/subir.mp4" poster="../../video/subir.jpg" width="960" height="600" controls preload="none" playsinline aria-describedby="subir-cap"></video>
+<figcaption id="subir-cap">Tutorial, from your game to the Library: download the .zip from the editor, fill in the form and attach it; a robot checks it and, once it's approved, it's playable here. Waiting times sped up.</figcaption></figure>
+<p class="sub">Is something of yours here without your permission, or something that shouldn't be here? <a href="https://github.com/ipaud/pinyol/issues/new?title=Retirar%3A%20" target="_blank" rel="noopener">Ask us to take it down<span class="sr"> (opens in a new tab)</span></a>.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><img src="../../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
+<span>MIT code · CC0 art and sound</span><span>Game Boy, PICO-8, Neo Geo and the other consoles named here are trademarks of their owners; pinyol and Cirera are not affiliated with them.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a><span>Visits, plays and time played are counted with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (opens in a new tab)</span></a>, without cookies or personal data.</span><span>Each game's comments and votes are kept on GitHub and loaded with giscus only if you ask for them.</span><span>The Library, the ranking and each game's numbers are read from GitHub when the page opens.</span></div></footer>
+</body>
+</html>

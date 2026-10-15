@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Crear · pinyol</title>
+<meta name="description" content="Fes-te un joc amb pinyol: amb el teu agent de codi o amb l&#x27;editor web, sense programar, i puja&#x27;l a la Biblioteca.">
+<meta property="og:title" content="Crear · pinyol">
+<meta property="og:description" content="Fes-te un joc amb pinyol: amb el teu agent de codi o amb l&#x27;editor web, sense programar, i puja&#x27;l a la Biblioteca.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
+<meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/ca/crear/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/crear/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/crear/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/crear/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/crear/">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css?v=af3307ca">
+<script src="../../site.js?v=8ad24a2d" defer></script>
+<script src="../../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Salta al contingut</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="../" aria-label="pinyol, inici"><span class="logo-anim"><img class="l-leaves" src="../../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Seccions"><ul><li><a href="../">Inici</a></li><li><a href="../juegos/">Jocs</a></li><li><a href="../crear/" aria-current="page">Crear</a></li><li><a href="../consola/">Consola</a></li><li><a href="../como-se-hizo/">Com es va fer</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../../crear/" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../../ca/crear/" lang="ca" hreflang="ca" aria-label="Català" aria-current="page">CA</a></li><li class="keep"><a href="../../en/crear/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
+</div></header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+<p class="kicker pixel">Amb el teu agent o sense programar</p><h1 class="page-title">Crear</h1><p class="lede">Demana-ho al teu agent de codi, o dibuixa'l i posa-li regles a l'editor. Quan estigui a punt, puja'l a la Biblioteca.</p>
+</div></section>
+<section id="hazlo" aria-labelledby="hazlo-t"><div class="wrap">
+<h2 id="hazlo-t">Fes-te un joc</h2>
+<p class="intro">pinyol està pensat per fer-lo servir amb un agent de codi, com Codex o Claude Code. L'agent llegeix les instruccions del repositori, instal·la el que falta, segueix la recepta de l'aspecte que demanis i prova el joc abans de donar-te'l.</p>
+<ol class="steps">
+<li><h3>Baixa el motor</h3><p>En un Mac amb Homebrew o a Linux.</p><div class="code"><pre><code>git clone https://github.com/ipaud/pinyol.git
+cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git clone https://github.com/ipaud/pinyol.git">Copia</button></div></li>
+<li><h3>Demana-ho al teu agent</h3><p>Obre la carpeta amb el teu agent i digues-li què vols, en el teu idioma.</p><div class="code"><pre><code>Fes-me un joc de plataformes amb aspecte de Game Boy: un ratolí que busca formatge en una biblioteca.</code></pre><button class="copy" type="button" aria-label="Copia: Fes-me un joc de plataformes amb aspecte de Game Boy: un ratolí que busca formatge en una biblioteca.">Copia</button></div></li>
+<li><h3>Juga-hi</h3><p>A l'ordinador, o passa'l a la consola per USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copia: ./build/pinyol_sim --game games/raton">Copia</button></div></li>
+</ol>
+<div class="aside-note"><b>Sense programar?</b> <a href="#crear">L'editor web</a> fa el mateix amb dibuixos i blocs, al navegador.</div>
+</div></section>
+<section id="crear" class="editor-sec" aria-labelledby="crear-t"><div class="wrap editor-grid">
+<div class="editor-copy">
+<p class="era pixel">Sense programar · al navegador</p>
+<h2 id="crear-t">L'editor</h2>
+<p class="intro">Dibuixa els personatges píxel a píxel, pinta els mapes, defineix les regles amb blocs i juga-hi a l'instant. Comença de zero o a partir d'una plantilla, com Abella o LÍNEA 0.</p>
+<ul class="features"><li><b>Aspecte de consola</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum o 16 bits: els seus colors i la seva tipografia</span></li><li><b>Dibuixos que es mouen</b> <span>píxel a píxel, amb animacions per estar quiet, caminar o rebre un cop</span></li><li><b>Regles amb blocs</b> <span>vides, compte enrere, diàlegs, rècords que es desen</span></li><li><b>So</b> <span>efectes a partir de receptes, música composta en una quadrícula o un .mod</span></li><li><b>A la consola</b> <span>pel cable USB o en un .zip per a la targeta</span></li><li><b>En tres idiomes</b> <span>castellano, català i English</span></li></ul>
+<div class="actions"><a class="btn btn-primary btn-big" href="../../editor/?lang=ca" target="_blank" rel="noopener">Obre l'editor<span class="sr"> (s'obre en una pestanya nova)</span></a><a class="btn btn-ghost" href="../juegos/#biblioteca">Jocs fets amb l'editor</a></div>
+</div>
+<figure class="editor-video">
+<video src="../../video/linea0.mp4" poster="../../video/linea0.jpg" width="1280" height="800" controls muted loop playsinline autoplay preload="metadata" aria-describedby="linea0-cap"></video>
+<figcaption id="linea0-cap">LÍNEA 0, un joc de Game Boy Advance fet tot amb l'editor, en directe: dibuixos, mapes, regles i a jugar. La creació, vuit vegades més ràpida; la partida, a velocitat real.</figcaption>
+</figure>
+</div></section>
+<section id="codex" aria-labelledby="codex-t"><div class="wrap">
+<h2 id="codex-t">L'escala: cinc encàrrecs</h2>
+<p class="intro">Del més senzill al més difícil. Un clon net del repositori, un sol missatge per encàrrec i sense respondre cap pregunta: Codex va llegir AGENTS.md, va compilar el motor, va seguir la recepta de l'aspecte i va escriure un guió que juga al joc, fins que la prova va sortir bé. Després es va mesurar cada joc a la consola, amb aquell mateix guió. Amb Codex 0.155 i gpt-6-sol, raonament mitjà. (Els encàrrecs es van escriure en castellà; aquí, traduïts.)</p>
+<table class="bars"><tbody><tr style="--n:0"><th scope="row">1 · Paletes</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:17.50%"></span></div><span class="val">3 min 30 s · 61 fps</span></td></tr><tr style="--n:1"><th scope="row">2 · Ratón de biblioteca</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:24.00%"></span></div><span class="val">4 min 49 s · 59 fps</span></td></tr><tr style="--n:2"><th scope="row">3 · Oxígeno 48K</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:25.00%"></span></div><span class="val">5 min 2 s · 30–60 fps</span></td></tr><tr style="--n:3"><th scope="row">4 · Museo de medianoche</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:30.50%"></span></div><span class="val">6 min 8 s · 42 fps</span></td></tr><tr style="--n:4"><th scope="row">5 · Ardilla Relámpago</th><td><div class="track" aria-hidden="true">
+<span class="bar" style="--w:93.00%"></span></div><span class="val">18 min 34 s · 59 fps</span></td></tr></tbody></table>
+<ul class="jobs"><li class="cart job">
+<div class="shot"><img src="../../img/codex/paletes.png" alt="Paletes, amb gràfics vectorials: dues pales, la pilota i el marcador" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivell 1 · Vectorial</p><h3>Paletes</h3>
+<blockquote><p>Fes-me un Pong contra la consola: dues pales, una pilota i un marcador fins a 7 punts. No em preguntis res, decideix tu.</p></blockquote>
+<ul class="chips"><li class="chip fps">3 min 30 s</li><li class="chip">29 ordres</li><li class="chip">73 mil tokens</li><li class="chip fps">61 fps a la consola</li></ul>
+<p class="after">Sense retocs.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=ca&amp;game=../games/paletes.zip" aria-label="Juga a Paletes (s&#x27;obre en una pestanya nova)" target="_blank" rel="noopener">Juga</a>
+<a class="zip" href="../../games/paletes.zip" download aria-label="Descarrega Paletes per a la consola">Descarrega el .zip</a>
+<a class="sheet-link" href="../juegos/paletes/" aria-label="Fitxa de Paletes">Fitxa</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/raton_de_biblioteca.png" alt="Un ratolí que salta entre les prestatgeries d&#x27;una biblioteca, en quatre tons de verd" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivell 2 · Game Boy</p><h3>Ratón de biblioteca</h3>
+<blockquote><p>Fes-me un joc amb aspecte de Game Boy: un ratolí que recorre una biblioteca saltant entre prestatgeries i recollint trossos de formatge, amb gats que patrullen. Que funcioni i faci goig. No em preguntis res, decideix tu.</p></blockquote>
+<ul class="chips"><li class="chip fps">4 min 49 s</li><li class="chip">29 ordres</li><li class="chip">78 mil tokens</li><li class="chip fps">59 fps a la consola</li></ul>
+<p class="after">Retocat després: a pantalla completa, sense el marc de consola.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=ca&amp;game=../games/raton_de_biblioteca.zip" aria-label="Juga a Ratón de biblioteca (s&#x27;obre en una pestanya nova)" target="_blank" rel="noopener">Juga</a>
+<a class="zip" href="../../games/raton_de_biblioteca.zip" download aria-label="Descarrega Ratón de biblioteca per a la consola">Descarrega el .zip</a>
+<a class="sheet-link" href="../juegos/raton_de_biblioteca/" aria-label="Fitxa de Ratón de biblioteca">Fitxa</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/oxigeno.png" alt="La pantalla de càrrega: un astronauta amb una bombona d&#x27;oxigen davant d&#x27;una estació espacial" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivell 3 · ZX Spectrum</p><h3>Oxígeno 48K</h3>
+<blockquote><p>Vull un joc amb aspecte de ZX Spectrum, amb la seva pantalla de càrrega de cinta: un astronauta que, en una estació espacial, recull bombones d'oxigen abans que se li acabi l'aire i esquiva robots. No em preguntis res, decideix tu.</p></blockquote>
+<ul class="chips"><li class="chip fps">5 min 2 s</li><li class="chip">40 ordres</li><li class="chip">104 mil tokens</li><li class="chip fps low">30–60 fps a la consola</li></ul>
+<p class="after">Retocat després: el títol de la portada i els textos, perquè quedin dins dels quadres.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=ca&amp;game=../games/oxigeno.zip" aria-label="Juga a Oxígeno 48K (s&#x27;obre en una pestanya nova)" target="_blank" rel="noopener">Juga</a>
+<a class="zip" href="../../games/oxigeno.zip" download aria-label="Descarrega Oxígeno 48K per a la consola">Descarrega el .zip</a>
+<a class="sheet-link" href="../juegos/oxigeno/" aria-label="Fitxa de Oxígeno 48K">Fitxa</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/museo_nocturno.png" alt="Un passadís de museu en primera persona amb un quadre al fons" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivell 4 · Primera persona</p><h3>Museo de medianoche</h3>
+<blockquote><p>Fes-me un joc en primera persona a l'estil de Wolfenstein: un museu de nit, busques cinc quadres robats mentre esquives els vigilants. No em preguntis res, decideix tu.</p></blockquote>
+<ul class="chips"><li class="chip fps">6 min 8 s</li><li class="chip">33 ordres</li><li class="chip">84 mil tokens</li><li class="chip fps low">42 fps a la consola</li></ul>
+<p class="after">Retocat després: el text de la pantalla final.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=ca&amp;game=../games/museo_nocturno.zip" aria-label="Juga a Museo de medianoche (s&#x27;obre en una pestanya nova)" target="_blank" rel="noopener">Juga</a>
+<a class="zip" href="../../games/museo_nocturno.zip" download aria-label="Descarrega Museo de medianoche per a la consola">Descarrega el .zip</a>
+<a class="sheet-link" href="../juegos/museo_nocturno/" aria-label="Fitxa de Museo de medianoche">Fitxa</a></div></div></li><li class="cart job">
+<div class="shot"><img src="../../img/codex/costa_relampago.png" alt="Un esquirol que corre per una costa amb palmeres, turons i el mar" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">Nivell 5 · Mega Drive</p><h3>Ardilla Relámpago</h3>
+<blockquote><p>Fes-me un joc de plataformes de velocitat amb aspecte de Mega Drive: un esquirol que corre per una costa amb rampes i bucles, diverses capes de fons que es moguin a velocitats diferents, el mar del fons que onduli línia a línia, enemics i fruita per recollir. Que vagi ràpid i faci goig. No em preguntis res, decideix tu.</p></blockquote>
+<ul class="chips"><li class="chip fps">18 min 34 s</li><li class="chip">102 ordres</li><li class="chip">252 mil tokens</li><li class="chip fps">59 fps a la consola</li></ul>
+<p class="after">Tres encàrrecs: el joc (4 min 41 s), l'art generat amb IA (10 min 8 s; aleshores anava a 30 fps) i fer-lo anar a 60 a la consola amb un terra propi (3 min 45 s). Sense retocs a mà.</p>
+<div class="row"><a class="play" href="../../play/player.html?lang=ca&amp;game=../games/costa_relampago.zip" aria-label="Juga a Ardilla Relámpago (s&#x27;obre en una pestanya nova)" target="_blank" rel="noopener">Juga</a>
+<a class="zip" href="../../games/costa_relampago.zip" download aria-label="Descarrega Ardilla Relámpago per a la consola">Descarrega el .zip</a>
+<a class="sheet-link" href="../juegos/costa_relampago/" aria-label="Fitxa de Ardilla Relámpago">Fitxa</a></div></div></li></ul>
+</div></section>
+<section id="subir" aria-labelledby="subir-t"><div class="wrap">
+<h2 id="subir-t">Puja'l a la Biblioteca</h2>
+<p class="intro">Quan el teu joc estigui a punt, puja'l amb el formulari: un robot l'obre i el juga deu segons, i quan l'hàgim revisat es podrà jugar al web i descarregar per a la consola.</p>
+<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Puja el teu joc<span class="sr"> (s'obre en una pestanya nova)</span></a><a class="btn btn-ghost" href="../juegos/#biblioteca">La Biblioteca</a></div>
+<figure class="tutorial"><video src="../../video/subir.mp4" poster="../../video/subir.jpg" width="960" height="600" controls preload="none" playsinline aria-describedby="subir-cap"></video>
+<figcaption id="subir-cap">Tutorial, del teu joc a la Biblioteca: descarrega el .zip des de l'editor, omple el formulari i adjunta-hi el .zip; un robot el comprova i, un cop aprovat, ja s'hi pot jugar aquí. Les esperes, accelerades.</figcaption></figure>
+<p class="sub">Alguna cosa teva publicada aquí sense el teu permís, o alguna cosa que no hi hauria de ser? <a href="https://github.com/ipaud/pinyol/issues/new?title=Retirar%3A%20" target="_blank" rel="noopener">Demana que ho retirem<span class="sr"> (s'obre en una pestanya nova)</span></a>.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><img src="../../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
+<span>Codi MIT · art i so CC0</span><span>Game Boy, PICO-8, Neo Geo i les altres consoles esmentades són marques dels seus propietaris; pinyol i Cirera no hi tenen cap relació.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Mesures<span class="sr"> (s'obre en una pestanya nova)</span></a><span>Les visites, les partides i el temps jugat es compten amb <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (s'obre en una pestanya nova)</span></a>, sense galetes ni dades personals.</span><span>Els comentaris i els vots de cada joc es desen a GitHub i es carreguen amb giscus només si els demanes.</span><span>La Biblioteca, el rànquing i les xifres de cada joc es llegeixen de GitHub en obrir la pàgina.</span></div></footer>
+</body>
+</html>

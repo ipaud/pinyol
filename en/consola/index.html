@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Console · pinyol</title>
+<meta name="description" content="The Cirera console, its firmware to install from the browser, and pinyol in RetroArch and RetroPie.">
+<meta property="og:title" content="Console · pinyol">
+<meta property="og:description" content="The Cirera console, its firmware to install from the browser, and pinyol in RetroArch and RetroPie.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
+<meta name="theme-color" content="#0b0e1f">
+<link rel="canonical" href="https://ipaud.github.io/pinyol/en/consola/">
+<link rel="alternate" hreflang="es" href="https://ipaud.github.io/pinyol/consola/">
+<link rel="alternate" hreflang="ca" href="https://ipaud.github.io/pinyol/ca/consola/">
+<link rel="alternate" hreflang="en" href="https://ipaud.github.io/pinyol/en/consola/">
+<link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/consola/">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css?v=af3307ca">
+<script src="../../site.js?v=8ad24a2d" defer></script>
+<script src="../../games.js?v=62b8bf62" defer></script>
+<script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script><script type="module" src="../../vendor/esp-web-tools/install-button.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="../" aria-label="pinyol, home"><span class="logo-anim"><img class="l-leaves" src="../../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../../img/logo/word.png" alt="" width="83" height="52"></span></a>
+<nav class="tabs" aria-label="Sections"><ul><li><a href="../">Home</a></li><li><a href="../juegos/">Games</a></li><li><a href="../crear/">Make</a></li><li><a href="../consola/" aria-current="page">Console</a></li><li><a href="../como-se-hizo/">How it was made</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a></li></ul></nav>
+<nav class="langs" aria-label="Language"><ul><li class="keep"><a href="../../consola/" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../../ca/consola/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../../en/consola/" lang="en" hreflang="en" aria-label="English" aria-current="page">EN</a></li></ul></nav>
+</div></header>
+<main id="main">
+<section class="page-head"><div class="wrap">
+<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Console</h1><p class="lede">The Cirera, its firmware to install from the browser, and other ways to play the same games, like RetroArch.</p>
+</div></section>
+<section id="consola" aria-labelledby="consola-t"><div class="wrap">
+<h2 id="consola-t">The Cirera</h2>
+<p class="intro">An off-the-shelf development board with a screen. The engine gets the most out of it: it draws straight into strips, splits the work between the two cores and keeps whatever doesn't fit on the microSD card.</p>
+<figure class="renders"><img src="../../img/console/cirera_frente.webp" alt="The Cirera console from the front: ivory case, green D-pad, terracotta A, B and C buttons, grey MENU and START, and a Neo Geo fight on the screen" width="1200" height="800" loading="lazy" decoding="async"><img src="../../img/console/cirera_detras.webp" alt="The back: a dark plate with CIRERA and a pixel cherry, model S3-01, the 3.7 V 3000 mAh battery and USB-C at 5 V" width="1200" height="800" loading="lazy" decoding="async"><figcaption>The Cirera v1.0 case, rendered: AI-generated images made from its 3D model. It hasn't been printed yet.</figcaption></figure>
+<figure class="tutorial"><video src="../../video/montaje.mp4" poster="../../video/montaje.jpg" width="960" height="540" controls muted preload="none" playsinline aria-describedby="montaje-cap"></video><figcaption id="montaje-cap">The v1.0 assembly, animated from its 3D model: the case, the board, the two copper boards for the buttons, the wires, the battery and the speaker.</figcaption></figure>
+<div class="hw"><dl class="spec"><dt>Board</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, two cores at 240 MHz</dd><dt>Memory</dt><dd>512 KB of internal RAM, 8 MB of PSRAM, 16 MB of flash</dd><dt>Screen</dt><dd>3.5″, 480×320, ST77922 over QSPI, touch</dd><dt>Sound</dt><dd>ES8311 with speaker</dd><dt>The rest</dt><dd>microSD, battery, USB</dd></dl>
+<div class="side"><div class="install" id="instalar"><h3>Install the firmware from the browser</h3>
+<ol><li>Connect the board to your computer over USB.</li><li>Press the button and choose the board's port.</li>
+<li>Wait a few minutes: it boots up with 15 games in memory.</li></ol>
+<esp-web-install-button manifest="../../firmware/manifest.json">
+<button slot="activate" class="btn btn-primary" type="button" data-goatcounter-click="instalar-consola">Install on the console</button>
+<span slot="unsupported" class="note">This browser can't talk to the board over USB: open this page in Chrome or Edge on a computer.</span>
+<span slot="not-allowed" class="note">Installing requires HTTPS.</span>
+</esp-web-install-button>
+<p class="note">Firmware 82e1a96 · 13.7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">the files for esptool<span class="sr"> (opens in a new tab)</span></a></p></div><div class="pending"><h3>The v1.0 case, designed</h3><p>It still has to be printed and tested. Then its print files (CC BY 4.0), the parts list and the assembly guide will be published. In the meantime, the bare board already runs the games.</p>
+<p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">How to wire it<span class="sr"> (opens in a new tab)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">The Freenove board<span class="sr"> (opens in a new tab)</span></a></p></div></div></div>
+</div></section>
+<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
+<h2 id="retroarch-t">In RetroArch and RetroPie</h2>
+<p class="intro">No console? The engine is also a libretro core: pinyol games play in RetroArch and in everything built on it, such as RetroPie or Lakka on a Raspberry Pi, Batocera, Recalbox, the handhelds that run it, or a computer. It is the same engine, so the game is the same.</p>
+<ol class="steps">
+<li><h3>Install it on RetroPie</h3><p>On the Raspberry Pi, this command downloads the core already built (a Pi 1 or Zero builds it, in a few minutes) and adds Pinyol to EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
+curl -fsSL --create-dirs \
+  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
+  https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
+sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="button" aria-label="Copy: cd ~/RetroPie-Setup">Copy</button></div></li>
+<li><h3>Copy the games</h3><p>Any game's .zip, like the ones you can download here, goes in its folder.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copy: ~/RetroPie/roms/pinyol/">Copy</button></div></li>
+<li><h3>Play</h3><p>Restart EmulationStation and Pinyol shows up with its games. On the gamepad, X or Y act as C, and SELECT as MENU.</p></li>
+</ol>
+<div class="aside-note"><b>Another RetroArch?</b> On a computer with Linux, Batocera or Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">the core already built<span class="sr"> (opens in a new tab)</span></a> goes in RetroArch's cores folder; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">the guide<span class="sr"> (opens in a new tab)</span></a> explains it. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
+</div></section>
+</main>
+<footer><div class="wrap"><img src="../../img/logo.png" alt="pinyol" width="64" height="42" loading="lazy">
+<span>MIT code · CC0 art and sound</span><span>Game Boy, PICO-8, Neo Geo and the other consoles named here are trademarks of their owners; pinyol and Cirera are not affiliated with them.</span><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (opens in a new tab)</span></a><a href="https://github.com/ipaud/pinyol/blob/main/docs/measurements.md" target="_blank" rel="noopener">Measurements<span class="sr"> (opens in a new tab)</span></a><span>Visits, plays and time played are counted with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter<span class="sr"> (opens in a new tab)</span></a>, without cookies or personal data.</span><span>Each game's comments and votes are kept on GitHub and loaded with giscus only if you ask for them.</span><span>The Library, the ranking and each game's numbers are read from GitHub when the page opens.</span></div></footer>
+</body>
+</html>
