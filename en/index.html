@@ -324,7 +324,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <h2 id="retroarch-t">In RetroArch and RetroPie</h2>
 <p class="intro">No console? The engine is also a libretro core: pinyol games play in RetroArch and in everything built on it, such as RetroPie or Lakka on a Raspberry Pi, Batocera, Recalbox, the handhelds that run it, or a computer. It is the same engine, so the game is the same.</p>
 <ol class="steps">
-<li><h3>Install it on RetroPie</h3><p>On the Raspberry Pi, this command builds the core (it takes a few minutes) and adds Pinyol to EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
+<li><h3>Install it on RetroPie</h3><p>On the Raspberry Pi, this command downloads the core already built (a Pi 1 or Zero builds it, in a few minutes) and adds Pinyol to EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
 curl -fsSL --create-dirs \
   -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
   https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
@@ -332,11 +332,11 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 <li><h3>Copy the games</h3><p>Any game's .zip, like the ones you can download here, goes in its folder.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copy: ~/RetroPie/roms/pinyol/">Copy</button></div></li>
 <li><h3>Play</h3><p>Restart EmulationStation and Pinyol shows up with its games. On the gamepad, X or Y act as C, and SELECT as MENU.</p></li>
 </ol>
-<div class="aside-note"><b>Another RetroArch?</b> On a computer, Batocera or Lakka, the core is added by hand: <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">how to build it and where it goes<span class="sr"> (opens in a new tab)</span></a>. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
+<div class="aside-note"><b>Another RetroArch?</b> On a computer with Linux, Batocera or Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">the core already built<span class="sr"> (opens in a new tab)</span></a> goes in RetroArch's cores folder; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">the guide<span class="sr"> (opens in a new tab)</span></a> explains it. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">How it was made</h2>
-<ul class="stats reveal"><li><b data-count="15384" data-dec="0">15.384</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="111" data-dec="0">111</b><span>tests on every change</span></li><li><b data-count="173" data-dec="0">173</b><span>commits in the repository</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15384" data-dec="0">15.384</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="111" data-dec="0">111</b><span>tests on every change</span></li><li><b data-count="178" data-dec="0">178</b><span>commits in the repository</span></li></ul>
 <div class="story">
 <p><strong>One person and Claude.</strong> The engine, examples, tools and this site were written in conversation with Claude Code: every idea was tried in the simulator, measured on the board and corrected based on what the board showed.</p>
 <p><strong>The art, generated and made to fit.</strong> The looks that call for it (Neo Geo, CPS2, 32-bit) use AI-generated images. The engine's tools cut them out, scale them to the right height, split them into frames and reduce them to the console's palette. The low-res looks are drawn with code.</p>
