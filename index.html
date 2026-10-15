@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="img/icon.png">
 <link rel="preload" href="fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=d56a958e">
+<link rel="stylesheet" href="styles.css?v=94bc3240">
 <script src="site.js?v=45a56782" defer></script><script type="module" src="vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
@@ -27,7 +27,7 @@
 <a class="logo" href="#top" aria-label="pinyol, inicio"><span class="logo-anim"><img class="l-leaves" src="img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="img/logo/word.png" alt="" width="83" height="52"></span></a>
 <nav aria-label="Secciones"><ul>
 <li class="keep"><a href="#aspectos">Juegos</a></li><li><a href="#rendimiento">Rendimiento</a></li>
-<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Haz uno</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Cómo se hizo</a></li>
+<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Haz uno</a></li><li><a href="#consola">La consola</a></li><li><a href="#retroarch">RetroPie</a></li><li><a href="#making">Cómo se hizo</a></li>
 <li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></nav>
 <nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="./" lang="es" hreflang="es" aria-label="Español" aria-current="page">ES</a></li><li class="keep"><a href="ca/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="en/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
 </div></header>
@@ -116,7 +116,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Medido en la consola, no prometido</h2>
 <p class="intro">Cada cifra de esta sección sale de la placa: un firmware que juega solo con un guion y escribe una línea de rendimiento por segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emulador. Un frame a 60 fps tiene 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="110" data-dec="0">110</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para mandar un frame entero al panel; el cable solo ya son 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="111" data-dec="0">111</span><small></small></b><span>pruebas que juegan solas y comparan cada frame, en cada cambio</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
 <p>El segundo más lento y el más rápido de cada ejemplo jugado en la consola. En gris, la primera medida, antes de optimizar.</p></figcaption>
@@ -318,9 +318,23 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">los archivos, para esptool<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div><div class="pending"><h3>La carcasa, en preparación</h3><p>Carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, la placa sola ya juega.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Cómo conectarla<span class="sr"> (se abre en una pestaña nueva)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div></div></div>
 </div></section>
+<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
+<h2 id="retroarch-t">En RetroArch y RetroPie</h2>
+<p class="intro">¿Sin la consola? El motor también es un núcleo de libretro: los juegos de pinyol se juegan en RetroArch y en todo lo que se basa en él, como RetroPie o Lakka en una Raspberry Pi, Batocera, Recalbox, las portátiles que lo llevan o un ordenador. Es el mismo motor, así que el juego es el mismo.</p>
+<ol class="steps">
+<li><h3>Instálalo en RetroPie</h3><p>En la Raspberry Pi: compila el núcleo, en unos minutos, y añade Pinyol a EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
+curl -fsSL --create-dirs \
+  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
+  https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
+sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: cd ~/RetroPie-Setup">Copiar</button></div></li>
+<li><h3>Copia los juegos</h3><p>El .zip de cualquier juego, como los que se descargan aquí, va a su carpeta.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copiar: ~/RetroPie/roms/pinyol/">Copiar</button></div></li>
+<li><h3>Juega</h3><p>Reinicia EmulationStation y aparece Pinyol con sus juegos. En el mando, X o Y hacen de C, y SELECT de MENU.</p></li>
+</ol>
+<div class="aside-note"><b>¿Otro RetroArch?</b> En un ordenador, Batocera o Lakka el núcleo se añade a mano: <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">cómo compilarlo y dónde va<span class="sr"> (se abre en una pestaña nueva)</span></a>. Probado en RetroArch y con el sistema de RetroPie emulado, aún no en una Raspberry Pi de verdad: si lo pruebas, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">cuéntanos cómo va<span class="sr"> (se abre en una pestaña nueva)</span></a>.</div>
+</div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="110" data-dec="0">110</b><span>pruebas en cada cambio</span></li><li><b data-count="155" data-dec="0">155</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="111" data-dec="0">111</b><span>pruebas en cada cambio</span></li><li><b data-count="167" data-dec="0">167</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía con lo que la placa decía.</p>
 <p><strong>El arte, generado y encajado.</strong> Los aspectos que lo piden (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Unas herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos pequeños se dibujan con código.</p>

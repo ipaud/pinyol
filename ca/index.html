@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=d56a958e">
+<link rel="stylesheet" href="../styles.css?v=94bc3240">
 <script src="../site.js?v=45a56782" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
@@ -27,7 +27,7 @@
 <a class="logo" href="#top" aria-label="pinyol, inici"><span class="logo-anim"><img class="l-leaves" src="../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../img/logo/word.png" alt="" width="83" height="52"></span></a>
 <nav aria-label="Seccions"><ul>
 <li class="keep"><a href="#aspectos">Jocs</a></li><li><a href="#rendimiento">Rendiment</a></li>
-<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Fes-ne un</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Com es va fer</a></li>
+<li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Fes-ne un</a></li><li><a href="#consola">La consola</a></li><li><a href="#retroarch">RetroPie</a></li><li><a href="#making">Com es va fer</a></li>
 <li class="keep"><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a></li></ul></nav>
 <nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../" lang="es" hreflang="es" aria-label="Español">ES</a></li><li class="keep"><a href="../ca/" lang="ca" hreflang="ca" aria-label="Català" aria-current="page">CA</a></li><li class="keep"><a href="../en/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
 </div></header>
@@ -116,7 +116,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Mesurat a la consola, no promès</h2>
 <p class="intro">Cada xifra d'aquesta secció surt de la placa: un firmware que juga sol amb un guió i escriu una línia de rendiment per segon, o un banc de proves que repeteix cada escena cinc vegades. Res d'emulador. Un frame a 60 fps té 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli en l'escena més pesada: afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un frame sencer al panell; el cable sol ja són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so mentre es juga</span></li><li><b><span data-count="110" data-dec="0">110</span><small></small></b><span>proves que juguen soles i comparen cada frame, a cada canvi</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli en l'escena més pesada: afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un frame sencer al panell; el cable sol ja són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so mentre es juga</span></li><li><b><span data-count="111" data-dec="0">111</span><small></small></b><span>proves que juguen soles i comparen cada frame, a cada canvi</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Dotze aspectes, en fotogrames per segon</h3>
 <p>El segon més lent i el més ràpid de cada exemple jugat a la consola. En gris, la primera mesura, abans d'optimitzar.</p></figcaption>
@@ -318,9 +318,23 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 <p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">els fitxers, per a esptool<span class="sr"> (s'obre en una pestanya nova)</span></a></p></div><div class="pending"><h3>La carcassa, en preparació</h3><p>Carcassa imprimible, botons i llista de materials per muntar-la tu. Mentrestant, la placa sola ja juga.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Com connectar-la<span class="sr"> (s'obre en una pestanya nova)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (s'obre en una pestanya nova)</span></a></p></div></div></div>
 </div></section>
+<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
+<h2 id="retroarch-t">A RetroArch i RetroPie</h2>
+<p class="intro">Sense la consola? El motor també és un nucli de libretro: els jocs de pinyol es juguen a RetroArch i a tot el que s'hi basa, com RetroPie o Lakka en una Raspberry Pi, Batocera, Recalbox, les portàtils que el porten o un ordinador. És el mateix motor, així que el joc és el mateix.</p>
+<ol class="steps">
+<li><h3>Instal·la'l a RetroPie</h3><p>A la Raspberry Pi: compila el nucli, en uns minuts, i afegeix Pinyol a EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
+curl -fsSL --create-dirs \
+  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \
+  https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/lr-pinyol.sh
+sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="button" aria-label="Copia: cd ~/RetroPie-Setup">Copia</button></div></li>
+<li><h3>Copia els jocs</h3><p>El .zip de qualsevol joc, com els que es descarreguen aquí, va a la seva carpeta.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copia: ~/RetroPie/roms/pinyol/">Copia</button></div></li>
+<li><h3>Juga</h3><p>Reinicia EmulationStation i apareix Pinyol amb els seus jocs. Al comandament, X o Y fan de C, i SELECT de MENU.</p></li>
+</ol>
+<div class="aside-note"><b>Un altre RetroArch?</b> En un ordinador, Batocera o Lakka el nucli s'afegeix a mà: <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">com compilar-lo i on va<span class="sr"> (s'obre en una pestanya nova)</span></a>. Provat a RetroArch i amb el sistema de RetroPie emulat, encara no en una Raspberry Pi de debò: si el proves, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">explica'ns com va<span class="sr"> (s'obre en una pestanya nova)</span></a>.</div>
+</div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Com es va fer</h2>
-<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="110" data-dec="0">110</b><span>proves a cada canvi</span></li><li><b data-count="155" data-dec="0">155</b><span>commits al repositori</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="111" data-dec="0">111</b><span>proves a cada canvi</span></li><li><b data-count="167" data-dec="0">167</b><span>commits al repositori</span></li></ul>
 <div class="story">
 <p><strong>Una persona i Claude.</strong> El motor, els exemples, les eines i aquesta web es van escriure parlant amb Claude Code: cada idea es provava al simulador, es mesurava a la placa i es corregia amb el que deia la placa.</p>
 <p><strong>L'art, generat i encaixat.</strong> Els aspectes que ho demanen (Neo Geo, CPS2, 32 bits) fan servir imatges generades amb IA. Unes eines del motor les retallen, les escalen a l'alçada justa, en separen els fotogrames i les redueixen a la paleta de la consola. Els aspectes petits es dibuixen amb codi.</p>
