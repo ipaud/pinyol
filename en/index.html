@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=94bc3240">
+<link rel="stylesheet" href="../styles.css?v=8365cd0e">
 <script src="../site.js?v=45a56782" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
@@ -306,6 +306,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">The console</h2>
 <p class="intro">An off-the-shelf development board with a screen. The engine gets the most out of it: it draws straight into strips, splits the work between the two cores and keeps whatever doesn't fit on the microSD card.</p>
+<figure class="renders"><img src="../img/console/cirera_frente.webp" alt="The Cirera console from the front: ivory case, green D-pad, terracotta A, B and C buttons, grey MENU and START, and a Neo Geo fight on the screen" width="1200" height="800" loading="lazy" decoding="async"><img src="../img/console/cirera_detras.webp" alt="The back: a dark plate with CIRERA and a pixel cherry, model S3-01, the 3.7 V 3000 mAh battery and USB-C at 5 V" width="1200" height="800" loading="lazy" decoding="async"><figcaption>The Cirera v1.0 case, rendered: AI-generated images made from its 3D model. It hasn't been printed yet.</figcaption></figure>
 <div class="hw"><dl class="spec"><dt>Board</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, two cores at 240 MHz</dd><dt>Memory</dt><dd>512 KB of internal RAM, 8 MB of PSRAM, 16 MB of flash</dd><dt>Screen</dt><dd>3.5″, 480×320, ST77922 over QSPI, touch</dd><dt>Sound</dt><dd>ES8311 with speaker</dd><dt>The rest</dt><dd>microSD, battery, USB</dd></dl>
 <div class="side"><div class="install" id="instalar"><h3>Install the firmware from the browser</h3>
 <ol><li>Connect the board to your computer over USB.</li><li>Press the button and choose the board's port.</li>
@@ -315,7 +316,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <span slot="unsupported" class="note">This browser can't talk to the board over USB: open this page in Chrome or Edge on a computer.</span>
 <span slot="not-allowed" class="note">Installing requires HTTPS.</span>
 </esp-web-install-button>
-<p class="note">Firmware 82e1a96 · 13.7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">the files for esptool<span class="sr"> (opens in a new tab)</span></a></p></div><div class="pending"><h3>The case, in the works</h3><p>A printable case, buttons and a bill of materials so you can build it yourself. In the meantime, the bare board already runs the games.</p>
+<p class="note">Firmware 82e1a96 · 13.7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">the files for esptool<span class="sr"> (opens in a new tab)</span></a></p></div><div class="pending"><h3>The v1.0 case, designed</h3><p>It still has to be printed and tested. Then its print files (CC BY 4.0), the parts list and the assembly guide will be published. In the meantime, the bare board already runs the games.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">How to wire it<span class="sr"> (opens in a new tab)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">The Freenove board<span class="sr"> (opens in a new tab)</span></a></p></div></div></div>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
@@ -334,7 +335,7 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">How it was made</h2>
-<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="111" data-dec="0">111</b><span>tests on every change</span></li><li><b data-count="169" data-dec="0">169</b><span>commits in the repository</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="111" data-dec="0">111</b><span>tests on every change</span></li><li><b data-count="170" data-dec="0">170</b><span>commits in the repository</span></li></ul>
 <div class="story">
 <p><strong>One person and Claude.</strong> The engine, examples, tools and this site were written in conversation with Claude Code: every idea was tried in the simulator, measured on the board and corrected based on what the board showed.</p>
 <p><strong>The art, generated and made to fit.</strong> The looks that call for it (Neo Geo, CPS2, 32-bit) use AI-generated images. The engine's tools cut them out, scale them to the right height, split them into frames and reduce them to the console's palette. The low-res looks are drawn with code.</p>

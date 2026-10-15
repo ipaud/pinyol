@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="img/icon.png">
 <link rel="preload" href="fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=94bc3240">
+<link rel="stylesheet" href="styles.css?v=8365cd0e">
 <script src="site.js?v=45a56782" defer></script><script type="module" src="vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
@@ -306,6 +306,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">La consola</h2>
 <p class="intro">Una placa de desarrollo con pantalla, que se compra ya montada. El motor la exprime: dibuja directamente por franjas, reparte el trabajo entre los dos núcleos y guarda en la tarjeta lo que no cabe en memoria.</p>
+<figure class="renders"><img src="img/console/cirera_frente.webp" alt="La consola Cirera de frente: carcasa marfil, cruceta verde, botones A, B y C de color terracota, MENU y START grises y una pelea de Neo Geo en la pantalla" width="1200" height="800" loading="lazy" decoding="async"><img src="img/console/cirera_detras.webp" alt="La parte de atrás: una placa oscura con CIRERA y una cereza de píxeles, el modelo S3-01, la batería de 3,7 V y 3000 mAh y USB-C a 5 V" width="1200" height="800" loading="lazy" decoding="async"><figcaption>La carcasa Cirera v1.0, en render: imágenes generadas con IA a partir de su modelo 3D. Todavía no se ha impreso.</figcaption></figure>
 <div class="hw"><dl class="spec"><dt>Placa</dt><dd>Freenove FNK0104N</dd><dt>Chip</dt><dd>ESP32-S3R8, dos núcleos a 240 MHz</dd><dt>Memoria</dt><dd>512 KB de RAM interna, 8 MB de PSRAM, 16 MB de flash</dd><dt>Pantalla</dt><dd>3,5″, 480×320, ST77922 por QSPI, táctil</dd><dt>Sonido</dt><dd>ES8311 con altavoz</dd><dt>Lo demás</dt><dd>microSD, batería, USB</dd></dl>
 <div class="side"><div class="install" id="instalar"><h3>Instala el firmware desde el navegador</h3>
 <ol><li>Conecta la placa al ordenador por USB.</li><li>Pulsa el botón y elige el puerto de la placa.</li>
@@ -315,7 +316,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <span slot="unsupported" class="note">Este navegador no puede comunicarse con la placa por USB: abre esta página en Chrome o Edge, en un ordenador.</span>
 <span slot="not-allowed" class="note">Para instalar, abre la página por https.</span>
 </esp-web-install-button>
-<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">los archivos para esptool<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div><div class="pending"><h3>La carcasa, en preparación</h3><p>Pronto: carcasa imprimible, botones y lista de materiales para montarla tú. Mientras tanto, ya se juega con la placa sola.</p>
+<p class="note">Firmware 82e1a96 · 13,7 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.1.0" target="_blank" rel="noopener">los archivos para esptool<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div><div class="pending"><h3>La carcasa v1.0, diseñada</h3><p>Falta imprimirla y probarla. Entonces se publicarán sus archivos para imprimir (CC BY 4.0), la lista de piezas y el montaje. Mientras tanto, ya se juega con la placa sola.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Cómo conectarla<span class="sr"> (se abre en una pestaña nueva)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div></div></div>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
@@ -334,7 +335,7 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="111" data-dec="0">111</b><span>pruebas en cada cambio</span></li><li><b data-count="169" data-dec="0">169</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15373" data-dec="0">15.373</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="111" data-dec="0">111</b><span>pruebas en cada cambio</span></li><li><b data-count="170" data-dec="0">170</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía según lo que mostraban las mediciones.</p>
 <p><strong>El arte, generado y ajustado.</strong> Los aspectos que lo necesitan (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Las herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos de baja resolución se dibujan con código.</p>
