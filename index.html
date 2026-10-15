@@ -117,7 +117,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Medido en la consola, no prometido</h2>
 <p class="intro">Cada cifra de esta sección sale de la placa: o un firmware que juega solo siguiendo un guion y anota el rendimiento cada segundo, o un banco de pruebas que repite cada escena cinco veces. Nada de emuladores. A 60 fps, cada fotograma dispone de 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: capa afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para enviar un fotograma entero al panel; solo el cable se lleva 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="111" data-dec="0">111</span><small></small></b><span>pruebas que juegan solas y comparan cada fotograma, en cada cambio</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>de un núcleo en la escena más pesada: capa afín, cuatro capas y 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>para enviar un fotograma entero al panel; solo el cable se lleva 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>de un núcleo para el sonido mientras se juega</span></li><li><b><span data-count="112" data-dec="0">112</span><small></small></b><span>pruebas que juegan solas y comparan cada fotograma, en cada cambio</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Doce aspectos, en fotogramas por segundo</h3>
 <p>El segundo más lento y el más rápido de cada ejemplo, jugando en la consola. En gris, la primera medición, antes de optimizar.</p></figcaption>
@@ -337,7 +337,7 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Cómo se hizo</h2>
-<ul class="stats reveal"><li><b data-count="15384" data-dec="0">15.384</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="111" data-dec="0">111</b><span>pruebas en cada cambio</span></li><li><b data-count="180" data-dec="0">180</b><span>commits en el repositorio</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15386" data-dec="0">15.386</b><span>líneas de C en el motor</span></li><li><b data-count="33" data-dec="0">33</b><span>juegos de ejemplo</span></li><li><b data-count="112" data-dec="0">112</b><span>pruebas en cada cambio</span></li><li><b data-count="190" data-dec="0">190</b><span>commits en el repositorio</span></li></ul>
 <div class="story">
 <p><strong>Una persona y Claude.</strong> El motor, los ejemplos, las herramientas y esta web se escribieron hablando con Claude Code: cada idea se probaba en el simulador, se medía en la placa y se corregía según lo que mostraban las mediciones.</p>
 <p><strong>El arte, generado y ajustado.</strong> Los aspectos que lo necesitan (Neo Geo, CPS2, 32 bits) usan imágenes generadas con IA. Las herramientas del motor las recortan, las escalan a la altura justa, separan los fotogramas y las reducen a la paleta de la consola. Los aspectos de baja resolución se dibujan con código.</p>
