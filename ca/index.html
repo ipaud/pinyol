@@ -18,13 +18,13 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=ccda327f">
-<script src="../site.js?v=dd19a3c7" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
+<link rel="stylesheet" href="../styles.css?v=087f4601">
+<script src="../site.js?v=bafc4779" defer></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Salta al contingut</a>
 <header class="top"><div class="wrap">
-<a class="logo" href="#top" aria-label="pinyol, inici"><img src="../img/logo.png" alt="" width="80" height="52"></a>
+<a class="logo" href="#top" aria-label="pinyol, inici"><span class="logo-anim"><img class="l-leaves" src="../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../img/logo/word.png" alt="" width="83" height="52"></span></a>
 <nav aria-label="Seccions"><ul>
 <li class="keep"><a href="#aspectos">Jocs</a></li><li><a href="#rendimiento">Rendiment</a></li>
 <li><a href="#crear">Editor</a></li><li><a href="#biblioteca">Biblioteca</a></li><li><a href="#hazlo">Fes-ne un</a></li><li><a href="#consola">La consola</a></li><li><a href="#making">Com es va fer</a></li>
@@ -40,11 +40,11 @@
 <div class="actions"><a class="btn btn-primary" href="#aspectos">Juga ara</a><a class="btn btn-ghost" href="#crear">Crea un joc</a><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">Mira el codi<span class="sr"> (s'obre en una pestanya nova)</span></a></div>
 <p class="meta">Codi MIT · art i so CC0 · 33 jocs d'exemple</p>
 </div>
-<div><div class="board" data-live role="img" aria-label="La consola, una placa Freenove FNK0104N, amb la pantalla mostrant un rere l&#x27;altre els dotze aspectes">
+<div><div class="board" data-live role="img" aria-label="La consola, una placa Freenove FNK0104N, arrencant: la intro de pinyol, el menú de Cirera amb els seus jocs i alguns en marxa">
 <span class="hole tl"></span><span class="hole bl"></span><span class="hole tr"></span><span class="hole br"></span>
 <span class="mic" aria-hidden="true">MIC</span><span class="mic-hole"></span><span class="keys" aria-hidden="true"><i></i><i></i></span>
-<div class="glass"><div class="screen"><img src="../img/looks/neogeo.png" alt="" width="480" height="320" style="animation-delay:0s" fetchpriority=high decoding="async"><img src="../img/looks/cps2.png" alt="" width="480" height="320" style="animation-delay:3s" loading=lazy decoding="async"><img src="../img/looks/gameboy.png" alt="" width="480" height="320" style="animation-delay:6s" loading=lazy decoding="async"><img src="../img/looks/spectrum.png" alt="" width="480" height="320" style="animation-delay:9s" loading=lazy decoding="async"><img src="../img/looks/pico8.png" alt="" width="480" height="320" style="animation-delay:12s" loading=lazy decoding="async"><img src="../img/looks/lcd.png" alt="" width="480" height="320" style="animation-delay:15s" loading=lazy decoding="async"><img src="../img/looks/32bits.png" alt="" width="480" height="320" style="animation-delay:18s" loading=lazy decoding="async"><img src="../img/looks/16bits.png" alt="" width="480" height="320" style="animation-delay:21s" loading=lazy decoding="async"><img src="../img/looks/vector.png" alt="" width="480" height="320" style="animation-delay:24s" loading=lazy decoding="async"><img src="../img/looks/gba.png" alt="" width="480" height="320" style="animation-delay:27s" loading=lazy decoding="async"><img src="../img/looks/vertical.png" alt="" width="480" height="320" style="animation-delay:30s" loading=lazy decoding="async"><img src="../img/looks/firstperson.png" alt="" width="480" height="320" style="animation-delay:33s" loading=lazy decoding="async"></div></div></div>
-<p class="screen-label pixel">Freenove FNK0104N · 480×320 · 60 fps a la placa</p></div>
+<div class="glass"><div class="screen"><video class="boot" src="../video/consola.mp4" poster="../video/consola.jpg" width="720" height="480" autoplay muted loop playsinline preload="auto"></video></div></div></div>
+<p class="screen-label pixel">Freenove FNK0104N · 480×320 · 60 fps a la placa <button class="screen-toggle" type="button" aria-pressed="false">Pausa</button></p></div>
 </div></section>
 <section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
 <h2 id="aspectos-t">Dotze aspectes, un motor</h2>
@@ -297,6 +297,8 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 <h2 id="biblioteca-t">La Biblioteca</h2>
 <p class="intro">Jocs fets per la gent amb pinyol: es juguen aquí i es descarreguen per a la consola. N'has fet un? Puja'l amb un formulari: un robot l'obre, el juga deu segons i, quan el revisem, apareix aquí.</p>
 <div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/issues/new?template=biblioteca.yml" target="_blank" rel="noopener">Puja el teu joc<span class="sr"> (s'obre en una pestanya nova)</span></a><a class="btn btn-ghost" href="#hazlo">Com es fa un joc</a></div>
+<figure class="tutorial"><video src="../video/subir.mp4" poster="../video/subir.jpg" width="960" height="600" controls preload="none" playsinline aria-describedby="subir-cap"></video>
+<figcaption id="subir-cap">Tutorial, del teu joc a la Biblioteca: descarrega el .zip de l'editor, omple el formulari i adjunta'l; un robot el comprova i, quan està aprovat, ja es juga aquí. Les esperes, accelerades.</figcaption></figure>
 <div class="library" id="library" data-src="https://raw.githubusercontent.com/ipaud/pinyol/main/library/library.json" data-base="https://raw.githubusercontent.com/ipaud/pinyol/main/library/" data-repo="https://github.com/ipaud/pinyol" data-play="../play/player.html">
 <p class="lib-state">La Biblioteca necessita JavaScript per carregar-se. Els seus jocs també són a <a href="https://github.com/ipaud/pinyol/tree/main/library" target="_blank" rel="noopener">GitHub<span class="sr"> (s'obre en una pestanya nova)</span></a>.</p></div>
 </div></section>
@@ -317,7 +319,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t">Com es va fer</h2>
-<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="110" data-dec="0">110</b><span>proves a cada canvi</span></li><li><b data-count="145" data-dec="0">145</b><span>commits al repositori</span></li></ul>
+<ul class="stats reveal"><li><b data-count="15250" data-dec="0">15.250</b><span>línies de C al motor</span></li><li><b data-count="33" data-dec="0">33</b><span>jocs d'exemple</span></li><li><b data-count="110" data-dec="0">110</b><span>proves a cada canvi</span></li><li><b data-count="150" data-dec="0">150</b><span>commits al repositori</span></li></ul>
 <div class="story">
 <p><strong>Una persona i Claude.</strong> El motor, els exemples, les eines i aquesta web es van escriure parlant amb Claude Code: cada idea es provava al simulador, es mesurava a la placa i es corregia amb el que deia la placa.</p>
 <p><strong>L'art, generat i encaixat.</strong> Els aspectes que ho demanen (Neo Geo, CPS2, 32 bits) fan servir imatges generades amb IA. Unes eines del motor les retallen, les escalen a l'alçada justa, en separen els fotogrames i les redueixen a la paleta de la consola. Els aspectes petits es dibuixen amb codi.</p>
