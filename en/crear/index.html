@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/crear/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=3343fd9a">
+<link rel="stylesheet" href="../../styles.css?v=327fc123">
 <script src="../../site.js?v=b718360e" defer></script>
 <script src="../../games.js?v=2648d00e" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
@@ -44,6 +44,12 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <li><h3>Play it</h3><p>On the computer, or send it to the console over USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copy: ./build/pinyol_sim --game games/raton">Copy</button></div></li>
 </ol>
 <div class="aside-note"><b>No coding?</b> <a href="#crear">The web editor</a> does the same with drawings and blocks, in the browser.</div>
+</div></section>
+<section id="motor" aria-labelledby="motor-t"><div class="wrap">
+<h2 id="motor-t">What the engine brings</h2>
+<p class="intro">All of this works the same on the console, the computer and in the browser, and your agent knows it because it is in the repository's instructions.</p>
+<ul class="engine-grid"><li class="engine-card"><h3>Picture</h3><p>A virtual console like the Game Boy Advance: 240×160 with four layers, 128 sprites, palettes, transparency and per-line effects, and on top, text and panels at 480×320.</p></li><li class="engine-card"><h3>Worlds</h3><p>Mode 7, first person in the style of Wolfenstein 3D, swarms of hundreds of bullets, grids and levels drawn in Tiled.</p></li><li class="engine-card"><h3>Sound</h3><p>Sound effects made from recipes or from numbers, four synth voices like the Game Boy Advance's, music in layers that come and go, and .mod modules of up to 32 channels.</p></li><li class="engine-card new"><h3>The studio</h3><span class="chip">New</span><p>A step sequencer inside the audio: tracks of sounds and an acid bass like a TB-303's, with echo, reverb and Lo-fi GBA. Every step sounds on its exact sample, and a new pattern comes in right on the next bar.</p></li><li class="engine-card"><h3>The console</h3><p>Touch screen, microphone, the LED and the battery, video from the card and games between nearby consoles, no router.</p></li><li class="engine-card"><h3>For coding</h3><p>Lua, with libraries built in: physics, particles, stories, a keyboard and the adventure kit. Games save without freezing, and a script tests every game by itself.</p></li></ul>
+<p class="more-link"><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">The Lua API, with examples<span class="sr"> (opens in a new tab)</span></a></p>
 </div></section>
 <section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
 <h2 id="aspectos-t">Twelve looks, one engine</h2>
@@ -128,7 +134,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <p class="era pixel">No coding · in the browser</p>
 <h2 id="crear-t">The editor</h2>
 <p class="intro">Draw your characters pixel by pixel, paint the maps, set the rules with blocks and play straight away. Start from scratch or from a template such as Abella or LÍNEA 0.</p>
-<ul class="features"><li><b>Console look</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum or 16-bit, with its colours and font</span></li><li><b>Drawings that move</b> <span>pixel by pixel, with animations for standing, walking or getting hit</span></li><li><b>Rules with blocks</b> <span>lives, a countdown, dialogue, saved high scores</span></li><li><b>Sound</b> <span>effects from recipes, music composed on a grid, or a .mod</span></li><li><b>To the console</b> <span>over the USB cable, or as a .zip for the microSD card</span></li><li><b>In three languages</b> <span>castellano, català and English</span></li></ul>
+<ul class="features"><li><b>Console look</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum or 16-bit, with its colours and font</span></li><li><b>Drawings that move</b> <span>pixel by pixel, from the front, the side and the back, with animations to walk, take a hit or do up to six actions</span></li><li><b>Rules with blocks</b> <span>lives, countdowns, dialogue, turning towards someone, saved high scores and blinds between levels</span></li><li><b>Sound</b> <span>effects from recipes, music composed on a grid, or a .mod</span></li><li><b>To the console</b> <span>over the USB cable, or as a .zip for the microSD card</span></li><li><b>In three languages</b> <span>castellano, català and English</span></li></ul>
 <div class="actions"><a class="btn btn-primary btn-big" href="../../editor/?lang=en" target="_blank" rel="noopener">Open the editor<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-ghost" href="../biblioteca/">Games made with it</a></div>
 </div>
 <figure class="editor-video">

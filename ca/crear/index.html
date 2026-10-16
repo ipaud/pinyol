@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/crear/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=3343fd9a">
+<link rel="stylesheet" href="../../styles.css?v=327fc123">
 <script src="../../site.js?v=b718360e" defer></script>
 <script src="../../games.js?v=2648d00e" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
@@ -44,6 +44,12 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 <li><h3>Juga-hi</h3><p>A l'ordinador, o passa'l a la consola per USB.</p><div class="code"><pre><code>./build/pinyol_sim --game games/raton</code></pre><button class="copy" type="button" aria-label="Copia: ./build/pinyol_sim --game games/raton">Copia</button></div></li>
 </ol>
 <div class="aside-note"><b>Sense programar?</b> <a href="#crear">L'editor web</a> fa el mateix amb dibuixos i blocs, al navegador.</div>
+</div></section>
+<section id="motor" aria-labelledby="motor-t"><div class="wrap">
+<h2 id="motor-t">El que porta el motor</h2>
+<p class="intro">Tot això funciona igual a la consola, a l'ordinador i al navegador, i el teu agent ho coneix perquè és a les instruccions del repositori.</p>
+<ul class="engine-grid"><li class="engine-card"><h3>Imatge</h3><p>Una consola virtual com la Game Boy Advance: 240×160 amb quatre capes, 128 sprites, paletes, transparències i efectes per línia, i a sobre textos i panells a 480×320.</p></li><li class="engine-card"><h3>Mons</h3><p>Mode 7, primera persona a l'estil de Wolfenstein 3D, eixams de centenars de bales, quadrícules i nivells dibuixats amb Tiled.</p></li><li class="engine-card"><h3>So</h3><p>Efectes fets amb receptes o amb números, quatre veus de sintetitzador com les de la Game Boy Advance, música en capes que entren i surten, i mòduls .mod de fins a 32 canals.</p></li><li class="engine-card new"><h3>L'studio</h3><span class="chip">Nou</span><p>Un seqüenciador de passos dins de l'àudio: pistes de sons i un baix àcid com el d'una TB-303, amb eco, reverb i Lo-fi GBA. Cada pas sona en la seva mostra exacta, i un patró nou entra just al compàs següent.</p></li><li class="engine-card"><h3>La consola</h3><p>Pantalla tàctil, micròfon, el LED i la bateria, vídeo des de la targeta i partides entre consoles properes, sense router.</p></li><li class="engine-card"><h3>Per programar</h3><p>Lua, amb llibreries a dins: física, partícules, històries, teclat i el kit d'aventures. Les partides es desen sense congelar el joc, i un guió prova cada joc tot sol.</p></li></ul>
+<p class="more-link"><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">L'API de Lua, amb exemples<span class="sr"> (s'obre en una pestanya nova)</span></a></p>
 </div></section>
 <section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
 <h2 id="aspectos-t">Dotze aspectes, un motor</h2>
@@ -128,7 +134,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copia: git 
 <p class="era pixel">Sense programar · al navegador</p>
 <h2 id="crear-t">L'editor</h2>
 <p class="intro">Dibuixa els personatges píxel a píxel, pinta els mapes, defineix les regles amb blocs i juga-hi a l'instant. Comença de zero o a partir d'una plantilla, com Abella o LÍNEA 0.</p>
-<ul class="features"><li><b>Aspecte de consola</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum o 16 bits: els seus colors i la seva tipografia</span></li><li><b>Dibuixos que es mouen</b> <span>píxel a píxel, amb animacions per estar quiet, caminar o rebre un cop</span></li><li><b>Regles amb blocs</b> <span>vides, compte enrere, diàlegs, rècords que es desen</span></li><li><b>So</b> <span>efectes a partir de receptes, música composta en una quadrícula o un .mod</span></li><li><b>A la consola</b> <span>pel cable USB o en un .zip per a la targeta</span></li><li><b>En tres idiomes</b> <span>castellano, català i English</span></li></ul>
+<ul class="features"><li><b>Aspecte de consola</b> <span>Game Boy, Game Boy Advance, PICO-8, ZX Spectrum o 16 bits: els seus colors i la seva tipografia</span></li><li><b>Dibuixos que es mouen</b> <span>píxel a píxel, de cara, de costat i d'esquena, amb animacions per caminar, rebre un cop o fer fins a sis accions</span></li><li><b>Regles amb blocs</b> <span>vides, compte enrere, diàlegs, girar-se cap a algú, rècords que es desen i persianes entre nivells</span></li><li><b>So</b> <span>efectes a partir de receptes, música composta en una quadrícula o un .mod</span></li><li><b>A la consola</b> <span>pel cable USB o en un .zip per a la targeta</span></li><li><b>En tres idiomes</b> <span>castellano, català i English</span></li></ul>
 <div class="actions"><a class="btn btn-primary btn-big" href="../../editor/?lang=ca" target="_blank" rel="noopener">Obre l'editor<span class="sr"> (s'obre en una pestanya nova)</span></a><a class="btn btn-ghost" href="../biblioteca/">Jocs fets amb l'editor</a></div>
 </div>
 <figure class="editor-video">
