@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Consola · pinyol</title>
-<meta name="description" content="La consola Cirera, su firmware para instalar desde el navegador, y pinyol en RetroArch y RetroPie.">
+<meta name="description" content="La consola Cirera, su firmware para instalar desde el navegador, la Cirera como aplicación para Mac, Windows y Linux, y pinyol en RetroArch y RetroPie.">
 <meta property="og:title" content="Consola · pinyol">
-<meta property="og:description" content="La consola Cirera, su firmware para instalar desde el navegador, y pinyol en RetroArch y RetroPie.">
+<meta property="og:description" content="La consola Cirera, su firmware para instalar desde el navegador, la Cirera como aplicación para Mac, Windows y Linux, y pinyol en RetroArch y RetroPie.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
 <meta name="theme-color" content="#0b0e1f">
@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/consola/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=327fc123">
+<link rel="stylesheet" href="../styles.css?v=4f2c47bc">
 <script src="../site.js?v=b718360e" defer></script>
 <script src="../games.js?v=2648d00e" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../vendor/goatcounter/count.js"></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
@@ -32,7 +32,7 @@
 </div></header>
 <main id="main">
 <section class="page-head"><div class="wrap">
-<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Consola</h1><p class="lede">La Cirera, su firmware para instalar desde el navegador y otras formas de jugar a lo mismo, como RetroArch.</p>
+<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Consola</h1><p class="lede">La Cirera, su firmware para instalar desde el navegador, la misma consola como aplicación para tu ordenador y RetroArch.</p>
 </div></section>
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">La Cirera</h2>
@@ -50,6 +50,21 @@
 </esp-web-install-button>
 <p class="note">Firmware a2b1506 · 13,9 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.2.0" target="_blank" rel="noopener">los archivos para esptool<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div><div class="pending"><h3>La carcasa v1.0, diseñada</h3><p>Falta imprimirla y probarla. Entonces se publicarán sus archivos para imprimir (CC BY 4.0), la lista de piezas y el montaje. Mientras tanto, ya se juega con la placa sola.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">Cómo conectarla<span class="sr"> (se abre en una pestaña nueva)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">La placa de Freenove<span class="sr"> (se abre en una pestaña nueva)</span></a></p></div></div></div>
+</div></section>
+<section id="escritorio" aria-labelledby="escritorio-t"><div class="wrap">
+<h2 id="escritorio-t">Cirera en tu ordenador</h2>
+<p class="intro">La consola, hecha aplicación para Mac, Windows y Linux: su menú, los juegos de ejemplo dentro y cualquier juego de la Biblioteca. Es el mismo motor, así que el juego es el mismo, con teclado o con mando.</p>
+<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-mac.zip" data-goatcounter-click="cirera-mac" target="_blank" rel="noopener">Descargar para Mac<span class="sr"> (se abre en una pestaña nueva)</span></a><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-windows.zip" data-goatcounter-click="cirera-windows" target="_blank" rel="noopener">Descargar para Windows<span class="sr"> (se abre en una pestaña nueva)</span></a><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-linux-x86_64.tar.gz" data-goatcounter-click="cirera-linux" target="_blank" rel="noopener">Descargar para Linux<span class="sr"> (se abre en una pestaña nueva)</span></a></div>
+<p class="meta">Mac: macOS 11 o posterior, con Apple Silicon o Intel · Windows 10 o posterior, de 64 bits · Linux: Ubuntu 22.04, Debian 12 o posteriores, de 64 bits · unos 9 MB</p>
+<p class="meta">¿Linux en ARM, como una Raspberry Pi con el sistema de 64 bits? <a href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-linux-aarch64.tar.gz" data-goatcounter-click="cirera-linux-arm" target="_blank" rel="noopener">Descárgala para ARM<span class="sr"> (se abre en una pestaña nueva)</span></a>.</p>
+<ol class="steps">
+<li><h3>Ábrela la primera vez</h3><p>Aún no está firmada por Apple ni por Microsoft, así que el sistema te avisa la primera vez.</p>
+<p>En el Mac, descomprime el .zip, arrastra Cirera a Aplicaciones y ábrela. Cuando avise, ve a Ajustes del Sistema → Privacidad y seguridad y pulsa «Abrir igualmente».</p>
+<p>En Windows, descomprime el .zip y abre Cirera.exe. Si sale «Windows protegió su PC», pulsa «Más información» y «Ejecutar de todas formas».</p>
+<p>En Linux, descomprime el .tar.gz y abre Cirera, dentro de su carpeta. Para instalar juegos soltándolos en la ventana hace falta unzip, que casi todas las distribuciones ya traen.</p></li>
+<li><h3>Añade juegos</h3><p>Descarga el .zip de cualquier juego de esta página o de la Biblioteca y suéltalo sobre la ventana de Cirera: se instala y sale en el menú.</p></li>
+<li><h3>Juega</h3><p>Flechas para moverte; Z o Intro es A, X o Esc es B, C es C y P es START. Mantén la I (MENU) dos segundos para volver al menú, y F11 para la pantalla completa. En el mando, X o Y hacen de C, y SELECT de MENU. Las partidas se guardan en tu ordenador.</p></li>
+</ol>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
 <h2 id="retroarch-t">En RetroArch y RetroPie</h2>

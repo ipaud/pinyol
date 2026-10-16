@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Console · pinyol</title>
-<meta name="description" content="The Cirera console, its firmware to install from the browser, and pinyol in RetroArch and RetroPie.">
+<meta name="description" content="The Cirera console, its firmware to install from the browser, the Cirera as an app for Mac, Windows and Linux, and pinyol in RetroArch and RetroPie.">
 <meta property="og:title" content="Console · pinyol">
-<meta property="og:description" content="The Cirera console, its firmware to install from the browser, and pinyol in RetroArch and RetroPie.">
+<meta property="og:description" content="The Cirera console, its firmware to install from the browser, the Cirera as an app for Mac, Windows and Linux, and pinyol in RetroArch and RetroPie.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://ipaud.github.io/pinyol/img/og.png">
 <meta name="theme-color" content="#0b0e1f">
@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ipaud.github.io/pinyol/consola/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=327fc123">
+<link rel="stylesheet" href="../../styles.css?v=4f2c47bc">
 <script src="../../site.js?v=b718360e" defer></script>
 <script src="../../games.js?v=2648d00e" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script><script type="module" src="../../vendor/esp-web-tools/install-button.js"></script>
@@ -32,7 +32,7 @@
 </div></header>
 <main id="main">
 <section class="page-head"><div class="wrap">
-<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Console</h1><p class="lede">The Cirera, its firmware to install from the browser, and other ways to play the same games, like RetroArch.</p>
+<p class="kicker pixel">ESP32-S3 · 480×320 · 60 fps</p><h1 class="page-title">Console</h1><p class="lede">The Cirera, its firmware to install from the browser, the same console as an app for your computer, and RetroArch.</p>
 </div></section>
 <section id="consola" aria-labelledby="consola-t"><div class="wrap">
 <h2 id="consola-t">The Cirera</h2>
@@ -50,6 +50,21 @@
 </esp-web-install-button>
 <p class="note">Firmware a2b1506 · 13.9 MB · <a href="https://github.com/ipaud/pinyol/releases/tag/v0.2.0" target="_blank" rel="noopener">the files for esptool<span class="sr"> (opens in a new tab)</span></a></p></div><div class="pending"><h3>The v1.0 case, designed</h3><p>It still has to be printed and tested. Then its print files (CC BY 4.0), the parts list and the assembly guide will be published. In the meantime, the bare board already runs the games.</p>
 <p><a href="https://github.com/ipaud/pinyol/blob/main/docs/hardware.md" target="_blank" rel="noopener">How to wire it<span class="sr"> (opens in a new tab)</span></a> · <a href="https://github.com/Freenove/Freenove_ESP32_S3_Display" target="_blank" rel="noopener">The Freenove board<span class="sr"> (opens in a new tab)</span></a></p></div></div></div>
+</div></section>
+<section id="escritorio" aria-labelledby="escritorio-t"><div class="wrap">
+<h2 id="escritorio-t">Cirera on your computer</h2>
+<p class="intro">The console as an app for Mac, Windows and Linux: its menu, the example games inside, and any game from the Library. It is the same engine, so the game is the same, with a keyboard or a gamepad.</p>
+<div class="actions"><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-mac.zip" data-goatcounter-click="cirera-mac" target="_blank" rel="noopener">Download for Mac<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-windows.zip" data-goatcounter-click="cirera-windows" target="_blank" rel="noopener">Download for Windows<span class="sr"> (opens in a new tab)</span></a><a class="btn btn-primary" href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-linux-x86_64.tar.gz" data-goatcounter-click="cirera-linux" target="_blank" rel="noopener">Download for Linux<span class="sr"> (opens in a new tab)</span></a></div>
+<p class="meta">Mac: macOS 11 or later, Apple Silicon or Intel · Windows 10 or later, 64-bit · Linux: Ubuntu 22.04, Debian 12 or later, 64-bit · about 9 MB</p>
+<p class="meta">Linux on ARM, like a Raspberry Pi with its 64-bit system? <a href="https://github.com/ipaud/pinyol/releases/download/cirera/Cirera-linux-aarch64.tar.gz" data-goatcounter-click="cirera-linux-arm" target="_blank" rel="noopener">Download it for ARM<span class="sr"> (opens in a new tab)</span></a>.</p>
+<ol class="steps">
+<li><h3>Open it the first time</h3><p>It is not signed by Apple or Microsoft yet, so your system warns you the first time.</p>
+<p>On a Mac, unzip it, drag Cirera to Applications and open it. When it warns you, go to System Settings → Privacy &amp; Security and click “Open Anyway”.</p>
+<p>On Windows, unzip it and open Cirera.exe. If “Windows protected your PC” shows up, click “More info” and then “Run anyway”.</p>
+<p>On Linux, unpack the .tar.gz and open Cirera, inside its folder. Installing games by dropping them on the window needs unzip, which nearly every distribution already has.</p></li>
+<li><h3>Add games</h3><p>Download the .zip of any game on this page or in the Library and drop it on Cirera's window: it installs and shows up in the menu.</p></li>
+<li><h3>Play</h3><p>Arrows to move; Z or Enter is A, X or Esc is B, C is C and P is START. Hold I (MENU) for two seconds to go back to the menu, and F11 for full screen. On a gamepad, X or Y act as C, and SELECT as MENU. Your saves stay on your computer.</p></li>
+</ol>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
 <h2 id="retroarch-t">In RetroArch and RetroPie</h2>
