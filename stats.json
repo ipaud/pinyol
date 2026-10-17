@@ -1,0 +1,538 @@
+{
+ "updated": "2026-10-17T16:22:10+00:00",
+ "week": "2026-W42",
+ "featured": {
+  "id": "ilustres",
+  "reason": "pick",
+  "week": "2026-W42"
+ },
+ "history": [
+  {
+   "id": "ilustres",
+   "reason": "pick",
+   "week": "2026-W42"
+  }
+ ],
+ "week_start": {
+  "aldea": {
+   "likes": 0,
+   "comments": 0
+  },
+  "asalto": {
+   "likes": 0,
+   "comments": 0
+  },
+  "bolsillo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "calle": {
+   "likes": 0,
+   "comments": 0
+  },
+  "carreras": {
+   "likes": 0,
+   "comments": 0
+  },
+  "cinta": {
+   "likes": 0,
+   "comments": 0
+  },
+  "control": {
+   "likes": 0,
+   "comments": 0
+  },
+  "costa_relampago": {
+   "likes": 0,
+   "comments": 0
+  },
+  "duelo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "estilos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "futbol": {
+   "likes": 0,
+   "comments": 0
+  },
+  "gotico": {
+   "likes": 0,
+   "comments": 0
+  },
+  "hola": {
+   "likes": 0,
+   "comments": 0
+  },
+  "huevos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "inventos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "juntos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "laberinto": {
+   "likes": 0,
+   "comments": 0
+  },
+  "ladrillos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "mazmorra": {
+   "likes": 0,
+   "comments": 0
+  },
+  "moto": {
+   "likes": 0,
+   "comments": 0
+  },
+  "museo_nocturno": {
+   "likes": 0,
+   "comments": 0
+  },
+  "naves": {
+   "likes": 0,
+   "comments": 0
+  },
+  "nubes": {
+   "likes": 0,
+   "comments": 0
+  },
+  "oxigeno": {
+   "likes": 0,
+   "comments": 0
+  },
+  "paletes": {
+   "likes": 0,
+   "comments": 0
+  },
+  "plataformas": {
+   "likes": 0,
+   "comments": 0
+  },
+  "puzle": {
+   "likes": 0,
+   "comments": 0
+  },
+  "raton_de_biblioteca": {
+   "likes": 0,
+   "comments": 0
+  },
+  "rocas": {
+   "likes": 0,
+   "comments": 0
+  },
+  "sonidos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "tormenta": {
+   "likes": 0,
+   "comments": 0
+  },
+  "torneo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "veloz": {
+   "likes": 0,
+   "comments": 0
+  },
+  "linea_0": {
+   "likes": 0,
+   "comments": 0
+  },
+  "ilustres": {
+   "likes": 0,
+   "comments": 0
+  },
+  "abella": {
+   "likes": 0,
+   "comments": 0
+  }
+ },
+ "ranking": [
+  "abella",
+  "aldea",
+  "asalto",
+  "bolsillo",
+  "brujita_globos",
+  "calle",
+  "carreras",
+  "cinta",
+  "control",
+  "costa_relampago",
+  "duelo",
+  "estilos",
+  "futbol",
+  "gotico",
+  "hola",
+  "huevos",
+  "ilustres",
+  "inventos",
+  "juntos",
+  "laberinto",
+  "ladrillos",
+  "linea_0",
+  "mazmorra",
+  "moto",
+  "museo_nocturno",
+  "naves",
+  "nubes",
+  "oxigeno",
+  "paletes",
+  "plataformas",
+  "puzle",
+  "raton_de_biblioteca",
+  "rocas",
+  "sonidos",
+  "tormenta",
+  "torneo",
+  "veloz"
+ ],
+ "games": {
+  "aldea": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "asalto": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "bolsillo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "calle": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "carreras": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "cinta": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "control": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "costa_relampago": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "duelo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "estilos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "futbol": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "gotico": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "hola": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "huevos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "inventos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "juntos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "laberinto": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "ladrillos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "mazmorra": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "moto": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "museo_nocturno": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "naves": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "nubes": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "oxigeno": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "paletes": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "plataformas": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "puzle": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "raton_de_biblioteca": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "rocas": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "sonidos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "tormenta": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "torneo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "veloz": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "brujita_globos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "linea_0": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "ilustres": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  },
+  "abella": {
+   "likes": 1,
+   "comments": 0,
+   "reactions": {
+    "ROCKET": 1
+   },
+   "url": "https://github.com/ipaud/pinyol/discussions/5",
+   "visits": null,
+   "plays": null,
+   "minutes": null
+  }
+ }
+}
