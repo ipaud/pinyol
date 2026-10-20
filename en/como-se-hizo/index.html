@@ -18,9 +18,9 @@
 <link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/como-se-hizo/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=b593a68d">
+<link rel="stylesheet" href="../../styles.css?v=2aa70dac">
 <script src="../../site.js?v=b718360e" defer></script>
-<script src="../../games.js?v=2648d00e" defer></script>
+<script src="../../games.js?v=20d25232" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
 </head>
 <body>
@@ -36,7 +36,7 @@
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t" class="sr">In numbers</h2>
-<ul class="stats reveal"><li><b data-count="16489" data-dec="0">16.489</b><span>lines of C in the engine</span></li><li><b data-count="33" data-dec="0">33</b><span>example games</span></li><li><b data-count="117" data-dec="0">117</b><span>tests on every change</span></li><li><b data-count="242" data-dec="0">242</b><span>commits in the repository</span></li></ul>
+<ul class="stats reveal"><li><b data-count="19739" data-dec="0">19.739</b><span>lines of C in the engine</span></li><li><b data-count="44" data-dec="0">44</b><span>example games</span></li><li><b data-count="185" data-dec="0">185</b><span>tests on every change</span></li><li><b data-count="363" data-dec="0">363</b><span>commits in the repository</span></li></ul>
 <div class="story">
 <p><strong>One person and Claude.</strong> The engine, examples, tools and this site were written in conversation with Claude Code: every idea was tried in the simulator, measured on the board and corrected based on what the board showed.</p>
 <p><strong>The art, generated and made to fit.</strong> The looks that call for it (Neo Geo, CPS2, 32-bit) use AI-generated images. The engine's tools cut them out, scale them to the right height, split them into frames and reduce them to the console's palette. The low-res looks are drawn with code.</p>
@@ -55,7 +55,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · octal PSRAM at 80 MHz · QSPI screen at 80 MHz</p>
 <h2 id="perf-t">Measured on the console, not promised</h2>
 <p class="intro">Every figure in this section comes from the board: firmware that plays each game from a script and logs a performance line every second, or a benchmark that runs each scene five times. No emulator. At 60 fps, each frame has a 16.6 ms budget.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>of one core in the heaviest scene: affine, four layers and 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>to send a whole frame to the panel; the wire alone takes 7.7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>of one core for sound during play</span></li><li><b><span data-count="117" data-dec="0">117</span><small></small></b><span>self-playing tests that check every frame, run on every change</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>of one core in the heaviest scene: affine, four layers and 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>to send a whole frame to the panel; the wire alone takes 7.7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>of one core for sound during play</span></li><li><b><span data-count="185" data-dec="0">185</span><small></small></b><span>self-playing tests that check every frame, run on every change</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Twelve looks, in frames per second</h3>
 <p>The slowest and fastest second of each example, played on the console. In grey: the first measurement, before optimisation.</p></figcaption>
