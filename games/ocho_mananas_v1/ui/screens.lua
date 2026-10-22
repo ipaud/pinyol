@@ -134,13 +134,13 @@ function screens.countdown(t)
   end
 end
 
-function screens.look_frame()
+function screens.look_frame(plate_y)
   rect(0, 29, 480, 3, 0xF0A040)
   rect(0, 316, 480, 4, 0xF0A040)
   rect(0, 29, 3, 291, 0xF0A040)
   rect(477, 29, 3, 291, 0xF0A040)
-  frame.panel("gold", 184, 282, 112, 26)
-  text("MIRANDO ATRÁS", 240, 287, {font = "jersey_small", align = "center", color = 0x3A2410})
+  frame.panel("gold", 184, plate_y - 4, 112, 26)
+  text("MIRANDO ATRÁS", 240, plate_y + 1, {font = "jersey_small", align = "center", color = 0x3A2410})
 end
 
 function screens.tutorial(step, tut, r)
@@ -263,18 +263,18 @@ function screens.result(r, res, t)
   text(string.upper(day.title .. " · " .. day.date), 240, 30, {font = "jersey_body", align = "center", color = GOLD})
   local head = res.closed and (res.result == "retirada" and "Carrera cerrada por una retirada" or "Carrera cerrada al final del tramo")
                or "La carrera no ha terminado bien"
-  text(head, 240, 62, {font = "jersey_small", align = "center", color = res.closed and TEAL_L or 0xFF9080})
+  text(head, 240, 62, {font = "jersey_small", align = "center", color = WHITE, shadow = INK})
   check(56, 100, res.objective, "Objetivo: retirada sin quedarte sin aire")
   check(56, 128, res.clean, "Sin contactos")
   check(56, 156, res.stay, "Dejar pasar a la manada antes de salir")
   check(56, 184, res.photo, "La foto de Nico")
   text("Contactos: " .. res.contacts .. (res.air_zero and " · te quedaste sin aire" or ""), 56, 216,
-       {font = "jersey_small", color = MUTED})
+       {font = "jersey_small", color = WHITE, shadow = INK})
   if res.closed then
     text("A: seguir   B: repetir la mañana", 240, 270, {font = "jersey_small", align = "center", color = GOLD})
   else
     text("A: reintentar   B: menú", 240, 270, {font = "jersey_small", align = "center", color = GOLD})
-    text("El reintento empieza en la cuenta atrás y no repite escenas.", 240, 246, {font = "jersey_small", align = "center", color = MUTED})
+    text("El reintento empieza en la cuenta atrás y no repite escenas.", 240, 246, {font = "jersey_small", align = "center", color = WHITE, shadow = INK})
   end
 end
 
@@ -282,17 +282,17 @@ function screens.notebook(save)
   img("NOTEBOOK", 0, 0)
   text("CUADERNO DE DANI", 240, 4, {font = "jersey_body", align = "center", color = GOLD, outline = INK})
   local nb = save.notebook or {}
-  local labels = {R1 = "Portal de la izquierda (temprano)", R2 = "Portal de la derecha", R3 = "Salida del final"}
+  local labels = {R1 = "portal izquierdo", R2 = "portal derecho", R3 = "salida final"}
   local INKC, SOFT = 0x2A1E18, 0x6A4A38
   local x, w = 256, 176
-  text("7 de julio · Estafeta", x, 118, {font = "jersey_small", color = SOFT})
-  text("Entrada: inicio del tramo", x, 136, {font = "jersey_small", color = INKC, width = w})
-  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 152,
+  text("7 de julio · Estafeta", x, 128, {font = "jersey_small", color = SOFT})
+  text("Entrada: inicio del tramo", x, 144, {font = "jersey_small", color = INKC, width = w})
+  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 160,
        {font = "jersey_small", color = INKC, width = w})
   local got = save.days[1] and save.days[1].photo
-  frame.icon(got and "CHECK" or "CROSS", x - 4, 186, 24)
-  text(got and "Foto de Nico: sí" or "Foto de Nico: no", x + 22, 192, {font = "jersey_small", color = INKC})
-  text(nb.note or "", x, 216, {font = "jersey_small", color = INKC, width = w})
+  frame.icon(got and "CHECK" or "CROSS", x - 4, 190, 24)
+  text(got and "Foto de Nico: sí" or "Foto de Nico: no", x + 22, 196, {font = "jersey_small", color = INKC})
+  text(nb.note and #nb.note < 90 and nb.note or "", x, 224, {font = "jersey_small", color = INKC, width = w})
   text("A o B: volver", 240, 292, {font = "jersey_small", align = "center", color = 0xF6F2E8, outline = INK})
 end
 

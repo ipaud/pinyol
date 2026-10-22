@@ -1,0 +1,170 @@
+{
+ "BANDERA": {
+  "body": 56,
+  "foot": 72,
+  "h": 78,
+  "ref": 72,
+  "w": 66
+ },
+ "CABE_3QB": {
+  "body": 104,
+  "foot": 117,
+  "h": 123,
+  "ref": 115,
+  "w": 124
+ },
+ "CABE_3QF": {
+  "body": 98,
+  "foot": 119,
+  "h": 124,
+  "ref": 115,
+  "w": 122
+ },
+ "CABE_BACK": {
+  "body": 82,
+  "foot": 118,
+  "h": 125,
+  "ref": 115,
+  "w": 110
+ },
+ "CABE_FRONT": {
+  "body": 74,
+  "foot": 117,
+  "h": 122,
+  "ref": 115,
+  "w": 84
+ },
+ "CABE_SIDE": {
+  "body": 158,
+  "foot": 96,
+  "h": 101,
+  "ref": 95,
+  "w": 192
+ },
+ "DANI_BACK": {
+  "body": 82,
+  "foot": 162,
+  "h": 168,
+  "ref": 150,
+  "w": 122
+ },
+ "DANI_FRONT": {
+  "body": 81,
+  "foot": 152,
+  "h": 158,
+  "ref": 150,
+  "w": 92
+ },
+ "DANI_SIDE": {
+  "body": 123,
+  "foot": 157,
+  "h": 163,
+  "ref": 150,
+  "w": 196
+ },
+ "FAROLA": {
+  "body": 44,
+  "foot": 74,
+  "h": 78,
+  "ref": 72,
+  "w": 56
+ },
+ "FLECHA": {
+  "body": 66,
+  "foot": 42,
+  "h": 46,
+  "ref": 40,
+  "w": 74
+ },
+ "IKURRINA": {
+  "body": 41,
+  "foot": 74,
+  "h": 78,
+  "ref": 72,
+  "w": 54
+ },
+ "LAT_RET_FAR": {
+  "body": 63,
+  "foot": 98,
+  "h": 102,
+  "ref": 96,
+  "w": 72
+ },
+ "LAT_RET_NEAR": {
+  "body": 69,
+  "foot": 42,
+  "h": 46,
+  "ref": 40,
+  "w": 76
+ },
+ "NICO": {
+  "body": 81,
+  "foot": 97,
+  "h": 102,
+  "ref": 96,
+  "w": 88
+ },
+ "RETIRO": {
+  "body": 53,
+  "foot": 82,
+  "h": 86,
+  "ref": 80,
+  "w": 60
+ },
+ "RUN_BACK": {
+  "body": 61,
+  "foot": 126,
+  "h": 131,
+  "ref": 120,
+  "w": 110
+ },
+ "RUN_FRONT": {
+  "body": 62,
+  "foot": 125,
+  "h": 130,
+  "ref": 120,
+  "w": 70
+ },
+ "RUN_SIDE": {
+  "body": 89,
+  "foot": 125,
+  "h": 130,
+  "ref": 120,
+  "w": 128
+ },
+ "TORO_3QB": {
+  "body": 120,
+  "foot": 126,
+  "h": 132,
+  "ref": 125,
+  "w": 128
+ },
+ "TORO_3QF": {
+  "body": 130,
+  "foot": 126,
+  "h": 132,
+  "ref": 125,
+  "w": 156
+ },
+ "TORO_BACK": {
+  "body": 106,
+  "foot": 127,
+  "h": 132,
+  "ref": 125,
+  "w": 118
+ },
+ "TORO_FRONT": {
+  "body": 105,
+  "foot": 129,
+  "h": 134,
+  "ref": 125,
+  "w": 114
+ },
+ "TORO_SIDE": {
+  "body": 189,
+  "foot": 107,
+  "h": 114,
+  "ref": 105,
+  "w": 216
+ }
+}

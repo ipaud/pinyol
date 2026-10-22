@@ -1,31 +1,33 @@
 -- The people and animals of the street, drawn as full-resolution pictures (480x320) over the PPU's street: the
 -- views place them in the 240x160 world and scale them by depth; this draws them there, feet at (sx, sy).
+-- Every picture's cell, feet row and standing height come from views/sizes.lua (art/build_sprites.py), so a view
+-- says how tall a figure should stand on the screen and the scale follows.
 local actors = {}
 
--- frame size of each picture (art/build_sprites.py)
-local SIZE = {
-  DANI_BACK = {84, 160}, DANI_FRONT = {84, 160}, DANI_SIDE = {124, 160},
-  RUN_BACK = {70, 130}, RUN_FRONT = {70, 130}, RUN_SIDE = {100, 130},
-  TORO_BACK = {124, 140}, TORO_FRONT = {124, 140}, TORO_SIDE = {200, 130},
-  CABE_BACK = {124, 140}, CABE_FRONT = {124, 140}, CABE_SIDE = {200, 130},
-  TORO_3QB = {124, 140}, TORO_3QF = {124, 140}, CABE_3QB = {124, 140}, CABE_3QF = {124, 140},
-  FAROLA = {48, 72}, BANDERA = {56, 72}, IKURRINA = {64, 72}, NICO = {80, 96},
-  RETIRO = {40, 80}, FLECHA = {64, 40}, LAT_RET_FAR = {56, 96}, LAT_RET_NEAR = {96, 40},
-}
-
-function actors.has(id) return SIZE[id] ~= nil end
+local SIZE = require("views.sizes")
 
 local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETIRO = true, FLECHA = true,
                LAT_RET_FAR = true, LAT_RET_NEAR = true}
 
-function actors.draw(id, frame, sx, sy, s, flip)
-  local sz = SIZE[id]
+function actors.has(id) return SIZE[id] ~= nil end
+
+-- the scale that makes the picture's standing figure `px` screen pixels tall
+function actors.fit(id, px) return px / SIZE[id].ref end
+
+-- Draw a picture with its feet at (sx, sy) in world pixels, `scale` screen pixels per picture pixel. Nothing is
+-- drawn (and nothing is cut) for one that is wholly off the screen.
+function actors.draw(id, frame, sx, sy, scale, flip, alpha)
+  local z = SIZE[id]
+  local x = sx * 2 - z.w * scale / 2
+  local y = sy * 2 - z.foot * scale
+  if x >= 480 or x + z.w * scale <= 0 or y >= 320 or y + z.h * scale <= 0 then return end
   if not PROPS[id] then  -- a soft shadow on the ground under the feet
-    local w = sz[1] * s * 0.62
-    local h = math.max(4, w * 0.22)
-    img("SHADOW", math.floor(sx * 2 - w / 2), math.floor(sy * 2 - h * 0.6), {scale_x = w / 64, scale_y = h / 16, alpha = 0.42})
+    local w = z.body * scale
+    local h = math.max(4, w * 0.2)
+    img("SHADOW", math.floor(sx * 2 - w / 2), math.floor(sy * 2 - h * 0.35),
+        {scale_x = w / 64, scale_y = h / 16, alpha = 0.42 * (alpha or 1)})
   end
-  img(id, math.floor(sx * 2 - sz[1] * s / 2), math.floor(sy * 2 - sz[2] * s), {frame = frame, scale = s, flip_x = flip})
+  img(id, math.floor(x + 0.5), math.floor(y + 0.5), {frame = frame, scale = scale, flip_x = flip, alpha = alpha})
 end
 
 -- the marker over Dani's head, over everything

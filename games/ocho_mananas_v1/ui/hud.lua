@@ -49,12 +49,8 @@ function hud.draw(r, opts)
   text(opts.clock or hud.clock(r.t), 10, 3, {font = "jersey_body", color = WHITE, shadow = INK})
   local x = segments(122, 4, "AIR", d.air, AIR, AIR_D, d.exhausted)
   segments(x + 6, 4, "BAL", d.bal, BAL, BAL_D, d.bal < 30)
-  text(opts.street or "ESTAFETA", 474, 1, {font = "jersey_small", color = WHITE, align = "right"})
-  minimap(r, 380, 14, 92)
-  if d.exhausted then
-    frame.panel("red", 118, 34, 96, 22)
-    text("SIN AIRE", 166, 37, {font = "jersey_small", color = WHITE, align = "center"})
-  end
+  text(opts.street or "ESTAFETA", 474, -2, {font = "jersey_small", color = WHITE, align = "right"})
+  minimap(r, 380, 18, 92)
   -- the herd behind, as dots on the street's width: top is Dani's line, bottom 30 m back
   local rx, ry, rw, rh = 362, 34, 110, 44
   if opts.radar ~= false and #r.bulls > 0 then
@@ -112,13 +108,17 @@ function hud.draw(r, opts)
       text(s, 240, 36, {font = "jersey_small", color = TEAL_L, align = "center"})
     end
   end
+  if d.exhausted then  -- on the left, below the street's name, clear of the way-out hint
+    frame.panel("red", 8, 34, 96, 22)
+    text("SIN AIRE", 56, 37, {font = "jersey_small", color = WHITE, align = "center"})
+  end
   -- Nico's photo: where it is, and how it is going while it can be taken
   local ph, p = r.photo, r.day.photo
   if ph and p and opts.photo ~= false then
     local show = (not ph.taken and d.z > p.z0 - 260 and d.z <= p.z1 and d.state == "run") or (ph.taken and r.t - ph.at < 150)
     if show then
       local x, y = 8, 62
-      frame.panel(ph.live and "gold" or "ink", x, y, 156, 42)
+      frame.panel(ph.live and "gold" or "ink", x, y, 176, 42)
       frame.icon(ph.live and "FLASH" or "CAM", x + 4, y + 3, 34)
       if ph.live then img("VIEWFINDER", 0, 0, {alpha = 0.55}) end
       local msg, col
@@ -128,12 +128,12 @@ function hud.draw(r, opts)
       elseif ph.live then msg, col = "¡Ahora! Aguanta", GOLD
       else msg, col = "Delante del grupo", 0xC8C0D0 end
       text(msg, x + 42, y + 6, {font = "jersey_small", color = ph.live and INK or col})
-      rect(x + 42, y + 26, 104, 8, 0x2A3058)
-      rect(x + 42, y + 26, math.floor(104 * math.min(1, ph.t / p.need)), 8, ph.taken and GOLD or 0xE0A040)
+      rect(x + 42, y + 26, 124, 8, 0x2A3058)
+      rect(x + 42, y + 26, math.floor(124 * math.min(1, ph.t / p.need)), 8, ph.taken and GOLD or 0xE0A040)
     end
   end
   if opts.banner then
-    local w = textw(opts.banner, "jersey_small") + 24
+    local w = math.min(textw(opts.banner, "jersey_small") + 24, 470)
     frame.panel("navy", 240 - w // 2, 110, w, 30)
     text(opts.banner, 240, 116, {font = "jersey_small", color = WHITE, align = "center"})
   end

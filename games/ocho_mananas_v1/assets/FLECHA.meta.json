@@ -4,8 +4,8 @@
   "format": "packed",
   "bpp": 8,
   "colours": 30,
-  "w": 64,
-  "h": 40,
+  "w": 74,
+  "h": 46,
   "frames": 1,
   "frame_ms": [
     100
@@ -14,12 +14,12 @@
     0
   ],
   "anchor": [
-    32,
-    39
+    37,
+    45
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 2814,
-    "as_rgb565": 5120
+    "total": 2990,
+    "as_rgb565": 6808
   }
 }

@@ -6,10 +6,12 @@ local C = require("race.camera")
 local actors = require("views.actors")
 local rear = {}
 
--- the props are not people: each its own size against the street
-local PROP_K = {DANI_BACK = 0.86, DANI_FRONT = 0.86, RUN_BACK = 0.81, RUN_FRONT = 0.81,
-               TORO_BACK = 0.85, TORO_FRONT = 0.85, TORO_3QB = 0.85, TORO_3QF = 0.85,
-               CABE_BACK = 0.8, CABE_FRONT = 0.8, CABE_3QB = 0.8, CABE_3QF = 0.8, FAROLA = 0.8, BANDERA = 0.9, IKURRINA = 0.8, NICO = 0.9, RETIRO = 1.1, FLECHA = 1.0}
+-- how tall, in screen pixels, each picture's standing figure is drawn at Dani's depth (scale 1)
+local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETIRO = true, FLECHA = true}
+local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
+              TORO_BACK = 119, TORO_FRONT = 119, TORO_3QB = 119, TORO_3QF = 119,
+              CABE_BACK = 112, CABE_FRONT = 112, CABE_3QB = 112, CABE_3QF = 112,
+              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, RETIRO = 88, FLECHA = 40}
 
 function rear.init() end
 
@@ -46,8 +48,8 @@ end
 
 local function place(id, frame, x, z, ht, flip, min_s, min_d)
   local sx, sy, s, d = at(x, z, ht)
-  if not sx or d < (min_d or 22) or s < (min_s or 0.1) then return end
-  if s > 2.0 then s = 2.0 end
+  if not sx or d < (min_d or 14) or s < (min_s or 0.1) then return end
+  if s > 2.6 then s = 2.6 end
   add(id, frame, sx, sy, s, flip, d)
 end
 
@@ -55,9 +57,13 @@ end
 -- street going away, outwards coming at us) when it is off to a side
 local function place_animal(tag, frame, b, z)
   local sx, sy, s, d = at(b.x, z, 0)
-  if not sx or d < 22 or s < 0.1 then return end
-  if s > 2.0 then s = 2.0 end
-  local oblique = math.abs(sx - 120) > 26
+  if not sx or d < 14 or s < 0.1 then return end
+  if s > 2.6 then s = 2.6 end
+  -- straight on in the middle, three-quarters off to the side; with a margin so it does not flicker at the edge
+  local off = math.abs(sx - 120)
+  local oblique = b.oblique
+  if oblique == nil or (oblique and off < 22) or (not oblique and off > 30) then oblique = off > 26 end
+  b.oblique = oblique
   local from_behind = not rear.back
   local id = tag .. (oblique and (from_behind and "_3QB" or "_3QF") or (from_behind and "_BACK" or "_FRONT"))
   -- the three-quarter pictures have their head to the left
@@ -74,14 +80,13 @@ function rear.update(r)  -- once a tick
   if not rear.back and dani.state ~= "retire" then
     for _, b in ipairs(r.bulls) do
       local back = dani.z - b.z
-      if back > -10 and back < 150 then want = 104 end
+      if back > -10 and back < 150 then want = 88 end
     end
   end
-  rear.cb = rear.cb + (want - rear.cb) * 0.04
+  rear.cb = rear.cb + (want - rear.cb) * 0.03
 end
 
 -- Dani's picture: the run is 0-5, a stumble 6, down 7, a sprint 8-11, a jog 12-15, a glance over his shoulder 16-17
--- (the sidestep pictures 18-19 are drawn with a wall beside him: not used)
 local function dani_frame(dani)
   if dani.state == "down" then return 7 end
   if dani.stumble > 0 then return 6 end
@@ -155,9 +160,11 @@ function rear.draw(r, tick, shake)
   table.sort(list, function(a, b) return a.d > b.d end)  -- the far ones first
   img("STREET_REAR", 0, 2 * oy)
   for _, it in ipairs(list) do
-    if it.sx > -40 and it.sx < 280 then actors.draw(it.id, it.frame, it.sx, it.sy, it.s * (PROP_K[it.id] or C.ACTOR_K), it.flip) end
+    -- an animal coming up out of the camera's near plane fades in instead of popping
+    local fade = (not PROPS[it.id] and it.d < 28) and math.max(0.05, (it.d - 14) / 14) or nil
+    actors.draw(it.id, it.frame, it.sx, it.sy, it.s * actors.fit(it.id, SHOW[it.id]), it.flip, fade)
   end
-  if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - 80 * PROP_K.DANI_BACK * ds - 5 + math.sin(tick / 8) * 1.5) end
+  if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - SHOW.DANI_BACK / 2 * ds - 5 + math.sin(tick / 8) * 1.5) end
   rear.used = n_items
   return dsx, dsy
 end

@@ -327,6 +327,12 @@ local function judge(r)
   end
   if closed and r.stats.air_zero then note = note .. " En algún momento te quedaste sin aire." end
   res.note = note
+  -- the notebook's page is small: one short line
+  res.short = (not closed and ({contacto = "Un toro venía por tu carril: apártate antes.", bloqueada = "Sin hueco: cambia de línea con margen.",
+                 agotamiento = "Sin aire con la manada encima: usa B.", caida = "Muchos golpes seguidos: deja espacio."})[o.reason])
+    or (o.result == "retirada" and not passed and "Saliste antes de que llegara la manada.")
+    or (o.result == "retirada" and "Dejaste pasar al grupo y saliste por tu sitio.")
+    or "Llegaste al final sin retirarte."
   if res.photo then res.leire = "Hoy has elegido el momento. Ahora falta elegir el sitio."
   elseif r.stats.air_zero then res.leire = "Tenías hueco, pero ya no podías cambiar de ritmo."
   elseif r.stats.contacts == 0 then res.leire = "Hoy has podido esperar."
@@ -342,7 +348,7 @@ local function finish_run()
     save.days[1] = {done = prev.done or last.closed, objective = prev.objective or last.objective,
                     clean = prev.clean or last.clean, stay = prev.stay or last.stay,
                     photo = prev.photo or last.photo, tries = (prev.tries or 0) + 1}
-    save.notebook = {zone = last.zone, result = last.result, note = last.note, reason = last.reason}
+    save.notebook = {zone = last.zone, result = last.result, note = last.short, reason = last.reason}
     write_save()
   end
   state, timer = "review", 0
@@ -358,8 +364,6 @@ function _update()
   if banner_t > 0 then banner_t = banner_t - 1 end
   tune(timer)
   if state == "title" then
-    sim.step(attract, {lat = math.sin(timer / 90) * 0.4})
-    if attract.dani.z > 1900 then attract = sim.new(days.practice); R = attract end
     local items = screens.title_items(save)
     if btnp("up", 12, 6) then menu_i = (menu_i - 2) % #items + 1; sfx("BLIP", 0.3) end
     if btnp("down", 12, 6) then menu_i = menu_i % #items + 1; sfx("BLIP", 0.3) end
@@ -489,15 +493,18 @@ function _draw()
       if math.abs(b.z - R.dani.z) < 45 and (timer // 2) % 2 == 0 then shake = 1 end
     end
   end
-  if view == "side" then side.draw(R, timer) else rear.draw(R, timer, shake) end
-  if state == "race" or state == "close" then dust(R) end
-  if flash_t > 0 then fade("light", ALL, flash_t + 4) elseif flash_was then fx_off() end
-  flash_was = flash_t > 0
-  if state == "race" or state == "close" then fallen_marks(R) end
-  if state == "title" then
+  if state == "title" then  -- the title picture covers everything: draw nothing under it
     screens.title(save, menu_i, timer)
     return
   end
+  if view == "side" then side.draw(R, timer) else rear.draw(R, timer, shake) end
+  if state == "race" or state == "close" then dust(R) end
+  if flash_t > 0 then  -- the flash whitens the PPU floor, and a burst over the pictures drawn on top of it
+    fade("light", ALL, flash_t + 4)
+    img("FLASH", 360 - 64 * 5, 130 - 64 * 5, {scale = 5, alpha = math.min(1, flash_t / 5)})
+  elseif flash_was then fx_off() end
+  flash_was = flash_t > 0
+  if state == "race" or state == "close" then fallen_marks(R) end
   if state == "position" then
     position.draw()
     return
@@ -506,14 +513,14 @@ function _draw()
     screens.prep(R.day, timer)
     return
   end
-  local opts = {banner = banner_t > 0 and banner or nil, warn = view == "rear", prompt_y = view == "side" and 96 or 250}
+  local opts = {banner = banner_t > 0 and banner or nil, warn = view == "rear", prompt_y = view == "side" and 96 or (state == "practice" and 206 or 250)}
   if state == "count" then
     local s = math.min(timer // 60, 5)
     opts.clock = s < 5 and string.format("07:59:%02d", 55 + s) or "08:00:00"
   end
   if state == "practice" then opts.radar = false; opts.street = "PRÁCTICA" end
   if state ~= "close" then hud.draw(R, opts) end
-  if looking and view == "rear" then screens.look_frame() end
+  if looking and view == "rear" then screens.look_frame(state == "practice" and 224 or 286) end
   if state == "count" then screens.countdown(timer) end
   if state == "practice" then screens.tutorial(STEPS[tut.step], tut, R) end
   if state == "close" then screens.close(R) end

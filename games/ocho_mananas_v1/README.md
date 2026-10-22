@@ -14,8 +14,10 @@ build-mac/pinyol_headless --game games/ocho_mananas_v1 --fresh --validate --stri
 build-mac/pinyol_headless --game games/ocho_mananas_v1 --fresh --script games/ocho_mananas_v1/tests/flujo.script --strict-assets
 ```
 
-Tests (`tests/*.script`): `flujo` (title to review), `canto` (the calls and the start choice), `escenas` (the
-talking scenes). `tests/pilot.lua` has autopilots that play the run.
+Tests (`tests/*.script`): `flujo` (title to review), `canto` and `canto_fallo` (the calls, a late tap, the start choice),
+`escenas` (the talking scenes), `lateral` (the side view's layers cover the screen), `galeria` (every actor at its
+on-screen size). `python3 games/ocho_mananas_v1/art/qa_sprites.py` checks every sprite strip (cut frames, hopping feet,
+breathing scale, stray fragments) and writes a contact sheet per asset to `art/qa/`. `tests/pilot.lua` has autopilots that play the run.
 
 ## Controls
 

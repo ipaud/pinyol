@@ -9,8 +9,8 @@ local side = {}
 local PERIOD = 400                                       -- the layers' width: they wrap every 400 pixels
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
-local DANI_K = 0.62                                      -- his 160-pixel pictures drawn at about 100 pixels
-local SIDE_K = {DANI_SIDE = DANI_K, RUN_SIDE = 0.52, TORO_SIDE = 0.52, CABE_SIDE = 0.52}  -- the others: about 68 pixels tall
+-- how tall, in screen pixels, each picture's standing figure is drawn
+local SHOW = {DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 70, CABE_SIDE = 64, LAT_RET_FAR = 96, LAT_RET_NEAR = 40}
 
 function side.init() end
 
@@ -28,8 +28,10 @@ function side.x(dani, x, z) return C.SIDE_X + (z - dani.z) * k_at(x) end
 
 local function layer(id, y, k, z)
   local x = -((z * k - C.SIDE_X * 2) % PERIOD)
-  img(id, math.floor(x), y)
-  img(id, math.floor(x) + PERIOD, y)
+  while x < 480 do  -- 2 or 3 copies, however the wrap falls
+    img(id, math.floor(x), y)
+    x = x + PERIOD
+  end
 end
 
 -- Dani's picture: the run is 0-5, a stumble 6, a sprint 7-10, a jog 11-14
@@ -73,9 +75,9 @@ function side.draw(r, tick)
   table.sort(list, function(a, b) return a.y < b.y end)  -- the nearest (lowest on the screen) drawn last, on top
   layer("LAT_WALL", WALL_Y, WALL_K, dani.z)
   layer("LAT_GROUND", GROUND_Y, GROUND_K, dani.z)
-  for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, SIDE_K[it.id] or 1, it.flip) end
+  for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, actors.fit(it.id, SHOW[it.id]), it.flip) end
   layer("LAT_FENCE", FENCE_Y, FENCE_K, dani.z)
-  if dani.state ~= "retire" then actors.marker(C.SIDE_X, dy - 160 * DANI_K / 2 - 4 + math.sin(tick / 8) * 1.5) end
+  if dani.state ~= "retire" then actors.marker(C.SIDE_X, dy - SHOW.DANI_SIDE / 2 - 4 + math.sin(tick / 8) * 1.5) end
   return C.SIDE_X, dy
 end
 

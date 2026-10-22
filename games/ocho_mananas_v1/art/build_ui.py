@@ -75,7 +75,6 @@ def photo():
 
 
 def logo():
-    im = bs.key_magenta(Image.open(RAW / "logo_gen.png"))
     mask = Image.fromarray(np.where(magenta_mask(Image.open(RAW / "logo_gen.png")), 0, 255).astype("uint8"))
     rgba = Image.open(RAW / "logo_gen.png").convert("RGBA")
     rgba.putalpha(mask)

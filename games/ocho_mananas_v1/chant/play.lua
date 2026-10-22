@@ -198,6 +198,7 @@ function chant.update()
       end
     elseif phase_tick > due + window then take_miss() end
   end
+  due = CHART.onset_tick(S.idx, S.phase, S.day)  -- a hit or miss above moved on: the note not tapped in time is this one
   if not S.gesture and S.idx <= count and S.phase_tick > due + window then take_miss() end
   if S.idx > count and S.feedback_tick == 0 then next_phase() end
 end

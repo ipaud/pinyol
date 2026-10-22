@@ -1,0 +1,6 @@
+# Every actor at the size the views draw it, and some at the edges of the screen (see tests/galeria.lua).
+new
+lua require("tests.galeria").install()
+tick 2
+shot galeria
+expect_ok

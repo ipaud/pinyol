@@ -4,7 +4,6 @@ return {
   HOR = 44,      -- the horizon line, in world pixels
   FOV = 210,     -- mode7's fov: screen pixels per unit of lateral distance at depth 1
   CAM_H = 29.8,  -- how high the camera is, in street units (a runner is 16 tall, the street 64 wide)
-  ACTOR_K = 1.55, -- how much bigger than their 68-pixel pictures the actors are drawn at Dani's depth
   CB = 64,       -- how far behind Dani the camera follows
   HALF = 32,     -- half the street's width
   END = 640,     -- the far end of the painted street

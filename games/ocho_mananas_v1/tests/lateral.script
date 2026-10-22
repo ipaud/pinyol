@@ -1,0 +1,6 @@
+# The side view's three layers cover the whole screen wherever the wrap falls (z = 1388.9 once left 50 px bare).
+new
+lua go_race(1); side = require("views.side"); view = "side"; side.enter(); paused = true; R.dani.z = 1388.9
+tick 2
+shot lateral_borde
+expect_ok
