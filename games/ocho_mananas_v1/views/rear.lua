@@ -7,11 +7,11 @@ local actors = require("views.actors")
 local rear = {}
 
 -- how tall, in screen pixels, each picture's standing figure is drawn at Dani's depth (scale 1)
-local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, FLECHA = true}
+local PROPS = {FAROLA = true, BANDERA = true, NICO = true, FLECHA = true}
 local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
               TORO_BACK = 165, TORO_FRONT = 165, TORO_3QB = 165, TORO_3QF = 165,   -- the herd towers over the runners:
               CABE_BACK = 148, CABE_FRONT = 148, CABE_3QB = 148, CABE_3QF = 148,   -- 500 kg against 75
-              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, FLECHA = 60}
+              FAROLA = 58, BANDERA = 65, NICO = 86, FLECHA = 60}
 
 function rear.init() end
 
@@ -129,7 +129,6 @@ function rear.draw(r, tick, shake)
       local h = hash(k, side)
       local flip = side < 0
       if h % 5 == 2 then place("BANDERA", (tick // 20 + k) % 2, side * 30, z - 8, 52, flip, 0.12, 80) end
-      if h % 7 == 3 then place("IKURRINA", (tick // 16 + k) % 2, side * 30, z + 4, 4, flip, 0.12, 80) end
       if k % 3 == 0 then place("FAROLA", 1, side * 30, z + 12, 40, flip, 0.14, 80) end
     end
   end

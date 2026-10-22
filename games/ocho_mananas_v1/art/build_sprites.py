@@ -62,10 +62,9 @@ SHEETS = {
     "RUN_FRONT": (120, [("run_front_gen.png", 4, 2, runners(2, 2, 0))]),
     # 4 runners x (4 strides, down): var*4+phase, then 16+var lies down
     "RUN_SIDE": (120, [("run_side_gen.png", 4, 5, runners(5, 4, 1))]),
-    # props: the lamp (off, lit), the banner (two waves), the ikurriña (two waves), Nico on his balcony (aiming, flash)
+    # props: the lamp (off, lit), the banner (two waves), Nico on his balcony (aiming, flash)
     "FAROLA": (72, [("props_gen.png", 1, 6, [(0, 0), (0, 1)])]),
     "BANDERA": (72, [("props_gen.png", 1, 6, [(0, 2), (0, 3)])]),
-    "IKURRINA": (72, [("props_gen.png", 1, 6, [(0, 4), (0, 5)])]),
     "NICO": (96, [("nico_gen.png", 1, 2, row_major(2, 2))]),
     # the way-out arrows are the only refuge marker (the doors that stood beside them were taken out)
     # flat road markings, the view squashes them: 0 points ahead, 1 to the left (a wall), 2 to the right
