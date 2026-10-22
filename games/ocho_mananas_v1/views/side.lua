@@ -6,6 +6,7 @@ local C = require("race.camera")
 local actors = require("views.actors")
 local side = {}
 
+local MAX_ANIMALS = 5
 local PERIOD = 400                                       -- the layers' width: they wrap every 400 pixels
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
@@ -48,11 +49,15 @@ function side.draw(r, tick)
   local function add(id, frame, sx, y, flip)
     list[#list + 1] = {id = id, frame = frame, sx = sx, y = y, flip = flip}
   end
+  local shown = {}  -- the animals in view, the nearest to Dani first; only the first MAX_ANIMALS are drawn (each costs about 1.5 ms)
   for _, b in ipairs(r.bulls) do
     local sx = side.x(dani, b.x, b.z)
-    if sx > -20 and sx < 300 then
-      add(b.kind == "toro" and "TORO_SIDE" or "CABE_SIDE", math.floor(b.phase * 4) % 4, sx - 20, side.y(b.x), false)
-    end
+    if sx > -20 and sx < 300 then shown[#shown + 1] = {b = b, sx = sx} end
+  end
+  table.sort(shown, function(a, c) return math.abs(a.b.z - dani.z) < math.abs(c.b.z - dani.z) end)
+  for i = 1, math.min(#shown, MAX_ANIMALS) do
+    local e = shown[i]
+    add(e.b.kind == "toro" and "TORO_SIDE" or "CABE_SIDE", math.floor(e.b.phase * 4) % 4, e.sx - 20, side.y(e.b.x), false)
   end
   for _, ru in ipairs(r.runners) do
     if ru.state ~= "gone" then
