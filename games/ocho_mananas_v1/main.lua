@@ -139,22 +139,12 @@ local function calm(r)
   return true
 end
 
-local function say(text, t) banner, banner_t = text, t or 150 end
 
 local function update_view(r)
   local w = wanted_view(r)
   if w ~= view and calm(r) and not looking and r.dani.state == "run" then
     for b, _ in pairs(MAP.rear) do if btn(b) then latch[b] = view end end
     enter_view(w)
-    if w == "side" then say("VISTA LATERAL · arriba/abajo: de lado · izq/der: ritmo", 200)
-    else say("VISTA TRASERA · izq/der: de lado", 150) end
-  elseif w == view then
-    for _, k in ipairs(r.day.views or {}) do
-      local dz = k[1] - r.dani.z
-      if dz > 0 and dz < 70 and k[2] ~= view and banner_t <= 0 then
-        say(k[2] == "side" and "Se acerca un cambio de cámara: arriba y abajo te llevarán de lado" or "Vuelve la vista trasera", 120)
-      end
-    end
   end
 end
 
