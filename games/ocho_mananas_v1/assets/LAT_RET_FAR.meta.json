@@ -1,0 +1,25 @@
+{
+  "asset": "LAT_RET_FAR",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 32,
+  "w": 56,
+  "h": 96,
+  "frames": 1,
+  "frame_ms": [
+    100
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    28,
+    95
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5317,
+    "as_rgb565": 10752
+  }
+}

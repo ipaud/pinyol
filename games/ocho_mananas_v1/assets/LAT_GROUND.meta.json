@@ -1,0 +1,25 @@
+{
+  "asset": "LAT_GROUND",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 45,
+  "w": 400,
+  "h": 50,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    200,
+    49
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 24108,
+    "as_rgb565": 40000
+  }
+}

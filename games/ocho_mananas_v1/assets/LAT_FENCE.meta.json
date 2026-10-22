@@ -1,0 +1,25 @@
+{
+  "asset": "LAT_FENCE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 57,
+  "w": 400,
+  "h": 67,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    200,
+    66
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 30932,
+    "as_rgb565": 53600
+  }
+}

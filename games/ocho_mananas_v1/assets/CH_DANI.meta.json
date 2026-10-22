@@ -1,0 +1,39 @@
+{
+  "asset": "CH_DANI",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 88,
+  "h": 160,
+  "frames": 8,
+  "frame_ms": [
+    140,
+    140,
+    140,
+    140,
+    140,
+    140,
+    140,
+    140
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "anchor": [
+    44,
+    158
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 50143,
+    "as_rgb565": 225280
+  }
+}

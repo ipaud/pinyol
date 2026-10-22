@@ -1,0 +1,31 @@
+{
+  "asset": "CH_MISS_FX",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 48,
+  "h": 48,
+  "frames": 4,
+  "frame_ms": [
+    80,
+    80,
+    80,
+    80
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    24,
+    46
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3730,
+    "as_rgb565": 18432
+  }
+}

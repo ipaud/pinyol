@@ -1,0 +1,33 @@
+{
+  "asset": "CH_OSU_GESTURES",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 12,
+  "w": 112,
+  "h": 100,
+  "frames": 5,
+  "frame_ms": [
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "anchor": [
+    56,
+    98
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 20332,
+    "as_rgb565": 112000
+  }
+}

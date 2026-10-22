@@ -1,0 +1,25 @@
+{
+  "asset": "LAT_RET_NEAR",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 31,
+  "w": 96,
+  "h": 40,
+  "frames": 1,
+  "frame_ms": [
+    100
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    48,
+    39
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3194,
+    "as_rgb565": 7680
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "asset": "CH_OSU_RINGS",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 4,
+  "w": 96,
+  "h": 96,
+  "frames": 3,
+  "frame_ms": [
+    100,
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    48,
+    94
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 10927,
+    "as_rgb565": 55296
+  }
+}

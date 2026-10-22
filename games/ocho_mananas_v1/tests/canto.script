@@ -1,0 +1,32 @@
+# The three calls before the run: the scene, the first call, a hit, the end of the calls, and where to start.
+new
+tick 40
+lua save.prologue = true; save.practice = true
+press A
+tick 30
+shot c01_escena_antes
+press B
+tick 5
+expect_lua state == "chant"
+shot c02_intro
+tap 240 285
+tick 24
+expect_lua chant.s.state == "play"
+shot c03_canto
+lua chant.s.phase_tick = 43
+tap 112 170
+expect_lua chant.s.score == 100 and chant.s.idx == 2
+tick 6
+shot c04_acierto
+lua chant.s.phase = 3; chant.s.idx = 99; chant.s.feedback_tick = 0
+tick 3
+expect_lua state == "position"
+tick 20
+shot c05_posicion
+press RIGHT
+tick 2
+press A
+tick 2
+expect_lua state == "prep" and R.dani.x == 22
+shot c06_briefing
+expect_ok

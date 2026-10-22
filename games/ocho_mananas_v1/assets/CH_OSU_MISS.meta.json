@@ -1,0 +1,25 @@
+{
+  "asset": "CH_OSU_MISS",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 7,
+  "w": 80,
+  "h": 80,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    40,
+    79
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2930,
+    "as_rgb565": 12800
+  }
+}

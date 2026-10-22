@@ -1,0 +1,14 @@
+# The talking scenes: the workshop with the old print, and the breakfast with Nico's photo, caught and missed.
+new
+tick 40
+press A
+tick 60
+shot e01_taller_foto
+lua screens.scene_start(story1.after({photo = true, leire = "Hoy has elegido el momento."})); state = "scene"
+tick 80
+shot e02_nico_foto_buena
+lua screens.scene_start(story1.after({photo = false, leire = "Hoy has podido esperar."})); state = "scene"
+tick 80
+shot e03_nico_foto_corta
+lua screens.scene_start(story1.after({photo = false, leire = "x"})); state = "scene"; for _ = 1, 5 do screens.scene_update() end
+expect_ok

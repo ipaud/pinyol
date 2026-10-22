@@ -1,0 +1,25 @@
+{
+  "asset": "PIC_NICO_OK",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 48,
+  "w": 270,
+  "h": 184,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    135,
+    183
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 50861,
+    "as_rgb565": 99360
+  }
+}

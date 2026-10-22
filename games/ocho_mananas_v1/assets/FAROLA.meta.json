@@ -1,0 +1,27 @@
+{
+  "asset": "FAROLA",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 32,
+  "w": 48,
+  "h": 72,
+  "frames": 2,
+  "frame_ms": [
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    24,
+    71
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3692,
+    "as_rgb565": 13824
+  }
+}

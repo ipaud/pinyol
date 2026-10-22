@@ -1,0 +1,25 @@
+{
+  "asset": "PIC_FOTO",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 48,
+  "w": 270,
+  "h": 176,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    135,
+    175
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 47605,
+    "as_rgb565": 95040
+  }
+}

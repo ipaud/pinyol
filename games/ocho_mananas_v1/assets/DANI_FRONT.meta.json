@@ -1,0 +1,31 @@
+{
+  "asset": "DANI_FRONT",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 36,
+  "h": 68,
+  "frames": 4,
+  "frame_ms": [
+    100,
+    100,
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    18,
+    67
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 6133,
+    "as_rgb565": 19584
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "asset": "NICO",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 32,
+  "w": 80,
+  "h": 96,
+  "frames": 2,
+  "frame_ms": [
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    40,
+    95
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 15329,
+    "as_rgb565": 30720
+  }
+}

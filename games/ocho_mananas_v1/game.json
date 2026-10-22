@@ -1,0 +1,8 @@
+{
+  "id": "ocho_mananas_v1",
+  "title": "07:59 · Ocho mañanas",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "Pau Avila / Andròmines",
+  "description": "Encierros de San Fermín: aprender a correr una calle, leer la manada y saber cuándo retirarse. Prototipo de la mañana 1."
+}

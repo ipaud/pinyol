@@ -1,0 +1,31 @@
+{
+  "asset": "TORO_3QF",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 29,
+  "w": 60,
+  "h": 68,
+  "frames": 4,
+  "frame_ms": [
+    100,
+    100,
+    100,
+    100
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    30,
+    67
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 9438,
+    "as_rgb565": 32640
+  }
+}

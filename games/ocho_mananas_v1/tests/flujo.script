@@ -1,0 +1,23 @@
+# From the title through a whole run with the autopilot: scenes, practice, briefing, count, the herd, the review.
+new
+tick 40
+shot f01_titulo
+press A
+tick 30
+shot f02_escena
+press B
+tick 150
+shot f03_practica
+lua go_race(1); state="prep"; set_timer(30)
+tick 2
+shot f04_prep
+lua state="count"; set_timer(250)
+tick 2
+shot f05_cuenta
+lua state="race"; set_timer(0); autopilot=require("tests.pilot").photo
+tick 1300
+shot f06_carrera_media
+tick 1500
+shot f07_carrera_final
+tick 400
+shot f08_cierre

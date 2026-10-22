@@ -1,0 +1,33 @@
+{
+  "asset": "CH_OSU_NUMBERS",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 80,
+  "h": 80,
+  "frames": 5,
+  "frame_ms": [
+    90,
+    90,
+    90,
+    90,
+    90
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "anchor": [
+    40,
+    78
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 17899,
+    "as_rgb565": 64000
+  }
+}
