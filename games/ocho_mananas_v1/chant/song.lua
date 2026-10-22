@@ -1,7 +1,9 @@
 -- The guide melody of the three calls. PROVISIONAL: the first line of the chant ("A San Fermín pedimos") as an
 -- automatic pitch tracker heard it in a crowd recording (YouTube hUMifd5xwb0, 1.7-4.4 s; see
 -- output/canto_referencias/). It is a crowd singing with drifting pitch, so the notes are the tracker's best guess
--- and the rhythm is the game's chart, not the singers'. Not confirmed by ear. Replace NOTES with a verified
+-- and the rhythm is the game's chart, not the singers'. Cross-checked against three other crowd recordings
+-- (xP9kX_kzbcM, bJZmIe1qJts an octave up, Y2JU9UyVkvs): all hover around B3 with A#3, A3 and G#3 beside it, but
+-- which neighbour each syllable takes is uncertain by a semitone. Not confirmed by ear. Replace NOTES with a verified
 -- transcription (and its source) when there is one.
 local M = {}
 local CHART = require("chant.chart")
