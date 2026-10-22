@@ -16,10 +16,13 @@ local function check(x, y, ok, label, colour)
 end
 
 -- --- title ---------------------------------------------------------------------------------------------------
-function screens.title_items(save)
-  local items = {{id = "day1", text = save.days[1] and save.days[1].done and "Mañana 1 · 7 de julio  (repetir)" or "Mañana 1 · 7 de julio"},
-                 {id = "practice", text = "Práctica · calle vacía"}}
-  if save.notebook then items[#items + 1] = {id = "notebook", text = "Cuaderno"} end
+local DATES = {"7 de julio", "8 de julio", "9 de julio", "10 de julio", "11 de julio", "12 de julio", "13 de julio", "14 de julio"}
+function screens.title_items(save, sel_day)
+  local d = sel_day or 1
+  local suffix = (save.days[dk(d)] and save.days[dk(d)].done) and "  (repetir)" or ""
+  local items = {{id = "day", text = "Mañana " .. d .. " · " .. DATES[d] .. suffix, pick = save.next > 1}}
+  items[#items + 1] = {id = "practice", text = "Práctica · calle vacía"}
+  if save.notes and next(save.notes) then items[#items + 1] = {id = "notebook", text = "Cuaderno"} end
   items[#items + 1] = {id = "look", text = "Mirada atrás: " .. (save.opts.look == "toggle" and "alternar" or "mantener C")}
   return items
 end
@@ -27,7 +30,7 @@ end
 function screens.title(save, sel, t)
   img("TITLE_ART", 0, 0)
   img("LOGO", 40, 2 + math.floor(math.sin(t / 40) * 2))
-  local items = screens.title_items(save)
+  local items = screens.title_items(save, sel_day)
   local h = 22 + #items * 22
   card(100, 312 - h, 280, h)
   local y = 312 - h + 12
@@ -35,9 +38,13 @@ function screens.title(save, sel, t)
     local on = i == sel
     if on then frame.icon("SELECT", 112 + math.floor(math.sin(t / 8) * 2), y - 8, 26) end
     text(it.text, 250, y, {font = "jersey_small", align = "center", color = on and GOLD or WHITE})
+    if it.pick and on then  -- the morning can be changed: arrows at both sides
+      if sel_day > 1 then tri(142, y + 4, 148, y - 1, 148, y + 9, GOLD) end
+      if sel_day < math.min(8, save.next) then tri(358, y + 4, 352, y - 1, 352, y + 9, GOLD) end
+    end
     y = y + 22
   end
-  if save.days[1] and save.days[1].done then
+  if save.days[dk(1)] and save.days[dk(1)].done then
     frame.icon("CHECK", 440, 280, 30)
   end
 end
@@ -47,6 +54,10 @@ local sc = nil
 function screens.scene_start(scene)
   sc = {scene = scene, i = 1, chars = 0, t = 0}
 end
+
+-- for the tests: show line i of the scene, all of it
+function screens.scene_goto(i) sc.i, sc.chars = math.min(i, #sc.scene.lines), 999 end
+function screens.scene_lines() return #sc.scene.lines end
 
 function screens.scene_update()
   sc.t = sc.t + 1
@@ -75,9 +86,9 @@ function screens.scene_draw()
   local line_ = sc.scene.lines[math.min(sc.i, #sc.scene.lines)]
   if line_.pic then
     local w, h = imgsize(line_.pic)
-    local k = w <= 120 and 3 or 1  -- the old pictures are tiny and shown at 3x, the new prints at their size
-    local x, y = 240 - w * k // 2, (k == 1 and 124 or 112) - h * k // 2
-    rect(x - 8, y - 8, w * k + 16, h * k + 16, 0xF0E8D8)
+    local k = w <= 120 and 3 or math.min(1, 170 / h)  -- the old pictures are tiny and shown at 3x, the prints at their size or smaller
+    local x, y = 240 - math.floor(w * k / 2), (w <= 120 and 112 or 122) - math.floor(h * k / 2)
+    rect(x - 8, y - 8, math.floor(w * k) + 16, math.floor(h * k) + 16, 0xF0E8D8)
     img(line_.pic, x, y, {scale = k})
   end
   frame.panel("navy", 8, 216, 464, 100)
@@ -93,34 +104,49 @@ function screens.scene_draw()
 end
 
 -- --- briefing before the run ----------------------------------------------------------------------------------
-function screens.prep(day, t)
+function screens.prep(day, t, variants, variant)
   shade(0, 0, 480, 320)
   card(20, 8, 440, 304, "navy")
-  text(string.upper(day.title .. " · " .. day.date), 240, 22, {font = "jersey_body", align = "center", color = GOLD})
-  text("«" .. day.subtitle .. "» · Tramo: " .. (day.street or ""), 240, 50, {font = "jersey_small", align = "center", color = MUTED})
-  text("Objetivo", 48, 72, {font = "jersey_small", color = GOLD})
-  text(day.objective, 48, 90, {font = "jersey_small", color = WHITE, width = 390})
-  text("Retos opcionales", 48, 128, {font = "jersey_small", color = GOLD})
-  for i, c in ipairs(day.challenges) do text("· " .. c.text, 56, 128 + i * 18, {font = "jersey_small", color = WHITE}) end
+  text(string.upper(day.title .. " · " .. day.date), 240, 20, {font = "jersey_body", align = "center", color = GOLD})
+  text("«" .. day.subtitle .. "» · " .. (day.street or ""), 240, 46, {font = "jersey_small", align = "center", color = MUTED})
+  text("Objetivo", 48, 66, {font = "jersey_small", color = GOLD})
+  text(day.objective, 48, 82, {font = "jersey_small", color = WHITE, width = 390})
+  local y = 104
+  if variants then  -- the stretch to run: picked with left and right, every one known
+    text("Tramo", 48, y + 4, {font = "jersey_small", color = GOLD})
+    local x = 108
+    for i, v in ipairs(variants) do
+      local on = i == variant
+      rect(x, y, 160, 24, on and GOLD or 0x5A6290)
+      rect(x + 2, y + 2, 156, 20, on and 0xF6E8B0 or 0x232A52)
+      text(v.name, x + 80, y + 5, {font = "jersey_small", color = on and 0x3A2410 or WHITE, align = "center"})
+      x = x + 170
+    end
+    text("izq / der: cambiar · " .. (variants[variant].note or ""), 108, y + 30, {font = "jersey_small", color = MUTED})
+    y = y + 50
+  else
+    y = y + 6
+  end
+  text("Retos opcionales", 48, y, {font = "jersey_small", color = GOLD})
+  for i, c in ipairs(day.challenges) do text("· " .. c.text, 56, y + i * 17, {font = "jersey_small", color = WHITE}) end
   -- the street's map: the ways out are known before running
-  local x0, x1, y = 70, 410, 232
-  rect(x0, y - 6, x1 - x0, 12, 0x2A3058)
+  local x0, x1, my = 70, 410, 250
+  rect(x0, my - 6, x1 - x0, 12, 0x2A3058)
   for _, zn in ipairs(day.zones) do
     local a = x0 + zn.z0 / day.length * (x1 - x0)
     local b = x0 + zn.z1 / day.length * (x1 - x0)
-    rect(math.floor(a), zn.side < 0 and y - 12 or y + 6, math.floor(b - a), 6, TEAL)
-    text(zn.id, math.floor((a + b) / 2), zn.side < 0 and y - 26 or y + 13, {font = "jersey_small", align = "center", color = TEAL_L})
+    rect(math.floor(a), zn.side < 0 and my - 12 or my + 6, math.floor(b - a), 6, TEAL)
+    text(zn.id, math.floor((a + b) / 2), zn.side < 0 and my - 26 or my + 13, {font = "jersey_small", align = "center", color = TEAL_L})
   end
-  tri(x0 - 12, y - 6, x0 - 12, y + 6, x0 - 4, y, GOLD)
-  text("inicio", x0 - 22, y + 13, {font = "jersey_small", color = MUTED})
-  text("fin", x1 + 6, y - 6, {font = "jersey_small", color = MUTED})
+  tri(x0 - 12, my - 6, x0 - 12, my + 6, x0 - 4, my, GOLD)
+  text("inicio", x0 - 22, my + 13, {font = "jersey_small", color = MUTED})
+  text("fin", x1 + 6, my - 6, {font = "jersey_small", color = MUTED})
   if day.photo then  -- Nico's balcony on the map
     local px = x0 + day.photo.at / day.length * (x1 - x0)
-    rect(math.floor(px) - 5, day.photo.side < 0 and y - 13 or y + 7, 10, 7, 0xC8C8D8)
-    circ(math.floor(px), day.photo.side < 0 and y - 10 or y + 10, 2, INK)
+    rect(math.floor(px) - 5, day.photo.side < 0 and my - 13 or my + 7, 10, 7, 0xC8C8D8)
+    circ(math.floor(px), day.photo.side < 0 and my - 10 or my + 10, 2, INK)
   end
-  text("A apretar · B aflojar · C mirar atrás", 240, 262, {font = "jersey_small", align = "center", color = WHITE})
-  if (t // 25) % 2 == 0 then text("A: a la calle   B: volver", 240, 280, {font = "jersey_small", align = "center", color = GOLD}) end
+  if (t // 25) % 2 == 0 then text("A: a la calle   B: volver", 240, 286, {font = "jersey_small", align = "center", color = GOLD}) end
 end
 
 function screens.countdown(t)
@@ -262,15 +288,17 @@ end
 function screens.result(r, res, t)
   card(24, 12, 432, 296, res.closed and "teal" or "red")
   local day = r.day
-  text(string.upper(day.title .. " · " .. day.date), 240, 30, {font = "jersey_body", align = "center", color = GOLD})
+  text(string.upper(day.title .. " · " .. day.date), 240, 24, {font = "jersey_body", align = "center", color = GOLD})
   local head = res.closed and (res.result == "retirada" and "Carrera cerrada por una retirada" or "Carrera cerrada al final del tramo")
                or "La carrera no ha terminado bien"
-  text(head, 240, 62, {font = "jersey_small", align = "center", color = WHITE, shadow = INK})
-  check(56, 100, res.objective, "Objetivo: retirada sin quedarte sin aire")
-  check(56, 128, res.clean, "Sin contactos")
-  check(56, 156, res.stay, "Dejar pasar a la manada antes de salir")
-  check(56, 184, res.photo, "La foto de Nico")
-  text("Contactos: " .. res.contacts .. (res.air_zero and " · te quedaste sin aire" or ""), 56, 216,
+  text(head, 240, 56, {font = "jersey_small", align = "center", color = WHITE, shadow = INK})
+  local y = 92
+  check(56, y, res.objective, "Objetivo: retirada sin quedarte sin aire")
+  for _, c in ipairs(day.challenges or {}) do
+    y = y + 28
+    check(56, y, res.ch[c.id], c.text)
+  end
+  text("Contactos: " .. res.contacts .. (res.air_zero and " · te quedaste sin aire" or ""), 56, y + 32,
        {font = "jersey_small", color = WHITE, shadow = INK})
   if res.closed then
     text("A: seguir   B: repetir la mañana", 240, 270, {font = "jersey_small", align = "center", color = GOLD})
@@ -280,22 +308,44 @@ function screens.result(r, res, t)
   end
 end
 
-function screens.notebook(save)
+function screens.notebook(save, page)
   img("NOTEBOOK", 0, 0)
   text("CUADERNO DE DANI", 240, 4, {font = "jersey_body", align = "center", color = GOLD, outline = INK})
-  local nb = save.notebook or {}
-  local labels = {R1 = "portal izquierdo", R2 = "portal derecho", R3 = "salida final"}
+  local d = page or 1
+  local nb = save.notes[dk(d)] or {}
+  local labels = {R1 = "primera salida", R2 = "segunda salida", R3 = "salida final"}
   local INKC, SOFT = 0x2A1E18, 0x6A4A38
   local x, w = 256, 176
-  text("7 de julio · Estafeta", x, 128, {font = "jersey_small", color = SOFT})
-  text("Entrada: inicio del tramo", x, 144, {font = "jersey_small", color = INKC, width = w})
-  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 160,
+  text("Mañana " .. d .. " · " .. DATES[d], x, 118, {font = "jersey_small", color = SOFT})
+  text("Entrada: inicio del tramo", x, 134, {font = "jersey_small", color = INKC, width = w})
+  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 150,
        {font = "jersey_small", color = INKC, width = w})
-  local got = save.days[1] and save.days[1].photo
-  frame.icon(got and "CHECK" or "CROSS", x - 4, 190, 24)
-  text(got and "Foto de Nico: sí" or "Foto de Nico: no", x + 22, 196, {font = "jersey_small", color = INKC})
-  text(nb.note and #nb.note < 90 and nb.note or "", x, 224, {font = "jersey_small", color = INKC, width = w})
-  text("A o B: volver", 240, 292, {font = "jersey_small", align = "center", color = 0xF6F2E8, outline = INK})
+  local day = save.days[dk(d)] or {}
+  local got = day.photo
+  if d == 1 or d == 8 then
+    frame.icon(got and "CHECK" or "CROSS", x - 4, 164, 24)
+    text(got and "Foto de Nico: sí" or "Foto de Nico: no", x + 22, 170, {font = "jersey_small", color = INKC})
+  end
+  local done = 0
+  for _ in pairs(day.ch or {}) do done = done + 1 end
+  local won = 0
+  for _, ok in pairs(day.ch or {}) do if ok then won = won + 1 end end
+  if done > 0 then text("Retos: " .. won .. " de " .. done, x, 190, {font = "jersey_small", color = INKC}) end
+  text(nb.note and #nb.note < 90 and nb.note or "", x, 214, {font = "jersey_small", color = INKC, width = w})
+  text("‹ " .. d .. " / " .. math.max(1, (function() local n = 0; for k = 1, 8 do if save.notes[dk(k)] then n = k end end return n end)()) .. " ›", 240, 276,
+       {font = "jersey_small", color = 0xF6F2E8, align = "center", outline = INK})
+  text("A o B: volver", 240, 292, {font = "jersey_small", color = 0xF6F2E8, align = "center", outline = INK})
+end
+
+-- the end of the campaign: which of the three endings, over the full strip
+function screens.finale(save, t)
+  img("NOTEBOOK", 0, 0)
+  frame.panel("navy", 40, 60, 400, 180)
+  text("14 DE JULIO", 240, 72, {font = "jersey_small", color = MUTED, align = "center"})
+  text(require("story.days").TITLES[save.ending or "secuencia"], 240, 96, {font = "jersey_body", color = GOLD, align = "center"})
+  text(require("story.days").NOTES[save.ending or "secuencia"], 240, 142, {font = "jersey_small", color = WHITE, align = "center", width = 360})
+  text("Ocho mañanas. Una carrera tuya.", 240, 182, {font = "jersey_small", color = 0xC8D0E8, align = "center"})
+  if t > 30 and (t // 25) % 2 == 0 then text("A: volver al título", 240, 214, {font = "jersey_small", color = GOLD, align = "center"}) end
 end
 
 return screens

@@ -1,0 +1,40 @@
+# The whole campaign through the real flow: the bot (tests/bot.lua) plays mornings 1 to 8 -- scenes, calls, start, briefing,
+# the race with a pilot, result, closing scene -- and the save moves on each time. Variants are picked on days 4, 7 and 8.
+new
+tick 5
+lua mute_music(); sfx = function() return 0 end; BOT = require('tests.bot'); BOT_STEP = BOT.step; save.prologue = true; save.practice = true
+lua BOT.play(1, {})
+tick 9000
+expect_lua BOT.done and save.days[dk(1)] and save.days[dk(1)].done and save.after[dk(1)]
+lua print('CAMPANA', 1, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(2, {})
+tick 9000
+expect_lua BOT.done and save.days[dk(2)] and save.days[dk(2)].done and save.after[dk(2)]
+lua print('CAMPANA', 2, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(3, {})
+tick 9000
+expect_lua BOT.done and save.days[dk(3)] and save.days[dk(3)].done and save.after[dk(3)]
+lua print('CAMPANA', 3, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(4, {variant = 2, exit = 'last'})
+tick 9000
+expect_lua BOT.done and save.days[dk(4)] and save.days[dk(4)].done and save.after[dk(4)]
+lua print('CAMPANA', 4, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(5, {})
+tick 9000
+expect_lua BOT.done and save.days[dk(5)] and save.days[dk(5)].done and save.after[dk(5)]
+lua print('CAMPANA', 5, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(6, {})
+tick 9000
+expect_lua BOT.done and save.days[dk(6)] and save.days[dk(6)].done and save.after[dk(6)]
+lua print('CAMPANA', 6, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(7, {variant = 2})
+tick 9000
+expect_lua BOT.done and save.days[dk(7)] and save.days[dk(7)].done and save.after[dk(7)]
+lua print('CAMPANA', 7, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+lua BOT.play(8, {variant = 2})
+tick 9000
+expect_lua BOT.done and save.days[dk(8)] and save.days[dk(8)].done and save.after[dk(8)]
+lua print('CAMPANA', 8, 'next', save.next, 'tramo', BOT.variant, table.concat(BOT.states, ' '))
+expect_lua save.next == 9 and save.ending ~= nil
+lua print('FINAL', save.ending)
+expect_ok

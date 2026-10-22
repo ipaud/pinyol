@@ -122,7 +122,8 @@ def scene():
 
 def pics():
     """The talking scenes' pictures: two backgrounds, and three prints (framed, their dark corners see-through)."""
-    for aid, src in (("PIC_TALLER", "pic_taller_gen.png"), ("PIC_BAR", "pic_bar_gen.png")):
+    for aid, src in (("PIC_TALLER", "pic_taller_gen.png"), ("PIC_BAR", "pic_bar_gen.png"), ("PIC_MESA", "pic_mesa_gen.png"),
+                     ("PIC_MERCADERES", "pic_mercaderes_gen.png")):
         packed(to_screen(Image.open(RAW / src).convert("RGB")).convert("RGBA"), aid, 64)
     from PIL import ImageDraw
     for aid, src in (("PIC_FOTO", "pic_foto_gen.png"), ("PIC_NICO", "pic_nico_gen.png"), ("PIC_NICO_OK", "pic_nico_ok_gen.png")):
@@ -134,6 +135,15 @@ def pics():
             ImageDraw.floodfill(im, corner, (0, 0, 0, 0), thresh=60)
         w = 270
         packed(im.resize((w, round(w * im.height / im.width)), Image.Resampling.BOX), aid, 48)
+    # the film strips: cut out of their dark brown table by their distance from its colour
+    for aid, src, w in (("PIC_NEG1", "pic_neg1_gen.png", 330), ("PIC_TIRA", "pic_tira_gen.png", 330)):
+        im = Image.open(RAW / src).convert("RGBA")
+        a = np.asarray(im.convert("RGB")).astype(int)
+        bgc = a[4:20, 4:20].reshape(-1, 3).mean(axis=0)
+        far = np.abs(a - bgc).sum(axis=2) > 70
+        ys, xs = np.nonzero(far)
+        im = im.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
+        packed(im.resize((w, round(w * im.height / im.width)), Image.Resampling.BOX), aid, 64)
 
 
 if __name__ == "__main__":

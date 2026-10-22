@@ -11,11 +11,14 @@ side = require("views.side")
 hud = require("ui.hud")
 screens = require("ui.screens")
 story1 = require("story.day1")
+stories = require("story.days")
 actors = require("views.actors")
 chant = require("chant.play")
 position = require("ui.position")
 
-state = "title"     -- title, scene, practice, chant, position, prep, count, race, close, review, result, notebook
+state = "title"     -- title, scene, practice, chant, position, prep, count, race, close, review, result, notebook, finale
+cur, variant = 1, 1  -- the morning being played (1 to 8) and the stretch picked for it (days 4, 7 and 8)
+sel_day = 1          -- the morning the title offers
 R = nil             -- the race being run (tests read it)
 view = "rear"       -- the camera the race is shown through
 looking = false     -- the look back is on
@@ -30,12 +33,27 @@ last = nil           -- what the last run left for the review and the notebook
 local crowd_h = nil
 local attract = nil
 
+-- Mornings are saved under string keys ("d1" ... "d8"): the store only keeps tables with string keys or lists.
+function dk(d) return "d" .. d end
+
 -- --- saving -------------------------------------------------------------------------------------------------
 local function load_save()
   local s = stored("save")
   if type(s) ~= "table" or s.v ~= 1 then s = {v = 1, prologue = false, practice = false, days = {}, opts = {look = "hold"}} end
   s.days = s.days or {}
   s.opts = s.opts or {look = "hold"}
+  for _, name in ipairs({"days", "notes", "after"}) do  -- an older save keyed them by number
+    local t = s[name] or {}
+    local numeric = {}
+    for k in pairs(t) do if type(k) == "number" then numeric[#numeric + 1] = k end end
+    for _, k in ipairs(numeric) do t[dk(k)] = t[k]; t[k] = nil end
+    s[name] = t
+  end
+  s.after = s.after or {}          -- the scenes after a morning already seen
+  if s.after1 then s.after[1] = true end
+  s.notes = s.notes or {}          -- the notebook's observation for each morning
+  if s.notebook and not s.notes[dk(1)] then s.notes[dk(1)] = {zone = s.notebook.zone, result = s.notebook.result, note = s.notebook.note} end
+  s.next = s.next or ((s.days[dk(1)] and s.days[dk(1)].done) and 2 or 1)   -- the next morning to play (9: the campaign is done)
   return s
 end
 local function write_save() store("save", save) end
@@ -180,7 +198,7 @@ local start_x = 0   -- where the morning's run starts across the street (chosen 
 local function new_race(day)
   actors.reset_cap()
   R = sim.new(day)
-  if day == days[1] then R.dani.x = start_x end
+  if day ~= days.practice then R.dani.x = start_x end
   looking, look_t, look_ready, latch = false, 0, true, {}
   banner, banner_t = nil, 0
   enter_view("rear")
@@ -195,16 +213,19 @@ local function start_scene(sc, after)
   bg(1); bg(2); bg(3); line_off()
 end
 
+local function today() return days.resolve(days[cur], variant) end
+
 local function start_prep()
   state, timer = "prep", 0
-  new_race(days[1])
+  new_race(today())
   music_play(true)
 end
 
 -- the morning's first minutes: the three calls to the saint, then where to start, then the briefing
 local function start_position()
   start_x = 0
-  new_race(days[1])
+  variant = 1
+  new_race(today())
   position.reset()
   state, timer = "position", 0
   music_play(false)
@@ -212,7 +233,7 @@ end
 local function start_chant()
   state, timer = "chant", 0
   music_play(false)
-  chant.start(1, start_position)
+  chant.start(cur, start_position)
 end
 
 local function start_practice(first)
@@ -222,6 +243,20 @@ local function start_practice(first)
   music_play(false)
   crowd_h = sfx("CROWD", 0.05, {loop = true})
 end
+
+-- A morning: its opening scene, the calls, the start, the briefing, the run, and after it the closing scene (the first time).
+local function start_day(d)
+  cur, variant = d, 1
+  if d == 1 and not save.prologue then
+    start_scene(story1.prologue, function()
+      save.prologue = true; write_save()
+      start_scene(story1.practice, function() start_practice(true) end)
+    end)
+  else
+    start_scene(stories.before(d), start_chant)
+  end
+end
+
 
 local function to_title()
   quiet()
@@ -233,8 +268,16 @@ local function to_title()
   music_play(true)
 end
 
+nb_page = 1
+function nb_last()  -- the last morning the notebook has a page for
+  local n = 0
+  for d = 1, 8 do if save.notes[dk(d)] then n = d end end
+  return math.max(1, n)
+end
+
 function _init()
   save = load_save()
+  sel_day = math.min(8, save.next)
   make_sounds()
   rear.init()
   side.init()
@@ -276,14 +319,22 @@ local function judge(r)
   local o = r.over
   local closed = o.result ~= "fallo"
   local passed = r.stats.herd_passed_at ~= nil and r.stats.herd_passed_at <= o.t
+  local zid = o.zone and o.zone.id
   local res = {
-    closed = closed, result = o.result, reason = o.reason, zone = o.zone and o.zone.id,
+    closed = closed, result = o.result, reason = o.reason, zone = zid,
     objective = closed and o.result == "retirada" and not r.stats.air_zero,
     clean = closed and r.stats.contacts == 0,
     stay = closed and passed,
-    contacts = r.stats.contacts, air_zero = r.stats.air_zero,
+    contacts = r.stats.contacts, air_zero = r.stats.air_zero, exhausted = r.stats.air_zero,
     photo = r.photo and r.photo.taken or false,
+    early = closed and o.result == "retirada" and zid == r.zones[1].id,
+    late = closed and o.result == "retirada" and zid == r.zones[#r.zones].id,
+    calm_air = closed and r.stats.min_air >= 33,
   }
+  -- the day's own challenges, by id
+  local rules = {clean = res.clean, stay = res.stay, photo = res.photo, air = res.calm_air, early = res.early, late = res.late}
+  res.ch = {}
+  for _, c in ipairs(r.day.challenges or {}) do res.ch[c.id] = rules[c.id] or false end
   -- the moment it could already be seen: going back from the end, the last stretch in which an animal was
   -- coming up in Dani's line, within reach of the radar
   if not closed and (o.reason == "contacto" or o.reason == "bloqueada" or o.reason == "agotamiento") then
@@ -332,46 +383,62 @@ local function judge(r)
   return res
 end
 
-local function finish_run()
+function finish_run()
   last = judge(R)
   last.day = R.day.id
-  if R.day.id == 1 then
-    local prev = save.days[1] or {}
-    save.days[1] = {done = prev.done or last.closed, objective = prev.objective or last.objective,
-                    clean = prev.clean or last.clean, stay = prev.stay or last.stay,
-                    photo = prev.photo or last.photo, tries = (prev.tries or 0) + 1}
-    save.notebook = {zone = last.zone, result = last.result, note = last.short, reason = last.reason}
-    write_save()
-  end
+  local d = R.day.id
+  local prev = save.days[dk(d)] or {}
+  local ch = {}
+  for id, ok in pairs(prev.ch or {}) do ch[id] = ok end
+  for id, ok in pairs(last.ch) do ch[id] = ch[id] or ok end
+  save.days[dk(d)] = {done = prev.done or last.closed, objective = prev.objective or last.objective,
+                  clean = prev.clean or last.clean, stay = prev.stay or last.stay,
+                  photo = prev.photo or last.photo, tries = (prev.tries or 0) + 1, ch = ch}
+  save.notes[dk(d)] = {zone = last.zone, result = last.result, note = last.short, reason = last.reason}
+  save.notebook = save.notes[dk(d)]
+  write_save()
   state, timer = "review", 0
   quiet()
+end
+
+-- the morning is over for good (its closing scene seen): the campaign moves on
+local function morning_done()
+  save.after[dk(cur)] = true
+  if cur >= save.next then save.next = math.min(9, cur + 1) end
+  write_save()
+  sel_day = math.min(8, save.next)
+  if cur == 8 then
+    state, timer = "finale", 0
+    save.ending = stories.ending(last)
+    write_save()
+    return
+  end
+  to_title()
 end
 
 -- --- the loop -------------------------------------------------------------------------------------------------
 paused = false
 function _update()
+  if BOT_STEP then BOT_STEP() end
   timer = timer + 1
   if flash_t > 0 then flash_t = flash_t - 1 end
   if R then rear.update(R) end
   if banner_t > 0 then banner_t = banner_t - 1 end
   tune(timer)
   if state == "title" then
-    local items = screens.title_items(save)
+    local items = screens.title_items(save, sel_day)
     if btnp("up", 12, 6) then menu_i = (menu_i - 2) % #items + 1; sfx("BLIP", 0.3) end
     if btnp("down", 12, 6) then menu_i = menu_i % #items + 1; sfx("BLIP", 0.3) end
+    if items[menu_i].id == "day" then  -- left and right pick the morning, among the ones reached
+      local top = math.min(8, save.next)
+      if btnp("left", 12, 6) and sel_day > 1 then sel_day = sel_day - 1; sfx("BLIP", 0.3) end
+      if btnp("right", 12, 6) and sel_day < top then sel_day = sel_day + 1; sfx("BLIP", 0.3) end
+    end
     if btnp("a") and timer > 20 then
       local id = items[menu_i].id
-      if id == "day1" then
-        if not save.prologue then
-          start_scene(story1.prologue, function()
-            save.prologue = true; write_save()
-            start_scene(story1.practice, function() start_practice(true) end)
-          end)
-        else
-          start_scene(story1.before, start_chant)
-        end
+      if id == "day" then start_day(sel_day)
       elseif id == "practice" then start_practice(false)
-      elseif id == "notebook" then state, timer = "notebook", 0
+      elseif id == "notebook" then state, timer, nb_page = "notebook", 0, nb_last()
       elseif id == "look" then save.opts.look = save.opts.look == "hold" and "toggle" or "hold"; write_save()
       end
     end
@@ -399,7 +466,7 @@ function _update()
       if tut.done_t == 1 then save.practice = true; write_save() end
       if tut.done_t > 100 then
         quiet()
-        if tut.first then start_scene(story1.before, start_chant) else to_title() end
+        if tut.first then start_scene(stories.before(1), start_chant) else to_title() end
       end
     end
   elseif state == "chant" then
@@ -413,6 +480,13 @@ function _update()
       music_play(true)
     end
   elseif state == "prep" then
+    local day = days[cur]
+    if day.variants and timer > 8 then  -- the stretch to run: left and right
+      local n = #day.variants
+      local v = variant
+      if btnp("left") then v = (variant - 2) % n + 1 elseif btnp("right") then v = variant % n + 1 end
+      if v ~= variant then variant = v; new_race(today()); sfx("BLIP", 0.3) end
+    end
     if btnp("a") and timer > 20 then
       state, timer = "count", 0
       music_play(false)
@@ -446,10 +520,8 @@ function _update()
   elseif state == "result" then
     if timer > 20 and btnp("a") then
       if last.closed then
-        local first = not save.after1
-        if first then
-          start_scene(story1.after(last), function() save.after1 = true; write_save(); to_title() end)
-        else to_title() end
+        if not save.after[dk(cur)] then start_scene(stories.after(cur, last), morning_done)
+        else morning_done() end
       else
         start_prep(); state, timer = "count", 0; crowd_h = sfx("CROWD", 0.12, {loop = true}); music_play(false)
       end
@@ -458,7 +530,11 @@ function _update()
       else to_title() end
     end
   elseif state == "notebook" then
+    if btnp("left") and nb_page > 1 then nb_page = nb_page - 1 end
+    if btnp("right") and nb_page < nb_last() then nb_page = nb_page + 1 end
     if btnp("b") or btnp("a") then to_title() end
+  elseif state == "finale" then
+    if timer > 30 and (btnp("a") or btnp("b")) then to_title() end
   end
 end
 
@@ -477,7 +553,7 @@ function _draw()
     backdrop(0x10142C)
     if state == "review" then screens.review(R, last, timer)
     elseif state == "result" then screens.result(R, last, timer)
-    else screens.notebook(save) end
+    else screens.notebook(save, nb_page) end
     return
   end
   local shake = 0
@@ -488,6 +564,10 @@ function _draw()
   end
   if state == "title" then  -- the title picture covers everything: draw nothing under it
     screens.title(save, menu_i, timer)
+    return
+  end
+  if state == "finale" then
+    screens.finale(save, timer)
     return
   end
   if view == "side" then side.draw(R, timer) else rear.draw(R, timer, shake) end
@@ -503,15 +583,16 @@ function _draw()
     return
   end
   if state == "prep" then
-    screens.prep(R.day, timer)
+    screens.prep(R.day, timer, days[cur].variants, variant)
     return
   end
-  local opts = {banner = banner_t > 0 and banner or nil, warn = view == "rear", prompt_y = view == "side" and 96 or (state == "practice" and 204 or 250)}
+  local opts = {banner = banner_t > 0 and banner or nil, zone_hint = R.day.hints ~= false, warn = view == "rear", prompt_y = view == "side" and 96 or (state == "practice" and 204 or 250)}
   if state == "count" then
     local s = math.min(timer // 60, 5)
     opts.clock = s < 5 and string.format("07:59:%02d", 55 + s) or "08:00:00"
   end
   if state == "practice" then opts.radar = false; opts.street = "PRÁCTICA" end
+  if state ~= "practice" then opts.street = R.day.street end
   if state ~= "close" then hud.draw(R, opts) end
   if looking and view == "rear" then screens.look_frame(state == "practice" and 218 or 286) end
   if state == "count" then screens.countdown(timer) end
@@ -572,4 +653,13 @@ function go_race(id)
   state, timer = "race", 0
 end
 function set_timer(v) timer = v end  -- tests: jump within a screen that plays by itself (the review)
+-- for the tests: straight into morning d (stretch v) at the start of its run
+function go_day(d, v)
+  cur, variant, start_x = d, v or 1, 0
+  new_race(today())
+  state, timer = "race", 0
+end
+-- for the tests: start morning d from its opening scene, as the title does
+function get_timer() return timer end
+function go_morning(d) sel_day = d; start_day(d) end
 function mute_music() music_play(false) end  -- tests: the title's tune off, to hear the chant on its own
