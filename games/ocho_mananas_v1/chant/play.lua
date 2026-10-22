@@ -160,6 +160,15 @@ function chant.finger()
   end
 end
 
+-- Jump to call p of the morning, already sung from its start: for tests that look at each call
+function chant.goto_call(p)
+  SONG.stop()
+  S.phase, S.state, S.phase_tick, S.gesture = p, "play", 0, nil
+  S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 0, "", 0, 0
+  load_targets()
+  SONG.start()
+end
+
 function chant.start(day, done)
   make_sounds()
   S.state, S.day, S.phase, S.score, S.misses, S.hits = "intro", day or 1, 1, 0, 0, 0

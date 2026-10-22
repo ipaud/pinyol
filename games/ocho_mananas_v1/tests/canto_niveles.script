@@ -1,0 +1,205 @@
+# The 8 mornings x 3 calls played by a perfect player (every circle hit, none missed) and by an idle one (every circle missed, the calls still end).
+new
+tick 5
+lua mute_music(); sfx = function() return 0 end; AP = require('tests.autoplay'); CH = require('chant.chart'); function total(d) local n = 0; for p = 1, 3 do for _ in ipairs(CH.targets(d, p)) do n = n + 1 end end; return n end
+lua AP.remove(); RES = nil; chant.start(1, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 1, RES and RES[1], RES and RES[2], total(1))
+expect_lua RES ~= nil and RES[1] == total(1) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(2, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 2, RES and RES[1], RES and RES[2], total(2))
+expect_lua RES ~= nil and RES[1] == total(2) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(3, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 3, RES and RES[1], RES and RES[2], total(3))
+expect_lua RES ~= nil and RES[1] == total(3) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(4, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 4, RES and RES[1], RES and RES[2], total(4))
+expect_lua RES ~= nil and RES[1] == total(4) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(5, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 5, RES and RES[1], RES and RES[2], total(5))
+expect_lua RES ~= nil and RES[1] == total(5) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(6, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 6, RES and RES[1], RES and RES[2], total(6))
+expect_lua RES ~= nil and RES[1] == total(6) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(7, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 7, RES and RES[1], RES and RES[2], total(7))
+expect_lua RES ~= nil and RES[1] == total(7) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(8, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 20
+lua AP.install()
+tick 240
+tick 300
+tick 260
+tick 400
+tick 700
+tick 700
+lua print('NIVEL', 8, RES and RES[1], RES and RES[2], total(8))
+expect_lua RES ~= nil and RES[1] == total(8) and RES[2] == 0
+lua AP.remove(); RES = nil; chant.start(1, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 10
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+lua print('INACTIVO', 1, RES and RES[1], RES and RES[2], total(1))
+expect_lua RES ~= nil and RES[1] == 0 and RES[2] == total(1)
+lua AP.remove(); RES = nil; chant.start(8, function() RES = {chant.s.hits, chant.s.misses} end); state = 'chant'
+tick 10
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+tap 240 285
+tick 100
+lua print('INACTIVO', 8, RES and RES[1], RES and RES[2], total(8))
+expect_lua RES ~= nil and RES[1] == 0 and RES[2] == total(8)
+expect_ok
