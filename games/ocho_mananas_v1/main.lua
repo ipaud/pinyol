@@ -570,3 +570,4 @@ function go_race(id)
   state, timer = "race", 0
 end
 function set_timer(v) timer = v end  -- tests: jump within a screen that plays by itself (the review)
+function mute_music() music_play(false) end  -- tests: the title's tune off, to hear the chant on its own
