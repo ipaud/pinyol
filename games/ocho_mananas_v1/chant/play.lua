@@ -77,8 +77,18 @@ local function hit_area(x, y)
   local dx, dy = x - target.x, y - target.y
   return dx * dx + dy * dy <= target.r * target.r
 end
-local function play_chime(ok)
-  tone(0, ok and "G4" or "C3", {wave = ok and "triangle" or "noise", vol = ok and 0.24 or 0.13, decay = 0.09})
+-- the hits and misses are sound effects: the four synth voices are the choir's
+local sounds_made = false
+local function make_sounds()
+  if sounds_made then return end
+  sounds_made = true
+  sound("CH_OK", {wave = "triangle", freq = 784, sustain = 0.01, decay = 0.14, volume = 0.5})
+  sound("CH_PERFECT", {wave = "triangle", freq = 1175, sustain = 0.02, decay = 0.2, arp = 1.5, arp_time = 0.05, volume = 0.5})
+  sound("CH_MISS", {wave = "noise", sustain = 0.01, decay = 0.1, lowpass = 0.25, volume = 0.55})
+  sound("CH_GRAB", {wave = "triangle", freq = 660, sustain = 0.01, decay = 0.08, volume = 0.4})
+end
+local function play_chime(ok, perfect)
+  sfx(ok and (perfect and "CH_PERFECT" or "CH_OK") or "CH_MISS", ok and 0.7 or 0.6)
 end
 
 local function next_phase()
@@ -98,8 +108,7 @@ local function take_hit(bonus, rating)
   S.hit_fx = {x = target.x, y = target.y, age = 24, kind = "hit", rating = rating or "BIEN"}
   S.score = S.score + 100 + (bonus or 0)
   S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 24, "¡A tiempo!", 24, 4
-  play_chime(true)
-  tone(1, S.phase == 3 and "D5" or "A4", {wave = "triangle", vol = 0.12, decay = 0.14})
+  play_chime(true, rating == "PERFECTO")
   S.idx = S.idx + 1
   if S.idx > phase_length(S.phase) then S.feedback_tick = 54 end
 end
@@ -118,6 +127,7 @@ end
 function chant.target() local t = target_for(S.idx); return t.x, t.y, t.k end
 
 function chant.start(day, done)
+  make_sounds()
   S.state, S.day, S.phase, S.idx, S.score, S.misses = "intro", day or 1, 1, 1, 0, 0
   S.tick, S.phase_tick, S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 0, 0, 0, "", 0, 0
   S.gesture, S.hit_fx = nil, nil
@@ -193,11 +203,11 @@ function chant.update()
         local tx, ty = track_end(target)
         S.gesture = {k = target.k, x = target.x, y = target.y, tx = tx, ty = ty, i = target.i, started = phase_tick,
                      duration = math.max(20, 34 - (S.day - 3) * 2), progress = 0, off = 0}
-        tone(0, "A4", {wave = "triangle", vol = 0.16, decay = 0.07})
+        sfx("CH_GRAB", 0.6)
       elseif target.k == "spin" then
         S.gesture = {k = "spin", x = target.x, y = target.y, started = phase_tick,
                      angle = math.atan(py - target.y, px - target.x), turns = 0, required = spin_required()}
-        tone(0, "A4", {wave = "triangle", vol = 0.16, decay = 0.07})
+        sfx("CH_GRAB", 0.6)
       end
     elseif phase_tick > due + window then take_miss() end
   end

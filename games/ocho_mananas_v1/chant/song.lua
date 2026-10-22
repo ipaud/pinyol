@@ -1,19 +1,37 @@
--- The guide melody of the three calls. PROVISIONAL: the first line of the chant ("A San Fermín pedimos") as an
--- automatic pitch tracker heard it in a crowd recording (YouTube hUMifd5xwb0, 1.7-4.4 s; see
+-- The guide melody of the three calls, sung by a small crowd. PROVISIONAL: the first line of the chant ("A San
+-- Fermín pedimos") as an automatic pitch tracker heard it in a crowd recording (YouTube hUMifd5xwb0, 1.7-4.4 s; see
 -- output/canto_referencias/). It is a crowd singing with drifting pitch, so the notes are the tracker's best guess
 -- and the rhythm is the game's chart, not the singers'. Cross-checked against three other crowd recordings
 -- (xP9kX_kzbcM, bJZmIe1qJts an octave up, Y2JU9UyVkvs): all hover around B3 with A#3, A3 and G#3 beside it, but
--- which neighbour each syllable takes is uncertain by a semitone. Not confirmed by ear. Replace NOTES with a verified
--- transcription (and its source) when there is one.
+-- which neighbour each syllable takes is uncertain by a semitone. Not confirmed by ear.
+--
+-- The crowd sings in unison with the octaves as a mixed crowd does (women up, men down), each voice a little out of
+-- tune and wobbling on its own, so it chorus-es; the three calls grow: the first is a few voices, the second adds
+-- the octave above, the third the whole square. The four synth voices are all the chant's (the hits use sfx).
 local M = {}
 local CHART = require("chant.chart")
 
 -- one note for each tap; the three calls use the same melody (a call just plays more of it)
 M.NOTES = {"B3", "B3", "A#3", "G#3", "A3", "G#3"}
 
+local SEMI = {C = 0, D = 2, E = 4, F = 5, G = 7, A = 9, B = 11}
+local function hz(name)
+  local n, acc, oct = name:match("^(%a)([#b]?)(%d)$")
+  local midi = 12 * (tonumber(oct) + 1) + SEMI[n] + (acc == "#" and 1 or acc == "b" and -1 or 0)
+  return 440 * 2 ^ ((midi - 69) / 12)
+end
+
+-- voice 2: the tune; 0: the octave above, 1: the octave below; each: pitch factor, wave, volume, vibrato speed
+local CHOIR = {
+  {voice = 2, mul = 1.000, wave = "triangle", vol = 0.30, vib = 5.2, from = 1},
+  {voice = 0, mul = 2.006, wave = "sine",     vol = 0.18, vib = 6.1, from = 2},
+  {voice = 1, mul = 0.4985, wave = "triangle", vol = 0.20, vib = 4.6, from = 3},
+}
+
 function M.start()
   M.played = 0
   M.last_beat = -1
+  M.crowd = sfx("CROWD", 0.07, {loop = true})
 end
 
 function M.update(phase_tick, phase, day, count)
@@ -27,16 +45,25 @@ function M.update(phase_tick, phase, day, count)
     tone(3, 220, {wave = "noise", vol = beat % 4 == 0 and 0.07 or 0.04, decay = 0.03})
   end
 
-  local next_note = M.played + 1
-  if next_note <= count and phase_tick >= CHART.onset_tick(next_note, phase, day) then
-    tone(2, M.NOTES[((next_note - 1) % #M.NOTES) + 1], {wave = "triangle", vol = 0.32, decay = 0.3})
-    M.played = next_note
+  local k = M.played + 1
+  if k <= count and phase_tick >= CHART.onset_tick(k, phase, day) then
+    local f = hz(M.NOTES[((k - 1) % #M.NOTES) + 1])
+    local nxt = k < count and CHART.onset_tick(k + 1, phase, day) or CHART.onset_tick(k, phase, day) + 50
+    local len = (nxt - CHART.onset_tick(k, phase, day)) / 60 * 0.92
+    for _, v in ipairs(CHOIR) do
+      if phase >= v.from then
+        tone(v.voice, f * v.mul, {wave = v.wave, vol = v.vol * (k == count and 1.15 or 1), attack = 0.05, sustain = 0.8,
+                                  decay = 0.2, len = len, release = 0.15,
+                                  vibrato = {depth = 22, speed = v.vib, delay = 0.12}})
+      end
+    end
+    M.played = k
   end
 end
 
 function M.stop()
-  tone(2)
-  tone(3)
+  for v = 0, 3 do tone(v) end
+  if M.crowd then sfx_stop(M.crowd); M.crowd = nil end
 end
 
 return M
