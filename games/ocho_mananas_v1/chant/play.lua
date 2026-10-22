@@ -114,6 +114,9 @@ local function take_miss()
   if S.idx > phase_length(S.phase) then S.feedback_tick = 60 end
 end
 
+-- the circle to hit now (x, y, kind): for tests that play the calls
+function chant.target() local t = target_for(S.idx); return t.x, t.y, t.k end
+
 function chant.start(day, done)
   S.state, S.day, S.phase, S.idx, S.score, S.misses = "intro", day or 1, 1, 1, 0, 0
   S.tick, S.phase_tick, S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 0, 0, 0, "", 0, 0

@@ -413,6 +413,7 @@ function _update()
   elseif state == "chant" then
     chant.update()
   elseif state == "position" then
+    R.dani.x = position.x()  -- Dani stands where he would start
     if timer > 15 and position.update() then
       start_x = position.x()
       R.dani.x = start_x
