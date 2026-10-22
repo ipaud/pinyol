@@ -35,6 +35,6 @@ draws the stretchable panels and the icons; the type is Jersey (10, 15, 25) in `
 
 ## Pending
 
-- The chant's melody is an original guide, not a transcription of the official chant (needs Pau's audio or score).
+- The chant's melody is PROVISIONAL: the first line as an automatic pitch tracker heard it in a crowd recording, not confirmed by ear (see chant/song.lua). Replace with a verified transcription.
 - Not tested on the Cirera: touch, audio latency, and the cost of drawing the actors as full-screen pictures.
 - The balconies of the rear view's facade are fixed; only cobbles, lamps and banners move past.
