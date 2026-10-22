@@ -9,8 +9,8 @@ local rear = {}
 -- how tall, in screen pixels, each picture's standing figure is drawn at Dani's depth (scale 1)
 local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETIRO = true, FLECHA = true}
 local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
-              TORO_BACK = 119, TORO_FRONT = 119, TORO_3QB = 119, TORO_3QF = 119,
-              CABE_BACK = 112, CABE_FRONT = 112, CABE_3QB = 112, CABE_3QF = 112,
+              TORO_BACK = 165, TORO_FRONT = 165, TORO_3QB = 165, TORO_3QF = 165,   -- the herd towers over the runners:
+              CABE_BACK = 148, CABE_FRONT = 148, CABE_3QB = 148, CABE_3QF = 148,   -- 500 kg against 75
               FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, RETIRO = 88, FLECHA = 40}
 
 function rear.init() end
