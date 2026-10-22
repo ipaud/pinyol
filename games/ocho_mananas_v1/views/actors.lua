@@ -16,18 +16,19 @@ function actors.fit(id, px) return px / SIZE[id].ref end
 
 -- Draw a picture with its feet at (sx, sy) in world pixels, `scale` screen pixels per picture pixel. Nothing is
 -- drawn (and nothing is cut) for one that is wholly off the screen.
-function actors.draw(id, frame, sx, sy, scale, flip, alpha)
+function actors.draw(id, frame, sx, sy, scale, flip, alpha, flat)
   local z = SIZE[id]
+  local sv = scale * (flat or 1)  -- `flat` squashes it lengthways: a marking painted on the road
   local x = sx * 2 - z.w * scale / 2
-  local y = sy * 2 - z.foot * scale
-  if x >= 480 or x + z.w * scale <= 0 or y >= 320 or y + z.h * scale <= 0 then return end
+  local y = sy * 2 - z.foot * sv
+  if x >= 480 or x + z.w * scale <= 0 or y >= 320 or y + z.h * sv <= 0 then return end
   if not PROPS[id] then  -- a soft shadow on the ground under the feet
     local w = z.body * scale
     local h = math.max(4, w * 0.2)
     img("SHADOW", math.floor(sx * 2 - w / 2), math.floor(sy * 2 - h * 0.35),
         {scale_x = w / 64, scale_y = h / 16, alpha = 0.42 * (alpha or 1)})
   end
-  img(id, math.floor(x + 0.5), math.floor(y + 0.5), {frame = frame, scale = scale, flip_x = flip, alpha = alpha})
+  img(id, math.floor(x + 0.5), math.floor(y + 0.5), {frame = frame, scale_x = scale, scale_y = sv, flip_x = flip, alpha = alpha})
 end
 
 -- the marker over Dani's head, over everything

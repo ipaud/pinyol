@@ -11,7 +11,7 @@ return {
   DANI_FRONT = {w = 92, h = 158, foot = 152, ref = 150, body = 81},
   DANI_SIDE = {w = 196, h = 163, foot = 157, ref = 150, body = 123},
   FAROLA = {w = 56, h = 78, foot = 74, ref = 72, body = 44},
-  FLECHA = {w = 74, h = 46, foot = 42, ref = 40, body = 66},
+  FLECHA = {w = 30, h = 46, foot = 42, ref = 40, body = 23},
   IKURRINA = {w = 54, h = 78, foot = 74, ref = 72, body = 41},
   LAT_RET_FAR = {w = 72, h = 102, foot = 98, ref = 96, body = 63},
   LAT_RET_NEAR = {w = 76, h = 46, foot = 42, ref = 40, body = 69},

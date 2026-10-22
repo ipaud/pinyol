@@ -11,7 +11,7 @@ local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETI
 local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
               TORO_BACK = 165, TORO_FRONT = 165, TORO_3QB = 165, TORO_3QF = 165,   -- the herd towers over the runners:
               CABE_BACK = 148, CABE_FRONT = 148, CABE_3QB = 148, CABE_3QF = 148,   -- 500 kg against 75
-              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, RETIRO = 88, FLECHA = 40}
+              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, RETIRO = 88, FLECHA = 62}
 
 function rear.init() end
 
@@ -162,7 +162,8 @@ function rear.draw(r, tick, shake)
   for _, it in ipairs(list) do
     -- an animal coming up out of the camera's near plane fades in instead of popping
     local fade = (not PROPS[it.id] and it.d < 28) and math.max(0.05, (it.d - 14) / 14) or nil
-    actors.draw(it.id, it.frame, it.sx, it.sy, it.s * actors.fit(it.id, SHOW[it.id]), it.flip, fade)
+    actors.draw(it.id, it.frame, it.sx, it.sy, it.s * actors.fit(it.id, SHOW[it.id]), it.flip, fade,
+                it.id == "FLECHA" and 0.5 or nil)
   end
   if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - SHOW.DANI_BACK / 2 * ds - 5 + math.sin(tick / 8) * 1.5) end
   rear.used = n_items

@@ -69,7 +69,7 @@ SHEETS = {
     "NICO": (96, [("nico_gen.png", 1, 2, row_major(2, 2))]),
     # refuge markers: the recess (calm, bright), the floor arrows, the side view's recess and floor zone
     "RETIRO": (80, [("props2_gen.png", 1, 5, [(0, 0), (0, 1)])]),
-    "FLECHA": (40, [("props2_gen.png", 1, 5, [(0, 2)])]),
+    "FLECHA": (40, [("flecha_gen.png", 1, 1, [(0, 0)])]),   # flat road markings: the view squashes them
     "LAT_RET_FAR": (96, [("props2_gen.png", 1, 5, [(0, 3)])]),
     "LAT_RET_NEAR": (40, [("props2_gen.png", 1, 5, [(0, 4)])]),
 }
