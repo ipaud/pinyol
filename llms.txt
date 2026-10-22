@@ -1,0 +1,22 @@
+# pinyol
+
+> A small C engine for 2D games on the Cirera console (ESP32-S3, 480x320 touch screen) and in the browser: a game is a
+> folder of Lua (pinyol@2, a GBA-like virtual console: four backgrounds, 128 sprites, palettes, per-line effects) or of
+> JSON data (pinyol@1 adventures), tested headless with scripts, sent to the console over USB.
+
+## Docs
+
+- [README](https://github.com/ipaud/pinyol#readme): what it is, quick start, the examples, the editor, the console
+- [AGENTS.md](https://raw.githubusercontent.com/ipaud/pinyol/main/AGENTS.md): how a coding agent makes a game here (build, test, the folders)
+- [docs/lua.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/lua.md): the whole Lua API, the built-in libraries, the test scripts
+- [docs/tutorial.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/tutorial.md): a first game step by step
+- [docs/art.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/art.md): the looks (Game Boy, Spectrum, GBA, 16 bits, Neo Geo...) and how to make art for them
+- [docs/game-format.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/game-format.md): the data adventures' JSON
+- [docs/hardware.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/hardware.md): the console's pins and peripherals
+- [docs/measurements.md](https://raw.githubusercontent.com/ipaud/pinyol/main/docs/measurements.md): what things cost on the console
+
+## Play
+
+- [Every example in the browser](https://pinyol.ipaud.dev/)
+- [The Library](https://pinyol.ipaud.dev/biblioteca/): games people sent
+- [The editor](https://pinyol.ipaud.dev/editor/): games without code
