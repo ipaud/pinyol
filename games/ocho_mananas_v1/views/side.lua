@@ -67,14 +67,13 @@ function side.draw(r, tick)
   layer("LAT_WALL", WALL_Y, WALL_K, dani.z)
   layer("LAT_GROUND", GROUND_Y, GROUND_K, dani.z)
   -- the stretches where a way out can be taken: a green band on the cobbles by their wall, chevrons leading to it
-  local GREEN, GREEN_L = 0x22B058, 0x96F0B8
   for _, zn in ipairs(r.zones) do
     local lane = zn.side < 0 and -22 or 22
     local y0 = zn.side < 0 and 214 or 238
     local xa, xb = math.max(0, side.x(dani, lane, zn.z0) * 2), math.min(480, side.x(dani, lane, zn.z1) * 2)
     if xb > xa then
-      rect(math.floor(xa), y0, math.floor(xb - xa), 12, GREEN)
-      rect(math.floor(xa), zn.side < 0 and y0 + 11 or y0, math.floor(xb - xa), 1, GREEN_L)
+      local ya, yb = zn.side < 0 and y0 + 12 or y0, zn.side < 0 and y0 or y0 + 12  -- the light edge is towards the street
+      quad("ZONE", xa, ya, xb, ya, xb, yb, xa, yb, {alpha = 0.66})
     end
     for z = zn.z0 - 84, zn.z0 - 8, 28 do
       local sx = side.x(dani, lane, z)

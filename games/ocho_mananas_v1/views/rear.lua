@@ -97,21 +97,36 @@ local function dani_frame(dani)
 end
 
 -- The stretch where a way out can be taken: a green band painted on the cobbles along its wall.
-local GREEN, GREEN_L, GREEN_D = 0x22B058, 0x96F0B8, 0x0E6E3A
 local function zone_strip(zn, z_near, z_far, oy)
   local za, zb = math.max(zn.z0, math.min(z_near, z_far)), math.min(zn.z1, math.max(z_near, z_far))
   if zb <= za then return end
   local xa, xb = zn.side * 19, zn.side * 33
   local p = {}
-  for i, c in ipairs({{xa, za}, {xb, za}, {xb, zb}, {xa, zb}}) do
+  -- corners in the picture's order: its top edge (the light one) towards the street, its length along the street
+  for i, c in ipairs({{xa, za}, {xa, zb}, {xb, zb}, {xb, za}}) do
     local sx, sy = at(c[1], c[2], 0)
     if not sx then return end
     p[i] = {sx * 2, sy * 2 + oy * 2}
   end
-  tri(p[1][1], p[1][2], p[2][1], p[2][2], p[3][1], p[3][2], GREEN)
-  tri(p[1][1], p[1][2], p[3][1], p[3][2], p[4][1], p[4][2], GREEN)
-  line(p[1][1], p[1][2], p[4][1], p[4][2], GREEN_L)  -- the edge towards the street
-  line(p[1][1] + zn.side, p[1][2], p[4][1] + zn.side, p[4][2], GREEN_D)
+  quad("ZONE", p[1][1], p[1][2], p[2][1], p[2][2], p[3][1], p[3][2], p[4][1], p[4][2], {alpha = 0.68, persp = true})
+end
+
+-- The facades are one painted picture; to make them slide past, dark pilaster lines fixed to the street run up both
+-- walls (perspective does the rest: they spread and speed up as they come).
+local PILASTER = 0xA77C56
+local function pilasters(z_near, z_far, oy)
+  local lo, hi = math.min(z_near, z_far), math.max(z_near, z_far)
+  for k = math.floor(lo / 40), math.floor(hi / 40) do
+    local z = k * 40
+    for side = -1, 1, 2 do
+      local x0, y0 = at(side * 32.5, z, 4)
+      local x1, y1 = at(side * 32.5, z, 52)
+      if x0 and x1 then
+        local d = math.abs(y0 - y1) > 40 and 1 or 0
+        for w = 0, d do line(x0 * 2 + side * w, y0 * 2 + oy * 2, x1 * 2 + side * w, y1 * 2 + oy * 2, PILASTER) end
+      end
+    end
+  end
 end
 
 function rear.draw(r, tick, shake)
@@ -176,6 +191,7 @@ function rear.draw(r, tick, shake)
   for i = 1, n_items do list[i] = items[i] end
   table.sort(list, function(a, b) return a.d > b.d end)  -- the far ones first
   img("STREET_REAR", 0, 2 * oy)
+  pilasters(z_near, z_far, oy)
   for _, zn in ipairs(r.zones) do zone_strip(zn, z_near, z_far, oy) end
   for _, it in ipairs(list) do
     -- an animal coming up out of the camera's near plane fades in instead of popping

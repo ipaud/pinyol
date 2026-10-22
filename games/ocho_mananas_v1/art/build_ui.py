@@ -93,11 +93,21 @@ def shadow():
     asset(im, "SHADOW", 1, 4, "sprite")
 
 
+def zone():
+    """The green of the way-out stretch: a small picture a quad stretches over the cobbles (drawn see-through)."""
+    im = Image.new("RGBA", (16, 16), (34, 176, 88, 255))
+    from PIL import ImageDraw
+    d = ImageDraw.Draw(im)
+    d.rectangle((0, 0, 15, 1), fill=(150, 240, 184, 255))   # the edge towards the street is lighter
+    d.rectangle((0, 14, 15, 15), fill=(14, 110, 58, 255))
+    asset(im, "ZONE", 1, 8, "sprite")
+
+
 def pictures():
     for aid, src in (("TITLE_ART", "title_art_gen.png"), ("NOTEBOOK", "notebook_gen.png")):
         asset(Image.open(RAW / src).convert("RGBA").resize((480, 320), Image.Resampling.BOX), aid, 1, 64)
 
 
 if __name__ == "__main__":
-    for step in sys.argv[1:] or ["panels", "icons", "photo", "logo", "pictures", "shadow"]:
+    for step in sys.argv[1:] or ["panels", "icons", "photo", "logo", "pictures", "shadow", "zone"]:
         globals()[step]()
