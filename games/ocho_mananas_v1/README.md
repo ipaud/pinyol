@@ -35,9 +35,11 @@ draws the stretchable panels and the icons; the type is Jersey (10, 15, 25) in `
 
 ## Performance (measured on the Cirera, 2026-10-22)
 
-Menus, scenes and the calls run at 52-60 fps; the race at about 30 (26-30 with the herd near, 19-21 when nine animals were drawn
-at the camera, hence the cap on the animals drawn: up to 5, fewer when the frame runs long). Game time stays at 60 Hz because
-the console catches up its ticks. Details and the cost of each element: `output/cirera/RESULTADOS.md`. The race is accepted at 30 fps.
+Menus, scenes and the calls run at 52-60 fps. The race runs at about 30 (26-30) and drops to 20-24 for the moments when several
+animals are at the camera: drawing any of the herd costs the frame 3 to 7 ms however many (3 to 9) or how big. Only the five nearest
+are drawn, and an animal at the camera stops growing at 1.6 times its size. The race is accepted at 30 fps. Game time stays at 60 Hz
+because the console catches up its ticks. Measured but not understood: a race scene stays at 20 fps for its first ~25 s and then
+settles at 30; pre-drawing every picture before it did not change that. Details: `output/cirera/RESULTADOS.md`.
 
 ## Pending
 

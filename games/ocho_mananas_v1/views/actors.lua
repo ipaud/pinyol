@@ -8,23 +8,12 @@ local SIZE = require("views.sizes")
 
 local PROPS = {FAROLA = true, BANDERA = true, NICO = true, FLECHA = true}
 
--- How many of the herd's animals to draw: up to 5, fewer when the frames are running long. The race is meant to run at
--- 30 fps (the console measured 26-30 with the herd near and 19-21 with all nine drawn at the camera): each animal costs about
--- 1.3 ms, so when the game's own drawing time stays over the budget one fewer is drawn, and one more comes back when it is
--- well under. perf() gives the last _draw in milliseconds.
-local MAX_ANIMALS, MIN_ANIMALS, BUDGET_HI, BUDGET_LO = 5, 3, 7.5, 5.5
-local cap, load, cool = MAX_ANIMALS, 0, 0
-function actors.animal_cap()
-  local _, draw = perf()
-  load = load * 0.9 + (draw or 0) * 0.1
-  cool = cool - 1
-  if cool <= 0 then
-    if load > BUDGET_HI and cap > MIN_ANIMALS then cap, cool = cap - 1, 30
-    elseif load < BUDGET_LO and cap < MAX_ANIMALS then cap, cool = cap + 1, 90 end
-  end
-  return cap
-end
-function actors.reset_cap() cap, load, cool = MAX_ANIMALS, 0, 0 end
+-- How many of the herd's animals to draw: the nearest five. Measured on the console: drawing any animals costs the frame
+-- about 3 to 7 ms whether it is 3 or 9 and whatever their size, so the cap only trims the very crowded moments; perf() only
+-- sees the Lua side of a frame (about 9 ms with or without animals), so it cannot steer this.
+local MAX_ANIMALS = 5
+function actors.animal_cap() return MAX_ANIMALS end
+function actors.reset_cap() end
 
 function actors.has(id) return SIZE[id] ~= nil end
 

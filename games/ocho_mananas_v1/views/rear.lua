@@ -58,7 +58,9 @@ end
 local function place_animal(tag, frame, b, z)
   local sx, sy, s, d = at(b.x, z, 0)
   if not sx or d < 14 or s < 0.1 then return end
-  if s > 2.6 then s = 2.6 end
+  -- An animal at the camera stops growing at 1.6 (it still slides off the bottom of the screen): the cost of drawing it is its
+  -- area, and at 2.6 the nearest ones were most of the screen, so the frame took 40 ms instead of 30.
+  if s > 1.6 then s = 1.6 end
   -- straight on in the middle, three-quarters off to the side; with a margin so it does not flicker at the edge
   local off = math.abs(sx - 120)
   local oblique = b.oblique
