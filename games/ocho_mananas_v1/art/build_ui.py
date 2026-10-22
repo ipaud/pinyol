@@ -59,7 +59,7 @@ def panels():
 def icons():
     cells = cells_of("ui_icons_gen.png", 3, 6)
     frames = [fit(c, 40, 40) for c in cells]
-    heart = RAW / "icon_heart_gen.png"  # the balance icon: a plain heart (the sheet's was a heart on scales)
+    heart = RAW / "icon_scale_gen.png"  # the balance icon: a plain balance scale (the sheet's was a heart on scales)
     if heart.exists():
         frames[5] = fit(bs.cells(bs.key_magenta(Image.open(heart)), 1, 1)[0], 40, 40)
     asset(quantized_strip(frames, 40, 40, 0), "ICONS", len(frames), 64, "sprite")
