@@ -81,7 +81,7 @@ function side.draw(r, tick)
     end
     for z = zn.z0 - 84, zn.z0 - 8, 28 do
       local sx = side.x(dani, lane, z)
-      if sx > -20 and sx < 260 then actors.draw("FLECHA", 2, sx, side.y(lane) + 3, actors.fit("FLECHA", SHOW.FLECHA), false, nil, 0.6) end
+      if sx > -20 and sx < 260 then actors.draw("FLECHA", 2, sx, side.y(lane) + 3, actors.fit("FLECHA", SHOW.FLECHA), false, nil, 0.85) end
     end
   end
   for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, actors.fit(it.id, SHOW[it.id]), it.flip) end

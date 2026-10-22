@@ -158,9 +158,9 @@ function rear.draw(r, tick, shake)
   for _, zn in ipairs(r.zones) do
     if zn.z1 > z_near and zn.z0 < z_far then
       -- sideways chevrons on the green stretch point at the wall; ahead of it chevrons lead the way in
-      for z = zn.z0 + 12, zn.z1 - 6, 30 do place("FLECHA", zn.side < 0 and 1 or 2, zn.side * 27, z, 0, false, 0.15) end
+      for z = zn.z0 + 12, zn.z1 - 6, 30 do place("FLECHA", zn.side < 0 and 1 or 2, zn.side * 27, z, 0, false, 0.3) end
       if not rear.back then
-        for z = zn.z0 - 78, zn.z0 - 6, 26 do place("FLECHA", 0, zn.side * 21, z, 0, false, 0.15) end
+        for z = zn.z0 - 78, zn.z0 - 6, 26 do place("FLECHA", 0, zn.side * 21, z, 0, false, 0.3) end
       end
     end
   end
@@ -206,7 +206,7 @@ function rear.draw(r, tick, shake)
     -- an animal coming up out of the camera's near plane fades in instead of popping
     local fade = (not PROPS[it.id] and it.d < 28) and math.max(0.05, (it.d - 14) / 14) or nil
     actors.draw(it.id, it.frame, it.sx, it.sy, it.s * actors.fit(it.id, SHOW[it.id]), it.flip, fade,
-                it.id == "FLECHA" and 0.5 or nil)
+                it.id == "FLECHA" and 0.85 or nil)
   end
   if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - SHOW.DANI_BACK / 2 * ds - 5 + math.sin(tick / 8) * 1.5) end
   rear.used = n_items

@@ -81,7 +81,7 @@ function screens.scene_draw()
   cls(0x10142C)
   local bw = imgsize(bgpic)
   img(bgpic, 0, 0, {scale = bw <= 240 and 2 or 1})  -- the old pictures are 240x160, the new ones 480x320
-  frame.panel("ink", -8, -10, 496, 36)
+  frame.panel("ink", -8, -10, 496, 41)
   text(sc.scene.place, 12, 4, {font = "jersey_small", color = MUTED})
   local line_ = sc.scene.lines[math.min(sc.i, #sc.scene.lines)]
   if line_.pic then

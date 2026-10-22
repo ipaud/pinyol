@@ -247,7 +247,7 @@ end
 -- A morning: its opening scene, the calls, the start, the briefing, the run, and after it the closing scene (the first time).
 local function start_day(d)
   cur, variant = d, 1
-  if d == 1 and not save.prologue then
+  if d == 1 and not save.practice then  -- the prologue and the practice, until the practice has been finished once
     start_scene(story1.prologue, function()
       save.prologue = true; write_save()
       start_scene(story1.practice, function() start_practice(true) end)

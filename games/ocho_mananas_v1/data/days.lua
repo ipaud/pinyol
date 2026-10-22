@@ -156,7 +156,7 @@ days[6] = {
   views = {{0, "side"}, {1300, "rear"}, {2000, "side"}},
   objective = "Modula el ritmo y termina en una salida libre.",
   challenges = {
-    {id = "early", text = "Salir por la primera ventana."},
+    {id = "early", text = "Salir por la primera salida."},
     {id = "nopush", text = "Sin empujar: sin mantener A."},
   },
 }
