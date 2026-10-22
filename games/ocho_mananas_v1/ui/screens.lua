@@ -148,11 +148,11 @@ end
 function screens.tutorial(step, tut, r)
   local s = step or "¡Bien! Así se cierra una carrera."
   local w = 440
-  frame.panel("navy", 20, 250, w, 58)
-  frame.panel("teal", 30, 238, 64, 22)
-  text("Leire", 62, 241, {font = "jersey_small", color = WHITE, align = "center"})
-  text(s, 34, 266, {font = "jersey_small", color = WHITE, width = w - 28})
-  text(math.min(tut.step, 5) .. "/5", 448, 254, {font = "jersey_small", color = MUTED, align = "right"})
+  frame.panel("navy", 20, 242, w, 70)
+  frame.panel("teal", 30, 228, 64, 28)
+  text("Leire", 62, 235, {font = "jersey_small", color = WHITE, align = "center"})
+  text(s, 34, 262, {font = "jersey_small", color = WHITE, width = w - 28})
+  text(math.min(tut.step, 5) .. "/5", 446, 248, {font = "jersey_small", color = 0xC8D0E8, align = "right"})
 end
 
 local CLOSE = {

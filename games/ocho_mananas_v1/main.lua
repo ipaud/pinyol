@@ -504,14 +504,14 @@ function _draw()
     screens.prep(R.day, timer)
     return
   end
-  local opts = {banner = banner_t > 0 and banner or nil, warn = view == "rear", prompt_y = view == "side" and 96 or (state == "practice" and 206 or 250)}
+  local opts = {banner = banner_t > 0 and banner or nil, warn = view == "rear", prompt_y = view == "side" and 96 or (state == "practice" and 204 or 250)}
   if state == "count" then
     local s = math.min(timer // 60, 5)
     opts.clock = s < 5 and string.format("07:59:%02d", 55 + s) or "08:00:00"
   end
   if state == "practice" then opts.radar = false; opts.street = "PRÁCTICA" end
   if state ~= "close" then hud.draw(R, opts) end
-  if looking and view == "rear" then screens.look_frame(state == "practice" and 224 or 286) end
+  if looking and view == "rear" then screens.look_frame(state == "practice" and 218 or 286) end
   if state == "count" then screens.countdown(timer) end
   if state == "practice" then screens.tutorial(STEPS[tut.step], tut, R) end
   if state == "close" then screens.close(R) end

@@ -66,7 +66,6 @@ function hud.draw(r, opts)
   if opts.radar ~= false and herd_near then
     frame.panel("ink", rx - 2, ry - 2, rw + 4, rh + 4)
     line(rx + 6, ry + 6, rx + rw - 6, ry + 6, 0x3A4478)
-    text("DETRÁS", rx + rw - 4, ry + rh - 14, {font = "jersey_small", color = 0x6A70A0, align = "right"})
     local px = rx + rw / 2 + d.x / 32 * (rw / 2 - 6)
     tri(px - 4, ry + 2, px + 4, ry + 2, px, ry + 8, GOLD)
     for _, b in ipairs(r.bulls) do
@@ -114,20 +113,20 @@ function hud.draw(r, opts)
       local s = (ahead.side < 0 and "< " or "") .. "Retirada a la " .. (ahead.side < 0 and "izquierda" or "derecha")
                 .. (ahead.side > 0 and " >" or "") .. (m > 0 and ("  " .. m .. " m") or "  ahora")
       local w = textw(s, {font = "jersey_small"}) + 16
-      frame.panel("teal", 240 - w // 2, 35, w, 22)
-      text(s, 240, 39, {font = "jersey_small", color = TEAL_L, align = "center"})
+      frame.panel("teal", 240 - w // 2, 34, w, 30)
+      text(s, 240, 43, {font = "jersey_small", color = TEAL_L, align = "center"})
     end
   end
   if d.exhausted then  -- on the left, below the street's name, clear of the way-out hint
-    frame.panel("red", 8, 34, 96, 22)
-    text("SIN AIRE", 56, 37, {font = "jersey_small", color = WHITE, align = "center"})
+    frame.panel("red", 8, 34, 100, 30)
+    text("SIN AIRE", 58, 43, {font = "jersey_small", color = WHITE, align = "center"})
   end
   -- Nico's photo: where it is, and how it is going while it can be taken
   local ph, p = r.photo, r.day.photo
   if ph and p and opts.photo ~= false then
     local show = (not ph.taken and d.z > p.z0 - 260 and d.z <= p.z1 and d.state == "run") or (ph.taken and r.t - ph.at < 150)
     if show then
-      local x, y = 8, 62
+      local x, y = 8, 70
       frame.panel(ph.live and "gold" or "ink", x, y, 176, 42)
       frame.icon(ph.live and "FLASH" or "CAM", x + 4, y + 3, 34)
       if ph.live then img("VIEWFINDER", 0, 0, {alpha = 0.55}) end
