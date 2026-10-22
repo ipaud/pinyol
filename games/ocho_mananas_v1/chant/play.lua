@@ -1,7 +1,9 @@
--- The three calls to the saint before the encierro (07:55, 07:57, 07:59), played on the touch screen: a numbered
--- circle for each beat with a ring closing on it, two more beats shown ahead as a dotted route, and from the third
--- morning some beats are gestures (follow a curve, go and come back along it, circle until the lights fill).
--- Dani and Leire react in their corners. The melody is an original guide, not the official chant (chant/song.lua).
+-- The calls to the saint before the encierro (07:55, 07:57, 07:59), played on the touch screen. Each call is the whole
+-- chant, sung by the crowd (chant/song.lua) as Pau wrote it (chant/chart.lua). The circles to touch lie along the
+-- melody: their height follows the pitch, they run along two rows as the phrases do. The first mornings ask only for
+-- the notes that carry each phrase; later ones for more and more of them, for following the long notes with a
+-- finger, going and coming back along them, and circling on the last one.
+-- Dani and Leire react in their corners.
 -- chant.start(day, on_done): on_done({score = , misses = }) when the third call ends (or B skips them).
 local CHART = require("chant.chart")
 local SONG = require("chant.song")
@@ -10,75 +12,74 @@ local chant = {}
 
 local BG, DANI = "CH_BG_CROWD", "CH_DANI"
 local TIMES = {"07:55", "07:57", "07:59"}
-local WINDOWS = {13, 10, 7}
-local LENGTH = {4, 5, 6}
-local BEATS = {{112,170},{198,213},{288,165},{365,205},{244,145},{145,230},{322,135},{104,112},{220,194},{370,145}}
-local COLORS = {0xF4C84D,0x58D4C3,0xFF705D,0xD77DEB}
+local COLORS = {0xF4C84D, 0x58D4C3, 0xFF705D, 0xD77DEB}
 
 -- state, public for the tests (chant.s)
-local S = {state = "intro", day = 1, phase = 1, idx = 1, score = 0, misses = 0, tick = 0, phase_tick = 0,
-           feedback_tick = 0, feedback_kind = "", reaction = 0, reaction_kind = 0, gesture = nil, hit_fx = nil}
+local S = {call_prev = "", state = "intro", day = 1, phase = 1, idx = 1, score = 0, misses = 0, tick = 0, phase_tick = 0,
+           feedback_tick = 0, feedback_kind = "", reaction = 0, reaction_kind = 0, gesture = nil, hit_fx = nil,
+           targets = {}, hits = 0, call_hits = 0, call_total = 0}
 chant.s = S
 local on_done
 
-local function phase_length(p)
-  return LENGTH[p] + (S.day >= 6 and 1 or 0) + (S.day >= 8 and 1 or 0)
+-- where note n lies on the screen in this call: two rows, the pitch lifts it. The second call swaps the rows and the
+-- third mirrors them, so each call is its own picture.
+local function note_xy(n)
+  local m = CHART.PITCH[n]
+  local x, y
+  if n <= 8 then
+    x = 60 + (n - 1) / 7 * 360
+    y = 128 - (m - 69) / 7 * 50
+  else
+    x = 420 - (n - 9) / 8 * 360
+    y = 205 - (m - 69) / 7 * 45
+  end
+  if S.phase == 2 then y = 270 - y end        -- rows swapped (128..78 and 205..160 become 142..192 and 65..110)
+  if S.phase == 3 then x = 480 - x end
+  return math.floor(x), math.floor(y)
 end
-local function beat_xy(n)
-  local p = BEATS[((n + (S.day - 1) * 3 - 1) % #BEATS) + 1]
-  return p[1], p[2]
+
+local function current() return S.targets[S.idx] end
+
+-- a target with its place and the shape of what it asks
+local function make_target(t)
+  local x, y = note_xy(t.n)
+  local out = {n = t.n, x = x, y = y, k = t.kind, due = t.due, span = t.span, gap = t.gap}
+  out.r = t.kind == "tap" and math.floor(44 - CHART.level(S.day, S.phase) * 12) or 44
+  if t.kind == "slide" or t.kind == "reverse" then
+    -- the finger follows the circle along a curve that leads on towards the next note
+    local nx, ny = note_xy(math.min(CHART.N, t.n + 1))
+    if nx == x and ny == y then nx, ny = x + 60, y end
+    local ex = math.max(70, math.min(410, x + (nx - x) * 3.2))
+    local ey = math.max(84, math.min(205, y + (ny - y) * 3.2))
+    out.ex, out.ey = ex, ey
+    out.bend = ((t.n % 2 == 0) and 1 or -1) * 26
+  end
+  return out
 end
-local function gesture_type(n)
-  local day, phase = S.day, S.phase
-  local count = phase_length(phase)
-  if day <= 2 then return "tap" end
-  if day == 3 and phase == 3 and n == count then return "slide" end
-  if day == 4 and phase >= 2 and n == count then return "reverse" end
-  if day == 5 and phase == 2 and n == count then return "slide" end
-  if day == 5 and phase == 3 and n == count then return "spin" end
-  if day == 6 and phase == 2 and n == count then return "reverse" end
-  if day == 6 and phase == 3 and n == count then return "spin" end
-  if day == 7 and phase == 1 and n == count then return "slide" end
-  if day == 7 and phase == 2 and n == count then return "reverse" end
-  if day == 7 and phase == 3 and n == count then return "spin" end
-  if day == 8 and phase == 1 and n == count then return "reverse" end
-  if day == 8 and phase == 2 and n == count then return "slide" end
-  if day == 8 and phase == 3 and n == count then return "spin" end
-  return "tap"
-end
-local function target_for(n)
-  local x, y = beat_xy(n)
-  local k = gesture_type(n)
-  return {x = x, y = y, k = k, i = n, r = k == "tap" and math.max(30, 44 - (S.day - 1) * 1.3) or 44}
-end
-local function track_end(t)
-  local dx = t.x < 240 and 125 or -125
-  local dy = t.y < 150 and 68 or -55
-  return math.max(100, math.min(380, t.x + dx)), math.max(84, math.min(221, t.y + dy))
-end
+
 local function track_point(t, u)
-  local tx, ty = track_end(t)
-  local dx, dy = tx - t.x, ty - t.y
+  local dx, dy = t.ex - t.x, t.ey - t.y
   local length = math.max(1, math.sqrt(dx * dx + dy * dy))
-  local bend = (((t.i or S.idx) + S.day) % 2 == 0 and 1 or -1) * (22 + math.min(S.day, 8) * 2)
-  local cx = (t.x + tx) * 0.5 - (dy / length) * bend
-  local cy = (t.y + ty) * 0.5 + (dx / length) * bend
+  local cx = (t.x + t.ex) * 0.5 - (dy / length) * t.bend
+  local cy = (t.y + t.ey) * 0.5 + (dx / length) * t.bend
   local v = 1 - u
-  return math.floor(v * v * t.x + 2 * v * u * cx + u * u * tx), math.floor(v * v * t.y + 2 * v * u * cy + u * u * ty)
+  return math.floor(v * v * t.x + 2 * v * u * cx + u * u * t.ex), math.floor(v * v * t.y + 2 * v * u * cy + u * u * t.ey)
 end
-local function spin_required()
-  return math.pi * 2 * (0.85 + math.max(0, S.day - 5) * 0.22)
+
+local function load_targets()
+  S.targets = {}
+  for i, t in ipairs(CHART.targets(S.day, S.phase)) do S.targets[i] = make_target(t) end
+  S.idx, S.call_hits, S.call_total = 1, 0, #S.targets
 end
-local function hit_window()
-  local w = math.max(5, WINDOWS[S.phase] - (S.day - 1) * 0.75)
-  -- close syllables get a narrower window so one tap cannot belong to two of them
-  return math.max(4, math.min(w, CHART.gap(S.idx, S.phase, S.day) // 2 - 1))
-end
+
+local function spin_required() return math.pi * 2 * (0.85 + CHART.level(S.day, S.phase) * 0.7) end
+local function hit_window() return CHART.window(S.day, S.phase, current()) end
 local function hit_area(x, y)
-  local target = target_for(S.idx)
-  local dx, dy = x - target.x, y - target.y
-  return dx * dx + dy * dy <= target.r * target.r
+  local t = current()
+  local dx, dy = x - t.x, y - t.y
+  return dx * dx + dy * dy <= t.r * t.r
 end
+
 -- the hits and misses are sound effects: the four synth voices are the choir's
 local sounds_made = false
 local function make_sounds()
@@ -93,46 +94,78 @@ local function play_chime(ok, perfect)
   sfx(ok and (perfect and "CH_PERFECT" or "CH_OK") or "CH_MISS", ok and 0.7 or 0.6)
 end
 
+local function finish_all()
+  local f = on_done
+  on_done = nil
+  if f then f({score = S.score, misses = S.misses}) end
+end
+
+-- a call has ended: the next one waits for a touch, after the third the morning goes on
 local function next_phase()
   SONG.stop()
+  S.call_prev = S.call_hits .. " de " .. S.call_total
   if S.phase < 3 then
     S.phase = S.phase + 1
-    S.idx, S.phase_tick, S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 1, 0, 0, "", 0, 0
-    SONG.start()
+    S.phase_tick, S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 0, 0, "", 0, 0
+    S.gesture = nil
+    load_targets()
+    S.state = "intro"
   else
-    local f = on_done
-    on_done = nil
-    if f then f({score = S.score, misses = S.misses}) end
+    finish_all()
   end
 end
+
+local function advance()
+  S.idx = S.idx + 1
+end
+
 local function take_hit(bonus, rating)
-  local target = target_for(S.idx)
-  S.hit_fx = {x = target.x, y = target.y, age = 24, kind = "hit", rating = rating or "BIEN"}
+  local t = current()
+  S.hit_fx = {x = t.x, y = t.y, age = 24, kind = "hit", rating = rating or "BIEN"}
   S.score = S.score + 100 + (bonus or 0)
+  S.hits, S.call_hits = S.hits + 1, S.call_hits + 1
   S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 24, "¡A tiempo!", 24, 4
   play_chime(true, rating == "PERFECTO")
-  S.idx = S.idx + 1
-  if S.idx > phase_length(S.phase) then S.feedback_tick = 54 end
+  advance()
 end
+
 local function take_miss()
-  local target = target_for(S.idx)
-  S.hit_fx = {x = target.x, y = target.y, age = 24, kind = "miss", rating = "TARDE"}
+  local t = current()
+  S.hit_fx = {x = t.x, y = t.y, age = 24, kind = "miss", rating = "TARDE"}
   S.misses = S.misses + 1
   S.feedback_tick, S.feedback_kind = 50, "¡Ay! Se me fue la letra"
   S.reaction, S.reaction_kind = 50, ((S.misses - 1) % 3) + 1 -- confusion, complaint, scarf drop
   play_chime(false)
-  S.idx = S.idx + 1
-  if S.idx > phase_length(S.phase) then S.feedback_tick = 60 end
+  advance()
 end
 
--- the circle to hit now (x, y, kind): for tests that play the calls
-function chant.target() local t = target_for(S.idx); return t.x, t.y, t.k end
+-- the circle to hit now (x, y, kind) and when it is due: for tests that play the calls
+function chant.target() local t = current(); return t.x, t.y, t.k end
+function chant.due() local t = current(); return t and t.due or 0 end
+
+-- where a perfect finger would be this tick: x, y, down, tapped, released (nil when the calls are not on). For tests.
+function chant.finger()
+  if S.state == "intro" then return 240, 285, false, true, false end
+  local g, t = S.gesture, current()
+  if g and (g.k == "slide" or g.k == "reverse") then
+    local raw = math.min(g.k == "reverse" and 2 or 1, (S.phase_tick - g.started) / g.duration)
+    local u = g.k == "reverse" and (raw <= 1 and raw or 2 - raw) or raw
+    local x, y = track_point(g, u)
+    return x, y, true, false, raw >= (g.k == "reverse" and 2 or 1)
+  elseif g and g.k == "spin" then
+    local a = (S.phase_tick - g.started) * 0.6
+    return g.x + math.cos(a) * 30, g.y + math.sin(a) * 30, true, false, g.cleared == true
+  elseif t then
+    return t.x, t.y, false, true, false
+  end
+end
 
 function chant.start(day, done)
   make_sounds()
-  S.state, S.day, S.phase, S.idx, S.score, S.misses = "intro", day or 1, 1, 1, 0, 0
+  S.state, S.day, S.phase, S.score, S.misses, S.hits = "intro", day or 1, 1, 0, 0, 0
   S.tick, S.phase_tick, S.feedback_tick, S.feedback_kind, S.reaction, S.reaction_kind = 0, 0, 0, "", 0, 0
   S.gesture, S.hit_fx = nil, nil
+  load_targets()
   on_done = done
   spr_clear(); bg(1); bg(2); bg(3); line_off()
 end
@@ -143,21 +176,16 @@ function chant.update()
   local px, py, down, tapped, released = pen()
   local action = btnp("a") or btnp("start") or (tapped and true) or false
   if S.state == "intro" then
-    if btnp("b") then  -- skip the calls (a morning played again)
-      local f = on_done
-      on_done = nil
-      if f then f({score = 0, misses = 0}) end
-    elseif action then S.state, S.phase_tick = "play", 0; SONG.start() end
+    if btnp("b") then finish_all()  -- skip the calls (a morning played again)
+    elseif action and S.tick > 12 then S.state, S.phase_tick = "play", 0; SONG.start() end
     return
   end
   S.phase_tick = S.phase_tick + 1
   if S.feedback_tick > 0 then S.feedback_tick = S.feedback_tick - 1 end
   if S.reaction > 0 then S.reaction = S.reaction - 1 end
 
-  local count = phase_length(S.phase)
-  local window = hit_window()
-  SONG.update(S.phase_tick, S.phase, S.day, count)
-  local due = CHART.onset_tick(S.idx, S.phase, S.day)
+  SONG.update(S.phase_tick, S.phase, S.day)
+  local t = current()
   local g, phase_tick = S.gesture, S.phase_tick
   if g then
     if g.k == "slide" or g.k == "reverse" then
@@ -176,7 +204,7 @@ function chant.update()
           take_hit(g.off == 0 and 25 or 0, g.off == 0 and "PERFECTO" or "BIEN")
         else take_miss() end
         S.gesture = nil
-      elseif phase_tick > g.started + finish + window + 10 then take_miss(); S.gesture = nil end
+      elseif phase_tick > g.started + finish + 14 then take_miss(); S.gesture = nil end
     elseif g.k == "spin" then
       if down or released then
         local dx, dy = px - g.x, py - g.y
@@ -193,29 +221,31 @@ function chant.update()
         if g.cleared then take_hit(math.min(100, math.floor((g.turns - g.required) / (math.pi * 2) * 50)), "PERFECTO")
         else take_miss() end
         S.gesture = nil
-      elseif phase_tick > g.started + 120 then take_miss(); S.gesture = nil end
+      elseif phase_tick > g.started + 150 then take_miss(); S.gesture = nil end
     end
-  elseif action and S.idx <= count and hit_area(px, py) then
-    local delta = math.abs(phase_tick - due)
+  elseif t and action and hit_area(px, py) then
+    local window = hit_window()
+    local delta = math.abs(phase_tick - t.due)
     if delta <= window then
-      local target = target_for(S.idx)
-      if target.k == "tap" then
+      if t.k == "tap" then
         take_hit(0, delta <= math.max(2, math.floor(window * 0.3)) and "PERFECTO" or "BIEN")
-      elseif target.k == "slide" or target.k == "reverse" then
-        local tx, ty = track_end(target)
-        S.gesture = {k = target.k, x = target.x, y = target.y, tx = tx, ty = ty, i = target.i, started = phase_tick,
-                     duration = math.max(20, 34 - (S.day - 3) * 2), progress = 0, off = 0}
+      elseif t.k == "slide" or t.k == "reverse" then
+        S.gesture = {k = t.k, x = t.x, y = t.y, ex = t.ex, ey = t.ey, bend = t.bend, started = phase_tick,
+                     duration = math.max(20, t.k == "reverse" and t.span // 2 or t.span), progress = 0, off = 0}
         sfx("CH_GRAB", 0.6)
-      elseif target.k == "spin" then
-        S.gesture = {k = "spin", x = target.x, y = target.y, started = phase_tick,
-                     angle = math.atan(py - target.y, px - target.x), turns = 0, required = spin_required()}
+      elseif t.k == "spin" then
+        S.gesture = {k = "spin", x = t.x, y = t.y, started = phase_tick,
+                     angle = math.atan(py - t.y, px - t.x), turns = 0, required = spin_required()}
         sfx("CH_GRAB", 0.6)
       end
-    elseif phase_tick > due + window then take_miss() end
+    end
   end
-  due = CHART.onset_tick(S.idx, S.phase, S.day)  -- a hit or miss above moved on: the note not tapped in time is this one
-  if not S.gesture and S.idx <= count and S.phase_tick > due + window then take_miss() end
-  if S.idx > count and S.feedback_tick == 0 then next_phase() end
+  t = current()  -- a hit or a miss above moved on: judge the next one against the clock
+  if not S.gesture and t and S.phase_tick > t.due + hit_window() then take_miss() end
+  -- the call is over when the chant has finished ringing and nothing is left to touch
+  if not S.gesture and not current() and S.phase_tick > CHART.last_tick(S.day) + 20 and S.feedback_tick == 0 then
+    next_phase()
+  end
 end
 
 -- --- drawing -----------------------------------------------------------------------------------------------------
@@ -261,30 +291,38 @@ local function draw_track(t, color)
   end
 end
 
+-- how hard the call is, 1 to 5 pips
+local function pips(x, y)
+  local lit = 1 + math.floor(CHART.level(S.day, S.phase) * 4 + 0.001)
+  for i = 1, 5 do circ(x + (i - 3) * 18, y, 5, i <= lit and 0xFFE048 or 0x4A4F70, true) end
+end
+
 local function draw_intro()
   img(BG, 0, 0)
   crowd_motion()
   local pose = (S.tick % 48 < 24) and 1 or 0
   img("CH_LEIRE", 79, 157, {frame = math.floor((S.tick % 48) / 8), scale = 0.82})
   img(DANI, 193, 151, {frame = pose, scale = 1})
-  draw_header("ANTES DEL ENCIERRO")
-  text(TIMES[1], 240, 105, {font = "jersey_body", scale = 2, color = 0xFFF1D1, align = "center", outline = 0x15253D})
-  draw_button("ACERCARSE AL SANTO")
-  if (S.tick // 25) % 2 == 0 then tx("B: saltar", 240, 52, 0xF3CC6A, "jersey_small", "center") end
+  draw_header(S.phase == 1 and "ANTES DEL ENCIERRO" or ("LLAMADA " .. S.phase .. " DE 3"))
+  frame.panel("navy", 150, 52, 180, 84)
+  text(TIMES[S.phase], 240, 60, {font = "jersey_title", scale = 1, color = 0xFFF1D1, align = "center", outline = 0x15253D})
+  pips(240, 120)
+  if S.phase > 1 then tx(S.call_prev .. " aciertos", 240, 150, 0xFFF2D2, "jersey_small", "center") end
+  draw_button(S.phase == 1 and "ACERCARSE AL SANTO" or "CANTAR")
+  if S.phase == 1 and (S.tick // 25) % 2 == 0 then tx("B: saltar", 240, 246, 0xF3CC6A, "jersey_small", "center") end
 end
 
 local function draw_gestures(target, colour)
   local bx, by = target.x, target.y
   if target.k == "slide" or target.k == "reverse" then
-    local tx_, ty = track_end(target)
     if target.k == "slide" then
       img("CH_OSU_GESTURES", bx - 31, by - 28, {frame = 3, scale = 0.56})
     else
       img("CH_OSU_GESTURES", bx - 17, by - 34, {frame = 1, scale = 0.44})
     end
     draw_track(target, colour)
-    circ(tx_, ty, 12, colour, false)
-    line(tx_ - 7, ty - 4, tx_, ty, colour); line(tx_ - 7, ty + 4, tx_, ty, colour)
+    circ(target.ex, target.ey, 12, colour, false)
+    line(target.ex - 7, target.ey - 4, target.ex, target.ey, colour); line(target.ex - 7, target.ey + 4, target.ex, target.ey, colour)
     if target.k == "reverse" then
       circ(bx, by, 9, 0xFFF0C9, false)
       line(bx + 5, by - 4, bx, by, 0xFFF0C9); line(bx + 5, by + 4, bx, by, 0xFFF0C9)
@@ -359,26 +397,34 @@ local function draw_play()
   local lp = reaction > 25 and 5 or (reaction > 0 and 2 or math.floor((S.tick % 36) / 6))
   img("CH_DANI_PORTRAIT", 12, 229, {frame = dp, scale = 0.78})
   img("CH_LEIRE_PORTRAIT", 407, 229, {frame = lp, scale = 0.78})
-  local count = phase_length(S.phase)
-  local target = S.idx <= count and target_for(S.idx) or nil
+  local target = current()
   local bx, by = target and target.x or 240, target and target.y or 160
-  local due = CHART.onset_tick(S.idx, S.phase, S.day)
-  local open = math.abs(S.phase_tick - due) <= hit_window()
-  local colour = COLORS[(math.floor((S.idx - 1) / 4) % #COLORS) + 1]
-  -- Show the next two beats as a dotted, numbered route through the crowd.
-  local px0, py0 = bx, by
-  for j = S.idx + 1, math.min(S.idx + 2, count) do
-    local future = target_for(j)
-    route_link(px0, py0, future.x, future.y, j)
-    img("CH_OSU_NUMBERS", future.x - 19, future.y - 19, {frame = (j - 1) % 5, scale = 0.48})
-    px0, py0 = future.x, future.y
-  end
+  local due = target and target.due or 0
+  local open = target and math.abs(S.phase_tick - due) <= hit_window()
+  local colour = COLORS[S.phase]
+  -- The notes still to sing as a faint trail, and the next two as a dotted, numbered route through the crowd.
   if target then
+    local px0, py0 = bx, by
+    for j = S.idx + 1, math.min(S.idx + 2, #S.targets) do
+      local future = S.targets[j]
+      route_link(px0, py0, future.x, future.y, j)
+      img("CH_OSU_NUMBERS", future.x - 19, future.y - 19, {frame = (j - 1) % 5, scale = 0.48})
+      px0, py0 = future.x, future.y
+    end
     local approach = math.max(0, math.min(1, (S.phase_tick - (due - 28)) / 28))
     img("CH_OSU_RINGS", bx - 48, by - 48, {frame = approach < 0.34 and 0 or (approach < 0.68 and 1 or 2), scale = 1})
     draw_gestures(target, colour)
     img("CH_OSU_NUMBERS", bx - 32, by - 32, {frame = (S.idx - 1) % 5, scale = 0.80})
     if open then circ(bx, by, 3, 0xFFFFFF, true) end
+  end
+  -- the line being sung, small, between the two busts
+  local line_i
+  for i, ph in ipairs(CHART.PHRASES) do
+    if S.phase_tick >= CHART.due(ph[1], S.day) - 20 then line_i = i end
+  end
+  if line_i and S.phase_tick < CHART.last_tick(S.day) + 20 then
+    frame.panel("navy", 96, 280, 288, 36)
+    tx(CHART.LYRICS[line_i], 240, 291, 0xFFF4D8, "jersey_small", "center")
   end
   draw_hit()
 end

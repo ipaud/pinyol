@@ -21,7 +21,7 @@ breathing scale, stray fragments) and writes a contact sheet per asset to `art/q
 
 ## Controls
 
-- Calls: touch the numbered circle as its ring closes on it. B on the first screen skips them.
+- Calls: touch the numbered circle as its ring closes on it; on long notes, follow the circle with a finger, go and come back along it, or circle the last one until the lights fill. B on the first card skips the calls.
 - Start: left/right or touch, A to confirm.
 - Run: left/right to change line, A pushes (spends air), B eases (recovers it), C looks back, START pauses.
 
@@ -35,6 +35,6 @@ draws the stretchable panels and the icons; the type is Jersey (10, 15, 25) in `
 
 ## Pending
 
-- The chant's melody is PROVISIONAL: the first line as an automatic pitch tracker heard it in a crowd recording, not confirmed by ear (see chant/song.lua). Replace with a verified transcription.
+- The chant is Pau's MIDI (`san_fermin_16bit_v2_agudo.mid`, copied to `output/canto_referencias/pau/`): all 17 notes sung by the crowd in every call. What the player touches depends on the difficulty (`chant/chart.lua`): 5 circles on the first call of the first morning up to all 17, with followed, there-and-back and circled notes later. Only the first morning is built.
 - Not tested on the Cirera: touch, audio latency, and the cost of drawing the actors as full-screen pictures.
 - The balconies of the rear view's facade are fixed; only cobbles, lamps and banners move past.

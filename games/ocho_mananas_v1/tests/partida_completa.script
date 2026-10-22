@@ -67,72 +67,19 @@ shot p11_canto_intro
 tap 240 285
 tick 24
 shot p12_canto
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
+lua require('tests.autoplay').install()
+tick 130
 shot p13_canto_acierto
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-tick 80
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-shot p14_canto_llamada2
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-tick 80
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-shot p14b_canto_llamada3
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-lua do local x,y=chant.target(); local c=require('chant.chart'); chant.s.phase_tick=c.onset_tick(chant.s.idx,chant.s.phase,chant.s.day)-1; _op=pen; pen=function() return x,y,true,true,false end end
-tick 1
-lua pen=_op
-tick 4
-tick 80
+tick 560
+shot p13b_canto_fin_llamada1
+tick 60
+shot p14_tarjeta_llamada2
+tick 400
+shot p14b_canto_llamada2
+tick 400
+shot p14c_canto_llamada3
+tick 900
+lua require('tests.autoplay').remove()
 expect_lua state == 'position'
 tick 20
 shot p15_posicion

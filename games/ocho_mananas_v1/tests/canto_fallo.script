@@ -1,15 +1,17 @@
-# A tap one tick after a note's window has closed costs one miss, not two (the next note is still to come).
+# A tap one tick after a note's window has closed costs one miss, not two (the next circle is still to come).
 new
 tick 40
 lua save.prologue = true; save.practice = true
 press A
 tick 30
 press B
-tick 5
+tick 20
 tap 240 285
 tick 24
 expect_lua chant.s.state == "play" and chant.s.idx == 1
-lua chant.s.phase_tick = 61
-tap 112 170
+lua chant.s.phase_tick = chant.due() + 14
+lua do local x, y = chant.target(); _op = pen; pen = function() return x, y, true, true, false end end
+tick 1
+lua pen = _op
 expect_lua chant.s.misses == 1 and chant.s.idx == 2
 expect_ok

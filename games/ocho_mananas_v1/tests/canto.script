@@ -1,4 +1,4 @@
-# The three calls before the run: the scene, the first call, a hit, the end of the calls, and where to start.
+# The first call: the scene, the card, a hit on the first circle, then the three calls played through, and where to start.
 new
 tick 40
 lua save.prologue = true; save.practice = true
@@ -6,20 +6,24 @@ press A
 tick 30
 shot c01_escena_antes
 press B
-tick 5
+tick 20
 expect_lua state == "chant"
 shot c02_intro
 tap 240 285
 tick 24
 expect_lua chant.s.state == "play"
 shot c03_canto
-lua chant.s.phase_tick = 43
-tap 112 170
+lua chant.s.phase_tick = chant.due() - 5
+tick 1
+lua do local x, y = chant.target(); _op = pen; pen = function() return x, y, true, true, false end end
+tick 1
+lua pen = _op
 expect_lua chant.s.score == 100 and chant.s.idx == 2
 tick 6
 shot c04_acierto
-lua chant.s.phase = 3; chant.s.idx = 99; chant.s.feedback_tick = 0
-tick 3
+lua require("tests.autoplay").install()
+tick 1900
+lua require("tests.autoplay").remove()
 expect_lua state == "position"
 tick 20
 shot c05_posicion

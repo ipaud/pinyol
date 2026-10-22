@@ -1,44 +1,71 @@
--- The chart of the three calls, from Pau's MIDI of the chant (san_fermin_16bit_v2_agudo.mid, in output/canto_referencias/pau/):
--- the onset of each note in seconds from the first one. There is no metronome: the chant has none. Later mornings
--- compress the phrase a little and narrow the hit window, rather than speeding the melody up.
+-- The chart of the calls, from Pau's MIDI of the chant (san_fermin_16bit_v2_agudo.mid, kept in
+-- output/canto_referencias/pau/): the whole chant, 17 notes in four phrases, at the times and pitches he wrote.
+-- Every call sings all of it. What changes is what the player has to touch: the first calls ask for the notes that
+-- carry the phrase, the later ones for more and more of them, and for gestures on the long notes. There is no
+-- metronome: the chant has none.
 local M = {}
 
-M.TICKS_PER_MINUTE = 60 * 60
-M.BPM = 112          -- only the beat counter below uses it (kept for the callers that ask for one)
-M.LEAD_IN = 0.8      -- seconds of calm before the first syllable
-
--- 17 notes in four phrases of 4, 4, 5 and 4 (the MIDI at 158 bpm, as written)
 M.ONSETS = {0, 0.54, 1.08, 1.31, 2.24, 2.80, 3.35, 3.58, 4.56, 4.78, 5.34, 5.62, 5.86, 6.98, 7.31, 7.83, 8.00}
-M.LAST = 0.76        -- how long the last note of a call rings
+M.PITCH = {69, 73, 75, 73, 70, 71, 76, 73, 70, 72, 73, 75, 73, 70, 71, 73, 69}   -- midi numbers
+M.N = #M.ONSETS
+M.LAST = 1.5          -- how long the last note rings
+M.LEAD_IN = 0.8       -- seconds of calm before the first note
+M.PHRASES = {{1, 4}, {5, 8}, {9, 13}, {14, 17}}
+M.LYRICS = {"A San Fermín pedimos,", "por ser nuestro patrón,", "nos guíe en el encierro,", "dándonos su bendición."}
 
-local function frame_at(sec)
-  return math.floor(sec * 60 + 0.5)
+-- the order the notes are asked for: phrase starts and ends first, then the ones between
+local PRIORITY = {1, 5, 9, 14, 4, 8, 13, 17, 3, 7, 11, 15, 2, 6, 10, 12, 16}
+
+local function ticks(sec) return math.floor(sec * 60 + 0.5) end
+
+-- how hard a call is, 0 to 1: three calls a morning, eight mornings
+function M.level(day, phase)
+  return ((day - 1) * 3 + (phase - 1)) / 23
 end
 
-function M.beat_at_tick(tick)
-  return math.floor(tick * M.BPM / M.TICKS_PER_MINUTE)
+function M.due(n, day)
+  -- later mornings compress the phrase a little, rather than speeding the melody up
+  local t = M.ONSETS[n] * (1 - math.max(0, day - 1) * 0.015)
+  return ticks(M.LEAD_IN + t)
 end
 
-local function onset_s(index, phase, day)
-  local n = #M.ONSETS
-  local round = (index - 1) // n
-  local t = M.ONSETS[(index - 1) % n + 1] + round * (M.ONSETS[n] + 0.6)
-  local compression = 1 - math.max(0, day - 1) * 0.022
-  t = t * compression
-  -- From morning three, some arrivals lean a little late: it asks for listening, the note count is the same.
-  if day >= 3 and index > 1 and index % 2 == 0 then t = t + (day >= 7 and 0.07 or 0.035) end
-  return M.LEAD_IN + t
+function M.span(n, day)  -- how long note n lasts, in ticks
+  if n < M.N then return M.due(n + 1, day) - M.due(n, day) end
+  return ticks(M.LAST)
 end
 
-function M.onset_tick(index, phase, day)
-  return frame_at(onset_s(index, phase, day))
+function M.last_tick(day) return M.due(M.N, day) + ticks(M.LAST) end
+
+-- The notes to touch in a call: [{n = note, due = tick, span = ticks, kind = "tap" | "slide" | "reverse" | "spin"}]
+function M.targets(day, phase)
+  local L = M.level(day, phase)
+  local count = math.floor(5 + L * 12 + 0.5)
+  local chosen = {}
+  for i = 1, count do chosen[PRIORITY[i]] = true end
+  local kind = {}
+  if L >= 0.22 then kind[4] = "slide" end
+  if L >= 0.40 then kind[8] = "slide" end
+  if L >= 0.50 then kind[13] = "reverse" end
+  if L >= 0.62 then kind[8] = "reverse" end
+  if L >= 0.74 then kind[17] = "spin" end
+  local out = {}
+  for n = 1, M.N do
+    if chosen[n] then
+      out[#out + 1] = {n = n, due = M.due(n, day), span = M.span(n, day), kind = kind[n] or "tap"}
+    end
+  end
+  for i, t in ipairs(out) do  -- a hit window must not reach the next target
+    local prev = out[i - 1] and t.due - out[i - 1].due or 999
+    local nxt = out[i + 1] and out[i + 1].due - t.due or 999
+    t.gap = math.min(prev, nxt)
+  end
+  return out
 end
 
--- ticks to the nearest neighbouring syllable (a hit window wider than half of it would swallow the next one)
-function M.gap(index, phase, day)
-  local here = M.onset_tick(index, phase, day)
-  local prev = index > 1 and here - M.onset_tick(index - 1, phase, day) or 999
-  return math.min(prev, M.onset_tick(index + 1, phase, day) - here)
+-- hit window in ticks, wide in the easy calls
+function M.window(day, phase, t)
+  local w = math.floor(14 - M.level(day, phase) * 8 + 0.5)
+  return math.max(4, math.min(w, t.gap // 2 - 1))
 end
 
 return M
