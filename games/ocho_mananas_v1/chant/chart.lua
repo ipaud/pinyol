@@ -1,35 +1,44 @@
--- A playable guide chart for the three calls before the encierro.
--- Its clock is deliberately independent from the official recording, which is not bundled.
+-- The chart of the three calls, taken from the rhythm Pau sang (output/canto_referencias/pau/): the onset of each
+-- syllable in seconds from the first one. There is no metronome: the chant has none. Later mornings compress the phrase a
+-- little and narrow the hit window, rather than speeding the melody up.
 local M = {}
 
-M.BPM = 112
 M.TICKS_PER_MINUTE = 60 * 60
-M.LEAD_IN_BEATS = 1.375
+M.BPM = 112          -- only the beat counter below uses it (kept for the callers that ask for one)
+M.LEAD_IN = 0.8      -- seconds of calm before the first syllable
 
--- Distances between taps, in beats. The three calls grow more active in turn.
-M.SPACING = {1.75, 1.5, 1.25}
+-- "A San Fer-mín pe-di-mos / por ser nues-tro pa-trón": 13 syllables as sung, in seconds from the first
+M.ONSETS = {0, 0.56, 0.85, 1.37, 1.73, 2.32, 2.89, 3.16, 3.76, 4.15, 4.97, 5.27, 5.53}
+M.LAST = 0.55        -- how long the last syllable of a call rings
 
-local function frame_at(beat)
-  return math.floor(beat * M.TICKS_PER_MINUTE / M.BPM + 0.5)
+local function frame_at(sec)
+  return math.floor(sec * 60 + 0.5)
 end
 
 function M.beat_at_tick(tick)
   return math.floor(tick * M.BPM / M.TICKS_PER_MINUTE)
 end
 
-function M.onset_tick(index, phase, day)
-  local spacing = M.SPACING[phase]
-  -- The tempo stays fixed; later mornings compress the phrase slightly and
-  -- tighten the judgement window, rather than making the backing pulse race.
+local function onset_s(index, phase, day)
+  local n = #M.ONSETS
+  local round = (index - 1) // n
+  local t = M.ONSETS[(index - 1) % n + 1] + round * (M.ONSETS[n] + 0.6)
   local compression = 1 - math.max(0, day - 1) * 0.022
-  local beat = M.LEAD_IN_BEATS + (index - 1) * spacing * compression
+  t = t * compression
+  -- From morning three, some arrivals lean a little late: it asks for listening, the note count is the same.
+  if day >= 3 and index > 1 and index % 2 == 0 then t = t + (day >= 7 and 0.07 or 0.035) end
+  return M.LEAD_IN + t
+end
 
-  -- From morning three, some arrivals lean into the offbeat. The chart keeps
-  -- the same number of notes; it asks for better listening and anticipation.
-  if day >= 3 and index > 1 and index % 2 == 0 then
-    beat = beat + (day >= 7 and 0.25 or 0.125)
-  end
-  return frame_at(beat)
+function M.onset_tick(index, phase, day)
+  return frame_at(onset_s(index, phase, day))
+end
+
+-- ticks to the nearest neighbouring syllable (a hit window wider than half of it would swallow the next one)
+function M.gap(index, phase, day)
+  local here = M.onset_tick(index, phase, day)
+  local prev = index > 1 and here - M.onset_tick(index - 1, phase, day) or 999
+  return math.min(prev, M.onset_tick(index + 1, phase, day) - here)
 end
 
 return M

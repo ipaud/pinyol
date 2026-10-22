@@ -9,7 +9,7 @@ tick 5
 tap 240 285
 tick 24
 expect_lua chant.s.state == "play" and chant.s.idx == 1
-lua chant.s.phase_tick = 57
+lua chant.s.phase_tick = 61
 tap 112 170
 expect_lua chant.s.misses == 1 and chant.s.idx == 2
 expect_ok

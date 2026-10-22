@@ -12,7 +12,8 @@ local M = {}
 local CHART = require("chant.chart")
 
 -- one note for each tap; the three calls use the same melody (a call just plays more of it)
-M.NOTES = {"C#4", "D#4", "C#4", "A#3", "B3", "B3"}
+-- one note per syllable, as he sang them (an octave up)
+M.NOTES = {"C#4", "D#4", "C#4", "A#3", "B3", "B3", "E4", "C#4", "A#3", "C4", "C#4", "D#4", "C#4"}
 
 local SEMI = {C = 0, D = 2, E = 4, F = 5, G = 7, A = 9, B = 11}
 local function hz(name)
@@ -30,26 +31,19 @@ local CHOIR = {
 
 function M.start()
   M.played = 0
-  M.last_beat = -1
-  M.crowd = sfx("CROWD", 0.07, {loop = true})
+    M.crowd = sfx("CROWD", 0.07, {loop = true})
 end
 
 function M.update(phase_tick, phase, day, count)
   if phase_tick <= 0 then return end
-  if M.played == nil or M.last_beat == nil then M.start() end
-
-  local beat = CHART.beat_at_tick(phase_tick)
-  if beat > M.last_beat then
-    M.last_beat = beat
-    -- an unpitched tick keeps the tempo without suggesting a key the melody has not been checked against
-    tone(3, 220, {wave = "noise", vol = beat % 4 == 0 and 0.07 or 0.04, decay = 0.03})
-  end
+  if M.played == nil then M.start() end
 
   local k = M.played + 1
   if k <= count and phase_tick >= CHART.onset_tick(k, phase, day) then
     local f = hz(M.NOTES[((k - 1) % #M.NOTES) + 1])
-    local nxt = k < count and CHART.onset_tick(k + 1, phase, day) or CHART.onset_tick(k, phase, day) + 50
-    local len = (nxt - CHART.onset_tick(k, phase, day)) / 60 * 0.92
+    local here = CHART.onset_tick(k, phase, day)
+    local nxt = k < count and CHART.onset_tick(k + 1, phase, day) or here + CHART.LAST * 60
+    local len = (nxt - here) / 60 * 1.02  -- sung: each note runs into the next
     for _, v in ipairs(CHOIR) do
       if phase >= v.from then
         tone(v.voice, f * v.mul, {wave = v.wave, vol = v.vol * (k == count and 1.15 or 1), attack = 0.05, sustain = 0.8,

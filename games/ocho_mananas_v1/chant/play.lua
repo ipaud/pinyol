@@ -70,7 +70,9 @@ local function spin_required()
   return math.pi * 2 * (0.85 + math.max(0, S.day - 5) * 0.22)
 end
 local function hit_window()
-  return math.max(5, WINDOWS[S.phase] - (S.day - 1) * 0.75)
+  local w = math.max(5, WINDOWS[S.phase] - (S.day - 1) * 0.75)
+  -- close syllables get a narrower window so one tap cannot belong to two of them
+  return math.max(4, math.min(w, CHART.gap(S.idx, S.phase, S.day) // 2 - 1))
 end
 local function hit_area(x, y)
   local target = target_for(S.idx)
