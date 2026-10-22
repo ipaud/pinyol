@@ -126,11 +126,13 @@ end
 function screens.countdown(t)
   local s = t // 60
   if s < 5 then
-    text(tostring(5 - s), 240, 110, {font = "jersey_body", scale = 4, align = "center", color = WHITE, outline = INK,
-                                     shadow = 0x000000})
+    local pulse = 1 - (t % 60) / 60  -- the number is struck on the second and fades slowly
+    frame.panel("navy", 200, 88, 80, 84)
+    text(tostring(5 - s), 240, 96, {font = "jersey_title", scale = 2, align = "center", color = pulse > 0.5 and WHITE or 0xD8D2C0,
+                                    outline = INK})
   elseif t < 330 then
-    text("¡COHETE!", 240, 110, {font = "jersey_body", scale = 3, align = "center", color = GOLD, gradient = 0xF06030,
-                                outline = INK, shake = 1})
+    frame.panel("red", 100, 96, 280, 76)
+    text("¡COHETE!", 240, 118, {font = "jersey_title", scale = 1, align = "center", color = GOLD, outline = INK, shake = 1})
   end
 end
 

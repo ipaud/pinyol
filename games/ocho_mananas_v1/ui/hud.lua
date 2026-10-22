@@ -53,7 +53,12 @@ function hud.draw(r, opts)
   minimap(r, 380, 18, 92)
   -- the herd behind, as dots on the street's width: top is Dani's line, bottom 30 m back
   local rx, ry, rw, rh = 362, 34, 110, 44
-  if opts.radar ~= false and #r.bulls > 0 then
+  local herd_near = false  -- the radar only shows while the herd is within reach of it
+  for _, b in ipairs(r.bulls) do
+    local back = d.z - b.z
+    if back > -10 and back < 300 then herd_near = true end
+  end
+  if opts.radar ~= false and herd_near then
     frame.panel("ink", rx - 2, ry - 2, rw + 4, rh + 4)
     line(rx + 6, ry + 6, rx + rw - 6, ry + 6, 0x3A4478)
     text("DETRÁS", rx + rw - 4, ry + rh - 14, {font = "jersey_small", color = 0x6A70A0, align = "right"})
