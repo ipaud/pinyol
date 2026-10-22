@@ -14,19 +14,24 @@ function hud.clock(ticks)
   return string.format("08:%02d:%02d", s // 60, s % 60)
 end
 
-local function segments(x, y, icon, value, col, dark, blink)
-  frame.icon(icon, x, y - 2, 26)
-  local bx = x + 28
-  rect(bx - 2, y + 1, 6 * 8 + 3, 18, INK)
+-- The top bar is a navy panel whose lower edge is at y 30; the room inside it is y 0 to 21 (the panel's top border is
+-- above the screen). Everything in it is centred on y 11.
+local BAR_MID = 11
+
+local function segments(x, icon, value, col, dark, blink)
+  frame.icon(icon, x, BAR_MID - 10, 20)
+  local bx = x + 24
+  local bw = 6 * 7 + 1
+  rect(bx, BAR_MID - 8, bw + 4, 16, INK)
   local full = value / 100 * 6
   for i = 0, 5 do
     local c = dark
     if full >= i + 1 then c = col elseif full > i then c = (full - i) > 0.5 and col or dark end
     if blink and (ticks() // 8) % 2 == 0 then c = dark end
-    rect(bx + i * 8, y + 3, 6, 14, c)
+    rect(bx + 2 + i * 7, BAR_MID - 6, 6, 12, c)
   end
-  box(bx - 2, y + 1, 6 * 8 + 3, 18, 0xC8A850)
-  return bx + 6 * 8 + 8
+  box(bx, BAR_MID - 8, bw + 4, 16, 0xC8A850)
+  return bx + bw + 4 + 12
 end
 
 local function minimap(r, x, y, w)
@@ -45,12 +50,12 @@ end
 
 function hud.draw(r, opts)
   local d = r.dani
-  frame.panel("navy", -8, -10, 496, 40)
-  text(opts.clock or hud.clock(r.t), 10, 3, {font = "jersey_body", color = WHITE, shadow = INK})
-  local x = segments(122, 4, "AIR", d.air, AIR, AIR_D, d.exhausted)
-  segments(x + 6, 4, "BAL", d.bal, BAL, BAL_D, d.bal < 30)
-  text(opts.street or "ESTAFETA", 474, -2, {font = "jersey_small", color = WHITE, align = "right"})
-  minimap(r, 380, 18, 92)
+  frame.panel("navy", -8, -12, 496, 42)
+  text(opts.clock or hud.clock(r.t), 14, BAR_MID - 14, {font = "jersey_body", color = WHITE})  -- its digits fill y 3 to 17
+  local x = segments(110, "AIR", d.air, AIR, AIR_D, d.exhausted)
+  x = segments(x, "BAL", d.bal, BAL, BAL_D, d.bal < 30)
+  text(opts.street or "ESTAFETA", x + 6, BAR_MID - 6, {font = "jersey_small", color = 0xC8D0E8})
+  minimap(r, 352, BAR_MID - 8, 112)
   -- the herd behind, as dots on the street's width: top is Dani's line, bottom 30 m back
   local rx, ry, rw, rh = 362, 34, 110, 44
   local herd_near = false  -- the radar only shows while the herd is within reach of it
@@ -109,8 +114,8 @@ function hud.draw(r, opts)
       local s = (ahead.side < 0 and "< " or "") .. "Retirada a la " .. (ahead.side < 0 and "izquierda" or "derecha")
                 .. (ahead.side > 0 and " >" or "") .. (m > 0 and ("  " .. m .. " m") or "  ahora")
       local w = textw(s, {font = "jersey_small"}) + 16
-      frame.panel("teal", 240 - w // 2, 32, w, 22)
-      text(s, 240, 36, {font = "jersey_small", color = TEAL_L, align = "center"})
+      frame.panel("teal", 240 - w // 2, 35, w, 22)
+      text(s, 240, 39, {font = "jersey_small", color = TEAL_L, align = "center"})
     end
   end
   if d.exhausted then  -- on the left, below the street's name, clear of the way-out hint
