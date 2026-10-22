@@ -4,22 +4,26 @@
   "format": "packed",
   "bpp": 8,
   "colours": 26,
-  "w": 30,
+  "w": 50,
   "h": 46,
-  "frames": 1,
+  "frames": 3,
   "frame_ms": [
+    100,
+    100,
     100
   ],
   "order": [
-    0
+    0,
+    1,
+    2
   ],
   "anchor": [
-    15,
+    25,
     45
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 1112,
-    "as_rgb565": 2760
+    "total": 3592,
+    "as_rgb565": 13800
   }
 }

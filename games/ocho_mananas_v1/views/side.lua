@@ -10,7 +10,7 @@ local PERIOD = 400                                       -- the layers' width: t
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
 -- how tall, in screen pixels, each picture's standing figure is drawn
-local SHOW = {DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 105, CABE_SIDE = 92}
+local SHOW = {FLECHA = 84, DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 105, CABE_SIDE = 92}
 
 function side.init() end
 
@@ -66,6 +66,21 @@ function side.draw(r, tick)
   table.sort(list, function(a, b) return a.y < b.y end)  -- the nearest (lowest on the screen) drawn last, on top
   layer("LAT_WALL", WALL_Y, WALL_K, dani.z)
   layer("LAT_GROUND", GROUND_Y, GROUND_K, dani.z)
+  -- the stretches where a way out can be taken: a green band on the cobbles by their wall, chevrons leading to it
+  local GREEN, GREEN_L = 0x22B058, 0x96F0B8
+  for _, zn in ipairs(r.zones) do
+    local lane = zn.side < 0 and -22 or 22
+    local y0 = zn.side < 0 and 214 or 238
+    local xa, xb = math.max(0, side.x(dani, lane, zn.z0) * 2), math.min(480, side.x(dani, lane, zn.z1) * 2)
+    if xb > xa then
+      rect(math.floor(xa), y0, math.floor(xb - xa), 12, GREEN)
+      rect(math.floor(xa), zn.side < 0 and y0 + 11 or y0, math.floor(xb - xa), 1, GREEN_L)
+    end
+    for z = zn.z0 - 84, zn.z0 - 8, 28 do
+      local sx = side.x(dani, lane, z)
+      if sx > -20 and sx < 260 then actors.draw("FLECHA", 2, sx, side.y(lane) + 3, actors.fit("FLECHA", SHOW.FLECHA), false, nil, 0.6) end
+    end
+  end
   for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, actors.fit(it.id, SHOW[it.id]), it.flip) end
   layer("LAT_FENCE", FENCE_Y, FENCE_K, dani.z)
   if dani.state ~= "retire" then actors.marker(C.SIDE_X, dy - SHOW.DANI_SIDE / 2 - 4 + math.sin(tick / 8) * 1.5) end

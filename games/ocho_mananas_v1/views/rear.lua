@@ -11,7 +11,7 @@ local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, FLEC
 local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
               TORO_BACK = 165, TORO_FRONT = 165, TORO_3QB = 165, TORO_3QF = 165,   -- the herd towers over the runners:
               CABE_BACK = 148, CABE_FRONT = 148, CABE_3QB = 148, CABE_3QF = 148,   -- 500 kg against 75
-              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, FLECHA = 66}
+              FAROLA = 58, BANDERA = 65, IKURRINA = 58, NICO = 86, FLECHA = 60}
 
 function rear.init() end
 
@@ -96,6 +96,24 @@ local function dani_frame(dani)
   return math.floor(dani.phase * 6) % 6
 end
 
+-- The stretch where a way out can be taken: a green band painted on the cobbles along its wall.
+local GREEN, GREEN_L, GREEN_D = 0x22B058, 0x96F0B8, 0x0E6E3A
+local function zone_strip(zn, z_near, z_far, oy)
+  local za, zb = math.max(zn.z0, math.min(z_near, z_far)), math.min(zn.z1, math.max(z_near, z_far))
+  if zb <= za then return end
+  local xa, xb = zn.side * 19, zn.side * 33
+  local p = {}
+  for i, c in ipairs({{xa, za}, {xb, za}, {xb, zb}, {xa, zb}}) do
+    local sx, sy = at(c[1], c[2], 0)
+    if not sx then return end
+    p[i] = {sx * 2, sy * 2 + oy * 2}
+  end
+  tri(p[1][1], p[1][2], p[2][1], p[2][2], p[3][1], p[3][2], GREEN)
+  tri(p[1][1], p[1][2], p[3][1], p[3][2], p[4][1], p[4][2], GREEN)
+  line(p[1][1], p[1][2], p[4][1], p[4][2], GREEN_L)  -- the edge towards the street
+  line(p[1][1] + zn.side, p[1][2], p[4][1] + zn.side, p[4][2], GREEN_D)
+end
+
 function rear.draw(r, tick, shake)
   local dani = r.dani
   local cz = rear.back and dani.z + C.CB or dani.z - rear.cb
@@ -122,8 +140,11 @@ function rear.draw(r, tick, shake)
   end
   for _, zn in ipairs(r.zones) do
     if zn.z1 > z_near and zn.z0 < z_far then
-      local fl = zn.side < 0
-      for z = zn.z0 + 8, zn.z1, 26 do place("FLECHA", 0, zn.side * 22, z, 0, fl, 0.15) end
+      -- sideways chevrons on the green stretch point at the wall; ahead of it chevrons lead the way in
+      for z = zn.z0 + 12, zn.z1 - 6, 30 do place("FLECHA", zn.side < 0 and 1 or 2, zn.side * 27, z, 0, false, 0.15) end
+      if not rear.back then
+        for z = zn.z0 - 78, zn.z0 - 6, 26 do place("FLECHA", 0, zn.side * 21, z, 0, false, 0.15) end
+      end
     end
   end
   -- the herd: from behind its rumps (the body's middle is behind the head), from the front its faces
@@ -156,6 +177,7 @@ function rear.draw(r, tick, shake)
   for i = 1, n_items do list[i] = items[i] end
   table.sort(list, function(a, b) return a.d > b.d end)  -- the far ones first
   img("STREET_REAR", 0, 2 * oy)
+  for _, zn in ipairs(r.zones) do zone_strip(zn, z_near, z_far, oy) end
   for _, it in ipairs(list) do
     -- an animal coming up out of the camera's near plane fades in instead of popping
     local fade = (not PROPS[it.id] and it.d < 28) and math.max(0.05, (it.d - 14) / 14) or nil

@@ -68,7 +68,8 @@ SHEETS = {
     "IKURRINA": (72, [("props_gen.png", 1, 6, [(0, 4), (0, 5)])]),
     "NICO": (96, [("nico_gen.png", 1, 2, row_major(2, 2))]),
     # the way-out arrows are the only refuge marker (the doors that stood beside them were taken out)
-    "FLECHA": (40, [("flecha_gen.png", 1, 1, [(0, 0)])]),   # flat road markings: the view squashes them
+    # flat road markings, the view squashes them: 0 points ahead, 1 to the left (a wall), 2 to the right
+    "FLECHA": (40, [("flecha_gen.png", 1, 1, [(0, 0)]), ("flecha_gen.png", 1, 1, [(0, 0)], 90), ("flecha_gen.png", 1, 1, [(0, 0)], -90)]),
 }
 MARGIN = 3        # empty pixels kept around the widest frame, so nothing touches the edge of its cell
 UPRIGHT = 0.7     # a frame at least this fraction of the standing height is upright (lying down is lower)
@@ -195,7 +196,8 @@ def build(aid):
     height, parts = SHEETS[aid]
     torso = aid.startswith(("DANI", "RUN_"))
     frames = []  # (scaled image, foot row, anchor column)
-    for src, rows, cols, order in parts:
+    for src, rows, cols, order, *rest in parts:
+        rot = rest[0] if rest else 0
         keyed = key_magenta(Image.open(RAW / src))
         if aid.startswith(ACTORS):
             keyed = drop_shadow(keyed)
@@ -208,6 +210,8 @@ def build(aid):
         k = height / float(np.median(standing))  # every frame of the sheet by the same factor
         for f in part:
             small = f.resize((max(1, round(f.width * k)), max(1, round(f.height * k))), Image.Resampling.BOX)
+            if rot:  # turned after scaling, so it keeps the size of the upright one
+                small = small.rotate(rot, expand=True, resample=Image.Resampling.NEAREST)
             small.putalpha(small.getchannel("A").point(lambda v: 255 if v >= 110 else 0))
             foot, anchor = foot_and_anchor(small, f.height >= UPRIGHT * tallest, torso)
             frames.append((small, foot, anchor))

@@ -11,7 +11,7 @@ return {
   DANI_FRONT = {w = 92, h = 158, foot = 152, ref = 150, body = 81},
   DANI_SIDE = {w = 196, h = 163, foot = 157, ref = 150, body = 123},
   FAROLA = {w = 56, h = 78, foot = 74, ref = 72, body = 44},
-  FLECHA = {w = 30, h = 46, foot = 42, ref = 40, body = 23},
+  FLECHA = {w = 50, h = 46, foot = 42, ref = 40, body = 40},
   IKURRINA = {w = 54, h = 78, foot = 74, ref = 72, body = 41},
   NICO = {w = 88, h = 102, foot = 97, ref = 96, body = 81},
   RUN_BACK = {w = 110, h = 131, foot = 126, ref = 120, body = 61},
