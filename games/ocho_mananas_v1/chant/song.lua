@@ -1,9 +1,7 @@
--- The guide melody of the three calls, sung by a small crowd. From PAU'S OWN VOICE (output/canto_referencias/pau/): the
--- first line of the chant ("A San Fermín pedimos") as he sang it, C#3 D#3 C#3 A#2 B2 B2 (a low male voice), here an
--- octave up so the lead sits where a mixed crowd would and the octave-below voice is his own register. The rhythm is
--- the game's chart, not his. Only the first line is taken from him so far; his second line is in the recording too
--- (E3 C#3 A#2 C3 C#3 D#3 C#3) and the later ones are not settled. An earlier guess from crowd recordings
--- (B3 B3 A#3 G#3 A3 G#3) differed and is dropped.
+-- The guide melody of the three calls, sung by a small crowd: Pau's own MIDI of the chant
+-- (san_fermin_16bit_v2_agudo.mid, kept in output/canto_referencias/pau/), 17 notes in four phrases, pitches and
+-- timings as he wrote them (chant/chart.lua has the timings). Earlier guesses from crowd recordings and from his
+-- singing are dropped.
 --
 -- The crowd sings in unison with the octaves as a mixed crowd does (women up, men down), each voice a little out of
 -- tune and wobbling on its own, so it chorus-es; the three calls grow: the first is a few voices, the second adds
@@ -12,8 +10,8 @@ local M = {}
 local CHART = require("chant.chart")
 
 -- one note for each tap; the three calls use the same melody (a call just plays more of it)
--- one note per syllable, as he sang them (an octave up)
-M.NOTES = {"C#4", "D#4", "C#4", "A#3", "B3", "B3", "E4", "C#4", "A#3", "C4", "C#4", "D#4", "C#4"}
+-- one note each, as in the MIDI
+M.NOTES = {"A4", "C#5", "D#5", "C#5", "A#4", "B4", "E5", "C#5", "A#4", "C5", "C#5", "D#5", "C#5", "A#4", "B4", "C#5", "A4"}
 
 local SEMI = {C = 0, D = 2, E = 4, F = 5, G = 7, A = 9, B = 11}
 local function hz(name)

@@ -1,15 +1,15 @@
--- The chart of the three calls, taken from the rhythm Pau sang (output/canto_referencias/pau/): the onset of each
--- syllable in seconds from the first one. There is no metronome: the chant has none. Later mornings compress the phrase a
--- little and narrow the hit window, rather than speeding the melody up.
+-- The chart of the three calls, from Pau's MIDI of the chant (san_fermin_16bit_v2_agudo.mid, in output/canto_referencias/pau/):
+-- the onset of each note in seconds from the first one. There is no metronome: the chant has none. Later mornings
+-- compress the phrase a little and narrow the hit window, rather than speeding the melody up.
 local M = {}
 
 M.TICKS_PER_MINUTE = 60 * 60
 M.BPM = 112          -- only the beat counter below uses it (kept for the callers that ask for one)
 M.LEAD_IN = 0.8      -- seconds of calm before the first syllable
 
--- "A San Fer-mín pe-di-mos / por ser nues-tro pa-trón": 13 syllables as sung, in seconds from the first
-M.ONSETS = {0, 0.56, 0.85, 1.37, 1.73, 2.32, 2.89, 3.16, 3.76, 4.15, 4.97, 5.27, 5.53}
-M.LAST = 0.55        -- how long the last syllable of a call rings
+-- 17 notes in four phrases of 4, 4, 5 and 4 (the MIDI at 158 bpm, as written)
+M.ONSETS = {0, 0.54, 1.08, 1.31, 2.24, 2.80, 3.35, 3.58, 4.56, 4.78, 5.34, 5.62, 5.86, 6.98, 7.31, 7.83, 8.00}
+M.LAST = 0.76        -- how long the last note of a call rings
 
 local function frame_at(sec)
   return math.floor(sec * 60 + 0.5)
