@@ -6,8 +6,7 @@ local actors = {}
 
 local SIZE = require("views.sizes")
 
-local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETIRO = true, FLECHA = true,
-               LAT_RET_FAR = true, LAT_RET_NEAR = true}
+local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, FLECHA = true}
 
 function actors.has(id) return SIZE[id] ~= nil end
 

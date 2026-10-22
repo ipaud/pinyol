@@ -10,7 +10,7 @@ local PERIOD = 400                                       -- the layers' width: t
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
 -- how tall, in screen pixels, each picture's standing figure is drawn
-local SHOW = {DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 105, CABE_SIDE = 92, LAT_RET_FAR = 96, LAT_RET_NEAR = 40}
+local SHOW = {DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 105, CABE_SIDE = 92}
 
 function side.init() end
 
@@ -47,15 +47,6 @@ function side.draw(r, tick)
   local list = {}
   local function add(id, frame, sx, y, flip)
     list[#list + 1] = {id = id, frame = frame, sx = sx, y = y, flip = flip}
-  end
-  for _, zn in ipairs(r.zones) do
-    for _, z in ipairs({zn.z0 + 22, zn.z1 - 22}) do
-      local sx = side.x(dani, zn.side < 0 and -32 or 32, z)
-      if sx > -40 and sx < 280 then
-        if zn.side < 0 then add("LAT_RET_FAR", 0, sx, C.SIDE_TOP - 1, false)
-        else add("LAT_RET_NEAR", 0, sx, C.SIDE_BOTTOM + 3, false) end
-      end
-    end
   end
   for _, b in ipairs(r.bulls) do
     local sx = side.x(dani, b.x, b.z)

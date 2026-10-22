@@ -83,33 +83,12 @@
   "ref": 72,
   "w": 54
  },
- "LAT_RET_FAR": {
-  "body": 63,
-  "foot": 98,
-  "h": 102,
-  "ref": 96,
-  "w": 72
- },
- "LAT_RET_NEAR": {
-  "body": 69,
-  "foot": 42,
-  "h": 46,
-  "ref": 40,
-  "w": 76
- },
  "NICO": {
   "body": 81,
   "foot": 97,
   "h": 102,
   "ref": 96,
   "w": 88
- },
- "RETIRO": {
-  "body": 53,
-  "foot": 82,
-  "h": 86,
-  "ref": 80,
-  "w": 60
  },
  "RUN_BACK": {
   "body": 61,

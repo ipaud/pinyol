@@ -67,11 +67,8 @@ SHEETS = {
     "BANDERA": (72, [("props_gen.png", 1, 6, [(0, 2), (0, 3)])]),
     "IKURRINA": (72, [("props_gen.png", 1, 6, [(0, 4), (0, 5)])]),
     "NICO": (96, [("nico_gen.png", 1, 2, row_major(2, 2))]),
-    # refuge markers: the recess (calm, bright), the floor arrows, the side view's recess and floor zone
-    "RETIRO": (80, [("props2_gen.png", 1, 5, [(0, 0), (0, 1)])]),
+    # the way-out arrows are the only refuge marker (the doors that stood beside them were taken out)
     "FLECHA": (40, [("flecha_gen.png", 1, 1, [(0, 0)])]),   # flat road markings: the view squashes them
-    "LAT_RET_FAR": (96, [("props2_gen.png", 1, 5, [(0, 3)])]),
-    "LAT_RET_NEAR": (40, [("props2_gen.png", 1, 5, [(0, 4)])]),
 }
 MARGIN = 3        # empty pixels kept around the widest frame, so nothing touches the edge of its cell
 UPRIGHT = 0.7     # a frame at least this fraction of the standing height is upright (lying down is lower)
