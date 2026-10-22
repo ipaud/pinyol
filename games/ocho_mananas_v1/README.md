@@ -42,7 +42,7 @@ Menus, scenes and the calls run at 52-60 fps. The race runs at about 30 (26-30) 
 animals are at the camera: drawing any of the herd costs the frame 3 to 7 ms however many (3 to 9) or how big. Only the five nearest
 are drawn, and an animal at the camera stops growing at 1.6 times its size. The race is accepted at 30 fps. Game time stays at 60 Hz
 because the console catches up its ticks. Measured but not understood: a race scene stays at 20 fps for its first ~25 s and then
-settles at 30; pre-drawing every picture before it did not change that. Details: `output/cirera/RESULTADOS.md`.
+settles at 30; pre-drawing every picture before it did not change that. Details: `RENDIMIENTO.md`.
 
 ## Pending
 
