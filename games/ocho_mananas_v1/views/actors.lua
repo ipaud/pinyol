@@ -5,10 +5,10 @@ local actors = {}
 -- frame size of each picture (art/build_sprites.py)
 local SIZE = {
   DANI_BACK = {84, 160}, DANI_FRONT = {84, 160}, DANI_SIDE = {124, 160},
-  RUN_BACK = {36, 68}, RUN_FRONT = {36, 68}, RUN_SIDE = {52, 68},
-  TORO_BACK = {60, 68}, TORO_FRONT = {60, 68}, TORO_SIDE = {104, 64},
-  CABE_BACK = {60, 68}, CABE_FRONT = {60, 68}, CABE_SIDE = {104, 64},
-  TORO_3QB = {60, 68}, TORO_3QF = {60, 68}, CABE_3QB = {60, 68}, CABE_3QF = {60, 68},
+  RUN_BACK = {70, 130}, RUN_FRONT = {70, 130}, RUN_SIDE = {100, 130},
+  TORO_BACK = {124, 140}, TORO_FRONT = {124, 140}, TORO_SIDE = {200, 130},
+  CABE_BACK = {124, 140}, CABE_FRONT = {124, 140}, CABE_SIDE = {200, 130},
+  TORO_3QB = {124, 140}, TORO_3QF = {124, 140}, CABE_3QB = {124, 140}, CABE_3QF = {124, 140},
   FAROLA = {48, 72}, BANDERA = {56, 72}, IKURRINA = {64, 72}, NICO = {80, 96},
   RETIRO = {40, 80}, FLECHA = {64, 40}, LAT_RET_FAR = {56, 96}, LAT_RET_NEAR = {96, 40},
 }

@@ -7,7 +7,9 @@ local actors = require("views.actors")
 local rear = {}
 
 -- the props are not people: each its own size against the street
-local PROP_K = {DANI_BACK = 0.86, DANI_FRONT = 0.86, FAROLA = 0.8, BANDERA = 0.9, IKURRINA = 0.8, NICO = 0.9, RETIRO = 1.1, FLECHA = 1.0}
+local PROP_K = {DANI_BACK = 0.86, DANI_FRONT = 0.86, RUN_BACK = 0.81, RUN_FRONT = 0.81,
+               TORO_BACK = 0.85, TORO_FRONT = 0.85, TORO_3QB = 0.85, TORO_3QF = 0.85,
+               CABE_BACK = 0.8, CABE_FRONT = 0.8, CABE_3QB = 0.8, CABE_3QF = 0.8, FAROLA = 0.8, BANDERA = 0.9, IKURRINA = 0.8, NICO = 0.9, RETIRO = 1.1, FLECHA = 1.0}
 
 function rear.init() end
 

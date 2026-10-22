@@ -524,7 +524,7 @@ end
 local particles = require("particles")
 local fx = particles.new()
 function dust(r)
-  if timer % 4 == 0 then
+  if timer % 10 == 0 then  -- the animals bring their own dust: only a few light puffs from the street
     for _, b in ipairs(r.bulls) do
       local x, y
       if view == "side" then
@@ -534,8 +534,8 @@ function dust(r)
         x, y = rear.screen(b.x, rear.back and b.z or b.z - 14, 0)
       end
       if x then
-        fx:burst(x, y - 2, 1, {speed = 0.8, angle = -90, spread = 120, gravity = -0.02, drag = 0.04, life = 26,
-                               size = 5, size_end = 2, colours = {0xD8C8A8, 0xB0A090, 0x807080}, shape = "circle"})
+        fx:burst(x, y - 2, 1, {speed = 0.8, angle = -90, spread = 120, gravity = -0.02, drag = 0.04, life = 20,
+                               size = 3, size_end = 1, colours = {0xD8C8A8, 0xB0A090, 0x807080}, shape = "circle"})
       end
     end
   end

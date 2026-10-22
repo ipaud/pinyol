@@ -21,7 +21,8 @@ GAME = HERE.parent
 ROOT = GAME.parents[1]
 RAW = HERE / "raw"
 COLOURS = 32
-HERO_COLOURS = 56  # Dani is drawn big: more shades
+HERO_COLOURS = 56  # the actors are drawn big: more shades
+ACTORS = ("DANI", "RUN_", "TORO", "CABE")
 
 
 def row_major(n, cols):
@@ -40,22 +41,22 @@ SHEETS = {
     "DANI_FRONT": (84, 160, [("dani_front_gen.png", 1, 4, row_major(4, 4))]),
     # 0-5 run, 6 stumble, 7-10 sprint, 11-14 jog
     "DANI_SIDE": (124, 160, [("dani_side_gen.png", 1, 7, row_major(7, 7)), ("dani_sidex_gen.png", 1, 8, row_major(8, 8))]),
-    "TORO_BACK": (60, 68, [("toro_back_gen.png", 1, 4, row_major(4, 4))]),
-    "TORO_FRONT": (60, 68, [("toro_front_gen.png", 1, 4, row_major(4, 4))]),
-    "TORO_SIDE": (104, 64, [("toro_side_gen.png", 1, 4, row_major(4, 4))]),
-    "TORO_3QB": (60, 68, [("toro_3q_back_gen.png", 1, 4, row_major(4, 4))]),  # rear three-quarter, head to the left
-    "TORO_3QF": (60, 68, [("toro_3q_front_gen.png", 1, 4, row_major(4, 4))]),  # front three-quarter, head to the left
-    "CABE_BACK": (60, 68, [("cabe_back_gen.png", 1, 4, row_major(4, 4))]),
-    "CABE_FRONT": (60, 68, [("cabe_front_gen.png", 1, 4, row_major(4, 4))]),
-    "CABE_SIDE": (104, 64, [("cabe_side_gen.png", 1, 4, row_major(4, 4))]),
-    "CABE_3QB": (60, 68, [("cabe_3q_back_gen.png", 1, 4, row_major(4, 4))]),
-    "CABE_3QF": (60, 68, [("cabe_3q_front_gen.png", 1, 4, row_major(4, 4))]),
+    "TORO_BACK": (124, 140, [("toro_back_gen.png", 1, 4, row_major(4, 4))]),
+    "TORO_FRONT": (124, 140, [("toro_front_gen.png", 1, 4, row_major(4, 4))]),
+    "TORO_SIDE": (200, 130, [("toro_side_gen.png", 1, 4, row_major(4, 4))]),
+    "TORO_3QB": (124, 140, [("toro_3q_back_gen.png", 1, 4, row_major(4, 4))]),  # rear three-quarter, head to the left
+    "TORO_3QF": (124, 140, [("toro_3q_front_gen.png", 1, 4, row_major(4, 4))]),  # front three-quarter, head to the left
+    "CABE_BACK": (124, 140, [("cabe_back_gen.png", 1, 4, row_major(4, 4))]),
+    "CABE_FRONT": (124, 140, [("cabe_front_gen.png", 1, 4, row_major(4, 4))]),
+    "CABE_SIDE": (200, 130, [("cabe_side_gen.png", 1, 4, row_major(4, 4))]),
+    "CABE_3QB": (124, 140, [("cabe_3q_back_gen.png", 1, 4, row_major(4, 4))]),
+    "CABE_3QF": (124, 140, [("cabe_3q_front_gen.png", 1, 4, row_major(4, 4))]),
     # 4 runners x (4 strides, trip, down): stride frames var*4+phase, then 16+var trips, 20+var lies down
-    "RUN_BACK": (36, 68, [("run_back_gen.png", 4, 6, runners(6, 4, 2))]),
+    "RUN_BACK": (70, 130, [("run_back_gen.png", 4, 6, runners(6, 4, 2))]),
     # 4 runners x 2 strides: var*2+phase
-    "RUN_FRONT": (36, 68, [("run_front_gen.png", 4, 2, runners(2, 2, 0))]),
+    "RUN_FRONT": (70, 130, [("run_front_gen.png", 4, 2, runners(2, 2, 0))]),
     # 4 runners x (4 strides, down): var*4+phase, then 16+var lies down
-    "RUN_SIDE": (52, 68, [("run_side_gen.png", 4, 5, runners(5, 4, 1))]),
+    "RUN_SIDE": (100, 130, [("run_side_gen.png", 4, 5, runners(5, 4, 1))]),
     # props: the lamp (off, lit), the banner (two waves), the ikurriña (two waves), Nico on his balcony (aiming, flash)
     "FAROLA": (48, 72, [("props_gen.png", 1, 6, [(0, 0), (0, 1)])]),
     "BANDERA": (56, 72, [("props_gen.png", 1, 6, [(0, 2), (0, 3)])]),
@@ -144,7 +145,7 @@ def build(aid):
     scaled = []  # (cell, scale): each sheet is scaled by its own factor (they were drawn at different sizes)
     for src, rows, cols, order in parts:
         keyed = key_magenta(Image.open(RAW / src))
-        if aid.startswith("DANI"):
+        if aid.startswith(ACTORS):
             keyed = drop_shadow(keyed)
         grid = cells(keyed, rows, cols)
         part = [grid[r * cols + c] for r, c in order]
@@ -160,7 +161,7 @@ def build(aid):
         small = f.resize(sz, Image.Resampling.BOX)
         strip.alpha_composite(small, (i * cw + (cw - sz[0]) // 2, ch - sz[1]))
     alpha = strip.getchannel("A").point(lambda a: 255 if a >= 110 else 0)
-    colours = HERO_COLOURS if aid.startswith("DANI") else COLOURS
+    colours = HERO_COLOURS if aid.startswith(ACTORS) else COLOURS
     strip = strip.convert("RGB").quantize(colours, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     strip = strip.convert("RGBA")
     strip.putalpha(alpha)
