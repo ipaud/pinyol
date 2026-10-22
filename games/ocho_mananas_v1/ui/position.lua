@@ -1,5 +1,5 @@
 -- Before the run: where to start, against the left fence, the middle of the street, or the right fence. The choice
--- sets Dani's first line and which way out (R1 on the left, R2 on the right) is nearer. Drawn over the street.
+-- sets Dani's first line and which wall a way out is nearer. Drawn over the street.
 local frame = require("ui.frame")
 local position = {}
 
@@ -10,7 +10,20 @@ local STARTS = {
 }
 local sel = 2
 
-function position.reset() sel = 2 end
+-- the note under each fence says whether the morning (in any of its stretches) has a way out on that wall
+function position.reset(day)
+  sel = 2
+  local stretches = day.variants or {day}
+  for _, st in ipairs({STARTS[1], STARTS[3]}) do
+    local wall = st.x < 0 and -1 or 1
+    st.note = "SIN SALIDA"
+    for _, v in ipairs(stretches) do
+      for _, zn in ipairs(v.zones or day.zones or {}) do
+        if zn.side == wall then st.note = "HAY SALIDA" end
+      end
+    end
+  end
+end
 function position.x() return STARTS[sel].x end
 
 -- true when the choice is made

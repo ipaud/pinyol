@@ -42,7 +42,8 @@ days[1] = {
 
 -- --- the other seven mornings ----------------------------------------------------------------------------------------------
 -- Challenge ids the judge in main.lua understands: clean (no contacts), stay (let the herd pass before leaving), photo,
--- air (never under a third of the air), early (left by the first way out), late (left by the last one).
+-- air (never under a third of the air), early (left by the first way out), late (left by the last one), smooth (at most two
+-- sharp changes of line), nopush (never held A to push).
 
 local function herd(...) return {...} end
 local function group(start, speed, members) return {start = start, speed = speed, members = members} end
@@ -61,9 +62,9 @@ days[2] = {
     {id = "R3", side = -1, z0 = 2060, z1 = 2220, label = "Salida de final de tramo"},
   },
   views = {{0, "side"}, {1450, "rear"}, {1950, "side"}},
-  objective = "Mantén tu línea entre los demás y retírate por una salida.",
+  objective = "Mantén tu línea y retírate por una salida.",
   challenges = {
-    {id = "clean", text = "Sin cambios bruscos: cero contactos."},
+    {id = "smooth", text = "Sin cambios bruscos de línea."},
     {id = "air", text = "Que el aire no baje de un tercio."},
   },
 }
@@ -131,7 +132,7 @@ days[5] = {
     {id = "R3", side = -1, z0 = 2450, z1 = 2640, label = "Salida del final"},
   },
   views = {{0, "rear"}, {1150, "side"}, {2150, "rear"}},
-  objective = "Cambia de plan cuando el hueco se cierre y alcanza otra salida.",
+  objective = "Si el hueco se cierra, cambia y busca otra salida.",
   challenges = {
     {id = "clean", text = "Sin contactos al cambiar de plan."},
     {id = "stay", text = "Deja pasar a la manada antes de salir."},
@@ -156,7 +157,7 @@ days[6] = {
   objective = "Modula el ritmo y termina en una salida libre.",
   challenges = {
     {id = "early", text = "Salir por la primera ventana."},
-    {id = "clean", text = "Sin empujar: cero contactos."},
+    {id = "nopush", text = "Sin empujar: sin mantener A."},
   },
 }
 
@@ -180,7 +181,7 @@ local mercaderes7 = {
   lane = {{0, 6}, {600, 8}, {900, -12}, {1250, 16}, {1700, 10}, {2400, 0}},
   herd = {group(-800, 1.58, {{C, -5, 0}, {T, 5, -8}, {T, -3, -16}, {T, 7, -24}, {C, 0, -36}}),
           group(-1400, 1.5, {{C, -4, 0}, {T, 5, -11}, {T, -6, -22}})},
-  runners = 13,
+  runners = 13, falls = {},
   zones = {
     {id = "R1", side = -1, z0 = 940, z1 = 1100, label = "Portal antes de la curva"},
     {id = "R2", side = 1, z0 = 1860, z1 = 2040, label = "Portal después de la curva"},
@@ -196,13 +197,13 @@ days[7] = {
   objective = "Elige entrada y retirada; completa el plan o adáptalo.",
   challenges = {
     {id = "air", text = "Que el aire no baje de un tercio."},
-    {id = "clean", text = "Sin contactos."},
+    {id = "smooth", text = "Sin cambios bruscos: una línea limpia."},
   },
   variants = {estafeta7, mercaderes7},
 }
 
 local estafeta8 = {
-  name = "Estafeta", note = "dos salidas: temprana y exigente",
+  name = "Estafeta", note = "tres salidas: elige una",
   length = 3000, street = "ESTAFETA",
   lane = {{0, 6}, {600, 4}, {1100, 12}, {1500, -4}, {1900, 14}, {2400, -8}, {3200, 0}},
   falls = {{start = 350, x = -25, at = 1000, lie = 420}, {start = 900, x = 25, at = 2150, lie = 420}},
@@ -210,7 +211,7 @@ local estafeta8 = {
           group(-1250, 1.55, {{C, -4, 0}, {T, 4, -12}, {T, -5, -22}, {C, 0, -34}}),
           group(-1900, 1.5, {{C, -3, 0}, {T, 5, -10}, {T, -4, -20}})},
   runners = 16,
-  photo = {z0 = 1500, z1 = 1760, side = 1, at = 1640, need = 30, near = 16, far = 45},
+  photo = {z0 = 700, z1 = 950, side = 1, at = 820, need = 30, near = 16, far = 45},
   zones = {
     {id = "R1", side = -1, z0 = 1250, z1 = 1420, label = "Retirada temprana"},
     {id = "R2", side = 1, z0 = 1980, z1 = 2150, label = "Retirada a mitad"},
@@ -219,14 +220,14 @@ local estafeta8 = {
   views = {{0, "rear"}, {1000, "side"}, {1900, "rear"}, {2400, "side"}},
 }
 local mercaderes8 = {
-  name = "Mercaderes", note = "la curva, con la manada más larga",
+  name = "Mercaderes", note = "la curva, manada larga",
   length = 2800, street = "MERCADERES",
   lane = {{0, 6}, {600, 8}, {900, -12}, {1250, 16}, {1700, 10}, {2100, -10}, {2800, 0}},
   falls = {{start = 500, x = 25, at = 1500, lie = 420}},
   herd = {group(-800, 1.6, {{C, -5, 0}, {T, 5, -8}, {T, -3, -16}, {T, 7, -24}, {C, 0, -36}}),
           group(-1450, 1.55, {{C, -4, 0}, {T, 5, -11}, {T, -6, -22}, {C, 0, -32}})},
   runners = 15,
-  photo = {z0 = 1450, z1 = 1700, side = 1, at = 1580, need = 30, near = 16, far = 45},
+  photo = {z0 = 800, z1 = 1050, side = 1, at = 930, need = 30, near = 16, far = 45},
   zones = {
     {id = "R1", side = -1, z0 = 940, z1 = 1100, label = "Retirada temprana"},
     {id = "R2", side = 1, z0 = 1900, z1 = 2060, label = "Retirada a mitad"},

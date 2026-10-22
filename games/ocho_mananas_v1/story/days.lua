@@ -23,7 +23,7 @@ end
 
 before[3] = function()
   return scene("9 de julio · Mercaderes · 07:40", "PIC_MERCADERES", {
-    {"Leire", "Esta es la curva. Sin manada: entra por fuera y sal por dentro."},
+    {"Leire", "Esta es la curva. Entra por fuera y sal por dentro."},
     {"Dani", "Yo entro tarde. Así se ve más."},
     {"Leire", "Prueba. Verás lo que cuesta cada corrección."},
   })
@@ -47,7 +47,7 @@ end
 
 before[6] = function()
   return scene("12 de julio · El taller · 07:20", "PIC_TALLER", {
-    {"Nico", "Mañana te hago el encuadre, desde el sitio autorizado."},
+    {"Nico", "Pasado mañana te hago el encuadre, desde el sitio autorizado."},
     {"Dani", "¿Ya? ¡Vale!"},
     {"Ana", "¿Quieres guardar el archivo o solo la copia del abuelo?"},
     {"Dani", "...Luego te lo digo."},
@@ -155,7 +155,7 @@ end
 -- how the last morning ends: three endings from what the player did, none of them a punishment
 function story.ending(how)
   if how.photo and (how.contacts > 0 or how.exhausted) then return "foto" end
-  if how.early and not how.ch.stay then return "otra" end
+  if how.early and not how.stay then return "otra" end
   return "secuencia"
 end
 
@@ -179,7 +179,7 @@ after[8] = function(how)
     }
   else
     lines = {
-      {"Dani", "No ha salido la que buscaba."},
+      {"Dani", how.photo and "Ha salido la foto. Y sin un roce." or "No ha salido la que buscaba."},
       {"Julián", "¿Y esta?"},
       {"Dani", "Esta sí me acuerdo de hacerla."},
       {"Ana", "Entonces va a la funda nueva, con las demás."},

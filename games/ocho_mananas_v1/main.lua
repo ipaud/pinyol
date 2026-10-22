@@ -50,7 +50,7 @@ local function load_save()
     s[name] = t
   end
   s.after = s.after or {}          -- the scenes after a morning already seen
-  if s.after1 then s.after[1] = true end
+  if s.after1 then s.after[dk(1)] = true; s.after1 = nil end
   s.notes = s.notes or {}          -- the notebook's observation for each morning
   if s.notebook and not s.notes[dk(1)] then s.notes[dk(1)] = {zone = s.notebook.zone, result = s.notebook.result, note = s.notebook.note} end
   s.next = s.next or ((s.days[dk(1)] and s.days[dk(1)].done) and 2 or 1)   -- the next morning to play (9: the campaign is done)
@@ -226,7 +226,7 @@ local function start_position()
   start_x = 0
   variant = 1
   new_race(today())
-  position.reset()
+  position.reset(days[cur])
   state, timer = "position", 0
   music_play(false)
 end
@@ -330,9 +330,12 @@ local function judge(r)
     early = closed and o.result == "retirada" and zid == r.zones[1].id,
     late = closed and o.result == "retirada" and zid == r.zones[#r.zones].id,
     calm_air = closed and r.stats.min_air >= 33,
+    smooth = closed and r.stats.sharp <= 2,
+    nopush = closed and r.stats.pushes == 0,
   }
   -- the day's own challenges, by id
-  local rules = {clean = res.clean, stay = res.stay, photo = res.photo, air = res.calm_air, early = res.early, late = res.late}
+  local rules = {clean = res.clean, stay = res.stay, photo = res.photo, air = res.calm_air, early = res.early, late = res.late,
+                 smooth = res.smooth, nopush = res.nopush}
   res.ch = {}
   for _, c in ipairs(r.day.challenges or {}) do res.ch[c.id] = rules[c.id] or false end
   -- the moment it could already be seen: going back from the end, the last stretch in which an animal was
@@ -394,8 +397,10 @@ function finish_run()
   save.days[dk(d)] = {done = prev.done or last.closed, objective = prev.objective or last.objective,
                   clean = prev.clean or last.clean, stay = prev.stay or last.stay,
                   photo = prev.photo or last.photo, tries = (prev.tries or 0) + 1, ch = ch}
-  save.notes[dk(d)] = {zone = last.zone, result = last.result, note = last.short, reason = last.reason}
-  save.notebook = save.notes[dk(d)]
+  if last.closed or not prev.done then  -- a failed replay does not erase the note of a morning already closed
+    save.notes[dk(d)] = {zone = last.zone, result = last.result, note = last.short, reason = last.reason}
+    save.notebook = save.notes[dk(d)]
+  end
   write_save()
   state, timer = "review", 0
   quiet()

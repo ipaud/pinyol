@@ -39,8 +39,8 @@ function screens.title(save, sel, t)
     if on then frame.icon("SELECT", 112 + math.floor(math.sin(t / 8) * 2), y - 8, 26) end
     text(it.text, 250, y, {font = "jersey_small", align = "center", color = on and GOLD or WHITE})
     if it.pick and on then  -- the morning can be changed: arrows at both sides
-      if sel_day > 1 then tri(142, y + 4, 148, y - 1, 148, y + 9, GOLD) end
-      if sel_day < math.min(8, save.next) then tri(358, y + 4, 352, y - 1, 352, y + 9, GOLD) end
+      if sel_day > 1 then tri(134, y + 4, 140, y - 1, 140, y + 9, GOLD) end
+      if sel_day < math.min(8, save.next) then tri(366, y + 4, 360, y - 1, 360, y + 9, GOLD) end
     end
     y = y + 22
   end
@@ -122,7 +122,7 @@ function screens.prep(day, t, variants, variant)
       text(v.name, x + 80, y + 5, {font = "jersey_small", color = on and 0x3A2410 or WHITE, align = "center"})
       x = x + 170
     end
-    text("izq / der: cambiar · " .. (variants[variant].note or ""), 108, y + 30, {font = "jersey_small", color = MUTED})
+    text("izq/der · " .. (variants[variant].note or ""), 108, y + 30, {font = "jersey_small", color = MUTED})
     y = y + 50
   else
     y = y + 6
@@ -313,10 +313,10 @@ function screens.notebook(save, page)
   text("CUADERNO DE DANI", 240, 4, {font = "jersey_body", align = "center", color = GOLD, outline = INK})
   local d = page or 1
   local nb = save.notes[dk(d)] or {}
-  local labels = {R1 = "primera salida", R2 = "segunda salida", R3 = "salida final"}
+  local labels = {R1 = "la primera", R2 = "la segunda", R3 = "la tercera"}
   local INKC, SOFT = 0x2A1E18, 0x6A4A38
   local x, w = 256, 176
-  text("Mañana " .. d .. " · " .. DATES[d], x, 118, {font = "jersey_small", color = SOFT})
+  text("Mañana " .. d .. " · " .. DATES[d]:gsub(" de julio", " jul"), x, 118, {font = "jersey_small", color = SOFT})
   text("Entrada: inicio del tramo", x, 134, {font = "jersey_small", color = INKC, width = w})
   text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 150,
        {font = "jersey_small", color = INKC, width = w})
@@ -337,15 +337,28 @@ function screens.notebook(save, page)
   text("A o B: volver", 240, 292, {font = "jersey_small", color = 0xF6F2E8, align = "center", outline = INK})
 end
 
--- the end of the campaign: which of the three endings, over the full strip
+-- the end of the campaign: which of the three endings, with the picture that went into the sleeve
+local END_PIC = {secuencia = "PIC_TIRA", foto = "PIC_NICO_OK", otra = "PIC_NICO"}
 function screens.finale(save, t)
+  local st = require("story.days")
+  local e = save.ending or "secuencia"
   img("NOTEBOOK", 0, 0)
-  frame.panel("navy", 40, 60, 400, 180)
-  text("14 DE JULIO", 240, 72, {font = "jersey_small", color = MUTED, align = "center"})
-  text(require("story.days").TITLES[save.ending or "secuencia"], 240, 96, {font = "jersey_body", color = GOLD, align = "center"})
-  text(require("story.days").NOTES[save.ending or "secuencia"], 240, 142, {font = "jersey_small", color = WHITE, align = "center", width = 360})
-  text("Ocho mañanas. Una carrera tuya.", 240, 182, {font = "jersey_small", color = 0xC8D0E8, align = "center"})
-  if t > 30 and (t // 25) % 2 == 0 then text("A: volver al título", 240, 214, {font = "jersey_small", color = GOLD, align = "center"}) end
+  frame.panel("navy", 20, 24, 440, 232)
+  text("14 DE JULIO", 240, 34, {font = "jersey_small", color = MUTED, align = "center"})
+  text(st.TITLES[e], 240, 54, {font = "jersey_body", color = GOLD, align = "center"})
+  local w, h = imgsize(END_PIC[e])
+  local k = math.min(0.62, 150 / h, 240 / w)
+  local px, py = 40, 92
+  rect(px - 6, py - 6, math.floor(w * k) + 12, math.floor(h * k) + 12, 0xF0E8D8)
+  img(END_PIC[e], px, py, {scale = k})
+  local tx = px + math.floor(w * k) + 24
+  local tw = 440 - tx  -- up to the panel's inner edge
+  text(st.NOTES[e], tx, 100, {font = "jersey_small", color = WHITE, width = tw})
+  text("Ocho mañanas. Una carrera tuya.", tx, 170, {font = "jersey_small", color = 0xC8D0E8, width = tw})
+  local good = 0
+  for d = 1, 8 do for _, ok in pairs((save.days[dk(d)] or {}).ch or {}) do if ok then good = good + 1 end end end
+  text("Retos cumplidos: " .. good, tx, 218, {font = "jersey_small", color = GOLD})
+  if t > 30 and (t // 25) % 2 == 0 then text("A: volver al título", 240, 238, {font = "jersey_small", color = GOLD, align = "center"}) end
 end
 
 return screens

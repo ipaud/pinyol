@@ -122,7 +122,8 @@ local function step_dani(r, inp)
   if d.exhausted then target = math.min(target, 0.66) end
   if d.stumble > 0 then target = target * 0.7; d.stumble = d.stumble - 1 end
   d.v = d.v + clamp(target - d.v, -0.012, 0.02)
-  if effort == "push" and d.effort ~= "push" then r.stats.pushes = r.stats.pushes + 1 end
+  local new_push = effort == "push" and d.effort ~= "push"
+  if new_push then r.stats.pushes = r.stats.pushes + 1 end
   d.effort = effort
   local da = effort == "push" and sim.AIR_PUSH or effort == "ease" and sim.AIR_EASE or sim.AIR_BASE
   d.air = clamp(d.air + da, 0, 100)
@@ -151,6 +152,7 @@ local function step_dani(r, inp)
   end
   if r.can_retire and inp.act then
     d.state, d.retire_side, d.retire_zone, d.retire_t = "retire", r.can_retire.side, r.can_retire, 0
+    if new_push then r.stats.pushes = r.stats.pushes - 1 end  -- the A that takes the way out is not a push
     log_event(r, "retire", r.can_retire.id)
     if sfx_retire then sfx_retire() end
   end

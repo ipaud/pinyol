@@ -135,7 +135,8 @@ function rear.draw(r, tick, shake)
   local dani = r.dani
   local cz = rear.back and dani.z + C.CB or dani.z - rear.cb
   local oy = shake or 0  -- the ground shakes as the herd goes by: floor, facades and actors move together
-  mode7(2, 128, C.BASE - cz, rear.back and 180 or 0, C.CAM_H, C.HOR + oy, C.FOV)
+  local merc = r.day.street == "MERCADERES"
+  mode7(2, 128, C.BASE - cz, rear.back and 180 or 0, merc and C.CAM_H_M or C.CAM_H, (merc and C.HOR_M or C.HOR) + oy, C.FOV)
   n_items = 0
   -- what hangs on the walls: a pattern fixed to the street, so it slides past as Dani runs
   local z_near, z_far
@@ -198,7 +199,7 @@ function rear.draw(r, tick, shake)
   local list = {}
   for i = 1, n_items do list[i] = items[i] end
   table.sort(list, function(a, b) return a.d > b.d end)  -- the far ones first
-  img("STREET_REAR", 0, 2 * oy)
+  img(r.day.street == "MERCADERES" and "STREET_REAR_M" or "STREET_REAR", 0, 2 * oy)
   pilasters(z_near, z_far, oy)
   for _, zn in ipairs(r.zones) do zone_strip(zn, z_near, z_far, oy) end
   for _, it in ipairs(list) do

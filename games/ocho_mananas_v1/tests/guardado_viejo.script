@@ -1,0 +1,9 @@
+# A save from before the campaign (numeric keys, after1, notebook) migrates to string keys and can be stored again.
+new
+tick 5
+lua store("save", {v=1, prologue=true, practice=true, days={[1]={done=true, objective=true, tries=2}}, notebook={zone="R2", result="retirada", note="x"}, after1=true, opts={look="hold"}})
+lua _init()
+expect_lua save.after.d1 == true and save.after[1] == nil and save.after1 == nil
+expect_lua save.days.d1 ~= nil and save.days[1] == nil and save.notes.d1 ~= nil and save.next == 2
+lua save.after[dk(2)] = true; assert(pcall(store, "save", save))
+expect_ok

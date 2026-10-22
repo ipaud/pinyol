@@ -56,14 +56,14 @@ def tile_x(im, overlap):
     return Image.fromarray(out.round().astype("uint8"))
 
 
-def street_rear():
-    src = Image.open(RAW / "street_rear_gen.png").convert("RGB")
+def street_rear(aid="STREET_REAR", src_name="street_rear_gen.png"):
+    src = Image.open(RAW / src_name).convert("RGB")
     key = magenta_mask(src)
     alpha = Image.fromarray(np.where(key, 0, 255).astype("uint8")).filter(ImageFilter.MinFilter(9))  # drops the fringe
     rgba = src.convert("RGBA")
     rgba.putalpha(alpha)
     small = to_screen(rgba)
-    packed(small, "STREET_REAR", 64)
+    packed(small, aid, 64)
     # the road's edges on the 480x320 screen: leftmost and rightmost see-through pixel of each row
     a = np.asarray(small.getchannel("A")) < 128
     rows = [(y, np.nonzero(a[y])[0]) for y in range(150, 320) if a[y].any()]
@@ -75,9 +75,15 @@ def street_rear():
     slope, c = np.polyfit(ys, width / 2, 1)
     horizon = -c / slope
     centre = float(np.mean((left + right) / 2))
-    print(f"STREET_REAR: horizon y={horizon:.1f} (screen) -> HOR={horizon / 2:.1f}; road centre x={centre:.1f}; "
+    print(f"{aid}: horizon y={horizon:.1f} (screen) -> HOR={horizon / 2:.1f}; road centre x={centre:.1f}; "
           f"half-width slope {slope:.3f} -> CAM_H={32 / slope:.1f}"  # HALF=32 units: the slope is the same in world px
           )
+
+
+def street_rear_m():
+    """Mercaderes' own facades: the same road cut out, so the Mode 7 floor and the camera numbers are the same."""
+    if (RAW / "street_rear_m_gen.png").exists():
+        street_rear("STREET_REAR_M", "street_rear_m_gen.png")
 
 
 def floor():
@@ -147,5 +153,5 @@ def pics():
 
 
 if __name__ == "__main__":
-    for step in (sys.argv[1:] or ["street_rear", "floor", "side", "scene", "pics"]):
+    for step in (sys.argv[1:] or ["street_rear", "street_rear_m", "floor", "side", "scene", "pics"]):
         globals()[step]()
