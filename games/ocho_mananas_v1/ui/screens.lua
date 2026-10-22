@@ -1,24 +1,18 @@
 -- The screens around the race, drawn at 480x320: title, scenes, the briefing, the countdown, the practice's steps,
 -- the close, the schematic review, the result and the notebook.
+local frame = require("ui.frame")
 local screens = {}
 
 local NAVY, INK, WHITE, GOLD = 0x141B3A, 0x0B0F22, 0xF6F2E8, 0xFFE048
 local RED, TEAL, TEAL_L, MUTED = 0xD8222E, 0x28967A, 0x96ECC8, 0x9AA0C8
 
-local function card(x, y, w, h, edge)
-  rect(x, y, w, h, INK)
-  box(x, y, w, h, edge or 0x5A6290)
-  box(x + 2, y + 2, w - 4, h - 4, 0x232A52)
+local function card(x, y, w, h, look)
+  frame.panel(look or "navy", x, y, w, h)
 end
 
 local function check(x, y, ok, label, colour)
-  rect(x, y + 2, 14, 14, ok and TEAL or 0x2A3058)
-  box(x, y + 2, 14, 14, ok and TEAL_L or 0x5A6290)
-  if ok then
-    line(x + 3, y + 9, x + 6, y + 12, WHITE)
-    line(x + 6, y + 12, x + 11, y + 5, WHITE)
-  end
-  text(label, x + 22, y, {font = "gba_body", color = colour or WHITE})
+  frame.icon(ok and "CHECK" or "CROSS", x - 4, y - 8, 28)
+  text(label, x + 28, y, {font = "jersey_small", color = colour or WHITE})
 end
 
 -- --- title ---------------------------------------------------------------------------------------------------
@@ -31,26 +25,20 @@ function screens.title_items(save)
 end
 
 function screens.title(save, sel, t)
-  shade(0, 0, 480, 320)
-  text("07:59", 240, 40, {font = "gba_title", scale = 4, align = "center", color = WHITE, gradient = 0xF6C890,
-                          outline = INK, shadow = 0x000000, shadow_x = 2, shadow_y = 2})
-  text("OCHO MAÑANAS", 240, 118, {font = "gba_title", scale = 2, align = "center", color = GOLD, gradient = 0xF08040,
-                                   outline = INK})
-  text("Un juego de encierros", 240, 164, {font = "gba_small", scale = 2, align = "center", color = MUTED})
+  img("TITLE_ART", 0, 0)
+  img("LOGO", 40, 2 + math.floor(math.sin(t / 40) * 2))
   local items = screens.title_items(save)
-  local y = 196
+  local h = 22 + #items * 22
+  card(100, 312 - h, 280, h)
+  local y = 312 - h + 12
   for i, it in ipairs(items) do
     local on = i == sel
-    if on then
-      rect(110, y - 2, 260, 24, 0x2A3466)
-      tri(118, y + 4, 118, y + 16, 126, y + 10, GOLD)
-    end
-    text(it.text, 240, y, {font = "gba_body", align = "center", color = on and WHITE or MUTED})
-    y = y + 25
+    if on then frame.icon("SELECT", 112 + math.floor(math.sin(t / 8) * 2), y - 8, 26) end
+    text(it.text, 250, y, {font = "jersey_small", align = "center", color = on and GOLD or WHITE})
+    y = y + 22
   end
-  text("Prototipo · v0.1 · Pinyol", 8, 304, {font = "gba_small", scale = 2, color = 0x6A70A0})
   if save.days[1] and save.days[1].done then
-    text("Mañana 1 completada", 472, 304, {font = "gba_small", scale = 2, color = TEAL_L, align = "right"})
+    frame.icon("CHECK", 440, 280, 30)
   end
 end
 
@@ -82,8 +70,8 @@ function screens.scene_draw()
   cls(0x10142C)
   local bw = imgsize(bgpic)
   img(bgpic, 0, 0, {scale = bw <= 240 and 2 or 1})  -- the old pictures are 240x160, the new ones 480x320
-  rect(0, 0, 480, 26, 0x0B0F22)
-  text(sc.scene.place, 12, 4, {font = "gba_small", scale = 2, color = MUTED})
+  frame.panel("ink", -8, -10, 496, 36)
+  text(sc.scene.place, 12, 4, {font = "jersey_small", color = MUTED})
   local line_ = sc.scene.lines[math.min(sc.i, #sc.scene.lines)]
   if line_.pic then
     local w, h = imgsize(line_.pic)
@@ -92,30 +80,28 @@ function screens.scene_draw()
     rect(x - 8, y - 8, w * k + 16, h * k + 16, 0xF0E8D8)
     img(line_.pic, x, y, {scale = k})
   end
-  rect(16, 222, 448, 86, 0x0B0F22)
-  box(16, 222, 448, 86, 0x5A6290)
+  frame.panel("navy", 8, 216, 464, 100)
   local who = line_[1]
   if who ~= "" then
-    local col = ({Dani = GOLD, Leire = TEAL_L, Ana = 0xF0A0B8, Nico = 0xA0C8F0, ["Julián"] = 0xE0C090})[who] or WHITE
-    plate(26, 212, textw(who, "gba_body") + 20, 22, 0x2A3466)
-    text(who, 36, 213, {font = "gba_body", color = col})
+    frame.panel("gold", 22, 202, textw(who, "jersey_small") + 28, 26)
+    text(who, 36, 207, {font = "jersey_small", color = 0x3A2410})
   end
-  text(line_[2], 30, 240, {font = "gba_body", color = who == "" and MUTED or WHITE, width = 420,
+  text(line_[2], 30, 238, {font = "jersey_small", color = who == "" and MUTED or WHITE, width = 420,
                           chars = math.floor(sc.chars)})
-  if sc.chars >= #line_[2] and (sc.t // 20) % 2 == 0 then tri(446, 292, 456, 292, 451, 298, GOLD) end
-  text("A: seguir   B: saltar", 464, 304 - 18, {font = "gba_small", scale = 2, color = 0x6A70A0, align = "right"})
+  if sc.chars >= #line_[2] and (sc.t // 20) % 2 == 0 then tri(446, 296, 456, 296, 451, 302, GOLD) end
+  text("A: seguir   B: saltar", 458, 290, {font = "jersey_small", color = 0x6A70A0, align = "right"})
 end
 
 -- --- briefing before the run ----------------------------------------------------------------------------------
 function screens.prep(day, t)
   shade(0, 0, 480, 320)
-  card(28, 14, 424, 294, GOLD)
-  text(string.upper(day.title .. " · " .. day.date), 240, 22, {font = "gba_title", align = "center", color = GOLD})
-  text("«" .. day.subtitle .. "» · Tramo: " .. (day.street or ""), 240, 50, {font = "gba_small", scale = 2, align = "center", color = MUTED})
-  text("Objetivo", 48, 72, {font = "gba_body", color = GOLD})
-  text(day.objective, 48, 90, {font = "gba_body", color = WHITE, width = 390})
-  text("Retos opcionales", 48, 128, {font = "gba_body", color = GOLD})
-  for i, c in ipairs(day.challenges) do text("· " .. c.text, 56, 128 + i * 18, {font = "gba_body", color = WHITE}) end
+  card(20, 8, 440, 304, "navy")
+  text(string.upper(day.title .. " · " .. day.date), 240, 22, {font = "jersey_body", align = "center", color = GOLD})
+  text("«" .. day.subtitle .. "» · Tramo: " .. (day.street or ""), 240, 50, {font = "jersey_small", align = "center", color = MUTED})
+  text("Objetivo", 48, 72, {font = "jersey_small", color = GOLD})
+  text(day.objective, 48, 90, {font = "jersey_small", color = WHITE, width = 390})
+  text("Retos opcionales", 48, 128, {font = "jersey_small", color = GOLD})
+  for i, c in ipairs(day.challenges) do text("· " .. c.text, 56, 128 + i * 18, {font = "jersey_small", color = WHITE}) end
   -- the street's map: the ways out are known before running
   local x0, x1, y = 70, 410, 232
   rect(x0, y - 6, x1 - x0, 12, 0x2A3058)
@@ -123,27 +109,27 @@ function screens.prep(day, t)
     local a = x0 + zn.z0 / day.length * (x1 - x0)
     local b = x0 + zn.z1 / day.length * (x1 - x0)
     rect(math.floor(a), zn.side < 0 and y - 12 or y + 6, math.floor(b - a), 6, TEAL)
-    text(zn.id, math.floor((a + b) / 2), zn.side < 0 and y - 26 or y + 13, {font = "gba_small", scale = 2, align = "center", color = TEAL_L})
+    text(zn.id, math.floor((a + b) / 2), zn.side < 0 and y - 26 or y + 13, {font = "jersey_small", align = "center", color = TEAL_L})
   end
   tri(x0 - 12, y - 6, x0 - 12, y + 6, x0 - 4, y, GOLD)
-  text("inicio", x0 - 22, y + 13, {font = "gba_small", scale = 2, color = MUTED})
-  text("fin", x1 + 6, y - 6, {font = "gba_small", scale = 2, color = MUTED})
+  text("inicio", x0 - 22, y + 13, {font = "jersey_small", color = MUTED})
+  text("fin", x1 + 6, y - 6, {font = "jersey_small", color = MUTED})
   if day.photo then  -- Nico's balcony on the map
     local px = x0 + day.photo.at / day.length * (x1 - x0)
     rect(math.floor(px) - 5, day.photo.side < 0 and y - 13 or y + 7, 10, 7, 0xC8C8D8)
     circ(math.floor(px), day.photo.side < 0 and y - 10 or y + 10, 2, INK)
   end
-  text("A apretar · B aflojar · C mirar atrás", 240, 262, {font = "gba_small", scale = 2, align = "center", color = WHITE})
-  if (t // 25) % 2 == 0 then text("A: a la calle   B: volver", 240, 280, {font = "gba_body", align = "center", color = GOLD}) end
+  text("A apretar · B aflojar · C mirar atrás", 240, 262, {font = "jersey_small", align = "center", color = WHITE})
+  if (t // 25) % 2 == 0 then text("A: a la calle   B: volver", 240, 280, {font = "jersey_small", align = "center", color = GOLD}) end
 end
 
 function screens.countdown(t)
   local s = t // 60
   if s < 5 then
-    text(tostring(5 - s), 240, 110, {font = "gba_title", scale = 4, align = "center", color = WHITE, outline = INK,
+    text(tostring(5 - s), 240, 110, {font = "jersey_body", scale = 4, align = "center", color = WHITE, outline = INK,
                                      shadow = 0x000000})
   elseif t < 330 then
-    text("¡COHETE!", 240, 110, {font = "gba_title", scale = 3, align = "center", color = GOLD, gradient = 0xF06030,
+    text("¡COHETE!", 240, 110, {font = "jersey_body", scale = 3, align = "center", color = GOLD, gradient = 0xF06030,
                                 outline = INK, shake = 1})
   end
 end
@@ -153,19 +139,18 @@ function screens.look_frame()
   rect(0, 316, 480, 4, 0xF0A040)
   rect(0, 29, 3, 291, 0xF0A040)
   rect(477, 29, 3, 291, 0xF0A040)
-  plate(186, 286, 108, 22, 0x7A4010)
-  text("MIRANDO ATRÁS", 240, 289, {font = "gba_small", scale = 2, align = "center", color = WHITE})
+  frame.panel("gold", 184, 282, 112, 26)
+  text("MIRANDO ATRÁS", 240, 287, {font = "jersey_small", align = "center", color = 0x3A2410})
 end
 
 function screens.tutorial(step, tut, r)
   local s = step or "¡Bien! Así se cierra una carrera."
   local w = 440
-  rect(20, 252, w, 52, 0x0B0F22)
-  box(20, 252, w, 52, TEAL)
-  plate(30, 243, 70, 20, 0x1C5E50)
-  text("Leire", 40, 244, {font = "gba_small", scale = 2, color = TEAL_L})
-  text(s, 34, 264, {font = "gba_body", color = WHITE, width = w - 28})
-  text(math.min(tut.step, 5) .. "/5", 448, 254, {font = "gba_small", scale = 2, color = MUTED, align = "right"})
+  frame.panel("navy", 20, 250, w, 58)
+  frame.panel("teal", 30, 238, 64, 22)
+  text("Leire", 62, 241, {font = "jersey_small", color = WHITE, align = "center"})
+  text(s, 34, 266, {font = "jersey_small", color = WHITE, width = w - 28})
+  text(math.min(tut.step, 5) .. "/5", 448, 254, {font = "jersey_small", color = MUTED, align = "right"})
 end
 
 local CLOSE = {
@@ -176,25 +161,23 @@ function screens.close(r)
   local o = r.over
   local k = o.result == "fallo" and o.reason or o.result
   local c = CLOSE[k] or {"FIN", WHITE}
-  rect(0, 120, 480, 64, 0x0B0F22)
-  rect(0, 120, 480, 3, c[2])
-  rect(0, 181, 480, 3, c[2])
-  text(c[1], 240, 132, {font = "gba_title", scale = 2, align = "center", color = WHITE, outline = INK})
+  frame.panel(c[2] == TEAL and "teal" or "red", -10, 112, 500, 80)
+  text(c[1], 240, 134, {font = "jersey_body", scale = 2, align = "center", color = WHITE, outline = INK})
 end
 
 function screens.pause()
   shade(0, 0, 480, 320)
-  card(140, 110, 200, 90, GOLD)
-  text("PAUSA", 240, 124, {font = "gba_title", align = "center", color = GOLD})
-  text("START: seguir", 240, 154, {font = "gba_body", align = "center", color = WHITE})
-  text("B: abandonar", 240, 174, {font = "gba_body", align = "center", color = MUTED})
+  card(130, 100, 220, 110, "gold")
+  text("PAUSA", 240, 118, {font = "jersey_body", align = "center", color = 0x3A2410})
+  text("START: seguir", 240, 154, {font = "jersey_small", align = "center", color = 0x3A2410})
+  text("B: abandonar", 240, 176, {font = "jersey_small", align = "center", color = 0x6A3A20})
 end
 
 -- --- the review: the last seconds seen from above, a schematic (not a camera Dani carries) ----------------------
 function screens.review(r, res, t)
   local rec = r.rec
-  text("REVISIÓN", 20, 10, {font = "gba_title", color = GOLD})
-  text("Los últimos segundos, desde arriba", 460, 16, {font = "gba_small", scale = 2, align = "right", color = MUTED})
+  text("REVISIÓN", 20, 10, {font = "jersey_body", color = GOLD})
+  text("Los últimos segundos, desde arriba", 460, 16, {font = "jersey_small", align = "right", color = MUTED})
   local n = #rec
   if n == 0 then return end
   local first = math.max(1, n - 140)
@@ -211,6 +194,7 @@ function screens.review(r, res, t)
   local zc = s.dz
   local function X(z) return x0 + (z - (zc - 170)) / 300 * (x1 - x0) end
   local function Y(x) return cy + x / 32 * half end
+  frame.panel("ink", x0 - 10, cy - half - 20, x1 - x0 + 20, half * 2 + 40)
   rect(x0, cy - half - 6, x1 - x0, half * 2 + 12, 0x5E5670)
   rect(x0, cy - half - 10, x1 - x0, 4, 0xC8A070)
   rect(x0, cy + half + 6, x1 - x0, 4, 0xC8A070)
@@ -250,64 +234,66 @@ function screens.review(r, res, t)
     end
     if hold or i == first + wi then
       local msg = string.format("Aquí ya venía por tu carril: %.1f s antes", res.warn_s)
-      local w = textw(msg, "gba_body") + 20
+      local w = textw(msg, "jersey_small") + 20
       rect(240 - w // 2, 52, w, 24, 0x7A2430)
-      text(msg, 240, 54, {font = "gba_body", align = "center", color = WHITE})
+      text(msg, 240, 54, {font = "jersey_small", align = "center", color = WHITE})
     end
   end
   local dx, dy = math.floor(X(s.dz)), math.floor(Y(s.dx))
   for k = math.max(1, i - 6), i do
     if rec[k].ph then
       circ(dx, dy, 16, GOLD, false)
-      text("FOTO", dx, dy - 34, {font = "gba_body", align = "center", color = GOLD})
+      text("FOTO", dx, dy - 34, {font = "jersey_small", align = "center", color = GOLD})
     end
   end
   circ(dx, dy, 6, INK)
   circ(dx, dy, 5, s.st == "down" and RED or GOLD)
   tri(dx + 7, dy - 4, dx + 7, dy + 4, dx + 12, dy, GOLD)
-  text("sentido de la carrera >", x1, cy + half + 14, {font = "gba_small", scale = 2, align = "right", color = MUTED})
+  text("sentido de la carrera >", x1, cy + half + 14, {font = "jersey_small", align = "right", color = MUTED})
   local secs = (s.t - rec[n].t) / 60
-  text(string.format("%.1f s", secs), x0, cy + half + 14, {font = "gba_small", scale = 2, color = MUTED})
-  card(20, 240, 440, 66, res.closed and TEAL or RED)
-  text(res.note, 34, 250, {font = "gba_body", color = WHITE, width = 412})
-  if t > 30 then text("A: seguir", 452, 290, {font = "gba_small", scale = 2, color = GOLD, align = "right"}) end
+  text(string.format("%.1f s", secs), x0, cy + half + 14, {font = "jersey_small", color = MUTED})
+  card(20, 238, 440, 72, res.closed and "teal" or "red")
+  text(res.note, 34, 250, {font = "jersey_small", color = WHITE, width = 412})
+  if t > 30 then text("A: seguir", 452, 290, {font = "jersey_small", color = GOLD, align = "right"}) end
 end
 
 function screens.result(r, res, t)
-  card(28, 18, 424, 284, res.closed and TEAL or RED)
+  card(24, 12, 432, 296, res.closed and "teal" or "red")
   local day = r.day
-  text(string.upper(day.title .. " · " .. day.date), 240, 30, {font = "gba_title", align = "center", color = GOLD})
+  text(string.upper(day.title .. " · " .. day.date), 240, 30, {font = "jersey_body", align = "center", color = GOLD})
   local head = res.closed and (res.result == "retirada" and "Carrera cerrada por una retirada" or "Carrera cerrada al final del tramo")
                or "La carrera no ha terminado bien"
-  text(head, 240, 62, {font = "gba_body", align = "center", color = res.closed and TEAL_L or 0xFF9080})
+  text(head, 240, 62, {font = "jersey_small", align = "center", color = res.closed and TEAL_L or 0xFF9080})
   check(56, 100, res.objective, "Objetivo: retirada sin quedarte sin aire")
   check(56, 128, res.clean, "Sin contactos")
   check(56, 156, res.stay, "Dejar pasar a la manada antes de salir")
   check(56, 184, res.photo, "La foto de Nico")
   text("Contactos: " .. res.contacts .. (res.air_zero and " · te quedaste sin aire" or ""), 56, 216,
-       {font = "gba_small", scale = 2, color = MUTED})
+       {font = "jersey_small", color = MUTED})
   if res.closed then
-    text("A: seguir   B: repetir la mañana", 240, 270, {font = "gba_body", align = "center", color = GOLD})
+    text("A: seguir   B: repetir la mañana", 240, 270, {font = "jersey_small", align = "center", color = GOLD})
   else
-    text("A: reintentar   B: menú", 240, 270, {font = "gba_body", align = "center", color = GOLD})
-    text("El reintento empieza en la cuenta atrás y no repite escenas.", 240, 246, {font = "gba_small", scale = 2, align = "center", color = MUTED})
+    text("A: reintentar   B: menú", 240, 270, {font = "jersey_small", align = "center", color = GOLD})
+    text("El reintento empieza en la cuenta atrás y no repite escenas.", 240, 246, {font = "jersey_small", align = "center", color = MUTED})
   end
 end
 
 function screens.notebook(save)
-  card(28, 18, 424, 284, GOLD)
-  text("CUADERNO DE DANI", 240, 30, {font = "gba_title", align = "center", color = GOLD})
+  img("NOTEBOOK", 0, 0)
+  text("CUADERNO DE DANI", 240, 4, {font = "jersey_body", align = "center", color = GOLD, outline = INK})
   local nb = save.notebook or {}
   local labels = {R1 = "Portal de la izquierda (temprano)", R2 = "Portal de la derecha", R3 = "Salida del final"}
-  text("7 de julio · Estafeta", 52, 74, {font = "gba_body", color = MUTED})
-  text("Entrada: inicio del tramo", 52, 104, {font = "gba_body", color = WHITE})
-  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), 52, 130,
-       {font = "gba_body", color = WHITE})
-  text("Foto de Nico: " .. (save.days[1] and save.days[1].photo and "conseguida" or "todavía no"), 52, 150,
-       {font = "gba_body", color = WHITE})
-  text("Observación", 52, 180, {font = "gba_body", color = GOLD})
-  text(nb.note or "", 52, 200, {font = "gba_body", color = WHITE, width = 380})
-  text("A o B: volver", 240, 278, {font = "gba_small", scale = 2, align = "center", color = MUTED})
+  local INKC, SOFT = 0x2A1E18, 0x6A4A38
+  local x, w = 256, 176
+  text("7 de julio · Estafeta", x, 118, {font = "jersey_small", color = SOFT})
+  text("Entrada: inicio del tramo", x, 136, {font = "jersey_small", color = INKC, width = w})
+  text("Salida: " .. (nb.zone and labels[nb.zone] or nb.result == "fin" and "final del tramo" or "ninguna"), x, 152,
+       {font = "jersey_small", color = INKC, width = w})
+  local got = save.days[1] and save.days[1].photo
+  frame.icon(got and "CHECK" or "CROSS", x - 4, 186, 24)
+  text(got and "Foto de Nico: sí" or "Foto de Nico: no", x + 22, 192, {font = "jersey_small", color = INKC})
+  text(nb.note or "", x, 216, {font = "jersey_small", color = INKC, width = w})
+  text("A o B: volver", 240, 292, {font = "jersey_small", align = "center", color = 0xF6F2E8, outline = INK})
 end
 
 return screens

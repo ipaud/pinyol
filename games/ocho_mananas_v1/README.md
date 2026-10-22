@@ -26,8 +26,9 @@ talking scenes). `tests/pilot.lua` has autopilots that play the run.
 ## Art
 
 Everything you see is generated art made to match the concept pictures of the master plan, rebuilt with
-`art/build_sprites.py` (actors and props, from `art/raw/*_gen.png`) and `art/build_scenery.py` (street, cobbles,
-side layers, scenes). The chant's own pictures are the `CH_*` assets, copied from `games/ocho_mananas`.
+`art/build_sprites.py` (actors and props, from `art/raw/*_gen.png`), `art/build_scenery.py` (street, cobbles,
+side layers, scenes) and `art/build_ui.py` (panels, icons, photo props, logo, title picture, notebook). `ui/frame.lua`
+draws the stretchable panels and the icons; the type is Jersey (10, 15, 25) in `fonts/jersey_*.fnt`. The chant's own pictures are the `CH_*` assets, copied from `games/ocho_mananas`.
 `race/camera.lua` holds the numbers that make the Mode 7 road meet the kerbs painted in `STREET_REAR`.
 
 ## Pending

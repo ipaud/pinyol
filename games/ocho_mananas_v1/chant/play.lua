@@ -5,6 +5,7 @@
 -- chant.start(day, on_done): on_done({score = , misses = }) when the third call ends (or B skips them).
 local CHART = require("chant.chart")
 local SONG = require("chant.song")
+local frame = require("ui.frame")
 local chant = {}
 
 local BG, DANI = "CH_BG_CROWD", "CH_DANI"
@@ -203,7 +204,7 @@ end
 
 -- --- drawing -----------------------------------------------------------------------------------------------------
 local function tx(s, x, y, color, font, align)
-  text(s, x, y, {font = font or "gba_body", color = color or 0xFFF4D8, align = align or "left"})
+  text(s, x, y, {font = font or "jersey_small", color = color or 0xFFF4D8, align = align or "left"})
 end
 local function crowd_motion(in_play)
   -- Individually animated singers sit within the packed foreground mass; fixed frames keep identities stable.
@@ -215,15 +216,13 @@ local function crowd_motion(in_play)
   end
 end
 local function draw_header(kicker)
-  rect(0, 0, 480, 42, 0x15253D)
-  rect(0, 40, 480, 3, 0xD23936)
+  frame.panel("navy", -8, -10, 496, 50)
   tx(kicker, 16, 8, 0xF3CC6A)
-  tx("DIA " .. S.day .. "/8", 464, 8, 0xFFFFFF, "gba_body", "right")
+  tx("DIA " .. S.day .. "/8", 464, 8, 0xFFFFFF, "jersey_small", "right")
 end
 local function draw_button(label)
-  rect(62, 270, 356, 38, 0xD73532)
-  rect(66, 274, 348, 30, 0x8C2028)
-  tx(label, 240, 280, 0xFFF2D2, "gba_body", "center")
+  frame.panel("red", 62, 266, 356, 44)
+  tx(label, 240, 278, 0xFFF2D2, "jersey_body", "center")
 end
 local function route_link(x1, y1, x2, y2, n)
   -- A bold red/cream guide keeps the path legible over the photograph-like crowd.
@@ -253,9 +252,9 @@ local function draw_intro()
   img("CH_LEIRE", 79, 157, {frame = math.floor((S.tick % 48) / 8), scale = 0.82})
   img(DANI, 193, 151, {frame = pose, scale = 1})
   draw_header("ANTES DEL ENCIERRO")
-  text(TIMES[1], 240, 105, {font = "gba_title", scale = 2, color = 0xFFF1D1, align = "center", outline = 0x15253D})
+  text(TIMES[1], 240, 105, {font = "jersey_body", scale = 2, color = 0xFFF1D1, align = "center", outline = 0x15253D})
   draw_button("ACERCARSE AL SANTO")
-  if (S.tick // 25) % 2 == 0 then tx("B: saltar", 240, 52, 0xF3CC6A, "gba_body", "center") end
+  if (S.tick // 25) % 2 == 0 then tx("B: saltar", 240, 52, 0xF3CC6A, "jersey_small", "center") end
 end
 
 local function draw_gestures(target, colour)
@@ -303,8 +302,8 @@ local function draw_hit()
   if fx.kind == "hit" then
     img("CH_OSU_HIT", fx.x - 42, fx.y - 42, {scale = 0.88})
     -- The grade sits in a stable, fully visible lane above the beat field.
-    tx(fx.rating, 240, 49, 0x122339, "gba_body", "center")
-    tx(fx.rating, 240, 47, fx.rating == "PERFECTO" and 0xFFF0BD or 0x73E3D1, "gba_body", "center")
+    tx(fx.rating, 240, 49, 0x122339, "jersey_small", "center")
+    tx(fx.rating, 240, 47, fx.rating == "PERFECTO" and 0xFFF0BD or 0x73E3D1, "jersey_small", "center")
     if frame >= 1 and frame <= 5 then
       local radius = 13 + frame * 3
       circ(fx.x, fx.y, radius, frame % 2 == 0 and 0xD73532 or 0xFFF2D2, false)
@@ -314,11 +313,11 @@ local function draw_hit()
              fx.x + math.cos(a) * (radius + 7), fx.y + math.sin(a) * (radius + 7), k % 2 == 0 and 0xF4C84D or 0xFFF2D2)
       end
     end
-    if frame >= 2 and frame <= 5 then tx("100", fx.x, fx.y - 5, 0x14253D, "gba_body", "center") end
+    if frame >= 2 and frame <= 5 then tx("100", fx.x, fx.y - 5, 0x14253D, "jersey_small", "center") end
   else
     img("CH_OSU_MISS", fx.x - 32, fx.y - 32, {scale = 0.80})
-    tx("TARDE", 240, 49, 0x17233D, "gba_body", "center")
-    tx("TARDE", 240, 47, 0xFF7061, "gba_body", "center")
+    tx("TARDE", 240, 49, 0x17233D, "jersey_small", "center")
+    tx("TARDE", 240, 47, 0xFF7061, "jersey_small", "center")
     img("CH_MISS_FX", fx.x - 24, fx.y - 24, {frame = math.min(3, math.floor(frame / 2)), scale = 1.1})
   end
 end
@@ -328,16 +327,15 @@ local function draw_play()
   -- Keep the crowd and the saint as the main image; dim it only enough for the beat rings.
   img(BG, 0, 0, {dim = 0.42})
   crowd_motion(true)
-  rect(0, 0, 480, 42, 0x172334)
-  rect(0, 40, 480, 2, 0xD23936)
-  text(TIMES[S.phase], 14, 6, {font = "gba_title", color = 0xF3CC6A})  -- gba_body draws its 5 like an S
-  tx("DIA " .. S.day .. "/8", 466, 9, 0xFFFFFF, "gba_body", "right")
+  frame.panel("navy", -8, -10, 496, 50)
+  text(TIMES[S.phase], 14, 6, {font = "jersey_body", color = 0xF3CC6A})
+  tx("DIA " .. S.day .. "/8", 466, 9, 0xFFFFFF, "jersey_small", "right")
   for i = 1, 3 do
     circ(219 + i * 21, 20, 4, i < S.phase and 0xD9B54E or (i == S.phase and 0xF0D071 or 0x6B625D), true)
   end
   -- Compact busts sit over the crowd and change pose with each hit or mistake.
-  rect(10, 222, 69, 88, 0x172334); rect(10, 222, 69, 2, reaction > 0 and 0xE9C55E or 0xD9D2B6)
-  rect(401, 222, 69, 88, 0x172334); rect(401, 222, 69, 2, reaction > 25 and 0xD94B40 or (reaction > 0 and 0x6FC79B or 0xD9D2B6))
+  frame.panel(reaction > 0 and "gold" or "ink", 6, 218, 78, 96)
+  frame.panel(reaction > 25 and "red" or (reaction > 0 and "teal" or "ink"), 396, 218, 78, 96)
   local dp = 0
   if reaction > 25 then dp = rk == 1 and 4 or (rk == 2 and 5 or 6)
   elseif reaction > 0 and rk == 4 then dp = 2

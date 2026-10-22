@@ -1,5 +1,6 @@
 -- Before the run: where to start, against the left fence, the middle of the street, or the right fence. The choice
 -- sets Dani's first line and which way out (R1 on the left, R2 on the right) is nearer. Drawn over the street.
+local frame = require("ui.frame")
 local position = {}
 
 local STARTS = {
@@ -17,7 +18,7 @@ function position.update()
   local px, py, _, tapped = pen()
   if btnp("left") or btnp("up") then sel = math.max(1, sel - 1)
   elseif btnp("right") or btnp("down") then sel = math.min(#STARTS, sel + 1) end
-  if tapped and py >= 80 and py <= 172 then
+  if tapped and py >= 76 and py <= 172 then
     local pick = math.max(1, math.min(#STARTS, math.floor((px - 26) / 144) + 1))
     if pick == sel then return true end
     sel = pick
@@ -27,23 +28,20 @@ function position.update()
 end
 
 function position.draw()
-  shade(0, 0, 480, 320)
-  rect(18, 40, 444, 138, 0x0B0F22)  -- up top, so Dani, standing where he will start, stays in sight
-  box(18, 40, 444, 138, 0xFFE048)
-  text("ELIGE DÓNDE SALIR", 240, 48, {font = "gba_title", color = 0xFFE048, align = "center"})
+  frame.panel("navy", 14, 34, 452, 148)  -- up top, so Dani, standing where he will start, stays in sight
+  text("ELIGE DÓNDE SALIR", 240, 42, {font = "jersey_body", color = 0xFFE048, align = "center"})
   for i, start in ipairs(STARTS) do
     local x = 26 + (i - 1) * 144
     local on = i == sel
-    rect(x, 80, 136, 92, on and 0xFFE048 or 0x5A6290)
-    rect(x + 3, 83, 130, 86, on and 0x30465A or 0x232A52)
-    circ(x + 68, 98, 6, on and 0xFFE048 or 0x87939A, true)
-    text(start.name, x + 68, 110, {font = "gba_body", color = 0xF6F2E8, align = "center"})
-    if start.side ~= "" then text(start.side, x + 68, 126, {font = "gba_body", color = 0xF6F2E8, align = "center"}) end
-    text(start.note, x + 68, 148, {font = "gba_body", color = on and 0xFFE048 or 0x9AA0C8, align = "center"})
+    frame.panel(on and "gold" or "ink", x, 76, 136, 96)
+    local c = on and 0x3A2410 or 0xF6F2E8
+    frame.icon(i == 1 and "LEFT" or (i == 3 and "RIGHT" or "RUN"), x + 48, 80, 40)
+    text(start.name .. (start.side ~= "" and (" " .. start.side) or ""), x + 68, 122, {font = "jersey_small", color = c, align = "center"})
+    text(start.note, x + 68, 142, {font = "jersey_small", color = on and 0x8C2028 or 0x9AA0C8, align = "center"})
   end
-  rect(62, 270, 356, 38, 0xD8222E)
-  box(62, 270, 356, 38, 0x8C2028)
-  text("SALIR AQUÍ", 240, 280, {font = "gba_body", color = 0xF6F2E8, align = "center"})
+  frame.panel("red", 62, 266, 356, 44)
+  frame.icon("A", 74, 267, 40)
+  text("SALIR AQUÍ", 250, 278, {font = "jersey_body", color = 0xF6F2E8, align = "center"})
 end
 
 return position

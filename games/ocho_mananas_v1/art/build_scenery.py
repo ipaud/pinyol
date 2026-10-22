@@ -35,7 +35,7 @@ def to_screen(im, size=SCREEN):
     return im.resize(size, Image.Resampling.BOX)
 
 
-def packed(im, aid, colours, frames=1):
+def packed(im, aid, colours, frames=1, kind="background"):
     """RGBA -> quantized strip -> packed asset (alpha is 1 bit)."""
     alpha = im.getchannel("A").point(lambda a: 255 if a >= 128 else 0)
     q = im.convert("RGB").quantize(colours, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).convert("RGBA")
@@ -43,7 +43,7 @@ def packed(im, aid, colours, frames=1):
     tmp = HERE / f"built_{aid}.png"
     q.save(tmp)
     (ASSETS / f"{aid}.idx").unlink(missing_ok=True)
-    png2asset(tmp, aid, "--packed", "--colours", str(colours), "--frames", str(frames), "--type", "background")
+    png2asset(tmp, aid, "--packed", "--colours", str(colours), "--frames", str(frames), "--type", kind)
 
 
 def tile_x(im, overlap):

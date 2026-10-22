@@ -1,5 +1,6 @@
 -- What the race shows over the street (screen pixels, 480x320): the clock, air and balance, the street's map,
 -- the herd behind (a small radar that does not need the look back), side warnings and the way-out prompt.
+local frame = require("ui.frame")
 local hud = {}
 
 local NAVY, INK = 0x141B3A, 0x0B0F22
@@ -13,10 +14,9 @@ function hud.clock(ticks)
   return string.format("08:%02d:%02d", s // 60, s % 60)
 end
 
-local function segments(x, y, label, value, col, dark, blink)
-  text(label, x, y + 3, {font = "gba_small", scale = 2, color = WHITE})
-  local lw = textw(label, {font = "gba_small", scale = 2})
-  local bx = x + lw + 6
+local function segments(x, y, icon, value, col, dark, blink)
+  frame.icon(icon, x, y - 2, 26)
+  local bx = x + 28
   rect(bx - 2, y + 1, 6 * 8 + 3, 18, INK)
   local full = value / 100 * 6
   for i = 0, 5 do
@@ -25,8 +25,8 @@ local function segments(x, y, label, value, col, dark, blink)
     if blink and (ticks() // 8) % 2 == 0 then c = dark end
     rect(bx + i * 8, y + 3, 6, 14, c)
   end
-  box(bx - 2, y + 1, 6 * 8 + 3, 18, 0x5A6290)
-  return bx + 6 * 8 + 6
+  box(bx - 2, y + 1, 6 * 8 + 3, 18, 0xC8A850)
+  return bx + 6 * 8 + 8
 end
 
 local function minimap(r, x, y, w)
@@ -45,24 +45,22 @@ end
 
 function hud.draw(r, opts)
   local d = r.dani
-  rect(0, 0, 480, 28, NAVY)
-  line(0, 28, 480, 28, 0x3A4478)
-  text(opts.clock or hud.clock(r.t), 8, 3, {font = "gba_title", color = WHITE, shadow = INK})
-  local x = segments(110, 4, "AIRE", d.air, AIR, AIR_D, d.exhausted)
-  segments(x + 8, 4, "EQUILIBRIO", d.bal, BAL, BAL_D, d.bal < 30)
-  text(opts.street or "ESTAFETA", 474, 1, {font = "gba_small", scale = 2, color = WHITE, align = "right"})
+  frame.panel("navy", -8, -10, 496, 40)
+  text(opts.clock or hud.clock(r.t), 10, 3, {font = "jersey_body", color = WHITE, shadow = INK})
+  local x = segments(122, 4, "AIR", d.air, AIR, AIR_D, d.exhausted)
+  segments(x + 6, 4, "BAL", d.bal, BAL, BAL_D, d.bal < 30)
+  text(opts.street or "ESTAFETA", 474, 1, {font = "jersey_small", color = WHITE, align = "right"})
   minimap(r, 380, 14, 92)
   if d.exhausted then
-    plate(118, 32, 96, 20, 0x7A2430)
-    text("SIN AIRE", 166, 34, {font = "gba_small", scale = 2, color = WHITE, align = "center"})
+    frame.panel("red", 118, 34, 96, 22)
+    text("SIN AIRE", 166, 37, {font = "jersey_small", color = WHITE, align = "center"})
   end
   -- the herd behind, as dots on the street's width: top is Dani's line, bottom 30 m back
   local rx, ry, rw, rh = 362, 34, 110, 44
   if opts.radar ~= false and #r.bulls > 0 then
-    rect(rx, ry, rw, rh, INK)
-    box(rx, ry, rw, rh, 0x5A6290)
-    line(rx + 4, ry + 6, rx + rw - 4, ry + 6, 0x3A4478)
-    text("DETRÁS", rx + rw - 4, ry + rh - 14, {font = "gba_small", scale = 2, color = 0x6A70A0, align = "right"})
+    frame.panel("ink", rx - 2, ry - 2, rw + 4, rh + 4)
+    line(rx + 6, ry + 6, rx + rw - 6, ry + 6, 0x3A4478)
+    text("DETRÁS", rx + rw - 4, ry + rh - 14, {font = "jersey_small", color = 0x6A70A0, align = "right"})
     local px = rx + rw / 2 + d.x / 32 * (rw / 2 - 6)
     tri(px - 4, ry + 2, px + 4, ry + 2, px, ry + 8, GOLD)
     for _, b in ipairs(r.bulls) do
@@ -99,8 +97,9 @@ function hud.draw(r, opts)
   local zn = r.can_retire
   if zn and d.state == "run" then
     local py = opts.prompt_y or 250
-    plate(150, py, 180, 30, TEAL)
-    text("A  RETIRARSE", 240, py + 4, {font = "gba_title", color = WHITE, align = "center", shadow = 0x0A3A30})
+    frame.panel("teal", 150, py, 180, 32)
+    frame.icon("A", 158, py - 2, 34)
+    text("RETIRARSE", 250, py + 5, {font = "jersey_body", color = WHITE, align = "center", shadow = 0x0A3A30})
   elseif d.state == "run" and opts.zone_hint ~= false then
     local sim = require("race.sim")
     local ahead = sim.zone_ahead(r, 230)
@@ -108,9 +107,9 @@ function hud.draw(r, opts)
       local m = math.max(0, math.floor((ahead.z0 - d.z) / 9))
       local s = (ahead.side < 0 and "< " or "") .. "Retirada a la " .. (ahead.side < 0 and "izquierda" or "derecha")
                 .. (ahead.side > 0 and " >" or "") .. (m > 0 and ("  " .. m .. " m") or "  ahora")
-      local w = textw(s, {font = "gba_small", scale = 2}) + 16
-      plate(240 - w // 2, 32, w, 20, 0x1C5E50)
-      text(s, 240, 34, {font = "gba_small", scale = 2, color = TEAL_L, align = "center"})
+      local w = textw(s, {font = "jersey_small"}) + 16
+      frame.panel("teal", 240 - w // 2, 32, w, 22)
+      text(s, 240, 36, {font = "jersey_small", color = TEAL_L, align = "center"})
     end
   end
   -- Nico's photo: where it is, and how it is going while it can be taken
@@ -118,29 +117,25 @@ function hud.draw(r, opts)
   if ph and p and opts.photo ~= false then
     local show = (not ph.taken and d.z > p.z0 - 260 and d.z <= p.z1 and d.state == "run") or (ph.taken and r.t - ph.at < 150)
     if show then
-      local x, y = 8, 34
-      rect(x, y, 150, 40, INK)
-      box(x, y, 150, 40, ph.live and GOLD or 0x5A6290)
-      rect(x + 8, y + 10, 18, 12, 0xC8C8D8)  -- a little camera
-      rect(x + 12, y + 7, 6, 3, 0xC8C8D8)
-      circ(x + 17, y + 16, 4, INK)
-      circ(x + 17, y + 16, 2, ph.live and GOLD or 0x5A6290)
+      local x, y = 8, 62
+      frame.panel(ph.live and "gold" or "ink", x, y, 156, 42)
+      frame.icon(ph.live and "FLASH" or "CAM", x + 4, y + 3, 34)
+      if ph.live then img("VIEWFINDER", 0, 0, {alpha = 0.55}) end
       local msg, col
       if ph.taken then msg, col = "¡FOTO!", GOLD
       elseif d.z < p.z0 then msg, col = "Nico, balcón " .. (p.side > 0 and "dcho." or "izdo."), WHITE
       elseif ph.close then msg, col = "¡Demasiado cerca!", 0xFF6050
       elseif ph.live then msg, col = "¡Ahora! Aguanta", GOLD
       else msg, col = "Delante del grupo", 0xC8C0D0 end
-      text(msg, x + 34, y + 4, {font = "gba_small", scale = 2, color = col})
-      rect(x + 34, y + 24, 108, 8, 0x2A3058)
-      rect(x + 34, y + 24, math.floor(108 * math.min(1, ph.t / p.need)), 8, ph.taken and GOLD or 0xE0A040)
+      text(msg, x + 42, y + 6, {font = "jersey_small", color = ph.live and INK or col})
+      rect(x + 42, y + 26, 104, 8, 0x2A3058)
+      rect(x + 42, y + 26, math.floor(104 * math.min(1, ph.t / p.need)), 8, ph.taken and GOLD or 0xE0A040)
     end
   end
   if opts.banner then
-    local w = textw(opts.banner, "gba_body") + 24
-    rect(240 - w // 2, 58, w, 26, 0x0B0F22)
-    box(240 - w // 2, 58, w, 26, GOLD)
-    text(opts.banner, 240, 61, {font = "gba_body", color = WHITE, align = "center"})
+    local w = textw(opts.banner, "jersey_small") + 24
+    frame.panel("navy", 240 - w // 2, 110, w, 30)
+    text(opts.banner, 240, 116, {font = "jersey_small", color = WHITE, align = "center"})
   end
 end
 

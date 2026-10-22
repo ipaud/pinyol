@@ -1,0 +1,25 @@
+{
+  "asset": "FLASH",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 37,
+  "w": 128,
+  "h": 128,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    64,
+    127
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5373,
+    "as_rgb565": 32768
+  }
+}

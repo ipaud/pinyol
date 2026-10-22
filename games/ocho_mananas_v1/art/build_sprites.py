@@ -69,6 +69,10 @@ SHEETS = {
 
 def key_magenta(im):
     """RGBA with the flat magenta background (and the white bands outside it) transparent."""
+    if im.mode == "RGBA" and im.getchannel("A").getextrema()[0] < 200:  # it came with a real see-through background
+        im = im.copy()
+        im.putalpha(im.getchannel("A").point(lambda a: 255 if a >= 128 else 0))  # no haze
+        return im
     im = im.convert("RGB")
     w, h = im.size
     px = im.load()
