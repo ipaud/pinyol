@@ -43,7 +43,7 @@ local function current() return S.targets[S.idx] end
 -- a target with its place and the shape of what it asks
 local function make_target(t)
   local x, y = note_xy(t.n)
-  local out = {n = t.n, x = x, y = y, k = t.kind, due = t.due, span = t.span, gap = t.gap}
+  local out = {n = t.n, x = x, y = y, k = t.kind, due = t.due, span = t.span, gap = t.gap, combo = t.combo}
   out.r = t.kind == "tap" and math.floor(44 - CHART.level(S.day, S.phase) * 12) or 44
   if t.kind == "slide" or t.kind == "reverse" then
     -- the finger follows the circle along a curve that leads on towards the next note
@@ -66,9 +66,46 @@ local function track_point(t, u)
   return math.floor(v * v * t.x + 2 * v * u * cx + u * u * t.ex), math.floor(v * v * t.y + 2 * v * u * cy + u * u * t.ey)
 end
 
+-- Circles that are shown together (a target and the next two) must not overlap: push neighbours apart until their rings
+-- clear each other, inside the playfield.
+local MIN_GAP = 92
+local function spread(ts)
+  for _ = 1, 24 do
+    local moved = false
+    for i = 1, #ts do
+      for j = i + 1, math.min(i + 3, #ts) do
+        local a, b = ts[i], ts[j]
+        local dx, dy = b.x - a.x, b.y - a.y
+        local d = math.sqrt(dx * dx + dy * dy)
+        if d < MIN_GAP then
+          if d < 1 then dx, dy, d = 1, 0, 1 end
+          local k = (MIN_GAP - d) / 2 / d
+          a.x, a.y = a.x - dx * k, a.y - dy * k
+          b.x, b.y = b.x + dx * k, b.y + dy * k
+          moved = true
+        end
+      end
+    end
+    for _, t in ipairs(ts) do
+      t.x = math.max(56, math.min(424, t.x))
+      t.y = math.max(78, math.min(214, t.y))
+    end
+    if not moved then break end
+  end
+  for _, t in ipairs(ts) do t.x, t.y = math.floor(t.x + 0.5), math.floor(t.y + 0.5) end
+end
+
 local function load_targets()
   S.targets = {}
   for i, t in ipairs(CHART.targets(S.day, S.phase)) do S.targets[i] = make_target(t) end
+  spread(S.targets)
+  for _, t in ipairs(S.targets) do  -- a slide's path starts where its circle now is
+    if t.ex then
+      local nx, ny = t.ex, t.ey
+      t.ex = math.max(70, math.min(410, t.x + (nx - t.x)))
+      t.ey = math.max(84, math.min(214, t.y + (ny - t.y)))
+    end
+  end
   S.idx, S.call_hits, S.call_total = 1, 0, #S.targets
 end
 
@@ -279,12 +316,18 @@ local function draw_button(label)
   frame.panel("red", 62, 266, 356, 44)
   tx(label, 240, 278, 0xFFF2D2, "jersey_body", "center")
 end
+-- The dotted route between two circles, drawn first so every ring and number sits above it. The beads stop short of the
+-- discs (a number is never crossed by a line).
 local function route_link(x1, y1, x2, y2, n)
-  -- A bold red/cream guide keeps the path legible over the photograph-like crowd.
-  line(x1, y1, x2, y2, 0x142334)
   local dx, dy = x2 - x1, y2 - y1
-  for i = 1, 5 do
-    local u = i / 6
+  local len = math.sqrt(dx * dx + dy * dy)
+  local pad = 40
+  if len <= 2 * pad + 8 then return end
+  local a, b = pad / len, 1 - pad / len
+  line(math.floor(x1 + dx * a), math.floor(y1 + dy * a), math.floor(x1 + dx * b), math.floor(y1 + dy * b), 0x142334)
+  local beads = math.max(1, math.min(5, math.floor((len - 2 * pad) / 22)))
+  for i = 1, beads do
+    local u = a + (b - a) * i / (beads + 1)
     img("CH_ROUTE_BEAD", math.floor(x1 + dx * u - 8), math.floor(y1 + dy * u - 8),
       {frame = (math.floor(S.tick / 5) + i + n) % 4, scale = 0.8})
   end
@@ -313,12 +356,31 @@ local function draw_intro()
   img("CH_LEIRE", 79, 157, {frame = math.floor((S.tick % 48) / 8), scale = 0.82})
   img(DANI, 193, 151, {frame = pose, scale = 1})
   draw_header(S.phase == 1 and "ANTES DEL ENCIERRO" or ("LLAMADA " .. S.phase .. " DE 3"))
-  frame.panel("navy", 150, 52, 180, 84)
-  text(TIMES[S.phase], 240, 60, {font = "jersey_title", scale = 1, color = 0xFFF1D1, align = "center", outline = 0x15253D})
-  pips(240, 120)
-  if S.phase > 1 then tx(S.call_prev .. " aciertos", 240, 150, 0xFFF2D2, "jersey_small", "center") end
+  frame.panel("navy", 90, 52, 300, 128)
+  text(TIMES[S.phase], 240, 58, {font = "jersey_title", scale = 1, color = 0xFFF1D1, align = "center", outline = 0x15253D})
+  pips(240, 118)
+  local kinds = {}
+  for _, t in ipairs(S.targets) do kinds[t.k] = true end
+  local asks = {"TOCA " .. #S.targets}
+  if kinds.slide then asks[#asks + 1] = "SIGUE" end
+  if kinds.reverse then asks[#asks + 1] = "IDA Y VUELTA" end
+  if kinds.spin then asks[#asks + 1] = "GIRA" end
+  tx(table.concat(asks, " · "), 240, 140, 0xFFF2D2, "jersey_small", "center")
+  if S.phase > 1 then tx("Antes: " .. S.call_prev .. " aciertos", 240, 160, 0xC8D0E8, "jersey_small", "center") end
   draw_button(S.phase == 1 and "ACERCARSE AL SANTO" or "CANTAR")
   if S.phase == 1 and (S.tick // 25) % 2 == 0 then tx("B: saltar", 240, 246, 0xF3CC6A, "jersey_small", "center") end
+end
+
+-- A number: the painted discs for 1 to 5, and the same disc drawn in code for 6 and up, so it counts to 17.
+local function draw_number(n, x, y, size)
+  if n <= 5 then
+    img("CH_OSU_NUMBERS", x - size * 40, y - size * 40, {frame = n - 1, scale = size})
+    return
+  end
+  local r = math.floor(size * 30)
+  circ(x, y, r, 0x111C33, true)
+  circ(x, y, r - math.max(2, math.floor(r * 0.14)), 0xF8F0DA, true)
+  text(tostring(n), x, y - math.floor(r * 0.55), {font = size > 0.6 and "jersey_body" or "jersey_small", color = 0x111C33, align = "center"})
 end
 
 local function draw_gestures(target, colour)
@@ -413,17 +475,24 @@ local function draw_play()
   local colour = COLORS[S.phase]
   -- The notes still to sing as a faint trail, and the next two as a dotted, numbered route through the crowd.
   if target then
+    -- layers, bottom to top: the paths (gesture tracks, dotted routes), then the rings, then the numbers: the
+    -- numbers are what must be read, so nothing is ever drawn over them but the hit burst.
+    draw_gestures(target, colour)
     local px0, py0 = bx, by
+    local ahead = {}
     for j = S.idx + 1, math.min(S.idx + 2, #S.targets) do
       local future = S.targets[j]
       route_link(px0, py0, future.x, future.y, j)
-      img("CH_OSU_NUMBERS", future.x - 19, future.y - 19, {frame = (j - 1) % 5, scale = 0.48})
       px0, py0 = future.x, future.y
+      ahead[#ahead + 1] = future
     end
     local approach = math.max(0, math.min(1, (S.phase_tick - (due - 28)) / 28))
     img("CH_OSU_RINGS", bx - 48, by - 48, {frame = approach < 0.34 and 0 or (approach < 0.68 and 1 or 2), scale = 1})
-    draw_gestures(target, colour)
-    img("CH_OSU_NUMBERS", bx - 32, by - 32, {frame = (S.idx - 1) % 5, scale = 0.80})
+    for k = #ahead, 1, -1 do  -- the farthest first, the nearest above it
+      local f = ahead[k]
+      draw_number(f.combo, f.x, f.y, 0.62)
+    end
+    draw_number(target.combo, bx, by, 0.9)
     if open then circ(bx, by, 3, 0xFFFFFF, true) end
   end
   -- the line being sung, small, between the two busts

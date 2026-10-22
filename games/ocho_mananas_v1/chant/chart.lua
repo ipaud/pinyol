@@ -54,6 +54,7 @@ function M.targets(day, phase)
       out[#out + 1] = {n = n, due = M.due(n, day), span = M.span(n, day), kind = kind[n] or "tap"}
     end
   end
+  for i, t in ipairs(out) do t.combo = i end  -- the number on a circle is its order in the call, 1 to 17, never repeated
   for i, t in ipairs(out) do  -- a hit window must not reach the next target
     local prev = out[i - 1] and t.due - out[i - 1].due or 999
     local nxt = out[i + 1] and out[i + 1].due - t.due or 999
