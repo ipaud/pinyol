@@ -33,6 +33,12 @@ side layers, scenes) and `art/build_ui.py` (panels, icons, photo props, logo, ti
 draws the stretchable panels and the icons; the type is Jersey (10, 15, 25) in `fonts/jersey_*.fnt`. The chant's own pictures are the `CH_*` assets, copied from `games/ocho_mananas`.
 `race/camera.lua` holds the numbers that make the Mode 7 road meet the kerbs painted in `STREET_REAR`.
 
+## Performance (measured on the Cirera, 2026-10-22)
+
+Menus, scenes and the calls run at 52-60 fps; the race at about 30 (26-30 with the herd near, 19-21 when nine animals were drawn
+at the camera, hence the cap on the animals drawn: up to 5, fewer when the frame runs long). Game time stays at 60 Hz because
+the console catches up its ticks. Details and the cost of each element: `output/cirera/RESULTADOS.md`. The race is accepted at 30 fps.
+
 ## Pending
 
 - The chant is Pau's MIDI (`san_fermin_16bit_v2_agudo.mid`, copied to `output/canto_referencias/pau/`): all 17 notes sung by the crowd in every call. What the player touches depends on the difficulty (`chant/chart.lua`): 5 circles on the first call of the first morning up to all 17, with followed, there-and-back and circled notes later. Only the first morning is built.

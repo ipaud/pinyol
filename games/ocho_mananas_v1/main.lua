@@ -11,6 +11,7 @@ side = require("views.side")
 hud = require("ui.hud")
 screens = require("ui.screens")
 story1 = require("story.day1")
+actors = require("views.actors")
 chant = require("chant.play")
 position = require("ui.position")
 
@@ -177,6 +178,7 @@ end
 -- --- starting things ----------------------------------------------------------------------------------------
 local start_x = 0   -- where the morning's run starts across the street (chosen after the calls)
 local function new_race(day)
+  actors.reset_cap()
   R = sim.new(day)
   if day == days[1] then R.dani.x = start_x end
   looking, look_t, look_ready, latch = false, 0, true, {}

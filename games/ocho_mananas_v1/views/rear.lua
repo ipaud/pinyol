@@ -7,7 +7,6 @@ local actors = require("views.actors")
 local rear = {}
 
 -- how tall, in screen pixels, each picture's standing figure is drawn at Dani's depth (scale 1)
-local MAX_ANIMALS = 5
 local PROPS = {FAROLA = true, BANDERA = true, NICO = true, FLECHA = true}
 local SHOW = {DANI_BACK = 138, DANI_FRONT = 138, RUN_BACK = 105, RUN_FRONT = 105,
               TORO_BACK = 165, TORO_FRONT = 165, TORO_3QB = 165, TORO_3QF = 165,   -- the herd towers over the runners:
@@ -168,7 +167,7 @@ function rear.draw(r, tick, shake)
   local order = {}
   for _, b in ipairs(r.bulls) do order[#order + 1] = b end
   table.sort(order, function(a, b) return math.abs(a.z - dani.z) < math.abs(b.z - dani.z) end)
-  for i = 1, math.min(#order, MAX_ANIMALS) do
+  for i = 1, math.min(#order, actors.animal_cap()) do
     local b = order[i]
     place_animal(b.kind == "toro" and "TORO" or "CABE", math.floor(b.phase * 4) % 4, b, rear.back and b.z - 4 or b.z - 12)
   end
