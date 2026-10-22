@@ -9,6 +9,7 @@ local side = {}
 local PERIOD = 400                                       -- the layers' width: they wrap every 400 pixels
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
+local DANI_K = 0.62                                      -- his 160-pixel pictures drawn at about 100 pixels
 
 function side.init() end
 
@@ -71,9 +72,9 @@ function side.draw(r, tick)
   table.sort(list, function(a, b) return a.y < b.y end)  -- the nearest (lowest on the screen) drawn last, on top
   layer("LAT_WALL", WALL_Y, WALL_K, dani.z)
   layer("LAT_GROUND", GROUND_Y, GROUND_K, dani.z)
-  for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, 1, it.flip) end
+  for _, it in ipairs(list) do actors.draw(it.id, it.frame, it.sx, it.y, it.id == "DANI_SIDE" and DANI_K or 1, it.flip) end
   layer("LAT_FENCE", FENCE_Y, FENCE_K, dani.z)
-  if dani.state ~= "retire" then actors.marker(C.SIDE_X, dy - 68 / 2 - 4 + math.sin(tick / 8) * 1.5) end
+  if dani.state ~= "retire" then actors.marker(C.SIDE_X, dy - 160 * DANI_K / 2 - 4 + math.sin(tick / 8) * 1.5) end
   return C.SIDE_X, dy
 end
 

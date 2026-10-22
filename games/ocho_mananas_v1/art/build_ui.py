@@ -83,11 +83,19 @@ def logo():
     asset(fit(rgba, 400, 150), "LOGO", 1, 48)
 
 
+def shadow():
+    """The soft ellipse under every actor (drawn with alpha)."""
+    from PIL import ImageDraw
+    im = Image.new("RGBA", (64, 16), (0, 0, 0, 0))
+    ImageDraw.Draw(im).ellipse((0, 0, 63, 15), fill=(42, 36, 72, 255))
+    asset(im, "SHADOW", 1, 4, "sprite")
+
+
 def pictures():
     for aid, src in (("TITLE_ART", "title_art_gen.png"), ("NOTEBOOK", "notebook_gen.png")):
         asset(Image.open(RAW / src).convert("RGBA").resize((480, 320), Image.Resampling.BOX), aid, 1, 64)
 
 
 if __name__ == "__main__":
-    for step in sys.argv[1:] or ["panels", "icons", "photo", "logo", "pictures"]:
+    for step in sys.argv[1:] or ["panels", "icons", "photo", "logo", "pictures", "shadow"]:
         globals()[step]()

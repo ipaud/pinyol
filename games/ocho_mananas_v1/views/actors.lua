@@ -4,7 +4,7 @@ local actors = {}
 
 -- frame size of each picture (art/build_sprites.py)
 local SIZE = {
-  DANI_BACK = {36, 68}, DANI_FRONT = {36, 68}, DANI_SIDE = {52, 68},
+  DANI_BACK = {84, 160}, DANI_FRONT = {84, 160}, DANI_SIDE = {124, 160},
   RUN_BACK = {36, 68}, RUN_FRONT = {36, 68}, RUN_SIDE = {52, 68},
   TORO_BACK = {60, 68}, TORO_FRONT = {60, 68}, TORO_SIDE = {104, 64},
   CABE_BACK = {60, 68}, CABE_FRONT = {60, 68}, CABE_SIDE = {104, 64},
@@ -15,8 +15,16 @@ local SIZE = {
 
 function actors.has(id) return SIZE[id] ~= nil end
 
+local PROPS = {FAROLA = true, BANDERA = true, IKURRINA = true, NICO = true, RETIRO = true, FLECHA = true,
+               LAT_RET_FAR = true, LAT_RET_NEAR = true}
+
 function actors.draw(id, frame, sx, sy, s, flip)
   local sz = SIZE[id]
+  if not PROPS[id] then  -- a soft shadow on the ground under the feet
+    local w = sz[1] * s * 0.62
+    local h = math.max(4, w * 0.22)
+    img("SHADOW", math.floor(sx * 2 - w / 2), math.floor(sy * 2 - h * 0.6), {scale_x = w / 64, scale_y = h / 16, alpha = 0.42})
+  end
   img(id, math.floor(sx * 2 - sz[1] * s / 2), math.floor(sy * 2 - sz[2] * s), {frame = frame, scale = s, flip_x = flip})
 end
 

@@ -7,7 +7,7 @@ local actors = require("views.actors")
 local rear = {}
 
 -- the props are not people: each its own size against the street
-local PROP_K = {FAROLA = 0.8, BANDERA = 0.9, IKURRINA = 0.8, NICO = 0.9, RETIRO = 1.1, FLECHA = 1.0}
+local PROP_K = {DANI_BACK = 0.86, DANI_FRONT = 0.86, FAROLA = 0.8, BANDERA = 0.9, IKURRINA = 0.8, NICO = 0.9, RETIRO = 1.1, FLECHA = 1.0}
 
 function rear.init() end
 
@@ -78,11 +78,12 @@ function rear.update(r)  -- once a tick
   rear.cb = rear.cb + (want - rear.cb) * 0.04
 end
 
--- Dani's picture: the run is 0-5, a stumble 6, down 7, a sprint 8-11, a jog 12-15, the sidestep into a recess 18-19
+-- Dani's picture: the run is 0-5, a stumble 6, down 7, a sprint 8-11, a jog 12-15, a glance over his shoulder 16-17
+-- (the sidestep pictures 18-19 are drawn with a wall beside him: not used)
 local function dani_frame(dani)
   if dani.state == "down" then return 7 end
   if dani.stumble > 0 then return 6 end
-  if dani.state == "retire" then return dani.retire_t < 18 and 18 or 19 end
+  if dani.state == "retire" then return dani.retire_t < 18 and 16 or 17 end
   if dani.effort == "push" then return 8 + math.floor(dani.phase * 4) % 4 end
   if dani.effort == "ease" then return 12 + math.floor(dani.phase * 4) % 4 end
   return math.floor(dani.phase * 6) % 6
@@ -154,7 +155,7 @@ function rear.draw(r, tick, shake)
   for _, it in ipairs(list) do
     if it.sx > -40 and it.sx < 280 then actors.draw(it.id, it.frame, it.sx, it.sy, it.s * (PROP_K[it.id] or C.ACTOR_K), it.flip) end
   end
-  if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - 34 * C.ACTOR_K * ds - 5 + math.sin(tick / 8) * 1.5) end
+  if dsx and dani.state ~= "retire" then actors.marker(dsx, dsy - 80 * PROP_K.DANI_BACK * ds - 5 + math.sin(tick / 8) * 1.5) end
   rear.used = n_items
   return dsx, dsy
 end

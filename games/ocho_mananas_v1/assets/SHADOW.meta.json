@@ -1,0 +1,25 @@
+{
+  "asset": "SHADOW",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 1,
+  "w": 64,
+  "h": 16,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    32,
+    15
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1064,
+    "as_rgb565": 2048
+  }
+}

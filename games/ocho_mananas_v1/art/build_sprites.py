@@ -13,6 +13,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
@@ -20,6 +21,7 @@ GAME = HERE.parent
 ROOT = GAME.parents[1]
 RAW = HERE / "raw"
 COLOURS = 32
+HERO_COLOURS = 56  # Dani is drawn big: more shades
 
 
 def row_major(n, cols):
@@ -34,10 +36,10 @@ def runners(cols, run, extra):
 # id: (cell w, cell h, [parts]); a part is (source, rows, cols, frame order as (row, col)); frames run part after part
 SHEETS = {
     # 0-5 run, 6 stumble, 7 down, 8-11 sprint, 12-15 jog, 16-17 glance back, 18-19 sidestep into a recess
-    "DANI_BACK": (36, 68, [("dani_back_gen.png", 1, 8, row_major(8, 8)), ("dani_backx_gen.png", 1, 12, row_major(12, 12))]),
-    "DANI_FRONT": (36, 68, [("dani_front_gen.png", 1, 4, row_major(4, 4))]),
+    "DANI_BACK": (84, 160, [("dani_back_gen.png", 1, 8, row_major(8, 8)), ("dani_backx_gen.png", 1, 12, row_major(12, 12))]),
+    "DANI_FRONT": (84, 160, [("dani_front_gen.png", 1, 4, row_major(4, 4))]),
     # 0-5 run, 6 stumble, 7-10 sprint, 11-14 jog
-    "DANI_SIDE": (52, 68, [("dani_side_gen.png", 1, 7, row_major(7, 7)), ("dani_sidex_gen.png", 1, 8, row_major(8, 8))]),
+    "DANI_SIDE": (124, 160, [("dani_side_gen.png", 1, 7, row_major(7, 7)), ("dani_sidex_gen.png", 1, 8, row_major(8, 8))]),
     "TORO_BACK": (60, 68, [("toro_back_gen.png", 1, 4, row_major(4, 4))]),
     "TORO_FRONT": (60, 68, [("toro_front_gen.png", 1, 4, row_major(4, 4))]),
     "TORO_SIDE": (104, 64, [("toro_side_gen.png", 1, 4, row_major(4, 4))]),
@@ -90,6 +92,15 @@ def key_magenta(im):
     return out
 
 
+def drop_shadow(im):
+    """The generated sheets draw a purple ground shadow under Dani; the engine draws its own, so lose that one."""
+    a = np.asarray(im.convert("RGBA")).copy()
+    r, g, b = a[..., 0].astype(int), a[..., 1].astype(int), a[..., 2].astype(int)
+    purple = (r > 70) & (r < 175) & (g < 100) & (b > 140) & (b - r < 120) & (r > g + 25)
+    a[..., 3] = np.where(purple, 0, a[..., 3])
+    return Image.fromarray(a)
+
+
 def spans(count, n):
     """n [start, end) spans of non-empty entries in the profile `count`; surplus ones merge across the smallest
     gap, missing ones (two cells touching) split where the widest span is thinnest."""
@@ -130,21 +141,27 @@ def cells(im, rows, cols):
 
 def build(aid):
     cw, ch, parts = SHEETS[aid]
-    frames = []
+    scaled = []  # (cell, scale): each sheet is scaled by its own factor (they were drawn at different sizes)
     for src, rows, cols, order in parts:
-        grid = cells(key_magenta(Image.open(RAW / src)), rows, cols)
-        frames += [grid[r * cols + c] for r, c in order]
-    # one scale for the whole set: the tallest cell fills the height, the widest one that is not lying down the width
-    tall = max(f.height for f in frames)
-    k = min(ch / tall, cw / max(f.width for f in frames if f.height > tall / 2))
+        keyed = key_magenta(Image.open(RAW / src))
+        if aid.startswith("DANI"):
+            keyed = drop_shadow(keyed)
+        grid = cells(keyed, rows, cols)
+        part = [grid[r * cols + c] for r, c in order]
+        # the tallest cell fills the height, the widest one that is not lying down the width
+        tall = max(f.height for f in part)
+        k = min(ch / tall, cw / max(f.width for f in part if f.height > tall * 0.85))
+        scaled += [(f, k) for f in part]
+    frames = [f for f, _ in scaled]
     strip = Image.new("RGBA", (cw * len(frames), ch), (0, 0, 0, 0))
-    for i, f in enumerate(frames):
+    for i, (f, k) in enumerate(scaled):
         s = min(k, cw / f.width, ch / f.height)
         sz = (max(1, round(f.width * s)), max(1, round(f.height * s)))
         small = f.resize(sz, Image.Resampling.BOX)
         strip.alpha_composite(small, (i * cw + (cw - sz[0]) // 2, ch - sz[1]))
     alpha = strip.getchannel("A").point(lambda a: 255 if a >= 110 else 0)
-    strip = strip.convert("RGB").quantize(COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    colours = HERO_COLOURS if aid.startswith("DANI") else COLOURS
+    strip = strip.convert("RGB").quantize(colours, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     strip = strip.convert("RGBA")
     strip.putalpha(alpha)
     strip.save(HERE / f"built_{aid}.png")
@@ -152,7 +169,7 @@ def build(aid):
         (GAME / "assets" / f"{aid}{old}").unlink(missing_ok=True)
     subprocess.run([sys.executable, str(ROOT / "tools/png2asset.py"), str(HERE / f"built_{aid}.png"),
                     str(GAME / "assets"), aid, "--frames", str(len(frames)), "--ms", "100", "--packed",
-                    "--colours", str(COLOURS)], check=True)
+                    "--colours", str(colours)], check=True)
 
 
 if __name__ == "__main__":
