@@ -1,9 +1,9 @@
--- The guide melody of the three calls, sung by a small crowd. PROVISIONAL: the first line of the chant ("A San
--- Fermín pedimos") as an automatic pitch tracker heard it in a crowd recording (YouTube hUMifd5xwb0, 1.7-4.4 s; see
--- output/canto_referencias/). It is a crowd singing with drifting pitch, so the notes are the tracker's best guess
--- and the rhythm is the game's chart, not the singers'. Cross-checked against three other crowd recordings
--- (xP9kX_kzbcM, bJZmIe1qJts an octave up, Y2JU9UyVkvs): all hover around B3 with A#3, A3 and G#3 beside it, but
--- which neighbour each syllable takes is uncertain by a semitone. Not confirmed by ear.
+-- The guide melody of the three calls, sung by a small crowd. From PAU'S OWN VOICE (output/canto_referencias/pau/): the
+-- first line of the chant ("A San Fermín pedimos") as he sang it, C#3 D#3 C#3 A#2 B2 B2 (a low male voice), here an
+-- octave up so the lead sits where a mixed crowd would and the octave-below voice is his own register. The rhythm is
+-- the game's chart, not his. Only the first line is taken from him so far; his second line is in the recording too
+-- (E3 C#3 A#2 C3 C#3 D#3 C#3) and the later ones are not settled. An earlier guess from crowd recordings
+-- (B3 B3 A#3 G#3 A3 G#3) differed and is dropped.
 --
 -- The crowd sings in unison with the octaves as a mixed crowd does (women up, men down), each voice a little out of
 -- tune and wobbling on its own, so it chorus-es; the three calls grow: the first is a few voices, the second adds
@@ -12,7 +12,7 @@ local M = {}
 local CHART = require("chant.chart")
 
 -- one note for each tap; the three calls use the same melody (a call just plays more of it)
-M.NOTES = {"B3", "B3", "A#3", "G#3", "A3", "G#3"}
+M.NOTES = {"C#4", "D#4", "C#4", "A#3", "B3", "B3"}
 
 local SEMI = {C = 0, D = 2, E = 4, F = 5, G = 7, A = 9, B = 11}
 local function hz(name)
