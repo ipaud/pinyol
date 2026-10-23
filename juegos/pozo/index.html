@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com https://pinyol.goatcounter.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://giscus.app; frame-src https://giscus.app; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://pinyol.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
-<title translate="no">Rocas · pinyol</title>
-<meta name="description" content="Un juego a la manera de las máquinas vectoriales: solo líneas brillantes sobre negro, hasta las letras. Sin una sola imagen.">
-<meta property="og:title" content="Rocas · pinyol" translate="no">
-<meta property="og:description" content="Un juego a la manera de las máquinas vectoriales: solo líneas brillantes sobre negro, hasta las letras. Sin una sola imagen.">
+<title translate="no">Pozo · pinyol</title>
+<meta name="description" content="Un tirador en un pozo geométrico, como en las máquinas vectoriales: solo líneas brillantes sobre negro, un cañón que se desliza por el borde y enemigos que trepan por el fondo. Y un menú que enseña cómo dibuja el haz.">
+<meta property="og:title" content="Pozo · pinyol" translate="no">
+<meta property="og:description" content="Un tirador en un pozo geométrico, como en las máquinas vectoriales: solo líneas brillantes sobre negro, un cañón que se desliza por el borde y enemigos que trepan por el fondo. Y un menú que enseña cómo dibuja el haz.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://pinyol.ipaud.dev/img/looks/vector.png">
 <meta name="theme-color" content="#0b0e1f">
-<link rel="canonical" href="https://pinyol.ipaud.dev/juegos/rocas/">
-<link rel="alternate" hreflang="es" href="https://pinyol.ipaud.dev/juegos/rocas/">
-<link rel="alternate" hreflang="ca" href="https://pinyol.ipaud.dev/ca/juegos/rocas/">
-<link rel="alternate" hreflang="en" href="https://pinyol.ipaud.dev/en/juegos/rocas/">
-<link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/juegos/rocas/">
+<link rel="canonical" href="https://pinyol.ipaud.dev/juegos/pozo/">
+<link rel="alternate" hreflang="es" href="https://pinyol.ipaud.dev/juegos/pozo/">
+<link rel="alternate" hreflang="ca" href="https://pinyol.ipaud.dev/ca/juegos/pozo/">
+<link rel="alternate" hreflang="en" href="https://pinyol.ipaud.dev/en/juegos/pozo/">
+<link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/juegos/pozo/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="stylesheet" href="../../styles.css?v=2aa70dac">
-<script src="../../games.js?v=20d25232" defer></script>
+<script src="../../games.js?v=1031e1ab" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
 </head>
 <body>
@@ -26,35 +26,35 @@
 <header class="top"><div class="wrap">
 <a class="logo" href="../../" aria-label="pinyol, inicio"><span class="logo-anim"><img class="l-leaves" src="../../img/logo/leaves.png" alt="" width="83" height="52"><img class="l-seed" src="../../img/logo/seed.png" alt="" width="83" height="52"><img class="l-word" src="../../img/logo/word.png" alt="" width="83" height="52"></span></a>
 <nav class="tabs" aria-label="Secciones"><ul><li><a href="../../juega/">Juega</a></li><li><a href="../../biblioteca/">Biblioteca</a></li><li><a href="../../crear/" aria-current="page">Crear</a></li><li><a href="../../consola/">Consola</a></li><li><a href="../../como-se-hizo/">Cómo se hizo</a></li><li><a href="https://github.com/ipaud/pinyol" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></li></ul></nav>
-<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../../juegos/rocas/" lang="es" hreflang="es" aria-label="Español" aria-current="page">ES</a></li><li class="keep"><a href="../../ca/juegos/rocas/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../../en/juegos/rocas/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
+<nav class="langs" aria-label="Idioma"><ul><li class="keep"><a href="../../juegos/pozo/" lang="es" hreflang="es" aria-label="Español" aria-current="page">ES</a></li><li class="keep"><a href="../../ca/juegos/pozo/" lang="ca" hreflang="ca" aria-label="Català">CA</a></li><li class="keep"><a href="../../en/juegos/pozo/" lang="en" hreflang="en" aria-label="English">EN</a></li></ul></nav>
 </div></header>
 <main id="main" class="game" style="--hue:#7cf7ff">
 <section class="game-hero"><div class="wrap">
-<figure class="game-shot"><img src="../../img/looks/vector.png" alt="Un juego vectorial: líneas brillantes sobre negro" width="480" height="320" decoding="async" fetchpriority="high"></figure>
+<figure class="game-shot"><img src="../../img/looks/vector.png" alt="Un pozo en forma de estrella hecho de líneas brillantes sobre negro, con un cañón amarillo y enemigos rojos" width="480" height="320" decoding="async" fetchpriority="high"></figure>
 <div class="game-info">
 <p class="kicker pixel"><span>Vectorial</span> · <span>1979 · solo líneas que brillan</span></p>
-<h1 class="game-title" translate="no">Rocas</h1>
-<p class="lede">Un juego a la manera de las máquinas vectoriales: solo líneas brillantes sobre negro, hasta las letras. Sin una sola imagen.</p>
-<div class="actions"><a class="btn btn-primary" href="../../juega/?juego=rocas" data-goatcounter-click="jugar/rocas">Jugar</a><a class="btn btn-ghost" href="../../games/rocas.zip" download data-goatcounter-click="descargar/rocas">Descargar .zip</a></div>
+<h1 class="game-title" translate="no">Pozo</h1>
+<p class="lede">Un tirador en un pozo geométrico, como en las máquinas vectoriales: solo líneas brillantes sobre negro, un cañón que se desliza por el borde y enemigos que trepan por el fondo. Y un menú que enseña cómo dibuja el haz.</p>
+<div class="actions"><a class="btn btn-primary" href="../../juega/?juego=pozo" data-goatcounter-click="jugar/pozo">Jugar</a><a class="btn btn-ghost" href="../../games/pozo.zip" download data-goatcounter-click="descargar/pozo">Descargar .zip</a></div>
 <p class="meta">Hecho con pinyol</p>
 </div></div></section>
 <section class="game-numbers" aria-labelledby="numbers-t"><div class="wrap">
 <h2 id="numbers-t">Las cifras</h2>
-<dl class="tally" id="tally" data-id="rocas" data-src="https://raw.githubusercontent.com/ipaud/pinyol/stats/stats.json" aria-busy="true">
+<dl class="tally" id="tally" data-id="pozo" data-src="https://raw.githubusercontent.com/ipaud/pinyol/stats/stats.json" aria-busy="true">
 <div><dt>Visitas</dt><dd data-k="visits">—</dd></div><div><dt>Partidas</dt><dd data-k="plays">—</dd></div>
 <div><dt>Tiempo jugado</dt><dd data-k="minutes">—</dd></div><div><dt>Me gusta</dt><dd data-k="likes">—</dd></div>
 <div><dt>Comentarios</dt><dd data-k="comments">—</dd></div><div><dt>En el ranking</dt><dd data-k="rank">—</dd></div>
 </dl>
-<p class="tally-note" id="tally-note" role="status">Las cifras se actualizan una vez al día.</p>
+<p class="tally-note" id="tally-note" role="status">Las cifras se actualizan cada hora.</p>
 </div></section>
 <section class="game-sheet" aria-labelledby="sheet-t"><div class="wrap">
 <h2 id="sheet-t">La ficha</h2>
-<dl class="sheet"><div><dt>Aspecto</dt><dd>Vectorial</dd></div><div><dt>En la consola</dt><dd>61 fps</dd></div><div><dt>Dibujo</dt><dd>dibujado con código</dd></div><div><dt>Licencia</dt><dd>código MIT · arte y sonido CC0</dd></div><div><dt>El .zip</dt><dd>14 KB</dd></div><div><dt>Código</dt><dd><a href="https://github.com/ipaud/pinyol/tree/main/examples/rocas" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></dd></div></dl>
+<dl class="sheet"><div><dt>Aspecto</dt><dd>Vectorial</dd></div><div><dt>En la consola</dt><dd>59–60 fps</dd></div><div><dt>Dibujo</dt><dd>dibujado con código</dd></div><div><dt>Licencia</dt><dd>código MIT · arte y sonido CC0</dd></div><div><dt>El .zip</dt><dd>37 KB</dd></div><div><dt>Código</dt><dd><a href="https://github.com/ipaud/pinyol/tree/main/examples/pozo" target="_blank" rel="noopener">GitHub<span class="sr"> (se abre en una pestaña nueva)</span></a></dd></div></dl>
 </div></section>
 <section class="game-talk" id="comentarios" aria-labelledby="talk-t"><div class="wrap">
 <h2 id="talk-t">Comentarios y votos</h2>
 <p class="intro">Vota con una reacción (👍 ❤️ 🎉 🚀) y deja tu comentario con tu cuenta de GitHub. Los votos ordenan el ranking y eligen la portada de la semana.</p>
-<div class="talk" id="talk" tabindex="-1" data-term="rocas" data-repo="ipaud/pinyol" data-repo-id="R_kgDOVJaigg" data-category="Juegos" data-category-id="DIC_kwDOVJaigs4DIxP0" data-ready="">
+<div class="talk" id="talk" tabindex="-1" data-term="pozo" data-repo="ipaud/pinyol" data-repo-id="R_kgDOVJaigg" data-category="Juegos" data-category-id="DIC_kwDOVJaigs4DIxP0" data-ready="">
 <p class="talk-soon">Los comentarios y los votos llegan muy pronto.</p>
 <p class="talk-ask"><button class="btn btn-primary" type="button" id="talk-load">Ver los comentarios y votar</button></p>
 <p class="talk-note">Se cargan desde giscus.app, con los comentarios guardados en GitHub, solo cuando los pides.</p>

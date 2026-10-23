@@ -20,7 +20,7 @@
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css?v=2aa70dac">
 <script src="../../site.js?v=b718360e" defer></script>
-<script src="../../games.js?v=20d25232" defer></script>
+<script src="../../games.js?v=1031e1ab" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
 </head>
 <body>
@@ -48,7 +48,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <section id="motor" aria-labelledby="motor-t"><div class="wrap">
 <h2 id="motor-t">What the engine brings</h2>
 <p class="intro">All of this works the same on the console, the computer and in the browser, and your agent knows it because it is in the repository's instructions.</p>
-<ul class="engine-grid"><li class="engine-card"><h3>Picture</h3><p>A virtual console like the Game Boy Advance: 240×160 with four layers, 128 sprites, palettes, transparency and per-line effects, and on top, text and panels at 480×320.</p></li><li class="engine-card"><h3>Worlds</h3><p>Mode 7, first person in the style of Wolfenstein 3D, swarms of hundreds of bullets, grids and levels drawn in Tiled.</p></li><li class="engine-card"><h3>Sound</h3><p>Sound effects made from recipes or from numbers, four synth voices like the Game Boy Advance's, music in layers that come and go, and .mod modules of up to 32 channels.</p></li><li class="engine-card new"><h3>The studio</h3><span class="chip">New</span><p>A step sequencer inside the audio: tracks of sounds and an acid bass like a TB-303's, with echo, reverb and Lo-fi GBA. Every step sounds on its exact sample, and a new pattern comes in right on the next bar.</p></li><li class="engine-card"><h3>The console</h3><p>Touch screen, microphone, the LED and the battery, video from the card and games between nearby consoles, no router.</p></li><li class="engine-card"><h3>For coding</h3><p>Lua, with libraries built in: physics, particles, stories, a keyboard and the adventure kit. Games save without freezing, and a script tests every game by itself.</p></li></ul>
+<ul class="engine-grid"><li class="engine-card"><h3>Picture</h3><p>A virtual console like the Game Boy Advance: 240×160 with four layers, 128 sprites, palettes, transparency and per-line effects, and on top, text and panels at 480×320. Also PlayStation-style textured 3D faces, lights, particles and cut-out animation.</p></li><li class="engine-card"><h3>Worlds</h3><p>Mode 7, first person in the style of Wolfenstein 3D, voxel landscapes, grids with field of view and pathfinding, generated dungeons, swarms of hundreds of bullets and levels drawn in Tiled or LDtk.</p></li><li class="engine-card"><h3>Sound</h3><p>Sound effects made from recipes or from numbers, four synth voices like the Game Boy Advance's, instruments, PlayStation reverbs, layered music that changes on the bar line, and .mod, .xm and .s3m modules.</p></li><li class="engine-card"><h3>The studio</h3><p>A step sequencer inside the audio: tracks of sounds and an acid bass like a TB-303's, with echo, reverb and Lo-fi GBA. Every step sounds on its exact sample, and a new pattern comes in right on the next bar.</p></li><li class="engine-card"><h3>The console</h3><p>Touch screen with a stylus and several fingers, microphone, the LED and the battery, video from the card and games between nearby consoles, no router. The menu opens over any game, with settings, favourites and achievements.</p></li><li class="engine-card"><h3>For coding</h3><p>Lua, with more than thirty libraries built in: physics, particles, stories, camera, scenes, artificial intelligence, generated levels, Celeste's movement and the adventure kit. Games save without freezing, a script tests every game by itself and a profiler says where the time goes.</p></li></ul>
 <p class="more-link"><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">The Lua API, with examples<span class="sr"> (opens in a new tab)</span></a></p>
 </div></section>
 <section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
@@ -103,12 +103,12 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copy: git c
 <div class="row"><a class="play" href="../juega/?juego=veloz" data-goatcounter-click="jugar/veloz" aria-label="Play veloz (Super Nintendo · Mega Drive)">Play</a>
 <a class="zip" href="../../games/veloz.zip" download data-goatcounter-click="descargar/veloz" aria-label="Download veloz for the console">Download .zip</a>
 <a class="sheet-link" href="../juegos/veloz/" aria-label="Details: veloz (Super Nintendo · Mega Drive)">Details</a></div></div></li><li class="cart" style="--hue:#7cf7ff">
-<div class="shot"><img src="../../img/looks/vector.png" alt="A vector game: glowing lines on black" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1979 · only glowing lines</p><h3>Vector</h3><p class="what">Rocks and a ship made of lines on black.</p>
-<ul class="chips"><li class="chip fps">61 fps on the console</li><li class="chip">drawn with code</li></ul>
-<div class="row"><a class="play" href="../juega/?juego=rocas" data-goatcounter-click="jugar/rocas" aria-label="Play rocas (Vector)">Play</a>
-<a class="zip" href="../../games/rocas.zip" download data-goatcounter-click="descargar/rocas" aria-label="Download rocas for the console">Download .zip</a>
-<a class="sheet-link" href="../juegos/rocas/" aria-label="Details: rocas (Vector)">Details</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
+<div class="shot"><img src="../../img/looks/vector.png" alt="A star-shaped well made of glowing lines on black, with a yellow cannon and red enemies" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">1979 · only glowing lines</p><h3>Vector</h3><p class="what">A shooter down a well made of lines, with a menu that shows how the beam draws.</p>
+<ul class="chips"><li class="chip fps">59–60 fps on the console</li><li class="chip">drawn with code</li></ul>
+<div class="row"><a class="play" href="../juega/?juego=pozo" data-goatcounter-click="jugar/pozo" aria-label="Play pozo (Vector)">Play</a>
+<a class="zip" href="../../games/pozo.zip" download data-goatcounter-click="descargar/pozo" aria-label="Download pozo for the console">Download .zip</a>
+<a class="sheet-link" href="../juegos/pozo/" aria-label="Details: pozo (Vector)">Details</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
 <div class="shot"><img src="../../img/looks/gba.png" alt="A Game Boy Advance platformer with parallax mountains and water" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2001 · layers, sprites, rippling water</p><h3>Game Boy Advance</h3><p class="what">Parallax mountains, see-through water and coins.</p>
 <ul class="chips"><li class="chip fps">61 fps on the console</li><li class="chip">drawn with code</li></ul>
