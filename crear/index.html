@@ -36,7 +36,7 @@
 </div></section>
 <section id="hazlo" aria-labelledby="hazlo-t"><div class="wrap">
 <h2 id="hazlo-t">Hazte un juego</h2>
-<p class="intro">pinyol está pensado para usarse con un agente de código, como Codex o Claude Code. El agente lee las instrucciones del repositorio, instala lo que falta, sigue la receta del aspecto que pidas y prueba el juego antes de dártelo.</p>
+<p class="intro">pinyol está pensado para usarse con un agente de código, como Codex o Claude Code. El agente lee las instrucciones del repositorio, te hace como mucho cuatro preguntas (gráficos, logo, universo y dónde vivirá), decide el resto, sigue la receta del aspecto que pidas y prueba el juego antes de dártelo.</p>
 <ol class="steps">
 <li><h3>Baja el motor</h3><p>En un Mac con Homebrew o en Linux.</p><div class="code"><pre><code>git clone https://github.com/ipaud/pinyol.git
 cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git clone https://github.com/ipaud/pinyol.git">Copiar</button></div></li>
@@ -48,7 +48,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <section id="motor" aria-labelledby="motor-t"><div class="wrap">
 <h2 id="motor-t">Lo que trae el motor</h2>
 <p class="intro">Todo esto funciona igual en la consola, en el ordenador y en el navegador, y tu agente lo conoce porque está en las instrucciones del repositorio.</p>
-<ul class="engine-grid"><li class="engine-card"><h3>Imagen</h3><p>Una consola virtual como la Game Boy Advance: 240×160 con cuatro capas, 128 sprites, paletas, transparencias y efectos por línea, y encima textos y paneles a 480×320. Además, caras 3D con textura al estilo PlayStation, luces, partículas y animación de recortes.</p></li><li class="engine-card"><h3>Mundos</h3><p>Mode 7, primera persona a lo Wolfenstein 3D, paisajes de vóxeles, cuadrículas con campo de visión y búsqueda de caminos, mazmorras generadas, enjambres de cientos de balas y niveles dibujados en Tiled o LDtk.</p></li><li class="engine-card"><h3>Sonido</h3><p>Efectos hechos con recetas o con números, cuatro voces de sintetizador como las de la Game Boy Advance, instrumentos, reverbs de PlayStation, música en capas que cambia en el compás y módulos .mod, .xm y .s3m.</p></li><li class="engine-card"><h3>El studio</h3><p>Un secuenciador de pasos dentro del audio: pistas de sonidos y un bajo ácido como el de una TB-303, con eco, reverb y Lo-fi GBA. Cada paso suena en su muestra exacta, y un patrón nuevo entra justo en el siguiente compás.</p></li><li class="engine-card"><h3>La consola</h3><p>Pantalla táctil con lápiz y varios dedos, micrófono, el LED y la batería, vídeo desde la tarjeta y partidas entre consolas cercanas, sin router. El menú se abre sobre cualquier juego, con ajustes, favoritos y logros.</p></li><li class="engine-card"><h3>Para programar</h3><p>Lua, con más de treinta librerías dentro: física, partículas, historias, cámara, escenas, inteligencia artificial, niveles generados, el movimiento de Celeste y el kit de aventuras. Las partidas se guardan sin congelar el juego, un guion prueba cada juego solo y un perfilador dice dónde se va el tiempo.</p></li></ul>
+<ul class="engine-grid"><li class="engine-card"><h3>Imagen</h3><p>Una consola virtual como la Game Boy Advance: 240×160 con cuatro capas, 128 sprites, paletas, transparencias y efectos por línea, y encima textos y paneles a 480×320. Además, caras 3D con textura al estilo PlayStation, luces, partículas y animación de recortes.</p></li><li class="engine-card"><h3>Mundos</h3><p>Mode 7, primera persona a lo Wolfenstein 3D, paisajes de vóxeles, cuadrículas con campo de visión y búsqueda de caminos, mazmorras generadas, enjambres de cientos de balas y niveles dibujados en Tiled o LDtk.</p></li><li class="engine-card"><h3>Sonido</h3><p>Efectos hechos con recetas o con números, cuatro voces de sintetizador como las de la Game Boy Advance, instrumentos, reverbs de PlayStation, música en capas que cambia en el compás y módulos .mod, .xm y .s3m.</p></li><li class="engine-card"><h3>El studio</h3><p>Un secuenciador de pasos dentro del audio: pistas de sonidos y un bajo ácido como el de una TB-303, con eco, reverb y Lo-fi GBA. Cada paso suena en su muestra exacta, y un patrón nuevo entra justo en el siguiente compás.</p></li><li class="engine-card"><h3>La consola</h3><p>Pantalla táctil con lápiz y varios dedos, micrófono, el LED y la batería, vídeo desde la tarjeta y partidas entre consolas cercanas, sin router. El menú se abre sobre cualquier juego, con ajustes, favoritos y logros.</p></li><li class="engine-card"><h3>Texto y calidad</h3><p>textbox mete el texto en su caja, textw lo mide antes de dibujarlo y la librería box hace marcos del tamaño de su texto. El simulador comprueba en español, catalán e inglés que nada se corte, que no haya destellos peligrosos y que las imágenes sean rápidas en la consola, y unos bots juegan cada demo hasta el final.</p></li><li class="engine-card"><h3>Para programar</h3><p>Lua, con más de treinta librerías dentro: física, partículas, historias, cámara, escenas, inteligencia artificial, niveles generados, el movimiento de Celeste y el kit de aventuras. Las partidas se guardan sin congelar el juego, un guion prueba cada juego solo y un perfilador dice dónde se va el tiempo.</p></li></ul>
 <p class="more-link"><a class="btn btn-ghost" href="https://github.com/ipaud/pinyol/blob/main/docs/lua.md" target="_blank" rel="noopener">La API de Lua, con ejemplos<span class="sr"> (se abre en una pestaña nueva)</span></a></p>
 </div></section>
 <section id="aspectos" aria-labelledby="aspectos-t"><div class="wrap">
@@ -57,19 +57,19 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <ul class="shelf"><li class="cart big" style="--hue:#ffc94a">
 <div class="shot"><img src="../img/looks/neogeo.png" alt="Un run and gun de Neo Geo: un cocinero en un tractor por una calle de pueblo, disparando a gaviotas mecánicas" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1990 · sprites enormes pintados a mano</p><h3>Neo Geo</h3><p class="what">Un correr y disparar: cocineros contra gaviotas mecánicas, con tractor y jefe.</p>
-<ul class="chips"><li class="chip fps low">41–60 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
+<ul class="chips"><li class="chip fps low">38–59 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=paella" data-goatcounter-click="jugar/paella" aria-label="Jugar a paella (Neo Geo)">Jugar</a>
 <a class="zip" href="../games/paella.zip" download data-goatcounter-click="descargar/paella" aria-label="Descargar paella para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/paella/" aria-label="Ficha de paella (Neo Geo)">Ficha</a></div></div></li><li class="cart big" style="--hue:#e8344e">
-<div class="shot"><img src="../img/looks/cps2.png" alt="Un juego de lucha de CPS2: luchadores de quince colores sobre un suelo en perspectiva" width="480" height="320" loading="lazy" decoding="async"></div>
-<div class="label"><p class="era pixel">1993 · quince colores por luchador</p><h3>CPS2</h3><p class="what">Lucha sobre un suelo en perspectiva dibujado en bandas.</p>
-<ul class="chips"><li class="chip fps">60–61 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
-<div class="row"><a class="play" href="../juega/?juego=torneo" data-goatcounter-click="jugar/torneo" aria-label="Jugar a torneo (CPS2)">Jugar</a>
-<a class="zip" href="../games/torneo.zip" download data-goatcounter-click="descargar/torneo" aria-label="Descargar torneo para la consola">Descargar .zip</a>
-<a class="sheet-link" href="../juegos/torneo/" aria-label="Ficha de torneo (CPS2)">Ficha</a></div></div></li><li class="cart" style="--hue:#8bac0f">
+<div class="shot"><img src="../img/looks/cps2.png" alt="Un beat &#x27;em up de CPS2 en una calle de relojes: un relojero con un martillo gigante frente a autómatas de cobre" width="480" height="320" loading="lazy" decoding="async"></div>
+<div class="label"><p class="era pixel">1993 · quince colores por personaje</p><h3>CPS2</h3><p class="what">Un beat &#x27;em up de relojeros: tres héroes, autómatas rotos que sueltan piezas y un jefe péndulo.</p>
+<ul class="chips"><li class="chip fps low">41–60 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
+<div class="row"><a class="play" href="../juega/?juego=taller" data-goatcounter-click="jugar/taller" aria-label="Jugar a taller (CPS2)">Jugar</a>
+<a class="zip" href="../games/taller.zip" download data-goatcounter-click="descargar/taller" aria-label="Descargar taller para la consola">Descargar .zip</a>
+<a class="sheet-link" href="../juegos/taller/" aria-label="Ficha de taller (CPS2)">Ficha</a></div></div></li><li class="cart" style="--hue:#8bac0f">
 <div class="shot"><img src="../img/looks/gameboy.png" alt="Una plaza empedrada con un cerezo sin hojas y vecinos alrededor, en cuatro tonos de verde" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1998 · cuatro verdes, un mundo de pantallas</p><h3>Game Boy</h3><p class="what">Una aventura al estilo Zelda: una isla, una cueva, un jefe y diálogos.</p>
-<ul class="chips"><li class="chip fps">58–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps low">53–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=cerezo" data-goatcounter-click="jugar/cerezo" aria-label="Jugar a cerezo (Game Boy)">Jugar</a>
 <a class="zip" href="../games/cerezo.zip" download data-goatcounter-click="descargar/cerezo" aria-label="Descargar cerezo para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/cerezo/" aria-label="Ficha de cerezo (Game Boy)">Ficha</a></div></div></li><li class="cart" style="--hue:#ff3b3b">
@@ -81,7 +81,7 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <a class="sheet-link" href="../juegos/socavon/" aria-label="Ficha de socavon (ZX Spectrum)">Ficha</a></div></div></li><li class="cart" style="--hue:#ff77a8">
 <div class="shot"><img src="../img/looks/pico8.png" alt="Un nivel de tumba de PICO-8: un explorador, gemas y muros, en dieciséis colores" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2015 · 128×128 · dieciséis colores</p><h3>PICO-8</h3><p class="what">Un puzle de deslizamiento por tumbas, con la paleta de esta consola de fantasía.</p>
-<ul class="chips"><li class="chip fps">59–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps">56–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=tumba" data-goatcounter-click="jugar/tumba" aria-label="Jugar a tumba (PICO-8)">Jugar</a>
 <a class="zip" href="../games/tumba.zip" download data-goatcounter-click="descargar/tumba" aria-label="Descargar tumba para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/tumba/" aria-label="Ficha de tumba (PICO-8)">Ficha</a></div></div></li><li class="cart" style="--hue:#9aa58c">
@@ -93,25 +93,25 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <a class="sheet-link" href="../juegos/malabar/" aria-label="Ficha de malabar (Maquinita LCD)">Ficha</a></div></div></li><li class="cart big" style="--hue:#b388ff">
 <div class="shot"><img src="../img/looks/32bits.png" alt="La sala de un castillo gótico: velas que brillan, un fantasma y una cazadora con látigo" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1997 · 256 colores, luces translúcidas</p><h3>PlayStation · Saturn 2D</h3><p class="what">Un castillo de noche: velas que brillan y un fantasma semitransparente.</p>
-<ul class="chips"><li class="chip fps">60–61 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
+<ul class="chips"><li class="chip fps">60 fps en la consola</li><li class="chip">arte generado con IA</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=gotico" data-goatcounter-click="jugar/gotico" aria-label="Jugar a gotico (PlayStation · Saturn 2D)">Jugar</a>
 <a class="zip" href="../games/gotico.zip" download data-goatcounter-click="descargar/gotico" aria-label="Descargar gotico para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/gotico/" aria-label="Ficha de gotico (PlayStation · Saturn 2D)">Ficha</a></div></div></li><li class="cart big" style="--hue:#2f7bff">
 <div class="shot"><img src="../img/looks/16bits.png" alt="Un plataformas de 16 bits: tierra a cuadros y un mar que se mueve línea a línea" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1991 · velocidad y scroll por línea</p><h3>Super Nintendo · Mega Drive</h3><p class="what">Un pangolín muy rápido y un mar que se mueve línea a línea.</p>
-<ul class="chips"><li class="chip fps low">40–59 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps">56–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=veloz" data-goatcounter-click="jugar/veloz" aria-label="Jugar a veloz (Super Nintendo · Mega Drive)">Jugar</a>
 <a class="zip" href="../games/veloz.zip" download data-goatcounter-click="descargar/veloz" aria-label="Descargar veloz para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/veloz/" aria-label="Ficha de veloz (Super Nintendo · Mega Drive)">Ficha</a></div></div></li><li class="cart" style="--hue:#7cf7ff">
 <div class="shot"><img src="../img/looks/vector.png" alt="Un pozo en forma de estrella hecho de líneas brillantes sobre negro, con un cañón amarillo y enemigos rojos" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1979 · solo líneas que brillan</p><h3>Vectorial</h3><p class="what">Un tirador en un pozo hecho de líneas, con un menú que enseña cómo dibuja el haz.</p>
-<ul class="chips"><li class="chip fps">59–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps low">54–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=pozo" data-goatcounter-click="jugar/pozo" aria-label="Jugar a pozo (Vectorial)">Jugar</a>
 <a class="zip" href="../games/pozo.zip" download data-goatcounter-click="descargar/pozo" aria-label="Descargar pozo para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/pozo/" aria-label="Ficha de pozo (Vectorial)">Ficha</a></div></div></li><li class="cart" style="--hue:#6c5ce7">
 <div class="shot"><img src="../img/looks/gba.png" alt="Un plataformas de Game Boy Advance con un pirata, una selva en paralaje y joyas" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">2001 · capas, sprites, agua que ondula</p><h3>Game Boy Advance</h3><p class="what">Un plataformas de botín en cuatro mundos, con paralaje, agua que ondula y un jefe.</p>
-<ul class="chips"><li class="chip fps low">50–57 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps low">49–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=botin" data-goatcounter-click="jugar/botin" aria-label="Jugar a botin (Game Boy Advance)">Jugar</a>
 <a class="zip" href="../games/botin.zip" download data-goatcounter-click="descargar/botin" aria-label="Descargar botin para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/botin/" aria-label="Ficha de botin (Game Boy Advance)">Ficha</a></div></div></li><li class="cart" style="--hue:#4dd2a1">
@@ -123,11 +123,11 @@ cd pinyol</code></pre><button class="copy" type="button" aria-label="Copiar: git
 <a class="sheet-link" href="../juegos/tormenta/" aria-label="Ficha de tormenta (Recreativa vertical)">Ficha</a></div></div></li><li class="cart" style="--hue:#c08a5a">
 <div class="shot"><img src="../img/looks/firstperson.png" alt="Un laberinto en primera persona: pasillos de piedra y un fantasma" width="480" height="320" loading="lazy" decoding="async"></div>
 <div class="label"><p class="era pixel">1992 · a lo Wolfenstein 3D</p><h3>Primera persona</h3><p class="what">Un laberinto visto desde dentro, con fantasmas y gemas.</p>
-<ul class="chips"><li class="chip fps low">38–60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
+<ul class="chips"><li class="chip fps">60 fps en la consola</li><li class="chip">dibujado con código</li></ul>
 <div class="row"><a class="play" href="../juega/?juego=laberinto" data-goatcounter-click="jugar/laberinto" aria-label="Jugar a laberinto (Primera persona)">Jugar</a>
 <a class="zip" href="../games/laberinto.zip" download data-goatcounter-click="descargar/laberinto" aria-label="Descargar laberinto para la consola">Descargar .zip</a>
 <a class="sheet-link" href="../juegos/laberinto/" aria-label="Ficha de laberinto (Primera persona)">Ficha</a></div></div></li></ul>
-
+<div class="more"><h3>Y un ejemplo más</h3><ul><li><a href="../juegos/cromota/">Cromota</a></li></ul></div>
 </div></section>
 <section id="crear" class="editor-sec" aria-labelledby="crear-t"><div class="wrap editor-grid">
 <div class="editor-copy">
