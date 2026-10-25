@@ -1,0 +1,31 @@
+{
+  "asset": "SPR_PONCHO_SCOOTER_C2",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 23,
+  "w": 88,
+  "h": 96,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    44,
+    90
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 15084,
+    "as_rgb565": 67584
+  }
+}

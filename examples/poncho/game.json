@@ -1,0 +1,49 @@
+{
+  "id": "poncho",
+  "title": "Poncho",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "pinyol examples",
+  "description": "Un plataformas de scroll lateral con un héroe de tres años: corre, salta y patina por la gigantesca sala de juegos entre cubos, estanterías y juguetes de cuerda. Un teclado de juguete es su amigo y guarda su sitio.",
+  "look": "16bits",
+  "subtitle": "Super Nintendo · Mega Drive",
+  "achievements": [
+    {
+      "id": "coin",
+      "name": "Primera moneda",
+      "description": "Recoge una moneda."
+    },
+    {
+      "id": "keyboard",
+      "name": "El teclado amigo",
+      "description": "Toca el teclado de juguete: guarda tu sitio y toca una melodía."
+    },
+    {
+      "id": "scooter",
+      "name": "Patinete encontrado",
+      "description": "Encuentra el patinete."
+    },
+    {
+      "id": "stomp",
+      "name": "Salto sobre un juguete",
+      "description": "Vence a un juguete saltándole encima."
+    },
+    {
+      "id": "ramp",
+      "name": "Salto de rampa",
+      "description": "Sal volando de una rampa a toda velocidad con el patinete."
+    },
+    {
+      "id": "playroom",
+      "name": "Sala de juegos completa",
+      "description": "Llega a la bandera de la gran sala de juegos."
+    }
+  ],
+  "look_limits": {
+    "sprite": [
+      160,
+      112
+    ]
+  },
+  "look_limits_note": "Poncho is 80 px tall in 32 colours (8 bpp), the size of the last-era 16-bit heroes, so its sprites go past the look's 64x64"
+}

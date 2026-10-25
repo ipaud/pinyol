@@ -1,0 +1,31 @@
+{
+  "asset": "TOY_HEARTS",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 4,
+  "w": 96,
+  "h": 34,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    48,
+    33
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 7032,
+    "as_rgb565": 26112
+  }
+}

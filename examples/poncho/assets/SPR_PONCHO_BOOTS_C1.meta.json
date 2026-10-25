@@ -1,0 +1,35 @@
+{
+  "asset": "SPR_PONCHO_BOOTS_C1",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 21,
+  "w": 88,
+  "h": 104,
+  "frames": 6,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "anchor": [
+    44,
+    91
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 19950,
+    "as_rgb565": 109824
+  }
+}

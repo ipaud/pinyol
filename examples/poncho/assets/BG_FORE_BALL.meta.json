@@ -1,0 +1,25 @@
+{
+  "asset": "BG_FORE_BALL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 2,
+  "w": 92,
+  "h": 92,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    46,
+    91
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 4351,
+    "as_rgb565": 16928
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "asset": "BG_MID_ROCKET",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 3,
+  "w": 78,
+  "h": 171,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    39,
+    170
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3814,
+    "as_rgb565": 26676
+  }
+}

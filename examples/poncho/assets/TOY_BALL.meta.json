@@ -1,0 +1,39 @@
+{
+  "asset": "TOY_BALL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 4,
+  "w": 32,
+  "h": 32,
+  "frames": 8,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "anchor": [
+    16,
+    31
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5672,
+    "as_rgb565": 16384
+  }
+}

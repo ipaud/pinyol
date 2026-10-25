@@ -35,7 +35,11 @@ def pal_colours(path: Path) -> list[int]:
 
 
 def check(game: Path, look: dict) -> tuple[list[str], list[str]]:
-    lim, errs, warns = look["limits"], [], []
+    lim, errs, warns = dict(look["limits"]), [], []
+    try:  # a flagship that goes past its look on purpose says so in game.json ("look_limits": {"sprite": [128, 112]}): the check then holds it to that, and the card says why
+        lim.update(json.loads((game / "game.json").read_text(encoding="utf-8")).get("look_limits", {}))
+    except (OSError, ValueError):
+        pass
     assets = game / "assets"
     max_bank = lim.get("pal_bank_colours")
     if max_bank is not None:

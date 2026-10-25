@@ -1,0 +1,8 @@
+{
+  "asset": "ROOM",
+  "type": "tilemap",
+  "tiles": 9,
+  "map_w": 48,
+  "map_h": 32,
+  "palette": "WORLD"
+}

@@ -1,0 +1,27 @@
+{
+  "asset": "TOY_SHADOW",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 1,
+  "w": 40,
+  "h": 6,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    20,
+    5
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 980,
+    "as_rgb565": 960
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "asset": "BG_TBOX2",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 6,
+  "w": 64,
+  "h": 32,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    32,
+    31
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1692,
+    "as_rgb565": 4096
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "asset": "TOY_FLAG",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 5,
+  "w": 82,
+  "h": 162,
+  "frames": 6,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "anchor": [
+    41,
+    161
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 15702,
+    "as_rgb565": 159408
+  }
+}

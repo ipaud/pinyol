@@ -1,0 +1,25 @@
+{
+  "asset": "BG_FLOORCOL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 32,
+  "h": 96,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    16,
+    95
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1892,
+    "as_rgb565": 6144
+  }
+}

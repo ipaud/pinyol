@@ -1,0 +1,25 @@
+{
+  "asset": "TOY_SCOOTER",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 5,
+  "w": 54,
+  "h": 70,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    27,
+    69
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1077,
+    "as_rgb565": 7560
+  }
+}

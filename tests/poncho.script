@@ -1,0 +1,122 @@
+# Poncho, the giant playroom: the title and "how it works", a walk that becomes a run, a short and a long jump (coyote time, a buffered jump), the toy keyboard
+# (checkpoint), the scooter (push, drift, brake), a ramp over a gap, a toy that hurts and one jumped on, a pit and the respawn, the end flag and the results.
+new
+tick 90
+expect_lua G.state == "title"
+shot title
+lua HOW()
+tick 4
+expect_lua G.state == "explain"
+shot how
+press A
+tick 2
+expect_lua G.state == "title"
+press DOWN
+tick 3
+press UP
+tick 3
+press A
+tick 60
+expect_lua G.state == "play" and D.state().ground
+shot start
+
+# walking: a ramp up to the walking speed, then the run by itself after a moment, and a slide when let go
+hold RIGHT 20
+expect_lua D.state().vx > 1.8 and D.state().vx < 2.4
+hold RIGHT 80
+expect_lua D.state().vx > 3.9
+shot run
+tick 40
+expect_lua D.state().vx == 0
+
+# the jump: a tap is a hop, a held jump is three tiles, coyote time and the buffer
+expect_lua D.jump_height(1) < 30
+expect_lua D.jump_height(40) > 95
+expect_lua D.coyote(0) and D.coyote(5)
+expect_lua not D.coyote(8)
+expect_lua D.buffer(5) and not D.buffer(9)
+lua D.tp(400)
+in 16 RIGHT+A
+expect_lua not D.state().ground
+shot jump
+tick 70
+expect_lua D.state().ground
+
+# the toy keyboard is a friend: touching it keeps the place and plays a tune
+lua D.tp(1780)
+hold RIGHT 40
+expect_lua D.state().cp == 1840
+shot keyboard
+tick 40
+
+# the scooter lies on the way: it is found, B gets off and on again
+hold RIGHT 60
+expect_lua D.state().scooter
+shot scooter_found
+press B
+tick 2
+expect_lua not D.state().scooter
+press B
+tick 2
+expect_lua D.state().scooter
+
+# push, glide with the speed kept, drift when changing direction, brake
+lua D.tp(1620) D.clear() D.scooter(true)
+hold RIGHT 70
+expect_lua D.state().vx > 6
+shot scooter
+tick 30
+expect_lua D.state().vx > 5
+hold LEFT 12
+shot drift
+expect_lua D.state().vx < 5
+hold DOWN 30
+expect_lua math.abs(D.state().vx) < 2
+tick 30
+
+# a ramp throws the scooter over the gap (160 px) and it lands on the far side
+lua D.tp(2000) D.scooter(true)
+hold RIGHT 62
+expect_lua D.state().x > 2100
+shot ramp_up
+tick 14
+shot ramp_air
+tick 40
+expect_lua D.state().x > 2530 and D.state().y > 340
+shot ramp_landed
+expect_lua D.state().hs == "play"
+
+# a toy rolls into him: a heart is lost, and a moment of being safe; one jumped on is beaten
+lua D.tp(130) D.clear() D.scooter(false)
+lua D.foe("car", 170)
+tick 120
+expect_lua D.state().hearts == 2
+shot hurt
+tick 60
+lua D.tp(130) D.clear() D.foe("robot", 80)
+expect_lua D.foes_alive() == 1
+in 16 RIGHT+A
+tick 30
+shot stomp
+expect_lua D.foes_alive() == 0
+
+# a pit: he falls, the iris closes and he comes back at the keyboard
+lua D.tp(1290)
+hold RIGHT 100
+tick 100
+expect_lua D.state().deaths == 1 and D.state().x < 1900 and D.state().x > 1700 and D.state().hs == "play"
+shot respawn
+
+# the end: the flag, the win pose and the results
+lua D.tp(5880, 270)
+hold RIGHT 90
+expect_lua D.state().play == "goal"
+shot win
+tick 230
+expect_lua G.state == "results"
+tick 100
+shot results
+press A
+tick 4
+expect_lua G.state == "title"
+expect_ok

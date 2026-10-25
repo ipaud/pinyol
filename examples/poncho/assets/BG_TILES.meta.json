@@ -1,0 +1,47 @@
+{
+  "asset": "BG_TILES",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 37,
+  "w": 32,
+  "h": 32,
+  "frames": 12,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "anchor": [
+    16,
+    31
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 13554,
+    "as_rgb565": 24576
+  }
+}

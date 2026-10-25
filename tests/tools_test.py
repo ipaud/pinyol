@@ -209,6 +209,13 @@ bad = out / "badlook"
 (bad / "assets/WORLD.pal").write_bytes(struct.pack("<16H", 0, *range(1, 6), *([0] * 10)))  # one bank with five colours
 errs, _ = look_check.check(bad, looks.get("gameboy"))
 assert len(errs) == 2 and "5 colours" in errs[0] and "48x48" in errs[1], errs
+(bad / "game.json").write_text(json.dumps({"look_limits": {"sprite": [64, 64]}}))  # a game may state its own limits (Poncho's 80 px hero)
+errs, _ = look_check.check(bad, looks.get("gameboy"))
+assert len(errs) == 1 and "5 colours" in errs[0], errs  # 48x48 now fits
+(bad / "game.json").write_text(json.dumps({"look_limits": {"pal_bank_colours": 8}}))
+errs, _ = look_check.check(bad, looks.get("gameboy"))
+assert len(errs) == 1 and "48x48" in errs[0], errs  # five colours now fit
+(bad / "game.json").unlink()
 errs, _ = look_check.check(bad, looks.get("lcd"))
 assert len(errs) == 1 and "canvas" in errs[0], errs
 r = subprocess.run([sys.executable, str(ROOT / "tools/new_game.py"), str(out / "lookgame"), "--lua", "--look", "metal slug"], capture_output=True, text=True)

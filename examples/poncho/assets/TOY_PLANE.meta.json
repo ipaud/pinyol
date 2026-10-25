@@ -1,0 +1,41 @@
+{
+  "asset": "TOY_PLANE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 3,
+  "w": 46,
+  "h": 22,
+  "frames": 9,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "anchor": [
+    23,
+    21
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5805,
+    "as_rgb565": 18216
+  }
+}

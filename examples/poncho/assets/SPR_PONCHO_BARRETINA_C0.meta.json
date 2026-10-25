@@ -1,0 +1,43 @@
+{
+  "asset": "SPR_PONCHO_BARRETINA_C0",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 22,
+  "w": 144,
+  "h": 96,
+  "frames": 10,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "anchor": [
+    72,
+    90
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 40942,
+    "as_rgb565": 276480
+  }
+}

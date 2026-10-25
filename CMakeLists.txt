@@ -356,7 +356,7 @@ if(NODE)
 endif()
 file(GLOB SCRIPTS CONFIGURE_DEPENDS tests/*.script)
 # the flagship demos must show no text cut by the screen or outside its box (--check-text); tools/demo_check.py names the same list
-set(TEXT_CHECKED cerezo socavon tumba malabar pozo botin veloz gotico tormenta laberinto taller paella cromota)
+set(TEXT_CHECKED cerezo socavon tumba malabar pozo botin veloz gotico tormenta laberinto taller paella cromota poncho)
 foreach(s ${SCRIPTS})
   get_filename_component(n ${s} NAME_WE)
   if(n STREQUAL "textfit_cut" OR n STREQUAL "textfit_box" OR n STREQUAL "textfit_slide")

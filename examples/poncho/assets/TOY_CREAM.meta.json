@@ -1,0 +1,25 @@
+{
+  "asset": "TOY_CREAM",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 6,
+  "w": 28,
+  "h": 60,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    14,
+    59
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 729,
+    "as_rgb565": 3360
+  }
+}

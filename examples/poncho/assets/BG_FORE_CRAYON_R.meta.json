@@ -1,0 +1,25 @@
+{
+  "asset": "BG_FORE_CRAYON_R",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 3,
+  "w": 232,
+  "h": 40,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    116,
+    39
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3993,
+    "as_rgb565": 18560
+  }
+}

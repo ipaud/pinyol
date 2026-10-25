@@ -1,0 +1,25 @@
+{
+  "asset": "BG_BODY8",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 4,
+  "w": 256,
+  "h": 96,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    128,
+    95
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 14872,
+    "as_rgb565": 49152
+  }
+}

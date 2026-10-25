@@ -1,0 +1,29 @@
+key,es,ca,en
+how_item,Cómo funciona,Com funciona,How it works
+title_name,PONCHO,PONCHO,PONCHO
+title_sub,y el Patinete Loco,i el Patinet Boig,and the Crazy Scooter
+title_start,EMPEZAR,COMENÇAR,START
+title_how,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
+title_best,Mejor tiempo {time},Millor temps {time},Best time {time}
+how_title,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
+how_1,"Flechas: andar. Mantén una flecha y Poncho acaba corriendo; C corre al momento. A salta: suéltala pronto y el salto es corto.","Fletxes: caminar. Mantén una fletxa i en Poncho acaba corrent; C corre a l'instant. A salta: deixa-la anar aviat i el salt és curt.","Arrows: walk. Hold one and Poncho ends up running; C runs at once. A jumps: let go early for a short hop."
+how_2,"Salta sobre los juguetes para vencerlos. Si te tocan de lado pierdes un corazón; el helado te lo devuelve.","Salta sobre les joguines per vèncer-les. Si et toquen de costat perds un cor; el gelat te'l torna.","Jump on the toys to beat them. Touch one from the side and you lose a heart; ice cream gives it back."
+how_3,"Abajo frena, cae más rápido y atraviesa las estanterías (con A).","Avall frena, cau més de pressa i travessa els prestatges (amb A).","Down brakes, falls faster and drops through shelves (with A)."
+how_4,"Al encontrar el patinete, B lo sube y lo baja. Flechas para empujar, sin tocar se desliza, la dirección contraria derrapa, abajo frena, C empuja fuerte. Las rampas te lanzan.","Quan trobes el patinet, B el puja i el baixa. Fletxes per empènyer, sense tocar rellisca, la direcció contrària derrapa, avall frena, C empeny fort. Les rampes et llancen.","Find the scooter and B gets on or off. Arrows push, let go and it glides, the other way drifts, down brakes, C pushes hard. Ramps launch you."
+how_5,"El teclado de juguete es tu amigo: tócalo y guarda tu sitio. Llega a la bandera.","El teclat de joguina és el teu amic: toca'l i guarda el teu lloc. Arriba a la bandera.","The toy keyboard is your friend: touch it and it keeps your place. Reach the flag."
+how_back,Pulsa A para volver,Prem A per tornar,Press A to go back
+toast_keyboard,¡El teclado recuerda tu sitio!,El teclat recorda el teu lloc!,The keyboard remembers your place!
+toast_scooter,¡El patinete! B lo sube y lo baja,El patinet! B el puja i el baixa,The scooter! B gets on and off
+toast_cream,¡Un corazón de helado!,Un cor de gelat!,An ice cream heart!
+ach_coin,Primera moneda,Primera moneda,First coin
+ach_keyboard,El teclado amigo,El teclat amic,The friendly keyboard
+ach_scooter,Patinete encontrado,Patinet trobat,Scooter found
+ach_stomp,Salto sobre un juguete,Salt sobre una joguina,Jumped on a toy
+ach_ramp,Salto de rampa,Salt de rampa,Ramp jump
+ach_playroom,Sala de juegos completa,Sala de jocs completa,Playroom done
+res_title,¡BANDERA!,BANDERA!,FLAG!
+res_coins,Monedas,Monedes,Coins
+res_creams,Helados,Gelats,Ice creams
+res_time,Tiempo,Temps,Time
+res_best,Mejor,Millor,Best
+res_next,Pulsa A,Prem A,Press A
