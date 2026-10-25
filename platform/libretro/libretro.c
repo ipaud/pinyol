@@ -22,6 +22,14 @@
 #define PINYOL_VERSION "dev"
 #endif
 
+#ifdef _WIN32
+#define pinyol_mkdir(path) mkdir(path)
+#define PINYOL_O_NOFOLLOW 0
+#else
+#define pinyol_mkdir(path) mkdir(path, 0755)
+#define PINYOL_O_NOFOLLOW O_NOFOLLOW
+#endif
+
 static retro_environment_t env_cb;
 static retro_video_refresh_t video_cb;
 static retro_audio_sample_batch_t audio_cb;
@@ -88,11 +96,11 @@ static bool mkdirs(char *path) { /* every folder of path, as mkdir -p */
     for (char *s = path + 1; *s; s++) {
         if (*s != '/') continue;
         *s = 0;
-        bool ok = mkdir(path, 0755) == 0 || errno == EEXIST;
+        bool ok = pinyol_mkdir(path) == 0 || errno == EEXIST;
         *s = '/';
         if (!ok) return false;
     }
-    return mkdir(path, 0755) == 0 || errno == EEXIST;
+    return pinyol_mkdir(path) == 0 || errno == EEXIST;
 }
 
 /* A name from the zip that stays inside the folder it is unpacked into: relative, no "..", no backslash or colon */
@@ -146,7 +154,7 @@ static bool unpack(const uint8_t *z, size_t n, const zip_entry *e, const char *d
     bool ok = e->method == 0 ? (e->csize == e->usize && (memcpy(out, z + p, e->usize), true))
             : e->method == 8 && puff(out, &ulen, z + p, &clen) == 0 && ulen == e->usize;
     ok = ok && crc32_buf(out, e->usize) == e->crc;
-    int fd = ok ? open(dest, O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW, 0644) : -1; /* never through a link */
+    int fd = ok ? open(dest, O_WRONLY | O_CREAT | O_TRUNC | PINYOL_O_NOFOLLOW, 0644) : -1; /* never through a link where supported */
     FILE *f = fd >= 0 ? fdopen(fd, "wb") : NULL;
     if (fd >= 0 && !f) close(fd);
     ok = f && fwrite(out, 1, e->usize, f) == e->usize;
