@@ -1,0 +1,30 @@
+# Same camera and logical room, four actual era interpretations.
+tick 220
+lua player.x = 110 player.y = 124 world.unlock[1] = true world.unlock[2] = true world.unlock[4] = true
+lua era = 1
+shot same_room_8bit
+lua era = 2
+shot same_room_gameboy
+lua era = 3
+shot same_room_16bit
+lua era = 4
+shot same_room_arcade
+# A real shift cue and short-lived transition effect.
+lua era = 3
+press C
+shot shift_transition
+# Guardian encounter and multi-era route state.
+lua player.x = 816 player.y = 124 player.face = 1 world.guardian_hp = 3 world.switch = true world.exit_open = true
+lua era = 4
+press B
+expect_lua world.guardian_hp == 2
+shot guardian_hit
+lua player.x = 1000 player.y = 124
+press B
+expect_lua not world.wall_broken
+lua world.guardian_hp = 0
+press B
+expect_lua world.wall_broken
+lua era = 3 world.wall_broken = true
+shot multi_era_route
+expect_ok

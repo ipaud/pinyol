@@ -1,0 +1,25 @@
+# Persistence across interpretations: hidden machine opens route; switch and break survive era changes.
+tick 220
+expect_lua state == "play"
+shot boot
+lua player.x = 180 player.y = 124 world.unlock[1] = true
+press C
+expect_lua era == 1 and sync == 82
+shot 8bit
+expect_lua not WORLD_MODEL.solid(world, "machine", era)
+lua player.x = 300 player.y = 124 player.vx = 0 player.vy = 0
+tick 1
+expect_lua player.x == 300
+lua world.unlock[2] = true
+press C
+expect_lua era == 2 and sync < 82 and WORLD_MODEL.solid(world, "machine", era)
+shot gameboy
+lua world.switch = true world.exit_open = true world.wall_broken = true world.guardian_hp = 0
+press C
+expect_lua era == 3 and world.switch and world.exit_open and world.wall_broken and world.guardian_hp == 0
+shot 16bit
+lua player.x = 1275 player.y = 124
+tick 1
+expect_lua state == "ending"
+shot ending
+expect_ok
