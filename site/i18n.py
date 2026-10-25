@@ -42,7 +42,7 @@ RULES = [
     (r"^(\w+): ((?:entre )?\d+(?: y \d+)?) fps$", {"en": "{0}: {1t} fps", "ca": "{0}: {1t} fps"}),
     (r"^entre (\d+) y (\d+)$", {"en": "{0} to {1}", "ca": "entre {0} i {1}"}),  # a range of fps (charts.span)
     (r"^(.+) fps, antes (.+)$", {"en": "{0} fps, was {1}", "ca": "{0} fps, abans {1}"}),
-    (r"^Firmware (\S+) · ([\d,]+) MB ·$", {"en": "Firmware {0} · {1n} MB ·", "ca": "Firmware {0} · {1} MB ·"}),
+    (r"^Versión (\S+) \((\S+)\) · ([\d,]+) MB ·$", {"en": "Version {0} ({1}) · {2n} MB ·", "ca": "Versió {0} ({1}) · {2} MB ·"}),
     (r"^Código MIT · arte y sonido CC0 · (\d+) juegos de ejemplo$",
      {"en": "MIT code · CC0 art and sound · {0} example games", "ca": "Codi MIT · art i so CC0 · {0} jocs d'exemple"}),
     (r"^Y (\d+) ejemplos más$", {"en": "And {0} more examples", "ca": "I {0} exemples més"}),

@@ -369,7 +369,7 @@ def install(fw: dict | None) -> str:
 <span slot="unsupported" class="note">Este navegador no puede comunicarse con la placa por USB: abre esta página en Chrome o Edge, en un ordenador.</span>
 <span slot="not-allowed" class="note">Para instalar, abre la página por https.</span>
 </esp-web-install-button>
-<p class="note">Firmware {escape(fw['version'])} · {fw['mb']} MB · <a href="{REPO}/releases/tag/{fw['tag']}">los archivos para esptool</a></p></div>"""
+<p class="note">Versión {escape(fw['tag'].lstrip('v'))} ({escape(fw['version'])}) · {fw['mb']} MB · <a href="{REPO}/releases/tag/{fw['tag']}">los archivos para esptool</a></p></div>"""
 
 
 def console(fw: dict | None) -> str:
