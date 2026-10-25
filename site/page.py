@@ -416,7 +416,7 @@ def desktop() -> str:
 <p>En Windows, descomprime el .zip y abre Cirera.exe. Si sale «Windows protegió su PC», pulsa «Más información» y «Ejecutar de todas formas».</p>
 <p>En Linux, descomprime el .tar.gz y abre Cirera, dentro de su carpeta. Para instalar juegos soltándolos en la ventana hace falta unzip, que casi todas las distribuciones ya traen.</p></li>
 <li><h3>Añade juegos</h3><p>Descarga el .zip de cualquier juego de esta página o de la Biblioteca y suéltalo sobre la ventana de Cirera: se instala y sale en el menú.</p></li>
-<li><h3>Juega</h3><p>Flechas para moverte; Z o Intro es A, X o Esc es B, C es C y P es START. Mantén la I (MENU) dos segundos para volver al menú, y F11 para la pantalla completa. En el mando, X o Y hacen de C, y SELECT de MENU. Las partidas se guardan en tu ordenador.</p></li>
+<li><h3>Juega</h3><p>Flechas para moverte; Z o Intro es A, X o Esc es B, C es C y P es START. Toca la I (MENU) para abrir el menú del juego, con «Salir a la lista» para cambiar de juego; si la mantienes dos segundos, vuelves a la lista directamente. F11 es la pantalla completa. En el mando, X o Y hacen de C, y SELECT de MENU. Las partidas se guardan en tu ordenador.</p></li>
 </ol>
 </div></section>"""
 
@@ -503,7 +503,7 @@ def days() -> str:
         ("2026-10-21", "21 oct.", "El menú de la consola sobre cualquier juego, con ajustes, favoritos y logros; partidas entre consolas por radio; movimiento al estilo de Celeste; y el código desde la PSRAM, que acelera el mundo hasta un 30 %."),
         ("2026-10-22", "22 oct.", "Módulos XM y S3M, canciones de FamiStudio, vuelta atrás (rollback) entre consolas, campo de visión en cuadrículas, la memoria de la consola reordenada y el firmware 0.4.0."),
         ("2026-10-23", "23 oct.", "mesh(): modelos 3D dibujados en C, y cuatro juegos con el aspecto de los 32 bits: Selva, Niebla, Recortes y Cajas. Firmware 0.5.0."),
-        ("2026-10-24", "24 oct.", "Doce demos pulidos y medidos en la placa: Taller de los Autómatas (CPS2) y Cromota, un puzle táctil; logos, menús y tipografías propias; textos que siempre caben; imágenes que se dibujan hasta tres veces más rápido en la consola; y un aviso de versión nueva en la aplicación de escritorio."),
+        ("2026-10-24", "24 oct.", "Doce demos pulidos y medidos en la placa: Taller de los Autómatas (CPS2) y Cromota, un puzle táctil; logos, menús y tipografías propias; textos que siempre caben; imágenes que se dibujan hasta tres veces más rápido en la consola; un aviso de versión nueva en la aplicación de escritorio; y los firmwares 0.7.0 y 0.7.1, con la salida a la lista arreglada."),
     ]
     li = "".join(f'<li><time datetime="{d}">{label}</time><p>{escape(t)}</p></li>' for d, label, t in items)
     return f"""<div class="days reveal"><h3>Catorce días en el repositorio</h3><ol>{li}</ol></div>"""
