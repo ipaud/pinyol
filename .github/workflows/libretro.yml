@@ -1,17 +1,20 @@
-# The libretro core, built for Linux on 32-bit ARM (Raspberry Pi 2 and up), 64-bit ARM and x86-64, each in Debian 10
-# (platform/libretro/release.sh) so it runs there, in RetroPie's image, and on anything newer. Published as the release
-# "libretro", which always holds the core of the last commit on main that changed the engine: RetroPie's lr-pinyol.sh
-# installs it from there (docs/libretro.md). The firmware's release stays the latest.
+# The libretro core, built for Linux on 32-bit ARM (Raspberry Pi 2 and up), 64-bit ARM and x86-64 in Debian 10,
+# plus Windows x86-64 with MinGW. Published as the release "libretro", which always holds the core of the last
+# commit on main that changed the engine: RetroPie's lr-pinyol.sh installs it from there (docs/libretro.md).
+# The firmware's release stays the latest.
 name: libretro
 on:
   push:
     branches: [main]
     paths: ["src/**", "lib/**", "third_party/**", "platform/libretro/**", "platform/link_udp.*", "cmake/**",
             "CMakeLists.txt", "LICENSE", "THIRD_PARTY_NOTICES.md", ".github/workflows/libretro.yml"]
+  pull_request:
+    paths: ["src/**", "lib/**", "third_party/**", "platform/libretro/**", "platform/link_udp.*", "cmake/**",
+            "CMakeLists.txt", "LICENSE", "THIRD_PARTY_NOTICES.md", ".github/workflows/libretro.yml"]
   workflow_dispatch:
 permissions: {}
 concurrency:
-  group: libretro
+  group: libretro-${{ github.ref }}
   cancel-in-progress: false # (a release half uploaded is worse than one a commit late)
 jobs:
   build:
@@ -38,8 +41,43 @@ jobs:
           name: core-${{ matrix.arch }}
           path: dist/pinyol_libretro-linux-${{ matrix.arch }}.zip
           if-no-files-found: error
+
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+      - name: Build Windows x86-64 core
+        shell: msys2 {0}
+        run: |
+          cmake -B build-libretro-windows -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-libretro-windows --target pinyol_libretro -j2
+          mkdir -p dist/windows
+          cp build-libretro-windows/pinyol_libretro.dll dist/windows/
+          cp platform/libretro/pinyol_libretro.info LICENSE THIRD_PARTY_NOTICES.md dist/windows/
+          (cd dist/windows && zip -9 ../pinyol_libretro-windows-x86_64.zip pinyol_libretro.dll pinyol_libretro.info LICENSE THIRD_PARTY_NOTICES.md)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: core-windows-x86_64
+          path: dist/pinyol_libretro-windows-x86_64.zip
+          if-no-files-found: error
+
   publish:
-    needs: build
+    if: github.event_name != 'pull_request'
+    needs: [build, build-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -53,7 +91,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          notes="The libretro core of ${GITHUB_SHA::7}, for RetroArch and RetroPie on Linux: armhf (32-bit ARM, Raspberry Pi 2 and up), arm64 and x86_64. Each zip holds the core, its .info, LICENSE and THIRD_PARTY_NOTICES.md. How to install it: https://github.com/$GH_REPO/blob/main/docs/libretro.md"
+          notes="The libretro core of ${GITHUB_SHA::7}, for RetroArch: Linux armhf (32-bit ARM, Raspberry Pi 2 and up), Linux arm64, Linux x86_64 and Windows x86_64. Each zip holds the core, its .info, LICENSE and THIRD_PARTY_NOTICES.md. How to install it: https://github.com/$GH_REPO/blob/main/docs/libretro.md"
           if gh release view libretro >/dev/null 2>&1; then
             gh api -X PATCH "repos/$GH_REPO/git/refs/tags/libretro" -f sha="$GITHUB_SHA" -F force=true >/dev/null
             gh release edit libretro --notes "$notes"

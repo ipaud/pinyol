@@ -1,35 +1,47 @@
-# pinyol in RetroArch: RetroPie, Batocera, Lakka and the rest
+# pinyol in RetroArch: RetroPie, RetroBat, Batocera, Lakka and the rest
 
 `platform/libretro/` builds the engine as a [libretro](https://www.libretro.com) core, so pinyol games play in
-RetroArch and in everything built on it: RetroPie and Lakka on a Raspberry Pi, Batocera, Recalbox, handhelds that run
-RetroArch, a desktop. It is the same engine as the console's and the simulator's: the same game plays the same.
+RetroArch and in everything built on it: RetroPie and Lakka on a Raspberry Pi, RetroBat on Windows, Batocera,
+Recalbox, handhelds that run RetroArch, and a desktop. It is the same engine as the console's and the simulator's:
+the same game plays the same.
 
 Tested: built and tested (`ctest -R libretro`) on macOS, on Linux arm64 (Debian 12, the base of Raspberry Pi OS) and
-on 32-bit ARM as in RetroPie's image (Debian 10, GCC 8, CMake 3.13); the release's builds pass the same test on
+on 32-bit ARM as in RetroPie's image (Debian 10, GCC 8, CMake 3.13); the release's Linux builds pass the same test on
 Debian 10 and 12. RetroPie-Setup installed it with `lr-pinyol.sh` on emulated systems: the release's build on a Pi 3
-(32-bit) and a Pi 4 (64-bit), and built from the source. Played in RetroArch 1.22 on a Mac. Not yet tried on a real
-Raspberry Pi.
+(32-bit) and a Pi 4 (64-bit), and built from the source. Played in RetroArch 1.22 on a Mac. The Windows x86-64 core is
+built by GitHub Actions with MinGW for RetroArch/RetroBat. Not yet tried on a real Raspberry Pi.
 
 ## Download it
 
-The release [libretro](https://github.com/ipaud/pinyol/releases/tag/libretro) holds the core built for Linux, from
-the last change to the engine on `main`:
+The release [libretro](https://github.com/ipaud/pinyol/releases/tag/libretro) holds the current cores from the last
+change to the engine on `main`:
 
 | File | For |
 |---|---|
 | [pinyol_libretro-linux-armhf.zip](https://github.com/ipaud/pinyol/releases/download/libretro/pinyol_libretro-linux-armhf.zip) | 32-bit ARM: a Raspberry Pi 2 and up with a 32-bit system, RetroPie's image among them |
 | [pinyol_libretro-linux-arm64.zip](https://github.com/ipaud/pinyol/releases/download/libretro/pinyol_libretro-linux-arm64.zip) | 64-bit ARM: a Raspberry Pi 3 and up with a 64-bit system, ARM handhelds |
 | [pinyol_libretro-linux-x86_64.zip](https://github.com/ipaud/pinyol/releases/download/libretro/pinyol_libretro-linux-x86_64.zip) | a PC with Linux, Batocera or Lakka; a Steam Deck |
+| [pinyol_libretro-windows-x86_64.zip](https://github.com/ipaud/pinyol/releases/download/libretro/pinyol_libretro-windows-x86_64.zip) | 64-bit Windows: RetroArch and RetroBat |
 
-Each zip holds `pinyol_libretro.so`, which goes into RetroArch's cores folder, `pinyol_libretro.info`, for its info
-folder, and the licences. They are built in Debian 10 (`platform/libretro/release.sh`), so they run there and on
-anything newer. For a Raspberry Pi 1 or Zero (ARMv6), a Mac, or anything else, build it.
+Each zip holds the core (`pinyol_libretro.so` on Linux or `pinyol_libretro.dll` on Windows),
+`pinyol_libretro.info`, LICENSE and THIRD_PARTY_NOTICES.md. The Linux cores are built in Debian 10
+(`platform/libretro/release.sh`), so they run there and on anything newer. For a Raspberry Pi 1 or Zero (ARMv6), a
+Mac, or anything else not listed, build it.
 
 ## Build it
 
+On Linux or macOS:
+
 ```sh
 cmake -B build-release -DCMAKE_BUILD_TYPE=Release
-cmake --build build-release --target pinyol_libretro -j4    # -> build-release/pinyol_libretro.so (.dylib on a Mac)
+cmake --build build-release --target pinyol_libretro -j4    # -> pinyol_libretro.so (.dylib on a Mac)
+```
+
+On Windows with a MinGW x86-64 environment (the GitHub Actions build uses MSYS2 MINGW64):
+
+```sh
+cmake -B build-release -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+cmake --build build-release --target pinyol_libretro -j4    # -> pinyol_libretro.dll
 ```
 
 Build it as Release: the default Debug build carries the sanitizers, and RetroArch cannot load a core built with
@@ -49,12 +61,48 @@ would land outside its folder, is refused.
 
 ## RetroArch on a desktop
 
+Linux/macOS:
+
 ```sh
 retroarch -L build-release/pinyol_libretro.so dist/naves.zip
 ```
 
-Or from its menu: *Load Core*, then *Load Content*. Copy `platform/libretro/pinyol_libretro.info` into
+Windows PowerShell:
+
+```powershell
+.\retroarch.exe -L ".\cores\pinyol_libretro.dll" "C:\path\to\game.pinyol"
+```
+
+Or from the menu: *Load Core*, then *Load Content*. Copy `platform/libretro/pinyol_libretro.info` into
 RetroArch's info folder (*Settings, Directory, Core Info*) for it to show the core as "Pinyol" and know its files.
+
+## RetroBat on Windows
+
+RetroBat uses its own RetroArch installation. If RetroBat is installed in `C:\RetroBat`, extract the Windows x86-64
+zip and copy:
+
+```text
+pinyol_libretro.dll  -> C:\RetroBat\emulators\retroarch\cores\pinyol_libretro.dll
+pinyol_libretro.info -> C:\RetroBat\emulators\retroarch\info\pinyol_libretro.info
+```
+
+Create a games folder if it does not exist:
+
+```powershell
+New-Item -ItemType Directory -Force "C:\RetroBat\roms\pinyol"
+```
+
+Copy `.pinyol` or `.zip` games there. Before integrating Pinyol into RetroBat's EmulationStation system list, the core
+can be tested directly with RetroBat's RetroArch:
+
+```powershell
+cd "C:\RetroBat\emulators\retroarch"
+.\retroarch.exe -L ".\cores\pinyol_libretro.dll" "C:\RetroBat\roms\pinyol\my_game.pinyol"
+```
+
+If RetroBat is installed elsewhere, use its actual `emulators\retroarch`, `cores`, `info` and `roms` directories.
+Adding Pinyol as a first-class RetroBat/EmulationStation system is a separate frontend configuration step; the core
+itself only needs the DLL, the `.info` metadata and a compatible game file.
 
 ## RetroPie
 
@@ -121,8 +169,8 @@ Last, add the system to EmulationStation. Copy `/etc/emulationstation/es_systems
 and restart EmulationStation. Leave `.json` out of the extensions: the unpacked games go into the save folder, which
 in RetroPie is the games' own folder, and their `game.json` would show up in the list.
 
-Other frontends (Batocera, Recalbox, Lakka) take a core the same way: the `.so` in their cores folder, and a system
-that opens `.pinyol` or `.zip` with it.
+Other Linux frontends (Batocera, Recalbox, Lakka) take a core the same way: the `.so` in their cores folder, and a
+system that opens `.pinyol` or `.zip` with it.
 
 ## The controls
 
