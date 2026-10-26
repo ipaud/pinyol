@@ -2,6 +2,7 @@
 local K = require("core.const")
 local lang = require("lang")
 local Bg = require("core.bgfx")
+local Deco = require("core.deco")
 local Spr = require("core.spr")
 local Hud = require("core.hud")
 local In = require("core.input")
@@ -51,18 +52,18 @@ function title.draw()
   if cycle > 300 then f = Spr.seq("poncho", "idle", (cycle - 300) // 8) end
   if f then Spr.draw("poncho", f, 392, 232) end
   Bg.fore(cx, 128)
-  -- the logo: a placeholder in text
+  -- the logo (a picture of the word, from the image model) and the subtitle in the player's language
   local bob = math.floor(math.sin(t / 30) * 3)
-  text(lang.tr("title_name"), 240, 10 + bob, {font = Hud.TITLE, scale = 3, align = "center", color = 0xFFE24A, gradient = 0xFF8A20, outline = 0x3A1A5A,
-                                           shadow = 0x1A0A2A, shadow_x = 2, shadow_y = 2})
-  text(lang.tr("title_sub"), 240, 80 + bob, {font = Hud.FONT, scale = 1, align = "center", color = 0xFFFFFF, outline = 0x3A1A5A})
+  Deco.img("UI_LOGO_" .. lang.code:upper(), 0, 240, 2 + bob)
+  local ly = 180 + bob
+  rect(150, ly, 180, 76, 0x2A1A3A) rect(150, ly, 180, 3, 0xFFD43A)
   for i, key in ipairs(ITEMS) do
-    local y = 128 + (i - 1) * 34
+    local y = 192 + (i - 1) * 34
     local on = i == title.sel
     local str = lang.tr(key)
     local w = textw(str, {font = Hud.FONT})
     if on then
-      rect(240 - w // 2 - 22, y - 5, w + 44, 28, 0x3A1A5A)
+      rect(240 - w // 2 - 22, y - 5, w + 44, 28, 0x5A2E8A)
       local bx = 240 - w // 2 - 16 + (t // 10 % 2) * 2
       tri(bx, y + 1, bx, y + 17, bx + 9, y + 9, 0xFFE24A, true)
     end

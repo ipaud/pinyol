@@ -95,7 +95,7 @@ end
 -- ---------------------------------------------------------------- drawing (world pixels, under camera()): one packed picture each (core/deco.lua)
 
 local function icecream(it)
-  Deco.img("TOY_CREAM", 0, math.floor(it.x), math.floor(it.y - 6 + math.sin(it.t / 18) * 4))
+  Deco.img("TOY_CREAM", 0, math.floor(it.x), math.floor(it.y - 22 + math.sin(it.t / 18) * 4))
 end
 
 local function spring(it)
@@ -106,18 +106,18 @@ local function keyboard(it)
   local x, y = math.floor(it.x), math.floor(it.y)
   local b = (it.bounce and it.bounce > 0) and -math.floor(math.sin(it.bounce / 8 * math.pi) * 4) or 0
   y = y + b
-  local happy = it.on or (it.t % 150) > 144
-  Deco.img("TOY_KEYBOARD", happy and 1 or 0, x, y)
-  if it.key and it.key_t and it.key_t > 0 then rect(x - 36 + it.key * 9, y - 28, 8, 18, 0xFFE070) end
+  local fr = 0
+  if it.on then fr = 2 + (it.t // 6) % 4 elseif (it.t % 150) > 144 then fr = 1 end
+  Deco.img("TOY_KEYBOARD", fr, x, y)
   if it.on then -- notes floating up
-    Deco.img("TOY_NOTE", 0, x + 26, y - 62 - (it.t % 40) // 2)
+    Deco.img("TOY_NOTE", (it.t // 10) % 2, x + 30, y - 36 - (it.t % 40) // 2)
   end
 end
 
 local function scooter(it)
   local x, y = math.floor(it.x), math.floor(it.y + math.sin(it.t / 16) * 3)
   Deco.img("TOY_SCOOTER", 0, x, y)
-  if (it.t // 20) % 3 == 0 then rect(x - 1, y - 96, 3, 11, 0xFFFFFF) rect(x - 5, y - 92, 11, 3, 0xFFFFFF) end
+  if (it.t // 20) % 3 == 0 then Deco.img("TOY_SPARK", 0, x + 14, y - 74) end
 end
 
 local function flag(it)
@@ -139,7 +139,7 @@ function I.draw(cam_x)
       elseif k == "flag" then flag(it) end
     end
   end
-  coins:draw("TOY_COIN", (it_t // 5) % 8 < 5 and (it_t // 5) % 8 or 8 - (it_t // 5) % 8)
+  coins:draw("TOY_COIN", (it_t // 4) % 8)
 end
 
 return I

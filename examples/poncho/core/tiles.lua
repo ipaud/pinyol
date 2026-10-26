@@ -1,4 +1,4 @@
--- tiles: the playroom's blocks, put on the screen with `img` from the packed sheet BG_TILES (painted by core/tilepaint.lua, made by decogen/build.py).
+-- tiles: the playroom's blocks, put on the screen with `img` from the packed pictures BG_* (generated with the image model and fitted by gen/env_*.py)
 -- A floor top with two floor bodies under it is one picture (BG_FLOORCOL), which spares two thirds of the commands along the floor.
 local K = require("core.const")
 local L = require("core.level")

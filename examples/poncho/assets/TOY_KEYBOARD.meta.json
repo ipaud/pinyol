@@ -2,26 +2,34 @@
   "asset": "TOY_KEYBOARD",
   "type": "background",
   "format": "packed",
-  "bpp": 4,
-  "colours": 11,
-  "w": 82,
-  "h": 54,
-  "frames": 2,
+  "bpp": 8,
+  "colours": 26,
+  "w": 94,
+  "h": 85,
+  "frames": 6,
   "frame_ms": [
+    0,
+    0,
+    0,
+    0,
     0,
     0
   ],
   "order": [
     0,
-    1
+    1,
+    2,
+    3,
+    4,
+    5
   ],
   "anchor": [
-    41,
-    53
+    47,
+    82
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 5824,
-    "as_rgb565": 17712
+    "total": 31201,
+    "as_rgb565": 95880
   }
 }

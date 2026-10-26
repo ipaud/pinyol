@@ -2,12 +2,14 @@
   "asset": "TOY_CAR",
   "type": "background",
   "format": "packed",
-  "bpp": 4,
-  "colours": 7,
-  "w": 48,
-  "h": 34,
-  "frames": 8,
+  "bpp": 8,
+  "colours": 27,
+  "w": 72,
+  "h": 46,
+  "frames": 10,
   "frame_ms": [
+    0,
+    0,
     0,
     0,
     0,
@@ -25,15 +27,17 @@
     4,
     5,
     6,
-    7
+    7,
+    8,
+    9
   ],
   "anchor": [
-    24,
-    33
+    36,
+    43
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 8288,
-    "as_rgb565": 26112
+    "total": 25525,
+    "as_rgb565": 66240
   }
 }

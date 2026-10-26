@@ -2,12 +2,16 @@
   "asset": "TOY_ROBOT",
   "type": "background",
   "format": "packed",
-  "bpp": 4,
-  "colours": 8,
-  "w": 52,
-  "h": 60,
-  "frames": 12,
+  "bpp": 8,
+  "colours": 25,
+  "w": 74,
+  "h": 67,
+  "frames": 16,
   "frame_ms": [
+    0,
+    0,
+    0,
+    0,
     0,
     0,
     0,
@@ -33,15 +37,19 @@
     8,
     9,
     10,
-    11
+    11,
+    12,
+    13,
+    14,
+    15
   ],
   "anchor": [
-    26,
-    59
+    37,
+    64
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 12330,
-    "as_rgb565": 74880
+    "total": 34828,
+    "as_rgb565": 158656
   }
 }

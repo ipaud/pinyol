@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_DUCK",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 77,
+  "h": 80,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    38,
+    79
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3083,
+    "as_rgb565": 12320
+  }
+}

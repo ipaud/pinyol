@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_CASTLE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 104,
+  "h": 110,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    52,
+    109
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8304,
+    "as_rgb565": 22880
+  }
+}

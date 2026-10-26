@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_ROCKET",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 25,
+  "w": 100,
+  "h": 170,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    50,
+    169
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 11090,
+    "as_rgb565": 34000
+  }
+}

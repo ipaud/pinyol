@@ -21,15 +21,26 @@ function H.time_text(ticks)
   return string.format("%d:%02d", sec // 60, sec % 60)
 end
 
+-- a small dark plate behind a counter, so the numbers read over the busy wall
+local function plate(str, x, y)
+  local w = textw(str, {font = H.FONT})
+  rect(x - 6, y - 4, w + 12, 24, 0x2A1A3A)
+  rect(x - 6, y - 4, w + 12, 2, 0x5A2E8A)
+end
+
 function H.draw(play)
   Deco.img("TOY_HEARTS", math.max(0, math.min(3, Hero.hearts)), 6, 7)
   local coins, creams, tc, ti = Items.counts()
   -- a coin and an ice cream with their counts
   Deco.img("TOY_HUD", 2, 2, 39)
+  plate(coins .. "/" .. tc, 40, 47)
   H.label(coins .. "/" .. tc, 40, 47)
   Deco.img("TOY_HUD", 3, 108, 37)
+  plate(creams .. "/" .. ti, 134, 47)
   H.label(creams .. "/" .. ti, 134, 47)
-  H.label(H.time_text(play.time), K.W - 12, 10, {align = "right"})
+  local tt = H.time_text(play.time)
+  rect(K.W - 12 - textw(tt, {font = H.FONT}) - 6, 6, textw(tt, {font = H.FONT}) + 12, 24, 0x2A1A3A)
+  H.label(tt, K.W - 12, 10, {align = "right"})
   if Hero.has_scooter then
     Deco.img("TOY_HUD", Hero.s and Hero.s.scooter and 4 or 5, K.W - 72, 22)
   end

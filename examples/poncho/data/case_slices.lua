@@ -1,0 +1,2 @@
+-- made by tools/slice_pic.py: where each column of the picture goes (lib/slices.lua)
+return {w = 1440, h = 90, slices = {{id = "CASE_0", x = 0, w = 160}, {id = "CASE_1", x = 160, w = 160}, {id = "CASE_2", x = 320, w = 160}, {id = "CASE_3", x = 480, w = 160}, {id = "CASE_4", x = 640, w = 160}, {id = "CASE_5", x = 800, w = 160}, {id = "CASE_6", x = 960, w = 160}, {id = "CASE_7", x = 1120, w = 160}, {id = "CASE_8", x = 1280, w = 160}}}

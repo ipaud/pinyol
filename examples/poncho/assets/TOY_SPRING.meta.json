@@ -3,9 +3,9 @@
   "type": "background",
   "format": "packed",
   "bpp": 4,
-  "colours": 5,
-  "w": 36,
-  "h": 32,
+  "colours": 11,
+  "w": 34,
+  "h": 48,
   "frames": 3,
   "frame_ms": [
     0,
@@ -18,12 +18,12 @@
     2
   ],
   "anchor": [
-    18,
-    31
+    17,
+    45
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 2773,
-    "as_rgb565": 6912
+    "total": 2397,
+    "as_rgb565": 9792
   }
 }

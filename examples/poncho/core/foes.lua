@@ -14,7 +14,7 @@ local F = {}
 F.list = {}
 F.events = {}
 
-local SIZE = {car = {44, 26}, robot = {28, 44}, ball = {30, 30}, plane = {40, 18}}
+local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26}}
 local WAKE = 640
 
 function F.clear() F.list, F.events = {}, {} end
@@ -96,7 +96,7 @@ local function update_one(f, hx)
   elseif k == "plane" then
     f.x = f.x + f.dir * 1.3
     if (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
-    f.y = f.base_y - 40 + math.sin(f.t / 26) * 28
+    f.y = f.base_y - 96 + math.sin(f.t / 26) * 30
     f.tilt = math.cos(f.t / 26) * 0.5
   end
 end
@@ -135,33 +135,43 @@ end
 -- ---------------------------------------------------------------- drawing
 
 -- pictures (core/deco.lua) face right; `flip` turns them. A beaten toy is squashed flat with sy.
-local function squash(f, to) return 1 - (to or 0.7) * (f.dead > 0 and math.min(1, f.dead / 8) or 0) end
+local function over(f) return f.dead > 0 end
 
 local function car(f)
-  Deco.img("TOY_CAR", math.floor(f.phase * 1.27) % 8, math.floor(f.x), math.floor(f.y), {flip = f.dir < 0, sy = squash(f)})
+  local fr = math.floor(f.phase * 1.27) % 8
+  if over(f) then fr = f.dead < 12 and 8 or 9 end
+  Deco.img("TOY_CAR", fr, math.floor(f.x), math.floor(f.y), {flip = f.dir < 0})
 end
 
 local function robot(f)
-  local k = math.floor(f.phase * 1.9) % 6
-  Deco.img("TOY_ROBOT", k + (f.mode == "wind" and 6 or 0), math.floor(f.x), math.floor(f.y), {flip = f.dir < 0, sy = squash(f)})
+  local fr = math.floor(f.phase * 1.9) % 10
+  if f.mode == "wind" then fr = 10 + (f.mt // 4) % 2 end
+  if over(f) then fr = f.dead < 10 and 12 + (f.dead // 4) % 2 or 14 + (f.dead // 5) % 2 end
+  Deco.img("TOY_ROBOT", fr, math.floor(f.x), math.floor(f.y), {flip = f.dir < 0})
 end
 
 local function ball(f)
-  local sq = (f.squash or 0) > 0 and 0.88 or 1
-  local k = math.floor((f.phase * 3 % 2.094) / 2.094 * 8) % 8
-  local s = f.dead > 0 and math.max(0.13, (15 - f.dead) / 15) or 1
-  Deco.img("TOY_BALL", k, math.floor(f.x), math.floor(f.y), {sx = s, sy = s * sq})
+  local fr = 0
+  if f.squash and f.squash > 0 then fr = 1
+  elseif f.vy < -4 then fr = 2
+  elseif f.vy < -1 then fr = 3
+  elseif f.vy < 1 then fr = 4
+  elseif f.vy < 4 then fr = 5
+  else fr = 6 end
+  if over(f) then fr = f.dead < 12 and 8 or 9 end
+  Deco.img("TOY_BALL", fr, math.floor(f.x), math.floor(f.y))
 end
 
 local function plane(f)
-  local t = math.floor((f.tilt or 0) * 8)
-  Deco.img("TOY_PLANE", math.max(0, math.min(8, t + 4)), math.floor(f.x), math.floor(f.y + (f.dead > 0 and f.dead * 2 or 0)), {flip = f.dir < 0})
+  local fr = (f.t // 3) % 8
+  if over(f) then fr = f.dead < 8 and 8 or 9 end
+  Deco.img("TOY_PLANE", fr, math.floor(f.x), math.floor(f.y - f.h / 2 + (f.dead > 0 and f.dead * 2 or 0)), {flip = f.dir < 0})
 end
 
 function F.draw(cam_x)
   for _, f in ipairs(F.list) do
     local dx = f.x - cam_x
-    if dx > -60 and dx < K.W + 60 then
+    if dx > -80 and dx < K.W + 80 then
       local k = f.kind
       if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) else plane(f) end
     end

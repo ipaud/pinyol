@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_TOWER",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 24,
+  "w": 48,
+  "h": 130,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    24,
+    129
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 6229,
+    "as_rgb565": 12480
+  }
+}

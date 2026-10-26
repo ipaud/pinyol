@@ -1,0 +1,25 @@
+{
+  "asset": "CASE_7",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 16,
+  "w": 160,
+  "h": 90,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    80,
+    89
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8848,
+    "as_rgb565": 28800
+  }
+}

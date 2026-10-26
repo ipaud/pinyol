@@ -2,8 +2,8 @@
   "asset": "TOY_HUD",
   "type": "background",
   "format": "packed",
-  "bpp": 4,
-  "colours": 14,
+  "bpp": 8,
+  "colours": 31,
   "w": 44,
   "h": 34,
   "frames": 6,
@@ -24,12 +24,12 @@
     5
   ],
   "anchor": [
-    22,
-    33
+    0,
+    0
   ],
   "tile": null,
   "memory_bytes": {
-    "total": 3538,
+    "total": 5809,
     "as_rgb565": 17952
   }
 }

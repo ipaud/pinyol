@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_TEDDY",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 117,
+  "h": 140,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    58,
+    139
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 7846,
+    "as_rgb565": 32760
+  }
+}

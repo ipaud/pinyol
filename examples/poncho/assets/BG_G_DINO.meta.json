@@ -1,0 +1,25 @@
+{
+  "asset": "BG_G_DINO",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 21,
+  "w": 109,
+  "h": 105,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    54,
+    104
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8019,
+    "as_rgb565": 22890
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "asset": "BG_FORE_BLOCKS",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 56,
+  "h": 80,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2645,
+    "as_rgb565": 8960
+  }
+}

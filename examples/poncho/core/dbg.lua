@@ -134,8 +134,6 @@ function D.scooter_to(v, turbo)
   return n
 end
 
--- the picture generator (decogen/build.py): paint one frame of one decoration on a plain ground
-function D.deco(id, f) G.deco = {id, f} return true end
 
 function D.foes_alive()
   local n = 0

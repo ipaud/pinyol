@@ -79,7 +79,6 @@ function _update()
 end
 
 function _draw()
-  if G.deco then require("core.deco").paint(G.deco[1], G.deco[2]) return end
   local st = G.state
   if st == "explain" then
     Scr.how.draw(G.back == "title" and Scr.title.draw or (G.back == "results" and Scr.results.draw or Play.draw))
