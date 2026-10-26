@@ -69,6 +69,7 @@
       "description": "Pisa una manzana y hazla rodar."
     }
   ],
+  "picture_budget_kb": 2400,
   "look_limits": {
     "sprite": [
       160,

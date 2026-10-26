@@ -85,6 +85,7 @@ static void oom_stub(asset *a) {
 void gfx_new_frame(void) { pic_frame++; }
 void gfx_pin(asset *a) { a->pinned = true; }
 void gfx_set_budget(size_t bytes) { pic_budget = budget_set = bytes; } /* for every game from now on */
+void gfx_game_budget(size_t bytes) { if (!budget_set) pic_budget = bytes; } /* this game only (game.json "picture_budget_kb"; the headless --pictures wins) */
 void gfx_test_fail_loads(int n) { fail_loads = n, oom_retry = n > 0 ? 2 : OOM_RETRY_FRAMES; } /* (a short wait to try again: the script has few frames) */
 void gfx_test_fail_mallocs(int n) { fail_mallocs = n; }
 size_t gfx_picture_bytes(void) { return pic_bytes; }

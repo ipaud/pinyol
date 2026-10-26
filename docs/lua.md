@@ -749,6 +749,7 @@ that the cat's console is running out, a story that knows the player is charging
 | `console_favourite(id [, bool])` | whether that game is a favourite; with a value, sets it |
 | `achieve(id)` | an achievement of the game earned: `true` the first time. The game lists them in `game.json`, `"achievements": [{"id": "first", "name": "Primer paso", "description": "..."}, ...]`; they are kept by the console with the game's record, whatever happens to the game's saves, and the menu counts them |
 | `achievements()` | the list, each `{id, name, description, done}`: a shelf screen, a toast with `hud.toast` when `achieve` says true |
+| game.json `"picture_budget_kb"` | optional (512 to 6144, default 4096): how much picture memory the game may keep. A game with several worlds sets it below its total art so the oldest pictures are let go when a new world loads (they come back from the card when drawn again) |
 
 ### The console's menu, over every game
 

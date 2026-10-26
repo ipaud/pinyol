@@ -191,6 +191,7 @@ const char *gfx_missing_asset(void); /* first required picture missing or malfor
 void gfx_new_frame(void);           /* a frame starts: what it asks for stays in memory until the next one */
 void gfx_pin(asset *a);             /* keep it: something holds pointers into its pixels */
 void gfx_set_budget(size_t bytes);  /* (tests: a small budget, to let pictures go all the time) */
+void gfx_game_budget(size_t bytes);  /* the running game's own picture budget: pictures past it are let go, the oldest first (game.json "picture_budget_kb") */
 void gfx_test_fail_loads(int n); /* (tests: the next n loads find no memory, as on the console when it is fragmented) */
 void gfx_test_fail_mallocs(int n); /* (tests: the next n first tries at a block find none, a picture let go makes one) */
 size_t gfx_picture_bytes(void);     /* the pictures in memory now */

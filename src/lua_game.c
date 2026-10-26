@@ -1922,6 +1922,10 @@ bool v2_load(void) {
     lua_call(Ls, 1, 0);
     lua_pop(Ls, 1);
 
+    {
+        const cJSON *pb = jget(G.game, "picture_budget_kb"); /* a game with more art than it shows at once (worlds, levels) says how much may stay in memory */
+        if (cJSON_IsNumber(pb)) gfx_game_budget((size_t)fminf(fmaxf((float)pb->valuedouble, 512.0f), 6144.0f) * 1024);
+    }
     menu_read = false;
     sysmenu_reset();
     post_reset();
