@@ -1310,6 +1310,20 @@ static int l_perf(lua_State *L) { /* perf() -> ms of the last _update, _draw, pi
         lua_pushnumber(L, total);
         return 2;
     }
+    if (lua_type(L, 1) == LUA_TSTRING && !strcmp(lua_tostring(L, 1), "pics")) { /* perf("pics" [, how many]) -> {{name, n, ms}, ...} dearest first: which pictures the last frame's drawing went to */
+        draw_profile(2u, true);
+        draw_pic_row rows[24];
+        const int n = draw_profile_pics(rows, (int)luaL_optinteger(L, 2, 8) < 24 ? (int)luaL_optinteger(L, 2, 8) : 24);
+        lua_createtable(L, n, 0);
+        for (int i = 0; i < n; i++) {
+            lua_createtable(L, 0, 3);
+            lua_pushstring(L, rows[i].name), lua_setfield(L, -2, "name");
+            lua_pushinteger(L, rows[i].n), lua_setfield(L, -2, "n");
+            lua_pushnumber(L, rows[i].ms), lua_setfield(L, -2, "ms");
+            lua_rawseti(L, -2, i + 1);
+        }
+        return 1;
+    }
     if (lua_type(L, 1) == LUA_TSTRING && !strcmp(lua_tostring(L, 1), "ops")) {
         draw_profile(2u, true); /* from now on every frame is measured (the first answer is empty: a frame has to go by) */
         draw_prof_row rows[32];

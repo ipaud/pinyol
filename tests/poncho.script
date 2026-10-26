@@ -2,6 +2,11 @@
 # (checkpoint), the scooter (push, drift, brake), a ramp over a gap, a toy that hurts and one jumped on, a pit and the respawn, the end flag and the results.
 new
 tick 90
+# perf("pics"): the pictures of the last frame, dearest first (the first call starts the measuring)
+lua perf("pics", 4)
+tick 3
+lua PP = perf("pics", 4)
+expect_lua type(PP) == "table" and rawlen(PP) <= 4
 expect_lua G.state == "title"
 shot title
 lua HOW()

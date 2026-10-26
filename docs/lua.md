@@ -904,7 +904,7 @@ shared by every quad, light, gradient, warp and scaled picture) and which kinds 
 milliseconds, both cores added). `perf("ops")` gives the same to the game: `ops, commands, slots = perf("ops")`, `ops.quad.n` and
 `ops.quad.ms` for each kind (`text`, `rect`, `shade`, `panel`, `plate`, `box`, `img`, `frame`, `line`, `circ`, `poly`, `points`, `quad`,
 `grad`, `light`, `warp`, `linetint`) of the last whole frame; the first call starts measuring, so it answers after a frame has gone by.
-Measuring times each command in each strip, so it costs a little while it is on. `perf("lua")` says where the Lua time goes, by
+Measuring times each command in each strip, so it costs a little while it is on. `perf("pics" [, n])` gives the pictures the last frame drew, dearest first, as `{{name, n, ms}, ...}` (the strips it was drawn in, CPU ms of both cores), to find which picture a frame goes to; the first call starts the measuring. `perf("lua")` says where the Lua time goes, by
 function: `rows, ms = perf("lua")` gives `rows[i].name` (`"reach (dungeon.lua:93)"`; the engine's calls by their names,
 `_update`, `_draw`), `rows[i].self` (milliseconds with that function on top: its own code, and the C calls it made, as
 `mset` or a path) and `rows[i].total` (with it anywhere on the stack), dearest own time first, and `ms`, all the Lua time

@@ -29,6 +29,9 @@ static const char *const OP_NAME[OV_OPS] = {"text", "rect", "shade", "panel", "p
  * frame's own numbers (prof_last: the frame before the one being recorded). Timing each command costs, so only while asked for. */
 static struct { uint32_t us[2][OV_OPS]; uint16_t n[OV_OPS]; int cmds, slots; } prof_cur, prof_last; /* us: a row for each part that draws */
 static unsigned prof_want;
+#define PIC_PROF 48 /* the pictures a frame draws that perf("pics") keeps: the dearest of them are what is asked for */
+static struct { const asset *a; uint32_t us; uint16_t n; } pic_cur[PIC_PROF], pic_last[PIC_PROF];
+static int npic_cur, npic_last;
 
 typedef struct {
     uint8_t op, font, scale, ext; /* ext: 1 + its entry in ov_style (text) or ov_xf (img); 0: none */
@@ -259,7 +262,14 @@ static void draw_timed(surface *s, const ov_cmd *c) {
     }
     const uint32_t t = hal_micros();
     draw_one(s, c);
-    prof_cur.us[s->part & 1][c->op] += hal_micros() - t;
+    const uint32_t dt = hal_micros() - t;
+    prof_cur.us[s->part & 1][c->op] += dt;
+    if (c->op == OV_IMG && c->a) { /* the same picture drawn in each strip it touches, added up */
+        int i = 0;
+        while (i < npic_cur && pic_cur[i].a != c->a) i++;
+        if (i == npic_cur && npic_cur < PIC_PROF) pic_cur[npic_cur++].a = c->a;
+        if (i < npic_cur) pic_cur[i].us += dt, pic_cur[i].n++;
+    }
 }
 
 void draw_overlay(surface *s) {
@@ -278,6 +288,18 @@ void draw_overlay(surface *s) {
 }
 
 void draw_profile(unsigned who, bool on) { prof_want = on ? prof_want | who : prof_want & ~who; }
+
+int draw_profile_pics(draw_pic_row *rows, int max) { /* the last frame's pictures, dearest first: name, strips drawn in, CPU ms (both cores) */
+    int n = 0;
+    for (int i = 0; i < npic_last; i++) {
+        const draw_pic_row r = {pic_last[i].a->id, pic_last[i].n, pic_last[i].us / 1000.0f};
+        int k = n < max ? n++ : max - 1;
+        if (n == max && k == max - 1 && rows[k].ms >= r.ms) continue;
+        while (k > 0 && rows[k - 1].ms < r.ms) rows[k] = rows[k - 1], k--;
+        rows[k] = r;
+    }
+    return n;
+}
 
 int draw_profile_rows(draw_prof_row *rows, int max) { /* the last frame's kinds of command, dearest first */
     draw_prof_row all[OV_OPS];
@@ -1554,6 +1576,8 @@ void draw_frame_begin(void) { /* each _draw starts on the screen, with no camera
     prof_cur.cmds = nov, prof_cur.slots = nquad; /* the frame before: all its strips are drawn */
     prof_last = prof_cur;
     memset(&prof_cur, 0, sizeof prof_cur);
+    memcpy(pic_last, pic_cur, sizeof pic_last), npic_last = npic_cur; /* (the name stays valid: a picture's record is never freed) */
+    memset(pic_cur, 0, sizeof pic_cur), npic_cur = 0;
     nov = ntext = nstyle = nxf = npts = nclip = nlook = nquad = nmf = 0;
     gfx_quad_begin();
     target = NULL, cam_x = cam_y = 0, clipping = false, view_on = false;

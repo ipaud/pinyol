@@ -75,6 +75,8 @@ void draw_free(void);             /* the game's fonts, when its Lua state goes *
  * command is timed as the strips draw it. The last whole frame's kinds of command, dearest first (name, how many, CPU ms
  * of the strips: both cores added), and how full the frame's lists were. */
 typedef struct { const char *name; int n; float ms; } draw_prof_row;
+typedef struct { const char *name; int n; float ms; } draw_pic_row;
+int draw_profile_pics(draw_pic_row *rows, int max);
 void draw_profile(unsigned who, bool on);
 int draw_profile_rows(draw_prof_row *rows, int max);
 void draw_profile_slots(int *cmds, int *cmds_max, int *slots, int *slots_max);
