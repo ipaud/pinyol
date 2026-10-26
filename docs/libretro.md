@@ -101,8 +101,20 @@ cd "C:\RetroBat\emulators\retroarch"
 ```
 
 If RetroBat is installed elsewhere, use its actual `emulators\retroarch`, `cores`, `info` and `roms` directories.
-Adding Pinyol as a first-class RetroBat/EmulationStation system is a separate frontend configuration step; the core
-itself only needs the DLL, the `.info` metadata and a compatible game file.
+
+All of the above, and the Pinyol system in EmulationStation, in one go: from RetroBat's folder, in PowerShell,
+
+```powershell
+irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex
+```
+
+(or save `retrobat-pinyol.ps1` and run it with `-RetroBat C:\path\to\RetroBat`). It downloads the Windows zip, puts the
+core and its .info in RetroArch's folders, makes `roms\pinyol` and writes
+`emulationstation\.emulationstation\es_systems_pinyol.cfg`, which starts `retroarch.exe` with the core. Restart
+RetroBat afterwards.
+
+Not tried on a real RetroBat: whether this version reads `es_systems_pinyol.cfg` is unchecked. If the system does not
+show up, add the `<system>` block of that file to RetroBat's `es_systems.cfg`.
 
 ## RetroPie
 

@@ -153,6 +153,8 @@ endif()
 target_link_libraries(pinyol_libretro PRIVATE pinyol_core)
 if(APPLE)
   target_link_options(pinyol_libretro PRIVATE "LINKER:-exported_symbol,_retro_*")
+elseif(WIN32) # RETRO_API exports retro_* only; MinGW's runtime inside, so the dll needs nothing beside it (RetroBat)
+  target_link_options(pinyol_libretro PRIVATE -static)
 else()
   target_link_options(pinyol_libretro PRIVATE "LINKER:--version-script=${CMAKE_CURRENT_SOURCE_DIR}/platform/libretro/link.T"
                       "LINKER:--no-undefined")

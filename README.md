@@ -290,7 +290,7 @@ The Windows app is built from a Mac or Linux with MinGW-w64 (`cmake/mingw-w64-x8
 installed, and opens each one on its own system before publishing it. The simulator plays the console too:
 `pinyol_sim --console examples --menu firmware/cirera`.
 
-## Play it in RetroArch: RetroPie, Batocera, Lakka
+## Play it in RetroArch: RetroPie, RetroBat, Batocera, Lakka
 
 The engine is also a [libretro](https://www.libretro.com) core, which plays a game's zip in RetroArch and in
 everything built on it, a Raspberry Pi with RetroPie among them:

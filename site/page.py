@@ -426,13 +426,14 @@ def retroarch() -> str:
     setup = ("cd ~/RetroPie-Setup\ncurl -fsSL --create-dirs \\\n  -o ext/pinyol/scriptmodules/libretrocores/lr-pinyol.sh \\\n"
              f"  {RAW}/platform/libretro/lr-pinyol.sh\nsudo ./retropie_packages.sh lr-pinyol")
     return f"""<section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
-<h2 id="retroarch-t">En RetroArch y RetroPie</h2>
+<h2 id="retroarch-t">En RetroArch, RetroPie y RetroBat</h2>
 <p class="intro">¿Sin la consola? El motor también es un núcleo de libretro: los juegos de pinyol se juegan en RetroArch y en todo lo que se basa en él, como RetroPie o Lakka en una Raspberry Pi, Batocera, Recalbox, las portátiles que lo llevan o un ordenador. Es el mismo motor, así que el juego es el mismo.</p>
 <ol class="steps">
 <li><h3>Instálalo en RetroPie</h3><p>En la Raspberry Pi, este comando descarga el núcleo ya compilado (una Pi 1 o Zero lo compila, en unos minutos) y añade Pinyol a EmulationStation.</p>{code(setup, wide=True)}</li>
 <li><h3>Copia los juegos</h3><p>El .zip de cualquier juego, como los que se descargan aquí, va a su carpeta.</p>{code("~/RetroPie/roms/pinyol/")}</li>
 <li><h3>Juega</h3><p>Reinicia EmulationStation y aparece Pinyol con sus juegos. En el mando, X o Y hacen de C, y SELECT de MENU.</p></li>
 </ol>
+<div class="aside-note"><b>¿RetroBat, en Windows?</b> En la carpeta de RetroBat, en PowerShell: <code>irm {RAW}/platform/libretro/retrobat-pinyol.ps1 | iex</code>. Pone el núcleo y añade Pinyol a EmulationStation; los juegos van a <code>roms\\pinyol</code>. Aún sin probar en un RetroBat de verdad.</div>
 <div class="aside-note"><b>¿Otro RetroArch?</b> En un ordenador con Linux, Batocera o Lakka, <a href="{REPO}/releases/tag/libretro">el núcleo ya compilado</a> va a la carpeta de núcleos de RetroArch; <a href="{REPO}/blob/main/docs/libretro.md">la guía</a> lo explica. Probado en RetroArch y con el sistema de RetroPie emulado, aún no en una Raspberry Pi de verdad: si lo pruebas, <a href="{REPO}/issues">cuéntanos cómo va</a>.</div>
 </div></section>"""
 
