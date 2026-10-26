@@ -10,6 +10,7 @@ local PERIOD = 400                                       -- the layers' width: t
 local WALL_Y, GROUND_Y, FENCE_Y = 0, 203, 253            -- where each layer starts on the screen
 local WALL_K, GROUND_K, FENCE_K = 3.4, 4.0, 5.2          -- screen pixels each layer moves for a unit of route
 -- how tall, in screen pixels, each picture's standing figure is drawn
+local SIDE_ANIMALS = 3  -- the side view also repaints three full-screen layers: it measured 21 fps with five animals on the Cirera
 local SHOW = {FLECHA = 84, DANI_SIDE = 100, RUN_SIDE = 70, TORO_SIDE = 105, CABE_SIDE = 92}
 
 function side.init() end
@@ -54,7 +55,7 @@ function side.draw(r, tick)
     if sx > -20 and sx < 300 then shown[#shown + 1] = {b = b, sx = sx} end
   end
   table.sort(shown, function(a, c) return math.abs(a.b.z - dani.z) < math.abs(c.b.z - dani.z) end)
-  for i = 1, math.min(#shown, actors.animal_cap()) do
+  for i = 1, math.min(#shown, SIDE_ANIMALS) do
     local e = shown[i]
     add(e.b.kind == "toro" and "TORO_SIDE" or "CABE_SIDE", math.floor(e.b.phase * 4) % 4, e.sx - 20, side.y(e.b.x), false)
   end
