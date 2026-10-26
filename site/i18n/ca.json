@@ -586,5 +586,12 @@
  "los niveles": "els nivells",
  "el circo": "el circ",
  "el pozo": "el pou",
- "la costa": "la costa"
+ "la costa": "la costa",
+ ". Aún sin probar en un RetroBat de verdad.": "Encara sense provar en un RetroBat de debò.",
+ ". Pone el núcleo y añade Pinyol a EmulationStation; los juegos van a": "Posa el nucli i afegeix Pinyol a EmulationStation; els jocs van a",
+ "En RetroArch, RetroPie y RetroBat": "A RetroArch, RetroPie i RetroBat",
+ "En la carpeta de RetroBat, en PowerShell:": "A la carpeta de RetroBat, en PowerShell:",
+ "irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex": "irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex",
+ "roms\\pinyol": "roms\\pinyol",
+ "¿RetroBat, en Windows?": "RetroBat, a Windows?"
 }
