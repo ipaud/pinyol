@@ -1,0 +1,25 @@
+{
+  "asset": "FM_PARASOL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 18,
+  "w": 149,
+  "h": 170,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    74,
+    169
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 10711,
+    "as_rgb565": 50660
+  }
+}

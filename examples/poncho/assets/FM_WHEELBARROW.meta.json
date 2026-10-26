@@ -1,0 +1,25 @@
+{
+  "asset": "FM_WHEELBARROW",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 22,
+  "w": 109,
+  "h": 70,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    54,
+    69
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5833,
+    "as_rgb565": 15260
+  }
+}

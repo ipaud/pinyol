@@ -3,12 +3,22 @@ local K = require("core.const")
 local M = require("core.map")
 local L = {}
 
-local TILE, COLS, ROWS = K.TILE, K.COLS, K.ROWS
-L.W, L.H = COLS * TILE, ROWS * TILE
-L.grid = M.grid
-local grid = M.grid
+local TILE, ROWS = K.TILE, K.ROWS
+local COLS, grid
+L.plats = {}   -- carts: one-way platforms that move {x (left), y (top), w, vx, x0, x1}
 
-local SOLID = {["#"] = true, W = true, T = true, K = true}
+-- (re)reads the level the map loaded (core/map.lua M.load): its size, grid and carts
+function L.reload()
+  if not M.cols then require("core.worlds").load(1) end
+  COLS, grid = M.cols, M.grid
+  L.W, L.H = COLS * TILE, ROWS * TILE
+  L.grid = grid
+  L.plats = {}
+  for i, p in ipairs(M.plats or {}) do L.plats[i] = {x = p.x, y = p.y, w = p.w, vx = p.vx, x0 = p.x0, x1 = p.x1} end
+end
+L.reload()
+
+local SOLID = {["#"] = true, W = true, T = true, K = true, [">"] = true, ["<"] = true}
 local SLOPE = {a = {0, 16}, b = {16, 32}, c = {32, 16}, d = {16, 0}} -- the wedge's height at its left and right edges
 L.SOLID, L.SLOPE = SOLID, SLOPE
 
@@ -25,7 +35,7 @@ function L.solid_at(x, y) return SOLID[L.at(x // TILE, y // TILE)] == true end
 -- returns y, kind where kind is "solid", "shelf" or "slope"
 local function surface(c, r, x)
   local ch = L.at(c, r)
-  if SOLID[ch] then return r * TILE, "solid" end
+  if SOLID[ch] then return r * TILE, "solid", ch end
   if ch == "=" then return r * TILE, "shelf" end
   local s = SLOPE[ch]
   if s then
@@ -48,7 +58,20 @@ function L.ground(x, y0, y1, tol, drop)
       return s, kind, ch
     end
   end
+  if not drop then -- a cart under the feet
+    for _, p in ipairs(L.plats) do
+      if x >= p.x and x <= p.x + p.w and p.y <= y1 + 0.001 and y0 <= p.y + 0.5 then return p.y, "plat", p end
+    end
+  end
   return nil
+end
+
+-- the carts roll to and fro
+function L.update_plats()
+  for _, p in ipairs(L.plats) do
+    p.x = p.x + p.vx
+    if p.x < p.x0 then p.x, p.vx = p.x0, -p.vx elseif p.x > p.x1 then p.x, p.vx = p.x1, -p.vx end
+  end
 end
 
 -- how far a body of this half width and height can go: is any of the body's edge points inside a solid tile
@@ -82,6 +105,9 @@ function L.break_crates(x0, y0, x1, y1)
   return n
 end
 
-function L.reset_crates() for _, p in ipairs(M.crates) do grid[p[2]][p[1]] = "K" end end
+function L.reset_crates()
+  L.reload()
+  for _, p in ipairs(M.crates) do grid[p[2]][p[1]] = "K" end
+end
 
 return L

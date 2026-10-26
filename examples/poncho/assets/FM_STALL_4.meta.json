@@ -1,0 +1,25 @@
+{
+  "asset": "FM_STALL_4",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 22,
+  "w": 177,
+  "h": 180,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    88,
+    179
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 28727,
+    "as_rgb565": 63720
+  }
+}

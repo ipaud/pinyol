@@ -1,0 +1,25 @@
+{
+  "asset": "FM_CRATEPEAR",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 17,
+  "w": 90,
+  "h": 100,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    45,
+    99
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8020,
+    "as_rgb565": 18000
+  }
+}

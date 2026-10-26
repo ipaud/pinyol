@@ -1,0 +1,29 @@
+{
+  "asset": "FT_PAD",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 70,
+  "h": 31,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    35,
+    28
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3615,
+    "as_rgb565": 13020
+  }
+}

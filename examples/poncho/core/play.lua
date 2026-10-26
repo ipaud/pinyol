@@ -14,6 +14,8 @@ local Ach = require("core.ach")
 local Hud = require("core.hud")
 local Music = require("core.music")
 local Power = require("core.power")
+local W = require("core.worlds")
+local Boss = require("core.boss")
 local lang = require("lang")
 local transition = require("transition")
 
@@ -24,31 +26,39 @@ P.toast, P.toast_t = "", 0
 P.stats = {stomps = 0}
 P.crates = 0
 
-local START_X, START_Y = M.start_c * K.TILE + 16, K.FLOOR * K.TILE
+local START_X, START_Y = 0, K.FLOOR * K.TILE
+P.world = 1
 
 function P.say(text, ticks) P.toast, P.toast_t = text, ticks or 170 end
 Ach.on_new = function(text) P.say(text, 200) end
 
-function P.enter()
+function P.enter(world)
+  P.world = world or 1
+  W.load(P.world)
+  L.reload()
+  Cam.reload()
+  START_X = M.start_c * K.TILE + 16
   Items.init()
   Foes.init()
   Fx.clear()
-  L.reset_crates()
   Power.reset_run()
   P.crates = 0
+  Boss.reset(M.boss)
+  Hero.bounds = nil
   Hero.has_scooter = false
   Hero.reset(START_X, START_Y)
   Cam.snap(Hero.s)
   Cam.shake = 0
   P.state, P.time, P.deaths, P.toast_t, P.stats.stomps = "run", 0, 0, 0, 0
   P.end_t = 0
-  Music.start()
+  Music.start(W.theme.music)
 end
 
 function P.respawn()
   local cp = Items.checkpoint
   Foes.init()
   Fx.clear()
+  Boss.retry()
   Items.reset_costumes()
   Hero.reset(cp and cp.x or START_X, cp and cp.y or START_Y, true)
   Cam.snap(Hero.s)
@@ -69,6 +79,9 @@ local function events()
   end
   if he.pound then Cam.kick(10) end
   if fe.stomp then Ach.earn("stomp") end
+  if fe.curl then Ach.earn("curl") end
+  if Boss.events.start then P.say(lang.tr(Boss.name()), 150) end
+  if Boss.events.beaten then Ach.earn(P.world == 1 and "boss1" or "boss2") P.say(lang.tr("toast_boss_down"), 220) end
   if he.ramp_fast then Ach.earn("ramp") end
   if he.land_hard then Cam.kick(4) end
   if he.bump or he.hurt then Cam.kick(10) end
@@ -89,9 +102,11 @@ function P.update()
     return P.end_t > 200 and "done" or nil
   end
   if s.state ~= "dead" then P.time = P.time + 1 end
+  L.update_plats()
   Hero.update()
   Items.update()
   Foes.update()
+  Boss.update()
   events()
   Cam.update(s)
   if s.state == "dead" and not transition.active() then
@@ -108,7 +123,7 @@ function P.update()
     Music.stop()
     P.state, P.end_t = "goal", 0
     Snd.play("win")
-    Ach.earn("playroom")
+    Ach.earn(P.world == 1 and "playroom" or "market")
     Fx.confetti(s.x, s.y - 120, 30)
   end
   return nil
@@ -122,6 +137,7 @@ function P.draw()
   Tiles.draw(cx, cy)
   Items.draw(cx)
   Foes.draw(cx)
+  Boss.draw(cx)
   Hero.draw()
   Fx.draw()
   camera()

@@ -8,6 +8,7 @@ local Hud = require("core.hud")
 local In = require("core.input")
 local Snd = require("core.sound")
 local U = require("core.util")
+local W = require("core.worlds")
 
 local S = {}
 
@@ -25,27 +26,37 @@ S.panel = panel
 local title = {t = 0, sel = 1}
 S.title = title
 local ITEMS = {"title_start", "title_how"}
+local function items() -- with a saved game the menu also offers to continue (the world select)
+  if W.any_progress() then return {"title_continue", "title_start", "title_how"} end
+  return ITEMS
+end
+local PICK = {title_continue = "continue", title_start = "start", title_how = "how"}
 
 function title.enter() title.t, title.sel = 0, 1 end
 
 function title.update()
   title.t = title.t + 1
-  if In.btnp("up") or In.btnp("down") then
-    title.sel = title.sel % #ITEMS + 1
-    Snd.play("select")
-  end
+  local its = items()
+  if In.btnp("up") then title.sel = (title.sel - 2) % #its + 1 Snd.play("select") end
+  if In.btnp("down") then title.sel = title.sel % #its + 1 Snd.play("select") end
   if In.btnp("a") or In.btnp("start") then
     Snd.play("confirm")
-    return title.sel == 1 and "start" or "how"
+    return PICK[its[title.sel] or "title_start"]
   end
 end
 
-function title.draw()
+function title.back() -- the scene behind the title and the world select
   local t = title.t
   local cx = t * 1.4
   Bg.scroll(cx, 128)
   Bg.mid(cx, 128)
   Bg.floor(cx, 224)
+end
+
+function title.draw()
+  local t = title.t
+  local cx = t * 1.4
+  title.back()
   -- Poncho on the floor, breathing, now and then looking round
   local f = Spr.seq("poncho", "idle", (t // 45) % 2)
   local cycle = t % 420
@@ -56,8 +67,9 @@ function title.draw()
   local bob = math.floor(math.sin(t / 30) * 3)
   Deco.img("UI_LOGO_" .. lang.code:upper(), 0, 240, 2 + bob)
   local ly = 180 + bob
-  rect(150, ly, 180, 76, 0x2A1A3A) rect(150, ly, 180, 3, 0xFFD43A)
-  for i, key in ipairs(ITEMS) do
+  local its = items()
+  rect(150, ly, 180, 8 + #its * 34, 0x2A1A3A) rect(150, ly, 180, 3, 0xFFD43A)
+  for i, key in ipairs(its) do
     local y = 192 + (i - 1) * 34
     local on = i == title.sel
     local str = lang.tr(key)
@@ -68,10 +80,6 @@ function title.draw()
       tri(bx, y + 1, bx, y + 17, bx + 9, y + 9, 0xFFE24A, true)
     end
     text(str, 240, y, {font = Hud.FONT, align = "center", color = on and 0xFFE24A or 0xFFFFFF, outline = 0x2A1A3A})
-  end
-  local best = stored("best", 0)
-  if best > 0 then
-    text(lang.tr("title_best", {time = Hud.time_text(best)}), 240, 290, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A})
   end
 end
 
@@ -109,6 +117,55 @@ function how.draw(bgfn)
   text(lang.tr("how_page", {n = how.page, m = #PAGES}), K.W // 2, y + h - 26, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
 end
 
+-- ---------------------------------------------------------------- the world select: four cards, a world is open when the one before it is done
+
+local sel = {i = 1}
+S.select = sel
+local ACCENT = {0xE8A040, 0xA8D060, 0xE8E8E8, 0x7070D0}
+
+function sel.enter(i)
+  sel.i = i or 1
+  if not i then for w = #W.defs, 1, -1 do if W.unlocked(w) then sel.i = w break end end end -- the furthest one open
+end
+
+function sel.update()
+  local n = #W.defs
+  local i = sel.i
+  if In.btnp("left") then i = (i - 2) % n + 1 end
+  if In.btnp("right") then i = i % n + 1 end
+  if In.btnp("up") or In.btnp("down") then i = (i + 1) % n + 1 end
+  if i ~= sel.i then sel.i = i Snd.play("select") end
+  if In.btnp("b") then return "back" end
+  if In.btnp("a") or In.btnp("start") then
+    if W.unlocked(sel.i) then Snd.play("confirm") return sel.i end
+    Snd.play("select")
+  end
+end
+
+local function card(i, on)
+  local d = W.defs[i]
+  local x, y, w, h = 28 + ((i - 1) % 2) * 226, 52 + ((i - 1) // 2) * 124, 198, 108
+  local open = W.unlocked(i)
+  rect(x - 5, y - 5, w + 10, h + 10, on and 0xFFD43A or 0x2A1A3A)
+  rect(x, y, w, h, open and 0xFFF1D0 or 0xB8AE98)
+  rect(x, y, w, 30, ACCENT[i])
+  textbox(lang.tr(d.name_key), x + 8, y + 2, w - 16, 26, {font = Hud.FONT, fonts = {Hud.FONT, Hud.SMALL}, color = 0x2A1A3A, valign = "middle", align = "center"})
+  local status, col
+  if not d.ready then status, col = lang.tr("select_soon"), 0x6A5A7A
+  elseif not open then status, col = lang.tr("select_locked"), 0x6A5A7A
+  elseif W.done(i) then status, col = lang.tr("select_done", {time = Hud.time_text(W.best(i))}), 0x2E7A3E
+  else status, col = lang.tr("select_new"), 0xC02050 end
+  textbox(status, x + 10, y + 46, w - 20, 50, {font = Hud.FONT, fonts = {Hud.FONT, Hud.SMALL}, color = col, valign = "middle", align = "center"})
+end
+
+function sel.draw(bgfn)
+  if bgfn then bgfn() end
+  shade(0, 0, K.W, K.H)
+  text(lang.tr("select_title"), K.W // 2, 14, {font = Hud.FONT, scale = 1, align = "center", color = 0xFFE24A, outline = 0x2A1A3A})
+  for i = 1, #W.defs do card(i, i == sel.i) end
+  text(lang.tr("select_help"), K.W // 2, 296, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A})
+end
+
 -- ---------------------------------------------------------------- results
 
 local res = {t = 0}
@@ -120,7 +177,9 @@ end
 
 function res.update()
   res.t = res.t + 1
-  if res.t > 90 and (In.btnp("a") or In.btnp("start")) then return true end
+  if res.t <= 90 then return end
+  if In.btnp("a") or In.btnp("start") then return res.info.next and "next" or "worlds" end
+  if In.btnp("b") then return "worlds" end
 end
 
 function res.draw(bgfn)
@@ -142,7 +201,8 @@ function res.draw(bgfn)
     text(r[2], x + w - 40, yy, {font = Hud.FONT, color = 0x3A2A4A, align = "right"})
   end
   if res.t > 90 and (res.t // 30) % 2 == 0 or U.calm() then
-    text(lang.tr("res_next"), K.W // 2, y + h - 34, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+    text(lang.tr(res.info.next and "res_next_world" or "res_worlds"), K.W // 2, y + h - 40, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+    if res.info.next then text(lang.tr("res_worlds_b"), K.W // 2, y + h - 22, {font = Hud.SMALL, align = "center", color = 0x3E6AA8}) end
   end
 end
 

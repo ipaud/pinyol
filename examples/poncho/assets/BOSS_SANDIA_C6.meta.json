@@ -1,0 +1,25 @@
+{
+  "asset": "BOSS_SANDIA_C6",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 262,
+  "h": 157,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    131,
+    154
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 17151,
+    "as_rgb565": 82268
+  }
+}

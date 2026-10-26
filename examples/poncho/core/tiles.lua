@@ -1,29 +1,37 @@
--- tiles: the playroom's blocks, put on the screen with `img` from the packed pictures BG_* (generated with the image model and fitted by gen/env_*.py)
--- A floor top with two floor bodies under it is one picture (BG_FLOORCOL), which spares two thirds of the commands along the floor.
+-- tiles: the world's blocks, put on the screen with `img` from the packed pictures of its tile set (prefix BG_ for the playroom, FT_ for the market; a set the data
+-- does not have yet is the playroom's, tinted: core/worlds.lua). A floor top with two floor bodies under it is one picture, and runs of floor, shelves and boxes
+-- are strips of 8, 4, 2 or 1 tiles, which spares most commands.
 local K = require("core.const")
 local L = require("core.level")
+local W = require("core.worlds")
 local T = {}
 
 local TILE = K.TILE
-local plain = {frame = 0}
-local look = plain
-local crate = {frame = 6, dim = 0.6}
 local FRAME = {["="] = 7, T = 6, a = 8, b = 9, c = 10, d = 11}
+local FLOORISH = {["#"] = true, [">"] = true, ["<"] = true}
+
+local plain, crate, one7, one6 = {frame = 0}, {frame = 6, dim = 0.6}, {frame = 7}, {frame = 6}
+local prefix, STRIP, BODY, RUNS
+local NAMES = {BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
+local function build(pre, mul)
+  prefix = pre
+  plain.mul, crate.mul, one7.mul, one6.mul = mul, mul, mul, mul
+  crate.frame, crate.dim = (pre == "FT") and 3 or 6, (pre ~= "FT") and 0.6 or nil -- (an orange crate in the market, a darkened toy box in the playroom)
+  local nm = NAMES[pre] or NAMES.BG
+  local function strips(name, one) name = nm[name] return {{8, pre .. "_" .. name .. "8"}, {4, pre .. "_" .. name .. "4"}, {2, pre .. "_" .. name .. "2"}, one} end
+  STRIP = {{8, pre .. "_FLOOR8"}, {4, pre .. "_FLOOR4"}, {2, pre .. "_FLOOR2"}, {1, pre .. "_FLOORCOL"}}
+  BODY = {{8, pre .. "_BODY8"}, {4, pre .. "_BODY4"}, {2, pre .. "_BODY2"}, {1, pre .. "_BODY1"}}
+  RUNS = {["="] = strips("SHELF", {1, pre .. "_TILES", one7}), T = strips("TBOX", {1, pre .. "_TILES", one6})}
+end
 
 function T.init() end -- (the pictures are assets)
 
-local STRIP = {{8, "BG_FLOOR8"}, {4, "BG_FLOOR4"}, {2, "BG_FLOOR2"}, {1, "BG_FLOORCOL"}}
-local one = {{frame = 7}, {frame = 6}}
-local RUNS = {
-  ["="] = {{8, "BG_SHELF8"}, {4, "BG_SHELF4"}, {2, "BG_SHELF2"}, {1, "BG_TILES", one[1]}},
-  T = {{8, "BG_TBOX8"}, {4, "BG_TBOX4"}, {2, "BG_TBOX2"}, {1, "BG_TILES", one[2]}},
-}
-local BODY = {{8, "BG_BODY8"}, {4, "BG_BODY4"}, {2, "BG_BODY2"}, {1, "BG_BODY1"}}
 local fcr, fbody = {}, {} -- for each visible column: the row of its floor column (a floor top with two bodies under it), or false
+local belts = {}
 
--- the tiles that show: cam_x, cam_y is the screen's top-left in level pixels; returns how many pictures.
--- Runs of floor columns are one picture each (strips of 8, 4, 2 or 1 columns).
+-- the tiles that show: cam_x, cam_y is the screen's top-left in level pixels; returns how many pictures
 function T.draw(cam_x, cam_y)
+  if prefix ~= W.tile_prefix or plain.mul ~= W.tile_mul then build(W.tile_prefix, W.tile_mul) end
   local c0, c1 = math.max(0, math.floor(cam_x / TILE)), math.min(K.COLS - 1, math.floor((cam_x + K.W - 1) / TILE))
   local r0, r1 = math.max(0, math.floor(cam_y / TILE)), math.min(K.ROWS - 1, math.floor((cam_y + K.H - 1) / TILE))
   local g = L.grid
@@ -31,7 +39,7 @@ function T.draw(cam_x, cam_y)
   for c = c0, c1 do
     local fr = false
     for r = r0, r1 do
-      if g[r][c] == "#" then
+      if FLOORISH[g[r][c]] then
         local up = L.at(c, r - 1)
         if r + 2 == K.ROWS - 1 and L.at(c, r + 1) == "#" and L.at(c, r + 2) == "#" then
           fr = r
@@ -51,7 +59,7 @@ function T.draw(cam_x, cam_y)
       local i = c
       while i < c + run do
         for _, st in ipairs(fbody[c] and BODY or STRIP) do
-          if i + st[1] <= c + run then img(st[2], i * TILE, fr * TILE) n = n + 1 i = i + st[1] break end
+          if i + st[1] <= c + run then img(st[2], i * TILE, fr * TILE, plain.mul and {mul = plain.mul} or nil) n = n + 1 i = i + st[1] break end
         end
       end
       c = c + run
@@ -73,25 +81,58 @@ function T.draw(cam_x, cam_y)
         while i <= e do
           local took = false
           for _, st in ipairs(RUNS[ch]) do
-            if i + st[1] - 1 <= e then img(st[2], i * TILE, r * TILE, st[3]) n = n + 1 i = i + st[1] took = true break end
+            if i + st[1] - 1 <= e then img(st[2], i * TILE, r * TILE, st[3] or (plain.mul and {mul = plain.mul} or nil)) n = n + 1 i = i + st[1] took = true break end
           end
           if not took then i = i + 1 end
         end
         c = e + 1
       else
-        look = plain
+        local look = plain
         if ch == "K" then
           look = crate
-        elseif ch == "#" then
+        elseif ch == "#" or ch == ">" or ch == "<" then
           local up = L.at(c, r - 1)
           look.frame = (up == " " or up == "=") and 0 or 1
         else
           look.frame = ch == "W" and (2 + ((c * 7 + r * 3) % 4)) or FRAME[ch]
         end
-        img("BG_TILES", c * TILE, r * TILE, look)
+        img(prefix .. "_TILES", c * TILE, r * TILE, look)
         n = n + 1
         c = c + 1
       end
+    end
+  end
+  -- the conveyor belts: the market's tiles have the belt (4 frames sliding, an end cap on each side); the playroom has none (a dark band with dashes as a fallback)
+  local tk = ticks()
+  local c = c0
+  while c <= c1 do
+    local ch = g[K.FLOOR][c]
+    if ch == ">" or ch == "<" then
+      local e = c
+      while e < c1 and g[K.FLOOR][e + 1] == ch do e = e + 1 end
+      local f = (tk // 5) % 4
+      if ch == "<" then f = 3 - f end
+      for i = c, e do
+        local fr = 12 + f
+        if prefix == "FT" then
+          if i == c and L.at(i - 1, K.FLOOR) ~= ch then fr = 16 elseif i == e and L.at(i + 1, K.FLOOR) ~= ch then fr = 17 end
+          plain.frame = fr
+          img("FT_TILES", i * TILE, K.FLOOR * TILE, plain)
+          n = n + 1
+        end
+      end
+      if prefix ~= "FT" then
+        local x0, w = c * TILE, (e - c + 1) * TILE
+        rect(x0, K.FLOOR * TILE, w, 8, 0x3A3F5A)
+        for i = 0, w // 32 - 1 do
+          local px = (i * 32 + (ch == ">" and 1 or -1) * (tk // 2)) % w
+          if px + 14 <= w then rect(x0 + px, K.FLOOR * TILE + 2, 14, 4, 0xFFD43A) end
+        end
+        n = n + 1 + w // 32
+      end
+      c = e + 1
+    else
+      c = c + 1
     end
   end
   return n

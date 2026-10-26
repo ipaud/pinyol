@@ -22,6 +22,41 @@ function D.tp(x, y)
   return true
 end
 function D.scooter(on) Hero.has_scooter = true Hero.s.scooter = on ~= false return true end
+function D.world(i) Play.enter(i) G.state = "play" return true end
+function D.boss() local b = require("core.boss").info() return b and {mode = b.mode, hp = b.hp, x = b.x, inv = b.inv} or nil end
+-- the hero drops on the head of the boss when it is down: a stomp
+function D.stomp_boss()
+  local Boss = require("core.boss")
+  local b = Boss.info()
+  local s = Hero.s
+  s.x, s.y, s.vx, s.vy, s.ground, s.inv, s.state = b.x, b.y - b.h - 36, 0, 6, false, 0, "play"
+  return true
+end
+-- the hero cannot be hurt (a long invulnerability) and, when asked, drops on the boss's head each time it is down (once a time)
+local armed = false
+function D.fight(on)
+  armed = false
+  G.after_play = on and function()
+    local Boss = require("core.boss")
+    local b = Boss.info()
+    Hero.s.inv = math.max(Hero.s.inv, 5)
+    if not b or not Boss.active() then return end
+    local down = b.mode == "stun" or b.mode == "tired"
+    if not down then armed = false return end
+    if b.mt <= 3 then armed = true end
+    if armed and b.mt >= 30 and b.inv == 0 then armed = false D.stomp_boss() end
+  end or nil
+  return true
+end
+function D.foe_state(kind)
+  for _, f in ipairs(Foes.list) do if not kind or f.kind == kind then return {kind = f.kind, mode = f.mode, x = f.x, y = f.y, vy = f.vy, dead = f.dead} end end
+end
+function D.cherries() local t = {} for _, f in ipairs(Foes.list) do if f.kind == "cherry" then t[#t + 1] = f.vy end end return t end
+function D.watch_bee() -- true once a bee has dived
+  G.seen_dive = false
+  G.after_play = function() for _, f in ipairs(Foes.list) do if f.kind == "bee" and f.mode == "dive" then G.seen_dive = true end end end
+  return true
+end
 function D.new_crates() L.reset_crates() Play.crates = 0 return true end
 function D.tile(c, r) return L.at(c, r) end
 function D.foe(kind, dx, range) local s = Hero.s return Foes.spawn(kind, s.x + dx, s.y, range or 8) ~= nil end

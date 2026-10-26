@@ -189,21 +189,118 @@ tick 100
 expect_lua D.state().deaths == 1 and D.state().x < 1900 and D.state().x > 1700 and D.state().hs == "play"
 shot respawn
 
-# the end: the flag, the win pose and the results
-lua D.tp(5880, 270)
+# the end of the playroom: the last screen is the arena of Capitan Cuerda. The camera and the walls close on it, the flag is shut, and he is beaten by stomps
+# on his head when he is stunned (the hero cannot be hurt in this test: the fight's patterns are what is looked at)
+lua D.tp(5760) D.clear()
+tick 120
+expect_lua require("core.boss").active() and D.state().cam == 5664
+shot boss1
+expect_lua require("core.boss").info().hp == 6
+lua D.fight(true)
+tick 600
+shot boss1_fight
+tick 2200
+expect_lua require("core.boss").beaten()
+tick 140
+shot boss1_down
+expect_lua require("core.hero").bounds == nil and require("core.cam").lock == nil
+lua D.fight(false) D.tp(5900)
 hold RIGHT 90
 expect_lua D.state().play == "goal"
 shot win
 tick 230
-expect_lua G.state == "results"
+expect_lua G.state == "results" and require("core.worlds").done(1)
 tick 100
 shot results
 press A
 tick 4
-expect_lua G.state == "title"
-# the little bot plays the whole level (it wears and uses the costumes it finds)
-lua require("core.play").enter() G.state = "play" D.bot(true)
-tick 2400
-expect_lua G.state == "results" or D.state().x > 5900
+expect_lua G.state == "play" and require("core.play").world == 2
+# the little bot plays the playroom as far as the boss (it wears and uses the costumes it finds)
+lua D.world(1) D.bot(true)
+tick 2600
+expect_lua require("core.boss").active() or D.state().x > 5600
 expect_lua D.state().crates >= 1
+lua D.bot(false)
+# the world select: the playroom is done, the market is open, the other two are not
+lua G.state = "select" require("core.screens").select.enter(1) require("core.music").stop()
+tick 3
+shot select
+expect_lua require("core.worlds").unlocked(2) and not require("core.worlds").unlocked(3)
+press RIGHT
+tick 2
+press RIGHT
+tick 2
+press A
+tick 2
+expect_lua G.state == "select"
+press LEFT
+tick 2
+press A
+tick 30
+expect_lua G.state == "play" and require("core.play").world == 2
+shot w2_start
+
+# world 2: a belt carries him, an awning bounces him, a peel patch is slippery, a cart rolls over the pit, the market's toys
+lua D.new_crates() D.tp(1000) D.clear()
+tick 30
+expect_lua D.state().x < 975
+shot w2_belt
+lua D.tp(2320, 270) D.clear()
+tick 12
+expect_lua D.state().vy < -8
+shot w2_awning
+lua D.tp(2420) D.clear()
+hold RIGHT 24
+tick 12
+expect_lua D.state().vx > 1.2
+lua D.new_crates() D.tp(3210) D.clear()
+tick 70
+expect_lua D.state().ground and D.state().x > 3235 and D.state().deaths == 0
+shot w2_cart
+lua D.tp(2830) D.clear() D.costume("barretina") D.foe("melon", 100, 3)
+in 4 C
+tick 24
+expect_lua D.foes_alive() == 1
+lua D.tp(500) D.clear() D.foe("apple", 0, 3) D.tp(500, 270)
+tick 14
+expect_lua D.foe_state("apple").mode == "roll"
+shot w2_apple
+lua D.tp(2000) D.clear() D.foe("banana", 200, 6)
+tick 85
+expect_lua D.foe_state("banana").mode == "slide"
+lua D.tp(3800) D.clear() D.foe("bee", 110, 3) D.watch_bee()
+tick 500
+expect_lua G.seen_dive
+shot w2_bee
+lua D.world(2)
+expect_lua rawlen(D.cherries()) == 4 and D.cherries()[1] ~= D.cherries()[2]
+# the bot plays the market to the arena of Mama Sandia
+lua D.bot(true)
+tick 4800
+expect_lua require("core.boss").active() or D.state().x > 6000
+lua D.bot(false) D.tp(6100) D.clear()
+tick 100
+expect_lua require("core.boss").active() and D.state().cam == 6048
+shot boss2
+lua D.fight(true)
+tick 900
+shot boss2_fight
+tick 2400
+expect_lua require("core.boss").beaten()
+lua D.fight(false) D.tp(6250)
+hold RIGHT 100
+expect_lua D.state().play == "goal"
+tick 230
+expect_lua G.state == "results" and require("core.worlds").done(2)
+tick 100
+shot results2
+press A
+tick 4
+expect_lua G.state == "select"
+press B
+tick 4
+expect_lua G.state == "title"
+shot title_continue
+expect_lua rawlen(achievements()) == 12
+expect_lua (function() local n = 0 for _, a in ipairs(achievements()) do if a.done then n = n + 1 end end return n >= 9 end)()
 expect_ok

@@ -15,7 +15,8 @@ local F = {}
 F.list = {}
 F.events = {}
 
-local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26}}
+local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26},
+              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}}
 local WAKE = 640
 
 function F.clear() F.list, F.events = {}, {} end
@@ -27,7 +28,12 @@ local function spawn(kind, x, y, range)
   if kind == "car" then f.vx = -1.25
   elseif kind == "ball" then f.vx = -0.9 f.vy = 0
   elseif kind == "plane" then f.vx = -1.3
-  elseif kind == "robot" then f.vx = -0.55 end
+  elseif kind == "robot" then f.vx = -0.55
+  elseif kind == "apple" then f.vx = -0.8
+  elseif kind == "banana" then f.vx = -1.0
+  elseif kind == "bee" then f.vx = -1.4
+  elseif kind == "cherry" then f.vx = -0.8
+  elseif kind == "melon" then f.vx = -2.0 f.immune = true end
   F.list[#F.list + 1] = f
   return f
 end
@@ -37,10 +43,11 @@ function F.init()
   F.clear()
   for _, d in ipairs(M.foes) do
     local y = d.y
-    if d.kind ~= "plane" then -- walkers and balls start on the ground under their tile
+    if d.kind ~= "plane" and d.kind ~= "bee" then -- walkers and balls start on the ground under their tile
       y = L.ground(d.x, d.y - 40, d.y + 200, 40) or d.y
     end
-    spawn(d.kind, d.x, y, d.range)
+    local f = spawn(d.kind, d.x, y, d.range)
+    if d.phase then f.vy = d.phase f.t = d.phase * 7 end -- (cherries in pairs bounce out of step)
   end
 end
 
@@ -94,6 +101,58 @@ local function update_one(f, hx)
     if L.solid_at(f.x + f.dir * 16, f.y - 16) or (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
     f.phase = f.phase + f.dir * 0.07
     if f.squash and f.squash > 0 then f.squash = f.squash - 1 end
+  elseif k == "apple" then
+    if f.mode == "roll" then -- stomped once: curled into a ball that rolls fast, then uncurls
+      f.mt = f.mt + 1
+      walk(f, 3.4)
+      f.phase = f.phase + f.dir * 0.4
+      if f.mt > 170 then f.mode, f.mt = "walk", 0 end
+    else
+      walk(f, 0.8)
+      f.phase = f.phase + 0.09
+    end
+  elseif k == "banana" then -- it slides: slow, then a long fast slide at the hero when he is near and in front
+    f.mt = f.mt + 1
+    if f.mode == "walk" then
+      walk(f, 0.9)
+      f.phase = f.phase + 0.08
+      if math.abs(hx - f.x) < 260 and f.mt > 60 then f.mode, f.mt, f.dir = "slide", 0, (hx > f.x) and 1 or -1 f.vx = f.dir * math.abs(f.vx) end
+    elseif f.mode == "slide" then
+      walk(f, 3.6)
+      f.phase = f.phase + 0.3
+      if f.mt > 46 then f.mode, f.mt = "rest", 0 end
+    else
+      if f.mt > 40 then f.mode, f.mt = "walk", 0 end
+    end
+  elseif k == "bee" then -- a sine path, and a dive at the hero when he is near below it
+    f.mt = f.mt + 1
+    if f.mode == "dive" then
+      f.x = f.x + f.dir * 2.4
+      f.y = f.y + 3.4
+      if f.mt > 26 or L.solid_at(f.x, f.y) then f.mode, f.mt = "up", 0 end
+    elseif f.mode == "up" then
+      f.y = f.y - 2.2
+      f.x = f.x + f.dir * 0.6
+      if f.y <= f.base_y - 96 then f.mode, f.mt = "walk", 0 f.t = 0 end
+    else
+      f.x = f.x + f.dir * 1.4
+      if (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
+      f.y = f.base_y - 96 + math.sin(f.t / 20) * 26
+      if f.mt > 90 and math.abs(hx - f.x) < 90 then f.mode, f.mt, f.dir = "dive", 0, (hx > f.x) and 1 or -1 end
+    end
+    f.phase = f.t
+  elseif k == "cherry" then -- a high bouncer
+    f.x = f.x + f.dir * 0.5
+    f.vy = f.vy + 0.45
+    f.y = f.y + f.vy
+    f.bt = (f.bt or 0) + 1
+    local gy = L.ground(f.x, f.y - f.vy - 2, f.y, 2)
+    if gy then f.y, f.vy = gy, -10.4 f.squash = 6 f.bt = 0 end
+    if L.solid_at(f.x + f.dir * 16, f.y - 16) or (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
+    if f.squash and f.squash > 0 then f.squash = f.squash - 1 end
+  elseif k == "melon" then -- a rolling melon: it cannot be beaten, only jumped over
+    walk(f, 2.0)
+    f.phase = f.phase + f.dir * 3.2
   elseif k == "plane" then
     f.x = f.x + f.dir * 1.3
     if (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
@@ -114,7 +173,7 @@ function F.update()
     elseif math.abs(f.x - s.x) < WAKE then
       update_one(f, s.x)
       local ak, ax, ay, aw, ah = Hero.attack()
-      if ak and f.dead == 0 and Power.beats(ak, f.kind) and U.overlap(ax, ay, aw, ah, f.x - f.w / 2, f.y - f.h, f.w, f.h) then
+      if ak and f.dead == 0 and not f.immune and Power.beats(ak, f.kind) and U.overlap(ax, ay, aw, ah, f.x - f.w / 2, f.y - f.h, f.w, f.h) then
         f.dead = 1
         F.events.power = true
         Snd.play("stomp")
@@ -125,12 +184,19 @@ function F.update()
         if U.overlap(hx0 + 3, hy0 + 4, hw - 6, hh - 4, fx0, fy0, f.w, f.h) then
           local stomp = s.vy > 0.3 and s.y < f.y - f.h * 0.35 and s.state == "play"
           if stomp then
-            f.dead = 1
             Hero.bounce(In.btn("a") and K.STOMP_V_HELD or K.STOMP_V, In.btn("a"))
-            F.events.stomp = true
             Snd.play("stomp")
             Fx.sparkle(f.x, f.y - f.h / 2, 0xFFFFFF, 8)
-          elseif s.inv == 0 and s.state == "play" then
+            if f.immune then -- a melon: a bounce and nothing more
+            elseif f.kind == "apple" and f.mode ~= "roll" then -- the first stomp curls it into a ball
+              f.mode, f.mt, f.dir = "roll", 0, (f.x >= s.x) and 1 or -1
+              f.h = 30
+              F.events.curl = true
+            else
+              f.dead = 1
+              F.events.stomp = true
+            end
+          elseif s.inv == 0 and s.state == "play" and not f.stun then
             Hero.hurt(f.x)
             F.events.hurt = true
           end
@@ -176,12 +242,42 @@ local function plane(f)
   Deco.img("TOY_PLANE", fr, math.floor(f.x), math.floor(f.y - f.h / 2 + (f.dead > 0 and f.dead * 2 or 0)), {flip = f.dir < 0})
 end
 
+-- the market's toys (FE_*: soles anchored, except the bee, anchored at its body). Frames: apple walk 0-7, curl 8-11, roll 12-17, hurt 18, defeated 19; banana slide 0-7,
+-- squash 8-10, defeated 11-12; bee fly 0-7, dive 8-11, defeated 12-13; cherry bounce 0-7, defeated 8-9. The melon is Mama Sandia's rolling ball, small.
+local alook = {}
+local function market(f)
+  local k, x, y = f.kind, math.floor(f.x), math.floor(f.y)
+  alook.flip, alook.sx, alook.sy, alook.mul = f.dir < 0, nil, nil, nil
+  if k == "apple" then
+    local fr = math.floor(f.phase) % 8
+    if f.mode == "roll" then fr = f.mt < 14 and 8 + f.mt // 4 or 12 + math.floor(f.phase) % 6 end
+    if over(f) then fr = f.dead < 10 and 18 or 19 end
+    Deco.img("FE_APPLE", fr, x, y, alook)
+  elseif k == "banana" then
+    local fr = math.floor(f.phase) % 8
+    if over(f) then fr = f.dead < 10 and 8 + f.dead // 4 or 11 + (f.dead // 8) % 2 end
+    Deco.img("FE_BANANA", fr, x, y, alook)
+  elseif k == "bee" then
+    local fr = (f.t // 3) % 8
+    if f.mode == "dive" then fr = 8 + (f.mt // 4) % 4 end
+    if over(f) then fr = f.dead < 12 and 12 or 13 end
+    Deco.img("FE_BEE", fr, x, y - f.h // 2 + (f.dead > 0 and f.dead * 2 or 0), alook)
+  elseif k == "cherry" then
+    local fr = math.min(7, (f.bt or 0) * 8 // 46)
+    if over(f) then fr = f.dead < 12 and 8 or 9 end
+    Deco.img("FE_CHERRY", fr, x, y, alook)
+  else -- the melon: a ball that rolls
+    alook.sx, alook.sy = 0.4, 0.4
+    Deco.img("BOSS_SANDIA", 6 + math.floor(f.phase / 45) % 8, x, y, alook)
+  end
+end
+
 function F.draw(cam_x)
   for _, f in ipairs(F.list) do
     local dx = f.x - cam_x
     if dx > -80 and dx < K.W + 80 then
       local k = f.kind
-      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) else plane(f) end
+      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) elseif k == "plane" then plane(f) else market(f) end
     end
   end
 end

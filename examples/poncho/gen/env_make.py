@@ -145,11 +145,15 @@ def feet_anchor(a: np.ndarray) -> tuple[int, int]:
     return (int((xs.min() + xs.max()) // 2), a.shape[0] - 1)
 
 
-def anim_frames(src: str, n: int, size: int, kf: int = 0, flying: bool = False, pal: np.ndarray | None = None, by: str = "h"):
+LAST_K = [1.0]
+
+
+def anim_frames(src: str, n: int, size: int, kf: int = 0, flying: bool = False, pal: np.ndarray | None = None, by: str = "h", k: float | None = None):
     """The n frames of a sheet reduced by ONE scale (frame kf is `size` px tall, or wide with by = 'w') into the sheet's locked palette, with the anchor of each: (frames, anchors, palette)."""
     objs = objects(src, n)
     pal = pal if pal is not None else pal_from(opaque_px(src, False), halo=False)
-    k = size / (objs[kf].shape[0] if by == "h" else objs[kf].shape[1])
+    k = k if k is not None else size / (objs[kf].shape[0] if by == "h" else objs[kf].shape[1])
+    LAST_K[0] = k
     frames = []
     for o in objs:
         t = tight(shrink(o, pal, k))

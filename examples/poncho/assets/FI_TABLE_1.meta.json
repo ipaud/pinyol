@@ -1,0 +1,25 @@
+{
+  "asset": "FI_TABLE_1",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 12,
+  "w": 110,
+  "h": 73,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    55,
+    72
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 4226,
+    "as_rgb565": 16060
+  }
+}

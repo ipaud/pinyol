@@ -16,11 +16,21 @@ local function parse(lines)
   end
   return out
 end
-local mel, bass = parse(MEL), parse(BASS)
+-- the market's tune: a swung march in D, a little faster
+local MEL2 = {"D5 0 F5 A5 0 F5 D5 0 E5 0 G5 0 A5 0 0 0", "D5 0 F5 A5 0 F5 A5 0 C6 0 A5 0 G5 0 0 0",
+              "Bb5 0 A5 0 F5 D5 F5 0 E5 0 D5 0 C5 0 0 0", "D5 F5 A5 0 D6 A5 F5 0 E5 0 C5 0 D5 0 0 0"}
+local BASS2 = {"D3 0 A2 0 D3 0 A2 0 D3 0 A2 0 D3 0 A2 0", "Bb2 0 F3 0 Bb2 0 F3 0 C3 0 G3 0 C3 0 G3 0",
+               "G2 0 D3 0 G2 0 D3 0 A2 0 E3 0 A2 0 E3 0", "D3 0 A2 0 D3 0 A2 0 D3 0 A2 0 D3 0 A2 0"}
+local TUNES = {playroom = {parse(MEL), parse(BASS), 7}, market = {parse(MEL2), parse(BASS2), 6}}
+local mel, bass = TUNES.playroom[1], TUNES.playroom[2]
 
 M.on, M.t, M.step = false, 0, 0
 
-function M.start() M.on, M.t, M.step = true, 0, 0 end
+function M.start(id)
+  local t = TUNES[id or "playroom"] or TUNES.playroom
+  mel, bass, STEP = t[1], t[2], t[3]
+  M.on, M.t, M.step = true, 0, 0
+end
 function M.stop() if M.on then tone(0) tone(1) end M.on = false end
 
 function M.update()

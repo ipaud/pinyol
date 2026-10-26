@@ -1,0 +1,29 @@
+{
+  "asset": "FI_LOLLI",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 27,
+  "w": 42,
+  "h": 56,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    21,
+    28
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 4522,
+    "as_rgb565": 14112
+  }
+}

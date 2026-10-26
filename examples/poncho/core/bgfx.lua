@@ -8,48 +8,63 @@
 local K = require("core.const")
 local Deco = require("core.deco")
 local Slices = require("slices")
-local FAR, CASE = require("data.far_slices"), require("data.case_slices")
+local W = require("core.worlds")
 local B = {}
 
 function B.init() end
 
-local function wide(def, factor, y, cam_x, o)
-  local x = -math.floor(cam_x * factor) % def.w
-  local n = Slices.draw(def, x - def.w, y, o)
-  n = n + Slices.draw(def, x, y, o)
+local look = {}
+local function wide(l, cam_x, y)
+  local def = l.def
+  look.dim, look.mul = l.dim, l.mul
+  local x = -math.floor(cam_x * l.speed) % def.w
+  local n = Slices.draw(def, x - def.w, y, look)
+  n = n + Slices.draw(def, x, y, look)
   return n
 end
 
 -- the wall and the bookcase. cam_y moves them a little (the bookcase more than the wall)
 function B.scroll(cam_x, cam_y)
-  wide(FAR, 0.09, -14 - math.floor(cam_y * 0.05), cam_x)
-  wide(CASE, 0.27, 250 - math.floor(cam_y * 0.9), cam_x, {dim = 0.9})
+  if W.far and W.far.fill then rect(0, 0, K.W, K.H, W.far.fill) end -- (the far layer is only 150 px tall: a colour under it)
+  if W.far then wide(W.far, cam_x, W.far.y - math.floor(cam_y * W.far.ycam)) end
+  if W.case then wide(W.case, cam_x, W.case.y - math.floor(cam_y * W.case.ycam)) end
 end
 
-local MID = { -- x in the layer, giant toy
-  {80, "TEDDY"}, {330, "TOWER"}, {500, "ROCKET"}, {690, "DUCK"}, {900, "BALL"}, {1070, "CASTLE"}, {1300, "RINGS"}, {1480, "BUNNY"},
-  {1740, "DRUM"}, {1900, "HORSE"}, {2150, "DINO"}, {2400, "TRAIN"}, {2560, "ROCKET"}, {2780, "TEDDY"},
-}
-local MID_PERIOD = 3000
-
+local mlook = {}
 function B.mid(cam_x, cam_y)
+  local mid = W.theme.mid
+  if not mid then return end
   local base = 360 - cam_y
-  local shift = cam_x * 0.62
-  for _, m in ipairs(MID) do
-    local x = (m[1] - shift) % MID_PERIOD - 220
-    if x < K.W + 60 and x > -220 then Deco.img("BG_G_" .. m[2], 0, math.floor(x), math.floor(base), {dim = 0.88}) end
+  local shift = cam_x * mid.speed
+  mlook.dim = mid.dim
+  for _, m in ipairs(mid.list) do
+    local x = (m[1] - shift) % mid.period - 220
+    if x < K.W + 60 and x > -220 then
+      local id, own = m[2], Deco.has(m[2])
+      mlook.mul = (not own) and mid.mul or nil
+      local o = m[4]
+      mlook.sx, mlook.sy = o and o.sx, o and o.sx
+      if o and o.top then -- hung from the top of the screen
+        if own then Deco.img(id, 0, math.floor(x), o.top, mlook) end
+      else
+        Deco.img(own and id or (m[3] or id), 0, math.floor(x), math.floor(base), mlook)
+      end
+    end
   end
 end
 
-local FORE = {{300, "BG_FORE_CRAYON_R", 282}, {900, "BG_FORE_BLOCKS", 272}, {1500, "BG_FORE_CRAYON_G", 286}, {2000, "BG_FORE_BALL", 280},
-              {2500, "BG_FORE_BRICKS", 288}, {2900, "BG_FORE_CRAYON_B", 288}}
-local FORE_PERIOD = 3300
-
+local flook = {}
 function B.fore(cam_x, cam_y)
-  local shift = cam_x * 1.5
-  for _, m in ipairs(FORE) do
-    local x = math.floor((m[1] - shift) % FORE_PERIOD - 300)
-    if x < K.W and x > -300 then Deco.img(m[2], 0, x, m[3]) end
+  local fore = W.theme.fore
+  if not fore then return end
+  local shift = cam_x * fore.speed
+  for _, m in ipairs(fore.list) do
+    local x = math.floor((m[1] - shift) % fore.period - 300)
+    if x < K.W and x > -300 then
+      local own = Deco.has(m[2])
+      flook.mul = (not own) and W.theme.mid and W.theme.mid.mul or nil
+      Deco.img(own and m[2] or (m[4] or m[2]), 0, x, m[3], flook)
+    end
   end
 end
 

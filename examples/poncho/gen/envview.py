@@ -2,7 +2,8 @@
 import json, sys
 from pathlib import Path
 from PIL import Image
-G = Path(__file__).resolve().parent.parent / "art" / "env"
+import os
+G = Path(__file__).resolve().parent.parent / "art" / os.environ.get("ENVDIR", "env")
 args = sys.argv[1:]
 Z = 1
 if args[0].startswith("z="): Z = int(args[0][2:]); args = args[1:]

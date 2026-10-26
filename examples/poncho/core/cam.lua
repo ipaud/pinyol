@@ -6,11 +6,16 @@ local U = require("core.util")
 
 local C = {x = 0, y = 0, lead = 0, still = 0, shake = 0}
 
-local MAXX, MAXY = L.W - K.W, L.H - K.H
+local MAXX, MAXY = 0, 0
+C.lock = nil -- {x0, x1}: an arena: the camera shows only that (set by the boss)
+
+function C.reload() MAXX, MAXY = L.W - K.W, L.H - K.H C.lock = nil end
+C.reload()
 
 function C.snap(h)
   C.lead = 0
   C.x = U.clamp(h.x - K.W / 2, 0, MAXX)
+  if C.lock then C.x = U.clamp(C.x, C.lock[1], C.lock[2] - K.W) end
   C.y = U.clamp(h.y - K.CAM_FEET, 0, MAXY)
   C.still = 0
 end
@@ -24,6 +29,7 @@ function C.update(h)
   local d = tx - C.x
   local k = K.CAM_LERP + math.min(0.2, math.abs(d) / 1600)  -- a long way behind: catch up faster
   C.x = U.clamp(C.x + d * k, 0, MAXX)
+  if C.lock then C.x = U.clamp(C.x, C.lock[1], C.lock[2] - K.W) end
 
   -- vertical: deadzone around where the feet normally are on screen
   local feet = h.y - C.y

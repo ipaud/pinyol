@@ -1,0 +1,37 @@
+{
+  "asset": "BOSS_CUERDA_C4",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 140,
+  "h": 150,
+  "frames": 7,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "anchor": [
+    70,
+    147
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 64976,
+    "as_rgb565": 294000
+  }
+}

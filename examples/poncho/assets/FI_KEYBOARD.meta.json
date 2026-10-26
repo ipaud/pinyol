@@ -1,0 +1,35 @@
+{
+  "asset": "FI_KEYBOARD",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 31,
+  "w": 110,
+  "h": 160,
+  "frames": 6,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "anchor": [
+    55,
+    159
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 67842,
+    "as_rgb565": 211200
+  }
+}

@@ -31,7 +31,7 @@ function H.reset(x, y, keep_scooter)
     hold = 0, hold_dir = 0, gait = "walk", phase = 0, idle_t = 0, idle_cycle = 0,
     scooter = mount, mode_s = "glide", push_p = 0, drift_t = 0, brake_t = 0, glide_t = 0,
     state = "play", hurt_t = 0, inv = 0, dead_t = 0, win_t = 0, t = 0, air_t = 0, step_f = 0, skid_t = 0, lean = 0,
-    c_t = 0, act = false, pw = nil, pw_cd = 0, fut_t = 0, boots_air = false,
+    c_t = 0, slip = 0, act = false, pw = nil, pw_cd = 0, fut_t = 0, boots_air = false,
   }
   H.costume = nil
   H.s = s
@@ -56,12 +56,12 @@ local function walk_x(dir, run)
     s.hold, s.hold_dir = 0, 0
   end
   if dir == 0 then
-    if s.ground then s.vx = approach(s.vx, 0, speed > K.WALK_V + 0.4 and K.FRICTION_RUN or K.FRICTION) else s.vx = approach(s.vx, 0, K.AIR_DRAG) end
+    if s.ground then s.vx = approach(s.vx, 0, s.slip > 0 and 0.025 or (speed > K.WALK_V + 0.4 and K.FRICTION_RUN or K.FRICTION)) else s.vx = approach(s.vx, 0, K.AIR_DRAG) end
     return
   end
   local target = ((run or s.hold >= K.RUN_AFTER) and K.RUN_V or K.WALK_V) * (s.fut_t > 0 and K.FUT_MULT or 1)
   if s.vx * dir < -0.05 then -- turning round: a skid, the body keeps looking the old way until it has slowed
-    s.vx = s.vx + dir * (s.ground and K.SKID or K.SKID * 0.55)
+    s.vx = s.vx + dir * (s.ground and K.SKID or K.SKID * 0.55) * (s.slip > 0 and 0.25 or 1)
     if s.ground and speed > 2.2 then
       s.skid_t = s.skid_t + 1
       if s.skid_t % 3 == 1 then Fx.dust(s.x, s.y, 1, -sign(s.vx), 0.6) end
@@ -74,6 +74,7 @@ local function walk_x(dir, run)
   s.face = dir
   if s.ground and speed < K.START_V then s.vx = dir * K.START_V speed = K.START_V end
   local acc = (not s.ground) and K.AIR_ACCEL or (speed < K.WALK_V and K.ACCEL or K.ACCEL_RUN)
+  if s.slip > 0 then acc = acc * 0.3 end -- a banana peel: the floor gives no grip
   if speed < target then s.vx = dir * math.min(speed + acc, target)
   elseif speed > target then s.vx = dir * math.max(speed - 0.09, target) end
 end
@@ -352,6 +353,14 @@ function H.update()
   Power.update(s, down)
   move_x()
   move_y()
+  if s.slip > 0 then s.slip = s.slip - 1 end
+  if s.ground then -- a belt or a cart carries him
+    local carry = 0
+    if s.gchar == ">" then carry = K.BELT_V elseif s.gchar == "<" then carry = -K.BELT_V
+    elseif s.gkind == "plat" and type(s.gchar) == "table" then carry = s.gchar.vx end
+    if carry ~= 0 and not L.wall_x(s.x + carry, s.y, HW, BH, sign(carry)) then s.x = s.x + carry end
+  end
+  if H.bounds then s.x = clamp(s.x, H.bounds[1] + HW, H.bounds[2] - HW) end -- an arena's walls
   clocks()
   s.lean = approach(s.lean, clamp(s.vx / 8, -1, 1), 0.08)
   if s.y > L.H + 90 then H.die("pit") end

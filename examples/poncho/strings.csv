@@ -43,3 +43,24 @@ toast_lost,¡Perdiste el disfraz!,Has perdut la disfressa!,You lost the costume!
 ach_costume,Primer disfraz,Primera disfressa,First costume
 ach_wardrobe,El armario completo,L'armari complet,The full wardrobe
 ach_crates,Rompecajas,Trenca-caixes,Crate breaker
+world_1,LA SALA DE JUEGOS,LA SALA DE JOCS,THE PLAYROOM
+world_2,EL MERCADO VIVO,EL MERCAT VIU,THE LIVING MARKET
+world_3,EL PARQUE DE TIZA,EL PARC DE GUIX,THE CHALK PARK
+world_4,EL ESCENARIO DEL TECLADO,L'ESCENARI DEL TECLAT,THE KEYBOARD STAGE
+title_continue,CONTINUAR,CONTINUAR,CONTINUE
+select_title,ELIGE UN MUNDO,TRIA UN MÓN,CHOOSE A WORLD
+select_locked,Termina el mundo anterior,Acaba el món anterior,Finish the world before
+select_soon,Próximamente,Aviat,Coming soon
+select_new,¡Por descubrir!,Per descobrir!,To discover!
+select_done,Terminado en {time},Acabat en {time},Done in {time}
+select_help,Flechas: elegir   A: jugar   B: volver,Fletxes: triar   A: jugar   B: tornar,Arrows: choose   A: play   B: back
+res_next_world,A: siguiente mundo,A: món següent,A: next world
+res_worlds,A: elegir mundo,A: triar món,A: choose a world
+res_worlds_b,B: elegir mundo,B: triar món,B: choose a world
+boss_cuerda,CAPITÁN CUERDA,CAPITÀ CORDA,CAPTAIN WIND-UP
+boss_sandia,MAMÁ SANDÍA,MAMA SÍNDRIA,MAMA WATERMELON
+toast_boss_down,¡Jefe vencido! La bandera se abre,Cap vençut! La bandera s'obre,Boss beaten! The flag is open
+ach_boss1,Capitán Cuerda,Capità Corda,Captain Wind-Up
+ach_boss2,Mamá Sandía,Mama Síndria,Mama Watermelon
+ach_market,Mercado completo,Mercat complet,Market done
+ach_curl,Manzana enrollada,Poma enrotllada,Curled apple

@@ -1,0 +1,25 @@
+{
+  "asset": "FM_BUNTING",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 23,
+  "w": 440,
+  "h": 153,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    220,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 22820,
+    "as_rgb565": 134640
+  }
+}

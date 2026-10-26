@@ -47,6 +47,26 @@
       "id": "crates",
       "name": "Rompecajas",
       "description": "Rompe cinco cajas de madera."
+    },
+    {
+      "id": "boss1",
+      "name": "Capitán Cuerda",
+      "description": "Vence al Capitán Cuerda, el robot gigante de la sala de juegos."
+    },
+    {
+      "id": "boss2",
+      "name": "Mamá Sandía",
+      "description": "Vence a Mamá Sandía en el mercado vivo."
+    },
+    {
+      "id": "market",
+      "name": "Mercado completo",
+      "description": "Llega a la bandera del mercado vivo."
+    },
+    {
+      "id": "curl",
+      "name": "Manzana enrollada",
+      "description": "Pisa una manzana y hazla rodar."
     }
   ],
   "look_limits": {

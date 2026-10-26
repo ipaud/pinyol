@@ -1,0 +1,25 @@
+{
+  "asset": "FM_FORE_CABBAGE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 100,
+  "h": 78,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3816,
+    "as_rgb565": 15600
+  }
+}

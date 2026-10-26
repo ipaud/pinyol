@@ -1,0 +1,25 @@
+{
+  "asset": "FT_FLOOR2",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 21,
+  "w": 64,
+  "h": 96,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 6844,
+    "as_rgb565": 12288
+  }
+}

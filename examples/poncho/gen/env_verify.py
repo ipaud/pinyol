@@ -8,7 +8,8 @@ import numpy as np
 from PIL import Image
 
 G = Path(__file__).resolve().parent.parent
-ENV = G / "art" / "env"
+import os
+ENV = G / "art" / os.environ.get("ENVDIR", "env")
 flags, n = [], 0
 for js in sorted(ENV.glob("*.json")):
     m = json.loads(js.read_text())
@@ -21,15 +22,15 @@ for js in sorted(ENV.glob("*.json")):
             flags.append((js.stem, name, "empty"))
             continue
         ys, xs = np.where(c)
-        solid_edge = js.stem.startswith(("BG_TILES", "BG_FLOOR", "BG_BODY", "BG_SHELF", "BG_TBOX", "TOY_HUD", "TOY_HEARTS"))
+        solid_edge = js.stem.startswith(("BG_TILES", "FT_", "BG_FLOOR", "BG_BODY", "BG_SHELF", "BG_TBOX", "TOY_HUD", "TOY_HEARTS"))
         if len(m["frames"]) > 1 and not solid_edge and (ys.min() == 0 or xs.min() == 0 or ys.max() == h - 1 or xs.max() == w - 1):
             flags.append((js.stem, name, "touches the cell edge"))
 print(f"{n} frames checked, {len(flags)} flagged")
 for f in flags:
     print("  %-22s %-14s %s" % f)
-far = np.asarray(Image.open(ENV / "far.png").convert("RGB"))
+far = np.asarray(Image.open(ENV / ("far.png" if (ENV / "far.png").exists() else "FM_FAR.png")).convert("RGB"))
 half = np.roll(far, far.shape[1] // 2, axis=1)
-floor = np.asarray(Image.open(ENV / "BG_FLOOR8.png").convert("RGB"))
+floor = np.asarray(Image.open(ENV / ("BG_FLOOR8.png" if (ENV / "BG_FLOOR8.png").exists() else "FT_FLOOR8.png")).convert("RGB"))
 rows = [far[:, :480], half[:, :480], np.concatenate([floor, floor], axis=1)[:, :480]]
 rows = [np.pad(r, ((0, 0), (0, 480 - r.shape[1]), (0, 0))) for r in rows]
 Image.fromarray(np.concatenate(rows, axis=0)).save(G / "raw" / "seams.png")

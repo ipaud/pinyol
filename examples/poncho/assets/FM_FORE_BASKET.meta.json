@@ -1,0 +1,25 @@
+{
+  "asset": "FM_FORE_BASKET",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 26,
+  "w": 75,
+  "h": 70,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5010,
+    "as_rgb565": 10500
+  }
+}

@@ -5,6 +5,7 @@ local Hero = require("core.hero")
 local Items = require("core.items")
 local U = require("core.util")
 local Deco = require("core.deco")
+local Boss = require("core.boss")
 
 local H = {}
 H.FONT, H.SMALL, H.TITLE = "snes_body", "snes_small", "snes_title"
@@ -43,6 +44,7 @@ function H.draw(play)
   if Hero.has_scooter then
     Deco.img("TOY_HUD", Hero.s and Hero.s.scooter and 4 or 5, K.W - 72, 22)
   end
+  Boss.hud(lang)
   if Hero.costume then -- the costume worn: its colour (and, for the football shirt, the time left of being unbeatable)
     local c = ({barretina = 0xD83A3A, dino = 0x72D84A, boots = 0x2E8A3E, futbol = 0xF4F4F4})[Hero.costume]
     rect(K.W - 118, 34, 30, 30, 0x2A1A3A)

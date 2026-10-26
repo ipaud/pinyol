@@ -15,6 +15,7 @@ local Play = require("core.play")
 local Scr = require("core.screens")
 local Items = require("core.items")
 local Bot = require("core.bot")
+local W = require("core.worlds")
 
 G = {state = "title", t = 0, back = "title"}
 
@@ -42,7 +43,7 @@ function _init()
   Bg.init()
   Spr.preload({"poncho", "poncho_scooter"})
   set_menu()
-  Play.enter()
+  Play.enter(1)
   to_title()
 end
 
@@ -51,12 +52,22 @@ function _resume()
   set_menu()
 end
 
+local function to_select(i)
+  require("core.music").stop()
+  G.state = "select"
+  Scr.select.enter(i)
+end
+
+local function to_play(world)
+  Play.enter(world)
+  G.state = "play"
+end
+
 local function finish()
-  local best = stored("best", 0)
-  local t = Play.time
-  if best == 0 or t < best then best = t store("best", t) end
+  local t, w = Play.time, Play.world
+  W.finish(w, t)
   local coins, creams, tc, ti = Items.counts()
-  Scr.results.enter({coins = coins, creams = creams, total_coins = tc, total_creams = ti, time = t, best = best})
+  Scr.results.enter({coins = coins, creams = creams, total_coins = tc, total_creams = ti, time = t, best = W.best(w), next = W.next_ready(w), world = w})
   G.state = "results"
 end
 
@@ -67,23 +78,30 @@ function _update()
   local st = G.state
   if st == "title" then
     local pick = Scr.title.update()
-    if pick == "start" then Play.enter() G.state = "play"
+    if pick == "start" then to_play(1)
+    elseif pick == "continue" then to_select()
     elseif pick == "how" then open_how() end
+  elseif st == "select" then
+    local pick = Scr.select.update()
+    if pick == "back" then to_title() elseif pick then to_play(pick) end
   elseif st == "play" then
     if Play.update() == "done" then finish() end
     if G.after_play then G.after_play() end
   elseif st == "explain" then
     if Scr.how.update() then G.state = G.back end
   elseif st == "results" then
-    if Scr.results.update() then to_title() end
+    local pick = Scr.results.update()
+    if pick == "next" then to_play(Scr.results.info.next)
+    elseif pick == "worlds" then to_select(Scr.results.info.world) end
   end
 end
 
 function _draw()
   local st = G.state
   if st == "explain" then
-    Scr.how.draw(G.back == "title" and Scr.title.draw or (G.back == "results" and Scr.results.draw or Play.draw))
+    Scr.how.draw(G.back == "title" and Scr.title.draw or (G.back == "results" and Scr.results.draw or (G.back == "select" and function() Scr.select.draw(Scr.title.back) end or Play.draw)))
   elseif st == "title" then Scr.title.draw()
+  elseif st == "select" then Scr.select.draw(Scr.title.back)
   elseif st == "results" then Scr.results.draw(Play.draw)
   else Play.draw() end
 end

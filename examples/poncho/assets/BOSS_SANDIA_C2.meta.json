@@ -1,0 +1,33 @@
+{
+  "asset": "BOSS_SANDIA_C2",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 262,
+  "h": 157,
+  "frames": 5,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "anchor": [
+    131,
+    154
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 57997,
+    "as_rgb565": 411340
+  }
+}
