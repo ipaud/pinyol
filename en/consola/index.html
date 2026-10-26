@@ -68,7 +68,7 @@
 </ol>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
-<h2 id="retroarch-t">In RetroArch and RetroPie</h2>
+<h2 id="retroarch-t">In RetroArch, RetroPie and RetroBat</h2>
 <p class="intro">No console? The engine is also a libretro core: pinyol games play in RetroArch and in everything built on it, such as RetroPie or Lakka on a Raspberry Pi, Batocera, Recalbox, the handhelds that run it, or a computer. It is the same engine, so the game is the same.</p>
 <ol class="steps">
 <li><h3>Install it on RetroPie</h3><p>On the Raspberry Pi, this command downloads the core already built (a Pi 1 or Zero builds it, in a few minutes) and adds Pinyol to EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
@@ -79,6 +79,7 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 <li><h3>Copy the games</h3><p>Any game's .zip, like the ones you can download here, goes in its folder.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copy: ~/RetroPie/roms/pinyol/">Copy</button></div></li>
 <li><h3>Play</h3><p>Restart EmulationStation and Pinyol shows up with its games. On the gamepad, X or Y act as C, and SELECT as MENU.</p></li>
 </ol>
+<div class="aside-note"><b>RetroBat, on Windows?</b> In RetroBat's folder, in PowerShell: <code>irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex</code>It puts the core in place and adds Pinyol to EmulationStation; the games go in <code>roms\pinyol</code>Not yet tried on a real RetroBat.</div>
 <div class="aside-note"><b>Another RetroArch?</b> On a computer with Linux, Batocera or Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">the core already built<span class="sr"> (opens in a new tab)</span></a> goes in RetroArch's cores folder; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">the guide<span class="sr"> (opens in a new tab)</span></a> explains it. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
 </div></section>
 </main>

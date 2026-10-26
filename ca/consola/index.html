@@ -68,7 +68,7 @@
 </ol>
 </div></section>
 <section id="retroarch" aria-labelledby="retroarch-t"><div class="wrap">
-<h2 id="retroarch-t">A RetroArch i RetroPie</h2>
+<h2 id="retroarch-t">A RetroArch, RetroPie i RetroBat</h2>
 <p class="intro">Sense la consola? El motor també és un nucli de libretro: els jocs de pinyol es juguen a RetroArch i a tot el que s'hi basa, com RetroPie o Lakka en una Raspberry Pi, Batocera, Recalbox, les portàtils que el porten o un ordinador. És el mateix motor, així que el joc és el mateix.</p>
 <ol class="steps">
 <li><h3>Instal·la'l a RetroPie</h3><p>A la Raspberry Pi, aquesta ordre descarrega el nucli ja compilat (una Pi 1 o Zero el compila, en uns minuts) i afegeix Pinyol a EmulationStation.</p><div class="code wide"><pre tabindex="0"><code>cd ~/RetroPie-Setup
@@ -79,6 +79,7 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 <li><h3>Copia els jocs</h3><p>El .zip de qualsevol joc, com els que es descarreguen aquí, va a la seva carpeta.</p><div class="code"><pre><code>~/RetroPie/roms/pinyol/</code></pre><button class="copy" type="button" aria-label="Copia: ~/RetroPie/roms/pinyol/">Copia</button></div></li>
 <li><h3>Juga</h3><p>Reinicia EmulationStation i apareix Pinyol amb els seus jocs. Al comandament, X o Y fan de C, i SELECT de MENU.</p></li>
 </ol>
+<div class="aside-note"><b>RetroBat, a Windows?</b> A la carpeta de RetroBat, en PowerShell: <code>irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex</code>Posa el nucli i afegeix Pinyol a EmulationStation; els jocs van a <code>roms\pinyol</code>Encara sense provar en un RetroBat de debò.</div>
 <div class="aside-note"><b>Un altre RetroArch?</b> En un ordinador amb Linux, Batocera o Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">el nucli ja compilat<span class="sr"> (s'obre en una pestanya nova)</span></a> va a la carpeta de nuclis de RetroArch; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">la guia<span class="sr"> (s'obre en una pestanya nova)</span></a> ho explica. Provat a RetroArch i amb el sistema de RetroPie emulat, encara no en una Raspberry Pi de debò: si el proves, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">explica'ns com va<span class="sr"> (s'obre en una pestanya nova)</span></a>.</div>
 </div></section>
 </main>
