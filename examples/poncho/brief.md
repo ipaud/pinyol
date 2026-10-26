@@ -20,3 +20,4 @@ Helpers: golden dog, spotted cow, yellow chick. The toy keyboard is his FRIEND (
 - Poncho ~40 px tall, ~140 frames: idle (breathing + blink + look around), walk 8, run 10, scooter push/glide/drift/brake, jump in 4 phases + land, hurt, win, each costume's moves.
 - Enemies 12-20 frames each; bosses bigger, in pieces. Parallax of 3-4 layers per world, per-line water/heat, Mode 7 only in the boss.
 - Play: coyote time, jump buffer, soft acceleration, camera lead, 60 fps fixed (measure on the board per world).
+- Costumes (phase 4): four pickups along the level (barretina, dino, boots, football shirt). A short tap of C (up to 8 ticks) is the power, holding C runs; a hit costs the costume, not a heart. Crates (`K` in map.lua) break with the headbutt, the ground pound or the scooter at speed; a secret shelf over the robots needs the boots' second jump. `core/power.lua` has every number.

@@ -75,6 +75,8 @@ shelf(28, 33, 3)
 coins(29, 4, 4, 1, 0)
 obj("icecream", 31, 5)
 foe("car", 36, 0, {range = 5})
+-- costume 1: the barretina (red cap, headbutt), then the toy car it can beat
+obj("cos_barretina", 18, 0)
 -- 3. a gap that asks for a jump, a spring to a high shelf, a ball
 blocks(38, 1, 2, "T")
 gap(41, 44)
@@ -87,15 +89,18 @@ foe("ball", 53, 0, {range = 4})
 -- 4. the toy keyboard (checkpoint, a friend), the scooter, a long flat run and a ramp over a gap
 obj("keyboard", 57, 0)
 obj("scooter", 62, 0)
+blocks(66, 1, 2, "K")  -- crates: a headbutt, a stomp or the scooter at speed breaks them
 coins(64, 1, 6, 1, 0)
 ramp(70, 2)
 gap(74, 78)
 arc(74, 3, 5, 1.2)
 -- 5. toy boxes to climb, a paper plane, a spring
 coins(82, 1, 3, 1, 0)
+obj("cos_dino", 85, 0)  -- costume 2: the dinosaur onesie (fire, ground pound)
 foe("ball", 90, 0, {range = 3})
 blocks(88, 1, 2, "T") blocks(90, 2, 2, "T")
 shelf(93, 99, 3)
+blocks(95, 1, 2, "K", FR - 3)
 foe("plane", 97, 4, {range = 6})
 coins(94, 4, 5, 1, 0)
 obj("spring", 101, 0)
@@ -106,6 +111,10 @@ coins(107, 6, 3, 1, 0)
 gap(112, 118)
 shelf(113, 114, 2) shelf(116, 117, 2)
 coins(113, 3, 2, 3, 0)
+obj("cos_boots", 120, 0)  -- costume 3: green boots (a splash jump in the air), for the secret shelf above the robots
+shelf(125, 131, 6)
+arc(125, 7, 7, 0.8)
+obj("icecream", 128, 7)
 foe("robot", 124, 0, {range = 5})
 foe("robot", 129, 0, {range = 5})
 -- 7. the second toy keyboard, a hill of blocks
@@ -115,6 +124,8 @@ foe("car", 146, 0, {range = 6})
 foe("plane", 148, 3, {range = 6})
 -- 8. the long run: a ramp up to a shelf in the air, robots and balls along the floor
 coins(152, 1, 5, 1, 0)
+blocks(150, 1, 2, "K")
+obj("cos_futbol", 155, 0)  -- costume 4: the football shirt (a dash, invulnerable for 5 s)
 ramp(158, 2)
 shelf(164, 171, 4)
 coins(165, 5, 5, 1, 0)
@@ -125,4 +136,8 @@ blocks(179, 1, 2) blocks(181, 2, 8, "T")
 obj("flag", 187, 2)
 coins(182, 3, 3, 1, 0)
 
-return {grid = grid, objs = objs, foes = foes, start_c = 3}
+-- the crates, to put them back at a new game
+local crates = {}
+for r = 0, ROWS - 1 do for c = 0, COLS - 1 do if grid[r][c] == "K" then crates[#crates + 1] = {c, r} end end end
+
+return {crates = crates, grid = grid, objs = objs, foes = foes, start_c = 3}

@@ -8,18 +8,20 @@ local Spr = require("core.spr")
 local Fx = require("core.fx")
 local Snd = require("core.sound")
 local Deco = require("core.deco")
+local Power = require("core.power")
 
 local H = {}
 local HW, BH = K.HALF_W, K.BODY_H
 local sign, approach, clamp = U.sign, U.approach, U.clamp
 
-H.costume = nil          -- a hook for later: "barretina", "dino", "boots", "futbol" swap the idle and run strips (powers come after)
+H.costume = nil          -- "barretina", "dino", "boots" or "futbol" (core/power.lua): its strips replace the standing and running ones
 H.has_scooter = false
 H.hearts = K.HEARTS
 H.events = {}            -- what happened this tick, for the achievements and the camera ("land", "jump", "ramp", "bump", "stomp")
 
 local s -- the state, a new table at every start
 H.s = nil
+Power.init(H)
 
 function H.reset(x, y, keep_scooter)
   local mount = keep_scooter and H.has_scooter and (s and s.scooter) or false
@@ -29,11 +31,16 @@ function H.reset(x, y, keep_scooter)
     hold = 0, hold_dir = 0, gait = "walk", phase = 0, idle_t = 0, idle_cycle = 0,
     scooter = mount, mode_s = "glide", push_p = 0, drift_t = 0, brake_t = 0, glide_t = 0,
     state = "play", hurt_t = 0, inv = 0, dead_t = 0, win_t = 0, t = 0, air_t = 0, step_f = 0, skid_t = 0, lean = 0,
+    c_t = 0, act = false, pw = nil, pw_cd = 0, fut_t = 0, boots_air = false,
   }
+  H.costume = nil
   H.s = s
   H.hearts = K.HEARTS
   return s
 end
+
+function H.give(kind) Power.give(s, kind) end
+function H.attack() return Power.attack(s) end
 
 function H.box() return s.x - HW, s.y - BH, HW * 2, BH end
 
@@ -52,7 +59,7 @@ local function walk_x(dir, run)
     if s.ground then s.vx = approach(s.vx, 0, speed > K.WALK_V + 0.4 and K.FRICTION_RUN or K.FRICTION) else s.vx = approach(s.vx, 0, K.AIR_DRAG) end
     return
   end
-  local target = (run or s.hold >= K.RUN_AFTER) and K.RUN_V or K.WALK_V
+  local target = ((run or s.hold >= K.RUN_AFTER) and K.RUN_V or K.WALK_V) * (s.fut_t > 0 and K.FUT_MULT or 1)
   if s.vx * dir < -0.05 then -- turning round: a skid, the body keeps looking the old way until it has slowed
     s.vx = s.vx + dir * (s.ground and K.SKID or K.SKID * 0.55)
     if s.ground and speed > 2.2 then
@@ -146,6 +153,17 @@ end
 
 local function move_x()
   local nx = s.x + s.vx
+  if s.scooter and math.abs(s.vx) > 4.5 then -- the scooter at speed breaks crates
+    local d = sign(s.vx)
+    local xa, xb = s.x + d * HW, nx + d * (HW + 4)
+    local n = L.break_crates(math.min(xa, xb), s.y - 50, math.max(xa, xb), s.y - 4)
+    if n > 0 then
+      H.events.crate = (H.events.crate or 0) + n
+      for i = 1, math.min(2, #L.broke_at) do Fx.debris(L.broke_at[i][1], L.broke_at[i][2]) end
+      Snd.play("crate")
+      s.vx = s.vx * 0.85
+    end
+  end
   if s.vx > 0 and L.wall_x(nx, s.y, HW, BH, 1) then
     nx = math.floor((nx + HW) / K.TILE) * K.TILE - HW - 0.01
     if s.scooter and s.vx > 4.5 then ev("bump") s.vx = -s.vx * K.S_BOUNCE Snd.play("bump") Fx.dust(nx + HW, s.y - 20, 4, -1, 1.5)
@@ -324,7 +342,14 @@ function H.update()
     Fx.dust(s.x, s.y, 3, 0, 1.5)
     ev("mount")
   end
+  s.act = false -- a tap of C is the costume's power; holding it runs
+  if In.btn("c") then s.c_t = s.c_t + 1
+  else
+    if s.c_t > 0 and s.c_t <= K.TAP then s.act = true end
+    s.c_t = 0
+  end
   control(dir, down)
+  Power.update(s, down)
   move_x()
   move_y()
   clocks()
@@ -336,6 +361,15 @@ end
 
 function H.hurt(from_x)
   if s.inv > 0 or s.state ~= "play" then return false end
+  if H.costume then -- a hit costs the costume, not a heart
+    Power.lose(s)
+    Snd.play("hurt")
+    ev("hurt")
+    local away = (s.x < from_x) and -1 or 1
+    s.state, s.hurt_t, s.inv = "hurt", K.HURT_T, K.INVULN
+    s.vx, s.vy, s.ground, s.jumped, s.face = away * 3.4, -6.2, false, false, -away
+    return true
+  end
   H.hearts = H.hearts - 1
   Snd.play("hurt")
   ev("hurt")
@@ -389,6 +423,24 @@ function H.pose()
     if m == "push" then return sh, seq(sh, "scooter_push", s.push_p) end
     return sh, seq(sh, "scooter_glide", av > 0.3 and s.glide_t / 9 or 0)
   end
+  if H.costume then
+    local cs, n = "poncho_" .. H.costume, nil
+    local pw = s.pw
+    if pw then
+      local k = pw.kind
+      if k == "dash" then return cs, seq(cs, H.costume == "futbol" and "dash" or "headbutt", pw.t * 6 / pw.len) end
+      if k == "fire" then return cs, seq(cs, "fire", pw.t // 6 % 3) end
+      if k == "pound" then return cs, seq(cs, "stomp", 0) end
+      if k == "shock" then return cs, seq(cs, "stomp", pw.t < 6 and 1 or 2) end
+      if k == "splash" then return cs, seq(cs, "splash", pw.t * 6 / pw.len) end
+    end
+    if not s.ground then return cs, seq(cs, "run", 2) end
+    if av > 0.15 then
+      local g = Spr.n("poncho", s.gait)
+      return cs, seq(cs, "run", (s.phase % g) / g * Spr.n(cs, "run"))
+    end
+    return cs, seq(cs, "idle", s.idle_t // 14 % Spr.n(cs, "idle"))
+  end
   if not s.ground then
     local f
     if s.jump_t < 3 then f = "jump_0"
@@ -401,8 +453,6 @@ function H.pose()
   if s.land_t > 0 and av < 1.8 then return sh, seq(sh, "land", 2 - (s.land_t - 1) // 3) end
   if av > 0.15 then
     local prefix = s.gait
-    local c = H.costume and Spr.n("poncho_" .. H.costume, "run") > 0
-    if c and prefix == "run" then return "poncho_" .. H.costume, seq("poncho_" .. H.costume, "run", s.phase) end
     return sh, seq(sh, prefix, s.phase)
   end
   -- standing: breathing, then after three seconds a look around and a blink (the whole idle strip once), again every few seconds
@@ -421,7 +471,7 @@ function H.draw(cam_x, cam_y)
   if not frame then return end
   -- hurt and invulnerable: blink (a steady see-through for a player who wants fewer flashes)
   local alpha = nil
-  if s.inv > 0 and s.state == "play" then
+  if s.inv > 0 and s.state == "play" and s.fut_t <= 0 then
     if U.calm() then alpha = 0.6 elseif (s.inv // 6) % 2 == 0 then alpha = 0.35 end
   end
   -- a soft shadow on the ground
@@ -429,6 +479,24 @@ function H.draw(cam_x, cam_y)
     Deco.img("TOY_SHADOW", math.abs(s.vx) > 3 and 1 or 0, math.floor(s.x), math.floor(s.y))
   end
   Spr.draw(sh, frame, math.floor(s.x), math.floor(s.y), {flip = s.face < 0, alpha = alpha})
+  -- the powers' effects, by code: at most five commands
+  local pw, f = s.pw, s.face
+  local x, y = math.floor(s.x), math.floor(s.y)
+  if H.costume and pw and pw.kind == "fire" and pw.t >= 5 and pw.t <= 34 then -- a tongue of flame, flickering
+    local fl = pw.t % 4 * 3
+    local x0 = x + f * 52
+    tri(x0, y - 52, x0 + f * (88 + fl), y - 40 - fl // 2, x0, y - 30, 0xFF8A20)
+    tri(x0, y - 48, x0 + f * (62 + fl), y - 41, x0, y - 34, 0xFFD43A)
+  elseif H.costume == "barretina" and pw and pw.kind == "dash" then -- speed lines behind the head
+    line(x - f * 30, y - 60, x - f * 70, y - 60, 0xFFFFFF) line(x - f * 26, y - 40, x - f * 64, y - 40, 0xFFFFFF)
+  end
+  if s.fut_t > 0 then -- sparkles circling him
+    local a = s.t * 0.2
+    for i = 0, 2 do
+      local b = a + i * 2.094
+      Deco.img("TOY_SPARK", 0, x + math.floor(math.cos(b) * 34), y - 46 + math.floor(math.sin(b) * 36))
+    end
+  end
 end
 
 return H

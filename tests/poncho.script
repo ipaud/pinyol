@@ -8,7 +8,16 @@ lua HOW()
 tick 4
 expect_lua G.state == "explain"
 shot how
-press A
+press RIGHT
+tick 2
+shot how2
+press RIGHT
+tick 2
+shot how3
+press RIGHT
+tick 2
+expect_lua require("core.screens").how.page == 1
+press B
 tick 2
 expect_lua G.state == "title"
 press DOWN
@@ -100,6 +109,74 @@ tick 30
 shot stomp
 expect_lua D.foes_alive() == 0
 
+# costumes. The barretina is found on the floor; a tap of C is the headbutt, which breaks the two crates in the way
+lua D.new_crates() D.tp(560) D.clear()
+hold RIGHT 40
+expect_lua D.state().costume == "barretina"
+shot cos_pickup
+lua D.tp(2020) D.clear()
+expect_lua D.tile(66, 10) == "K" and D.tile(67, 10) == "K"
+in 4 C
+tick 5
+expect_lua D.state().pw == "dash"
+shot cos_barretina
+tick 20
+expect_lua D.tile(66, 10) == " " and D.tile(67, 10) == " " and D.state().crates == 2
+# the headbutt beats a toy car and the costume stays
+lua D.tp(130) D.clear() D.foe("car", 140) Hero_hearts_reset = require("core.hero") Hero_hearts_reset.hearts = 3
+in 4 C
+tick 22
+expect_lua D.foes_alive() == 0 and D.state().hearts == 3 and D.state().costume == "barretina"
+# the dinosaur: fire beats a robot and not a ball; down in the air is a pound that breaks the crates beside it
+lua D.tp(130) D.clear() D.costume("dino") D.foe("ball", 120, 2)
+in 4 C
+tick 12
+shot cos_fire
+tick 30
+expect_lua D.foes_alive() == 1 and D.state().costume == "dino"
+lua D.tp(130) D.clear() D.foe("robot", 90, 2)
+in 4 C
+tick 22
+expect_lua D.foes_alive() == 0
+lua D.tp(4770) D.clear()
+in 10 A
+hold DOWN 2
+tick 8
+shot cos_pound
+tick 20
+expect_lua D.tile(150, 10) == " " and D.tile(151, 10) == " " and D.state().crates == 4
+lua D.tp(3010, 256) D.clear()
+tick 4
+in 10 A
+hold DOWN 2
+tick 30
+expect_lua D.tile(95, 7) == " " and D.state().crates == 6
+# the boots: a jump, then a splash jump in the air reaches the secret shelf over the robots (six tiles up)
+lua D.tp(3830) D.clear()
+hold RIGHT 20
+expect_lua D.state().costume == "boots"
+lua D.tp(3920) D.clear()
+in 14 RIGHT+A
+in 4 RIGHT+A+C
+shot cos_boots
+in 36 RIGHT+A
+tick 30
+expect_lua D.state().ground and D.state().y < 170
+# the football shirt: a dash and five seconds of being faster and unbeatable, toys it touches are beaten
+lua D.tp(3200) D.clear() D.costume("futbol") D.foe("car", 200)
+in 4 C
+tick 6
+expect_lua D.state().fut > 200
+shot cos_futbol
+hold RIGHT 30
+expect_lua D.state().vx > 5.2 and D.foes_alive() == 0 and D.state().hearts == 3
+# a hit costs the costume, not a heart, and a death takes it
+lua D.tp(600) D.clear() D.costume("dino")
+tick 140
+lua D.hit()
+expect_lua D.state().hearts == 3 and D.state().costume == nil and D.state().inv > 0
+shot cos_lost
+
 # a pit: he falls, the iris closes and he comes back at the keyboard
 lua D.tp(1290)
 hold RIGHT 100
@@ -119,4 +196,9 @@ shot results
 press A
 tick 4
 expect_lua G.state == "title"
+# the little bot plays the whole level (it wears and uses the costumes it finds)
+lua require("core.play").enter() G.state = "play" D.bot(true)
+tick 2400
+expect_lua G.state == "results" or D.state().x > 5900
+expect_lua D.state().crates >= 1
 expect_ok

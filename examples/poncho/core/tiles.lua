@@ -5,7 +5,9 @@ local L = require("core.level")
 local T = {}
 
 local TILE = K.TILE
-local look = {frame = 0}
+local plain = {frame = 0}
+local look = plain
+local crate = {frame = 6, dim = 0.6}
 local FRAME = {["="] = 7, T = 6, a = 8, b = 9, c = 10, d = 11}
 
 function T.init() end -- (the pictures are assets)
@@ -77,7 +79,10 @@ function T.draw(cam_x, cam_y)
         end
         c = e + 1
       else
-        if ch == "#" then
+        look = plain
+        if ch == "K" then
+          look = crate
+        elseif ch == "#" then
           local up = L.at(c, r - 1)
           look.frame = (up == " " or up == "=") and 0 or 1
         else

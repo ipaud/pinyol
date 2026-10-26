@@ -8,7 +8,7 @@ L.W, L.H = COLS * TILE, ROWS * TILE
 L.grid = M.grid
 local grid = M.grid
 
-local SOLID = {["#"] = true, W = true, T = true}
+local SOLID = {["#"] = true, W = true, T = true, K = true}
 local SLOPE = {a = {0, 16}, b = {16, 32}, c = {32, 16}, d = {16, 0}} -- the wedge's height at its left and right edges
 L.SOLID, L.SLOPE = SOLID, SLOPE
 
@@ -65,5 +65,23 @@ function L.ceiling(x, head_y, half_w)
   local r = L.solid_at(x + half_w - 2, head_y)
   return l, m, r
 end
+
+-- crates (K) are solid and break: every crate that touches the box x0..x1, y0..y1 (pixels); returns how many broke (and where, in L.broke_at)
+L.broke_at = {}
+function L.break_crates(x0, y0, x1, y1)
+  local n = 0
+  for r = math.floor(y0 / TILE), math.floor(y1 / TILE) do
+    for c = math.floor(x0 / TILE), math.floor(x1 / TILE) do
+      if r >= 0 and r < ROWS and c >= 0 and c < COLS and grid[r][c] == "K" then
+        grid[r][c] = " "
+        n = n + 1
+        L.broke_at[n] = {c * TILE + 16, r * TILE + 16}
+      end
+    end
+  end
+  return n
+end
+
+function L.reset_crates() for _, p in ipairs(M.crates) do grid[p[2]][p[1]] = "K" end end
 
 return L

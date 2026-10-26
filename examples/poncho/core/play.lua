@@ -13,6 +13,7 @@ local Snd = require("core.sound")
 local Ach = require("core.ach")
 local Hud = require("core.hud")
 local Music = require("core.music")
+local Power = require("core.power")
 local lang = require("lang")
 local transition = require("transition")
 
@@ -21,6 +22,7 @@ P.state = "run"       -- "run" | "goal"
 P.time, P.deaths = 0, 0
 P.toast, P.toast_t = "", 0
 P.stats = {stomps = 0}
+P.crates = 0
 
 local START_X, START_Y = M.start_c * K.TILE + 16, K.FLOOR * K.TILE
 
@@ -31,6 +33,9 @@ function P.enter()
   Items.init()
   Foes.init()
   Fx.clear()
+  L.reset_crates()
+  Power.reset_run()
+  P.crates = 0
   Hero.has_scooter = false
   Hero.reset(START_X, START_Y)
   Cam.snap(Hero.s)
@@ -44,16 +49,25 @@ function P.respawn()
   local cp = Items.checkpoint
   Foes.init()
   Fx.clear()
+  Items.reset_costumes()
   Hero.reset(cp and cp.x or START_X, cp and cp.y or START_Y, true)
   Cam.snap(Hero.s)
 end
 
 local function events()
   local he, ie, fe = Hero.events, Items.events, Foes.events
-  if ie.coin then Ach.earn("coin") end
   if ie.keyboard then Ach.earn("keyboard") P.say(lang.tr("toast_keyboard")) end
   if ie.scooter then Ach.earn("scooter") P.say(lang.tr("toast_scooter"), 260) end
   if ie.icecream then P.say(lang.tr("toast_cream"), 120) end
+  if ie.costume then P.say(lang.tr("toast_" .. ie.costume), 260) end
+  if next(Power.worn) then Ach.earn("costume") end
+  if Power.count_worn() >= #Power.KINDS then Ach.earn("wardrobe") end
+  if he.costume_lost then P.say(lang.tr("toast_lost"), 120) end
+  if he.crate then
+    P.crates = P.crates + he.crate
+    if P.crates >= 5 then Ach.earn("crates") end
+  end
+  if he.pound then Cam.kick(10) end
   if fe.stomp then Ach.earn("stomp") end
   if he.ramp_fast then Ach.earn("ramp") end
   if he.land_hard then Cam.kick(4) end

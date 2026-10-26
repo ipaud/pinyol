@@ -18,6 +18,8 @@ return {
   -- harm
   HEARTS = 3, INVULN = 100, HURT_T = 22,
   SPRING_V = 15.2, STOMP_V = 8.6, STOMP_V_HELD = 11.4,
+  -- costumes: a tap of C (up to TAP ticks) is the power; holding C runs
+  TAP = 8, HEAD_V = 8, HEAD_LEN = 22, FIRE_LEN = 40, POUND_V = 15, BOOTS_V = 12, SPLASH_LEN = 26, FUT_T = 300, FUT_MULT = 1.3, FUT_V = 8.5, FUT_LEN = 14, POWER_CD = 20,
   -- camera
   CAM_LEAD = 14, CAM_LEAD_MAX = 110, CAM_LERP = 0.1, CAM_FEET = 236, CAM_UP = 96, CAM_DOWN = 26,
 }

@@ -25,7 +25,6 @@ end
 local function plate(str, x, y)
   local w = textw(str, {font = H.FONT})
   rect(x - 6, y - 4, w + 12, 24, 0x2A1A3A)
-  rect(x - 6, y - 4, w + 12, 2, 0x5A2E8A)
 end
 
 function H.draw(play)
@@ -44,12 +43,18 @@ function H.draw(play)
   if Hero.has_scooter then
     Deco.img("TOY_HUD", Hero.s and Hero.s.scooter and 4 or 5, K.W - 72, 22)
   end
+  if Hero.costume then -- the costume worn: its colour (and, for the football shirt, the time left of being unbeatable)
+    local c = ({barretina = 0xD83A3A, dino = 0x72D84A, boots = 0x2E8A3E, futbol = 0xF4F4F4})[Hero.costume]
+    rect(K.W - 118, 34, 30, 30, 0x2A1A3A)
+    rect(K.W - 115, 37, 24, 24, c)
+    local fut = Hero.s and Hero.s.fut_t or 0
+    if fut > 0 then rect(K.W - 118, 66, math.floor(30 * fut / K.FUT_T), 4, 0xFFD43A) end
+  end
   if play.toast_t > 0 then
     local a = play.toast_t < 20 and play.toast_t / 20 or 1
     local w = textw(play.toast, {font = H.FONT, width = 400})
     local x = (K.W - w) // 2
     rect(x - 12, 262 + (a < 1 and 8 or 0), w + 24, 34, 0x2A1A3A)
-    rect(x - 12, 262 + (a < 1 and 8 or 0), w + 24, 3, 0xFFD43A)
     H.label(play.toast, K.W // 2, 270 + (a < 1 and 8 or 0), {align = "center", width = 400, outline = 0x000000})
   end
 end

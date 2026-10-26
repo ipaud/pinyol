@@ -9,11 +9,6 @@
   "subtitle": "Super Nintendo · Mega Drive",
   "achievements": [
     {
-      "id": "coin",
-      "name": "Primera moneda",
-      "description": "Recoge una moneda."
-    },
-    {
       "id": "keyboard",
       "name": "El teclado amigo",
       "description": "Toca el teclado de juguete: guarda tu sitio y toca una melodía."
@@ -37,6 +32,21 @@
       "id": "playroom",
       "name": "Sala de juegos completa",
       "description": "Llega a la bandera de la gran sala de juegos."
+    },
+    {
+      "id": "costume",
+      "name": "Primer disfraz",
+      "description": "Ponte un disfraz."
+    },
+    {
+      "id": "wardrobe",
+      "name": "El armario completo",
+      "description": "Ponte los cuatro disfraces en una partida."
+    },
+    {
+      "id": "crates",
+      "name": "Rompecajas",
+      "description": "Rompe cinco cajas de madera."
     }
   ],
   "look_limits": {

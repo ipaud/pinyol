@@ -77,37 +77,36 @@ end
 
 -- ---------------------------------------------------------------- how it works
 
-local how = {}
+local how = {page = 1}
 S.how = how
-local LINES = {"how_1", "how_2", "how_3", "how_4", "how_5"}
+local PAGES = {"move", "scooter", "costumes"}
+local LINES = 4 -- lines to a page: how_<page>_1 .. how_<page>_4, at the body font
 
 function how.update()
-  if In.btnp("b") or In.btnp("start") or In.btnp("a") then return true end
+  if In.btnp("right") then how.page = how.page % #PAGES + 1 Snd.play("select") end
+  if In.btnp("left") then how.page = (how.page - 2) % #PAGES + 1 Snd.play("select") end
+  if In.btnp("b") or In.btnp("start") then how.page = 1 return true end
+  if In.btnp("a") then
+    if how.page >= #PAGES then how.page = 1 return true end
+    how.page = how.page + 1
+    Snd.play("select")
+  end
 end
 
 function how.draw(bgfn)
   if bgfn then bgfn() else rect(0, 0, K.W, K.H, 0x2A1A3A) end
   shade(0, 0, K.W, K.H)
-  local x, y, w, h = 24, 14, K.W - 48, K.H - 28
+  local x, y, w, h = 20, 12, K.W - 40, K.H - 24
   panel(x, y, w, h)
-  text(lang.tr("how_title"), K.W // 2, y + 18, {font = Hud.FONT, scale = 1, align = "center", color = 0xC02050})
-  -- every paragraph in one font: the biggest of the two in which all of them fit above the "back" line
-  local tw, avail, gap = w - 56, h - 40 - 36, 5
-  local font = Hud.SMALL
-  for _, f in ipairs({Hud.FONT, Hud.SMALL}) do
-    local total = 0
-    for _, key in ipairs(LINES) do
-      local _, th = textw(lang.tr(key), {font = f, width = tw})
-      total = total + th + gap
-    end
-    if total <= avail then font = f break end
+  local key = PAGES[how.page]
+  text(lang.tr("how_" .. key), K.W // 2, y + 16, {font = Hud.FONT, scale = 1, align = "center", color = 0xC02050})
+  local ly = y + 44
+  for i = 1, LINES do
+    local str = lang.tr("how_" .. key .. "_" .. i)
+    textbox(str, x + 26, ly, w - 52, 46, {font = Hud.FONT, fonts = {Hud.FONT, Hud.SMALL}, color = 0x3A2A4A, valign = "middle"})
+    ly = ly + 48
   end
-  local ly = y + 40
-  for _, key in ipairs(LINES) do
-    local _, th = text(lang.tr(key), x + 28, ly, {font = font, width = tw, color = 0x3A2A4A})
-    ly = ly + th + gap
-  end
-  text(lang.tr("how_back"), K.W // 2, y + h - 30, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+  text(lang.tr("how_page", {n = how.page, m = #PAGES}), K.W // 2, y + h - 26, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
 end
 
 -- ---------------------------------------------------------------- results

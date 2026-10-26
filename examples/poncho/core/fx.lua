@@ -1,10 +1,19 @@
 -- fx: little particles in world pixels (dust at the soles, sparkles, confetti), a fixed pool, drawn under camera()
 local F = {}
-local MAXN = 64
+local MAXN = 4
 local ps = {}
 local n = 0
 
-function F.clear() n = 0 end
+local rings, nr = {}, 0 -- up to three rings (a shock, a splash): one command each
+function F.clear() n, nr = 0, 0 end
+
+-- a ring that grows from r0 to r1 in `life` ticks (about a wave: ground pound, splash)
+function F.ring(x, y, r0, r1, color, life)
+  if nr >= 3 then table.remove(rings, 1) nr = nr - 1 end
+  nr = nr + 1
+  rings[nr] = {x = x, y = y, r0 = r0, r1 = r1, color = color, life = life, max = life}
+end
+
 
 local function add(x, y, vx, vy, life, size, color, grav)
   if n >= MAXN then return end
@@ -12,6 +21,13 @@ local function add(x, y, vx, vy, life, size, color, grav)
   local p = ps[n]
   if not p then p = {} ps[n] = p end
   p.x, p.y, p.vx, p.vy, p.life, p.max, p.size, p.color, p.grav = x, y, vx, vy, life, life, size, color, grav
+end
+
+function F.debris(x, y)
+  for _ = 1, 4 do
+    add(x + (math.random() - 0.5) * 20, y + (math.random() - 0.5) * 20, (math.random() - 0.5) * 4, -1 - math.random() * 3, 24 + math.random(10), 5,
+        math.random() < 0.5 and 0xB8742E or 0x8A5222, 0.18)
+  end
 end
 
 function F.dust(x, y, count, dir, spread)
@@ -38,6 +54,11 @@ function F.confetti(x, y, count)
 end
 
 function F.update()
+  for i = nr, 1, -1 do
+    local r = rings[i]
+    r.life = r.life - 1
+    if r.life <= 0 then table.remove(rings, i) nr = nr - 1 end
+  end
   local i = 1
   while i <= n do
     local p = ps[i]
@@ -54,6 +75,11 @@ function F.update()
 end
 
 function F.draw()
+  for i = 1, nr do
+    local r = rings[i]
+    local k = 1 - r.life / r.max
+    circ(math.floor(r.x), math.floor(r.y), math.floor(r.r0 + (r.r1 - r.r0) * k), r.color, false)
+  end
   for i = 1, n do
     local p = ps[i]
     local s = p.size

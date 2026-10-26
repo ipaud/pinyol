@@ -24,6 +24,9 @@ function I.init()
   end
 end
 
+-- the costumes lost with a death lie there again
+function I.reset_costumes() for _, it in ipairs(I.list) do if it.kind:sub(1, 4) == "cos_" then it.taken = false end end end
+
 function I.counts()
   local coins, creams, total_c, total_i = 0, 0, 0, 0
   for _, it in ipairs(I.list) do
@@ -85,6 +88,11 @@ function I.update()
         I.events.scooter = true
         Fx.sparkle(it.x, it.y - 20, 0x60C0FF, 12)
         Snd.play("scooter")
+      elseif k:sub(1, 4) == "cos_" and not it.taken and dx < 36 and s.y > it.y - 80 and s.y < it.y + 16 then
+        it.taken = true
+        Hero.give(k:sub(5))
+        I.events.costume = k:sub(5)
+        Fx.sparkle(it.x, it.y - 30, 0xFFFFFF, 10)
       elseif k == "flag" and dx < 36 and s.y > it.y - 150 and s.y < it.y + 16 then
         I.events.goal = true
       end
@@ -124,6 +132,16 @@ local function flag(it)
   Deco.img("TOY_FLAG", math.floor(it.t * 6 / (8 * 6.2832)) % 6, math.floor(it.x), math.floor(it.y))
 end
 
+-- a costume to find: a little coloured box with a star over it, bobbing (placeholder art, drawn by code: three commands)
+local COS = {barretina = 0xD83A3A, dino = 0x72D84A, boots = 0x2E8A3E, futbol = 0xF4F4F4}
+local function costume(it)
+  local x, y = math.floor(it.x), math.floor(it.y - 30 + math.sin(it.t / 15) * 5)
+  rect(x - 17, y - 17, 34, 34, 0x2A1A3A)
+  rect(x - 14, y - 14, 28, 28, COS[it.kind:sub(5)])
+  if it.kind == "cos_futbol" then rect(x - 14, y - 6, 28, 6, 0x2E8A3E) end
+  Deco.img("TOY_STAR", 0, x, y)
+end
+
 function I.draw(cam_x)
   coins:clear()
   local it_t = ticks()
@@ -136,7 +154,8 @@ function I.draw(cam_x)
       elseif k == "spring" then spring(it)
       elseif k == "keyboard" then keyboard(it)
       elseif k == "scooter" then scooter(it)
-      elseif k == "flag" then flag(it) end
+      elseif k == "flag" then flag(it)
+      elseif k:sub(1, 4) == "cos_" then costume(it) end
     end
   end
   coins:draw("TOY_COIN", (it_t // 4) % 8)

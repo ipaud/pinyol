@@ -17,18 +17,22 @@ function D.tp(x, y)
   local s = Hero.s
   s.x, s.y, s.vx, s.vy = x, y or FLOOR, 0, 0
   s.ground = y == nil
-  s.state, s.inv, s.hurt_t, s.dead_t = "play", 0, 0, 0
+  s.state, s.inv, s.hurt_t, s.dead_t, s.pw, s.pw_cd, s.face = "play", 0, 0, 0, nil, 0, 1
   Cam.snap(s)
   return true
 end
 function D.scooter(on) Hero.has_scooter = true Hero.s.scooter = on ~= false return true end
+function D.new_crates() L.reset_crates() Play.crates = 0 return true end
+function D.tile(c, r) return L.at(c, r) end
 function D.foe(kind, dx, range) local s = Hero.s return Foes.spawn(kind, s.x + dx, s.y, range or 8) ~= nil end
+function D.costume(kind) Hero.s.state = "play" if kind then Hero.give(kind) else Hero.costume = nil end return true end
+function D.hit() return Hero.hurt(Hero.s.x + 40) end
 function D.clear() Foes.clear() return true end
 function D.bot(on) In.bot = on ~= false return true end
 function D.state()
   local s = Hero.s
   return {state = G.state, play = Play.state, x = math.floor(s.x), y = math.floor(s.y), vx = s.vx, vy = s.vy, ground = s.ground, scooter = s.scooter,
-          hs = s.state, hearts = Hero.hearts, cp = Items.checkpoint and Items.checkpoint.x, time = Play.time, deaths = Play.deaths, cam = math.floor(Cam.x)}
+          hs = s.state, hearts = Hero.hearts, costume = Hero.costume, pw = s.pw and s.pw.kind, fut = s.fut_t, crates = Play.crates, inv = s.inv, cp = Items.checkpoint and Items.checkpoint.x, time = Play.time, deaths = Play.deaths, cam = math.floor(Cam.x)}
 end
 
 -- a trace of the hero each tick of play, from x >= from
@@ -99,6 +103,7 @@ end
 function D.jump_height(hold)
   sim_begin()
   D.tp(400)
+  Hero.costume = nil
   local s = Hero.s
   local top = s.y
   for i = 1, 80 do

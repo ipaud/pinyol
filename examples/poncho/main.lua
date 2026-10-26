@@ -1,7 +1,8 @@
 -- Poncho (working title: Poncho y el Patinete Loco): a side-scrolling platformer for a 3-year-old hero, 16-bit look. This is the first level, "the giant playroom".
 --   The world is 240x160 only for the far wall (a bitmap layer scrolled line by line); everything else (tiles, Poncho, toys, text) is drawn at the screen's own
 --   480x320 with img / shapes, as Taller does, so the strips can be as big as the art wants. The level is 192 x 14 tiles of 32 px (6144 x 448 px).
---   Controls: arrows move, A jumps (let go early for a short hop), C runs, B gets on or off the scooter once found, DOWN brakes / falls faster / drops through shelves.
+--   Controls: arrows move, A jumps (let go early for a short hop), C (held) runs and (a short tap) uses the costume's power, B gets on or off the scooter once found, DOWN brakes / falls faster / drops through shelves.
+--   Costumes (core/power.lua): barretina headbutt, dino fire and ground pound (DOWN in the air), boots splash jump (once more in the air), football shirt dash and 5 s of invulnerability.
 --   core/hero.lua is the feel; core/map.lua is the level; core/foes.lua, items.lua the toys; bgfx.lua and tiles.lua the picture.
 local lang = require("lang")
 local K = require("core.const")

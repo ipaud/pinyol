@@ -5,17 +5,9 @@ title_sub,y el Patinete Loco,i el Patinet Boig,and the Crazy Scooter
 title_start,EMPEZAR,COMENÇAR,START
 title_how,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
 title_best,Mejor tiempo {time},Millor temps {time},Best time {time}
-how_title,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
-how_1,"Flechas: andar. Mantén una flecha y Poncho acaba corriendo; C corre al momento. A salta: suéltala pronto y el salto es corto.","Fletxes: caminar. Mantén una fletxa i en Poncho acaba corrent; C corre a l'instant. A salta: deixa-la anar aviat i el salt és curt.","Arrows: walk. Hold one and Poncho ends up running; C runs at once. A jumps: let go early for a short hop."
-how_2,"Salta sobre los juguetes para vencerlos. Si te tocan de lado pierdes un corazón; el helado te lo devuelve.","Salta sobre les joguines per vèncer-les. Si et toquen de costat perds un cor; el gelat te'l torna.","Jump on the toys to beat them. Touch one from the side and you lose a heart; ice cream gives it back."
-how_3,"Abajo frena, cae más rápido y atraviesa las estanterías (con A).","Avall frena, cau més de pressa i travessa els prestatges (amb A).","Down brakes, falls faster and drops through shelves (with A)."
-how_4,"Al encontrar el patinete, B lo sube y lo baja. Flechas para empujar, sin tocar se desliza, la dirección contraria derrapa, abajo frena, C empuja fuerte. Las rampas te lanzan.","Quan trobes el patinet, B el puja i el baixa. Fletxes per empènyer, sense tocar rellisca, la direcció contrària derrapa, avall frena, C empeny fort. Les rampes et llancen.","Find the scooter and B gets on or off. Arrows push, let go and it glides, the other way drifts, down brakes, C pushes hard. Ramps launch you."
-how_5,"El teclado de juguete es tu amigo: tócalo y guarda tu sitio. Llega a la bandera.","El teclat de joguina és el teu amic: toca'l i guarda el teu lloc. Arriba a la bandera.","The toy keyboard is your friend: touch it and it keeps your place. Reach the flag."
-how_back,Pulsa A para volver,Prem A per tornar,Press A to go back
 toast_keyboard,¡El teclado recuerda tu sitio!,El teclat recorda el teu lloc!,The keyboard remembers your place!
 toast_scooter,¡El patinete! B lo sube y lo baja,El patinet! B el puja i el baixa,The scooter! B gets on and off
 toast_cream,¡Un corazón de helado!,Un cor de gelat!,An ice cream heart!
-ach_coin,Primera moneda,Primera moneda,First coin
 ach_keyboard,El teclado amigo,El teclat amic,The friendly keyboard
 ach_scooter,Patinete encontrado,Patinet trobat,Scooter found
 ach_stomp,Salto sobre un juguete,Salt sobre una joguina,Jumped on a toy
@@ -27,3 +19,27 @@ res_creams,Helados,Gelats,Ice creams
 res_time,Tiempo,Temps,Time
 res_best,Mejor,Millor,Best
 res_next,Pulsa A,Prem A,Press A
+how_move,CÓMO SE JUEGA,COM ES JUGA,HOW TO PLAY
+how_move_1,Flechas: andar. Mantén una y Poncho acaba corriendo; mantén C para correr ya.,Fletxes: caminar. Mantén-ne una i en Poncho acaba corrent; mantén C per córrer ja.,Arrows: walk. Hold one and Poncho ends up running; hold C to run at once.
+how_move_2,A salta. Suéltala pronto y el salto es corto.,A salta. Deixa-la anar aviat i el salt és curt.,A jumps. Let go early for a short hop.
+how_move_3,"Salta sobre los juguetes para vencerlos. Si te tocan de lado, pierdes un corazón.","Salta sobre les joguines per vèncer-les. Si et toquen de costat, perds un cor.","Jump on toys to beat them. Touched from the side, you lose a heart."
+how_move_4,Los helados devuelven corazones. El teclado de juguete es tu amigo: guarda tu sitio.,Els gelats tornen cors. El teclat de joguina és el teu amic: guarda el teu lloc.,Ice creams give hearts back. The toy keyboard is your friend: it keeps your place.
+how_scooter,EL PATINETE,EL PATINET,THE SCOOTER
+how_scooter_1,"Al encontrar el patinete, B lo sube y lo baja.","Quan trobes el patinet, B el puja i el baixa.","Find the scooter, then B gets on and off."
+how_scooter_2,"Flechas: empujar. Sin tocar, se desliza. La dirección contraria derrapa.","Fletxes: empènyer. Sense tocar, rellisca. La direcció contrària derrapa.",Arrows push. Let go and it glides. The other way drifts.
+how_scooter_3,Abajo frena. C empuja fuerte. Las rampas te lanzan por los aires.,Avall frena. C empeny fort. Les rampes et llancen pels aires.,Down brakes. C pushes hard. Ramps launch you through the air.
+how_scooter_4,A toda velocidad rompes las cajas de madera.,A tota velocitat trenques les caixes de fusta.,At full speed you break wooden crates.
+how_costumes,DISFRACES,DISFRESSES,COSTUMES
+how_costumes_1,Cada disfraz da un poder. Un toque corto de C lo usa; mantener C corre.,Cada disfressa dona un poder. Un toc curt de C l'usa; mantenir C corre.,Each costume gives a power. A short tap of C uses it; holding C runs.
+how_costumes_2,"Barretina: cabezazo que rompe cajas. Dino: fuego, y abajo en el aire es un pisotón.","Barretina: cop de cap que trenca caixes. Dino: foc, i avall a l'aire és un trepitjada.","Cap: a headbutt that breaks crates. Dino: fire, and down in the air is a ground pound."
+how_costumes_3,"Botas: salto con salpicadura, y otro en el aire. Camiseta: 5 s de carrera imparable.","Botes: salt amb esquitx, i un altre a l'aire. Samarreta: 5 s de cursa imparable.","Boots: a splash jump, and one more in the air. Shirt: 5 s of unstoppable running."
+how_costumes_4,"Un golpe te quita el disfraz, no un corazón. ¡Hay un secreto que pide botas!","Un cop et treu la disfressa, no un cor. Hi ha un secret que demana botes!","A hit costs the costume, not a heart. A secret asks for the boots!"
+how_page,{n}/{m}   < >   A,{n}/{m}   < >   A,{n}/{m}   < >   A
+toast_barretina,¡Barretina! Toca C: cabezazo,Barretina! Toca C: cop de cap,Cap! Tap C: headbutt
+toast_dino,"¡Dino! C: fuego, abajo en el aire: pisotón","Dino! C: foc, avall a l'aire: trepitjada","Dino! C: fire, down in the air: pound"
+toast_boots,¡Botas! C: salto con salpicadura,Botes! C: salt amb esquitx,Boots! C: a splash jump
+toast_futbol,¡Camiseta! C: carrera imparable,Samarreta! C: cursa imparable,Shirt! C: unstoppable dash
+toast_lost,¡Perdiste el disfraz!,Has perdut la disfressa!,You lost the costume!
+ach_costume,Primer disfraz,Primera disfressa,First costume
+ach_wardrobe,El armario completo,L'armari complet,The full wardrobe
+ach_crates,Rompecajas,Trenca-caixes,Crate breaker

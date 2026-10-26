@@ -8,6 +8,7 @@ local Hero = require("core.hero")
 local Fx = require("core.fx")
 local Snd = require("core.sound")
 local In = require("core.input")
+local Power = require("core.power")
 local Deco = require("core.deco")
 
 local F = {}
@@ -112,7 +113,14 @@ function F.update()
       if f.dead > 26 then table.remove(F.list, i) end
     elseif math.abs(f.x - s.x) < WAKE then
       update_one(f, s.x)
-      if s.state == "play" or s.state == "hurt" then
+      local ak, ax, ay, aw, ah = Hero.attack()
+      if ak and f.dead == 0 and Power.beats(ak, f.kind) and U.overlap(ax, ay, aw, ah, f.x - f.w / 2, f.y - f.h, f.w, f.h) then
+        f.dead = 1
+        F.events.power = true
+        Snd.play("stomp")
+        Fx.sparkle(f.x, f.y - f.h / 2, 0xFFFFFF, 8)
+      end
+      if f.dead == 0 and (s.state == "play" or s.state == "hurt") then
         local fx0, fy0 = f.x - f.w / 2, f.y - f.h
         if U.overlap(hx0 + 3, hy0 + 4, hw - 6, hh - 4, fx0, fy0, f.w, f.h) then
           local stomp = s.vy > 0.3 and s.y < f.y - f.h * 0.35 and s.state == "play"
