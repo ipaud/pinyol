@@ -78,11 +78,12 @@ function H.draw(play)
     if fut > 0 then rect(K.W - 118, 66, math.floor(30 * fut / K.FUT_T), 4, 0xFFD43A) end
   end
   if play.toast_t > 0 then
+    local up = Boss.rhythm_round() and -150 or 0 -- (in a rhythm round the keys are at the foot of the screen: the note goes higher)
     local a = play.toast_t < 20 and play.toast_t / 20 or 1
     local w = textw(play.toast, {font = H.FONT, width = 400})
     local x = (K.W - w) // 2
-    rect(x - 12, 262 + (a < 1 and 8 or 0), w + 24, 34, 0x2A1A3A)
-    H.label(play.toast, K.W // 2, 270 + (a < 1 and 8 or 0), {align = "center", width = 400, outline = 0x000000})
+    rect(x - 12, 262 + up + (a < 1 and 8 or 0), w + 24, 34, 0x2A1A3A)
+    H.label(play.toast, K.W // 2, 270 + up + (a < 1 and 8 or 0), {align = "center", width = 400, outline = 0x000000})
   end
 end
 

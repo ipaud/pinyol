@@ -416,14 +416,16 @@ function B.draw(cam_x)
 end
 
 -- the life bar, in screen pixels: its name and a row of lives
+function B.rhythm_round() return b ~= nil and B.started and not B.dead and b.mode == "rhythm" end
+
 function B.hud(lang)
   if not b or not B.started or B.dead then return end
-  local w = 200
-  local x, y = (K.W - w) // 2, 12
+  local w = 170
+  local x, y = 214, 12 -- (between the counters on the left and the clock on the right)
   rect(x - 3, y - 3, w + 6, 30, 0x2A1A3A)
   rect(x, y + 14, w, 9, 0x4A2A4A)
   rect(x, y + 14, math.floor(w * math.max(0, b.hp) / b.maxhp), 9, 0xE04050)
-  text(lang.tr(SPEC[b.id].name), K.W // 2, y - 1, {font = "snes_small", color = 0xFFFFFF, align = "center"})
+  text(lang.tr(SPEC[b.id].name), x + w // 2, y - 1, {font = "snes_small", color = 0xFFFFFF, align = "center"})
   if b.id ~= "silencio" then return end
   -- the music meter, under the life bar
   rect(x - 3, y + 30, w + 6, 12, 0x2A1A3A)

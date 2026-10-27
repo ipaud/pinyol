@@ -210,7 +210,7 @@ function res.draw(bgfn)
   local x, y, w, h = 70, 40, K.W - 140, 240
   panel(x, y, w, h)
   local i = res.info
-  text(lang.tr("res_title"), K.W // 2, y + 22, {font = Hud.FONT, scale = 2, align = "center", color = 0xC02050})
+  text(lang.tr(i.final and "res_title_final" or "res_title"), K.W // 2, y + 22, {font = Hud.FONT, scale = 2, align = "center", color = 0xC02050})
   local rows = {
     {lang.tr("res_coins"), i.coins .. "/" .. i.total_coins},
     {lang.tr("res_creams"), i.creams .. "/" .. i.total_creams},
