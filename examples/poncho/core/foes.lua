@@ -423,6 +423,9 @@ local function park(f)
   if k == "snail" and f.mode == "shell" then fr = 8 + math.min(2, f.mt // 6) end
   if not own then fr = fr % math.max(1, n - 2) end
   if over(f) then fr = n - 2 + (f.dead < 12 and 0 or 1) end
+  if own and k == "pigeon" and f.mode == "peck" and not over(f) and Deco.has("CE_PIGEON_PECK") then -- the peck has its own strip (peck_0..3)
+    id, fr = "CE_PIGEON_PECK", (f.mt // 7) % 4
+  end
   Deco.img(id, fr, x, y, alook)
 end
 

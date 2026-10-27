@@ -168,6 +168,7 @@ function B.phase() return b and phase() or 0 end
 local function start_round()
   b.round = (b.round or 0) + 1
   b.mode, b.mt = "rhythm", 0
+  Fx.burst(b.x, b.y - b.h * 0.6) -- (stunned: the burst)
   b.notes, b.perfect, b.good = {}, 0, 0
   local pat = PATTERN[phase()]
   for i = 1, 4 do b.notes[i] = {lane = pat[i], T = R_START + R_GAP * (i - 1), done = false} end
@@ -329,6 +330,7 @@ function B.update()
     b.mt = b.mt + 1
     if b.mt % 6 == 0 then Fx.sparkle(b.x + (math.random() - 0.5) * 60, b.y - math.random() * b.h, 0xFFE060, 3) end
     if b.mt % 20 == 0 then Fx.ring(b.x, b.y - b.h / 2, 10, 80, 0xFFFFFF, 14) Snd.play("pound") end
+    if b.id == "paloma" and b.mt % 18 == 1 then Fx.burst(b.x + (math.random() - 0.5) * 50, b.y - 40 - math.random() * 70) end
     if b.mt > 110 then
       B.dead = true
       Cam.lock, Hero.bounds = nil, nil
@@ -397,7 +399,14 @@ function B.draw(cam_x)
     if m == "stun" then fr = 8 elseif m == "dying" then fr = 9 end
     look.flip, look.sx, look.sy = b.dir < 0, 2, 2
     look.alpha = (b.inv > 0 and (b.inv // 4) % 2 == 0) and 0.5 or nil
+    if m == "dying" then -- no art of her own: she pops up, spins out with the pigeon's defeated frame and fades under the bursts
+      local t = b.mt
+      y = y - math.floor(math.sin(math.min(t, 70) / 70 * math.pi) * 70)
+      look.angle = t * 12 * (b.dir < 0 and -1 or 1)
+      if t > 80 then look.alpha = math.max(0.05, 1 - (t - 80) / 30) end
+    end
     Deco.img("CE_PIGEON", fr, x + (m == "rise" and (b.mt % 2 == 0 and 2 or -2) or 0), y, look)
+    look.angle = nil
     look.sx, look.sy, look.alpha = nil, nil, nil
     if m == "stun" then
       local a = b.mt * 0.18

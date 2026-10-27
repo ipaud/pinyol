@@ -4,6 +4,7 @@
 local K = require("core.const")
 local L = require("core.level")
 local W = require("core.worlds")
+local Deco = require("core.deco")
 local T = {}
 
 local TILE = K.TILE
@@ -12,6 +13,11 @@ local FLOORISH = {["#"] = true, [">"] = true, ["<"] = true, P = true}
 
 local plain, crate, one7, one6 = {frame = 0}, {frame = 6, dim = 0.6}, {frame = 7}, {frame = 6}
 local black = {frame = 6, dim = 0.3} -- a black key
+local HOP_S = 0.45 -- CT_HOP (110x37 board with chalk 1 2 3) shrunk to sit on one 32 px tile with a little overhang
+local BLACKKEY = {[0] = true, [1] = true, [3] = true, [4] = true, [5] = true} -- which white keys (column % 7) carry a raised black key
+local keyl, ramps = {frame = 0}, {{frame = 0}, {frame = 1}, {frame = 2}, {frame = 3}} -- (looks of the black key and the four ramp halves)
+local hopl = {{frame = 0, scale_x = HOP_S, scale_y = HOP_S}, {frame = 1, scale_x = HOP_S, scale_y = HOP_S}}
+local RAMP_I = {a = 1, b = 2, c = 3, d = 4}
 local prefix, STRIP, BODY, RUNS
 local NAMES = {KT = {SHELF = "COUNTER", TBOX = "CRATES"}, BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}, CT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
 local function build(pre, mul)
@@ -36,9 +42,9 @@ local cache, cache_key, looks = {}, nil, {}
 local k_c0, k_c1, k_r0, k_r1, k_pre, k_mul, k_rev
 local function emit(id, x, y, look)
   if look then -- (the shared `look` tables change between calls: each picture keeps its own, one per kind)
-    local k = (look.frame or "") .. "|" .. (look.dim or "") .. "|" .. (look.mul or "")
+    local k = (look.frame or "") .. "|" .. (look.dim or "") .. "|" .. (look.mul or "") .. "|" .. (look.scale_x or "")
     local own = looks[k]
-    if not own then own = {frame = look.frame, dim = look.dim, mul = look.mul} looks[k] = own end
+    if not own then own = {frame = look.frame, dim = look.dim, mul = look.mul, scale_x = look.scale_x, scale_y = look.scale_y} looks[k] = own end
     look = own
   end
   local n = #cache
@@ -95,6 +101,12 @@ function T.draw(cam_x, cam_y)
       c = c + 1
     end
   end
+  -- the stage's black keys: a raised key on some white-key columns (KT_FLOORKEY frame 0), over the floor column
+  if prefix == "KT" and Deco.has("KT_FLOORKEY") then
+    for c = c0, c1 do
+      if fcr[c] == K.FLOOR and g[K.FLOOR][c] == "P" and BLACKKEY[c % 7] then emit("KT_FLOORKEY", c * TILE, K.FLOOR * TILE, keyl) n = n + 1 end
+    end
+  end
   -- stacks of body stone under a ramp: three rows at a time, one picture (BODY1)
   for k in pairs(used) do used[k] = nil end
   for c = c0, c1 do
@@ -137,7 +149,12 @@ function T.draw(cam_x, cam_y)
         c = e + 1
       else
         local look = plain
-        if ch == "K" then
+        local alt = false
+        if prefix == "CT" and RAMP_I[ch] and Deco.has("CT_RAMP_RB") then -- the chalk-rainbow ramps
+          emit("CT_RAMP_RB", c * TILE, r * TILE, ramps[RAMP_I[ch]]) n = n + 1 alt = true
+        elseif prefix == "CT" and (ch == "H" or ch == "h") and Deco.has("CT_HOP") then -- the hopscotch board: normal, cracked
+          emit("CT_HOP", c * TILE + TILE // 2 - math.floor(55 * HOP_S), r * TILE - math.floor(3 * HOP_S), hopl[ch == "H" and 1 or 2]) n = n + 1 alt = true
+        elseif ch == "K" then
           look = crate
         elseif ch == "B" then
           look = black
@@ -147,8 +164,10 @@ function T.draw(cam_x, cam_y)
         else
           look.frame = ch == "W" and (2 + ((c * 7 + r * 3) % 4)) or FRAME[ch]
         end
-        emit(prefix .. "_TILES", c * TILE, r * TILE, look)
-        n = n + 1
+        if not alt then
+          emit(prefix .. "_TILES", c * TILE, r * TILE, look)
+          n = n + 1
+        end
         c = c + 1
       end
     end
