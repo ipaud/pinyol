@@ -1,0 +1,43 @@
+{
+  "asset": "CE_BALL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 25,
+  "w": 66,
+  "h": 69,
+  "frames": 10,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "anchor": [
+    33,
+    66
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 24195,
+    "as_rgb565": 91080
+  }
+}

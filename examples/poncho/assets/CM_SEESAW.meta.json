@@ -1,0 +1,25 @@
+{
+  "asset": "CM_SEESAW",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 19,
+  "w": 155,
+  "h": 70,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    77,
+    69
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 6206,
+    "as_rgb565": 21700
+  }
+}

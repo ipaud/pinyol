@@ -12,15 +12,17 @@ local FLOORISH = {["#"] = true, [">"] = true, ["<"] = true}
 
 local plain, crate, one7, one6 = {frame = 0}, {frame = 6, dim = 0.6}, {frame = 7}, {frame = 6}
 local prefix, STRIP, BODY, RUNS
-local NAMES = {BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
+local NAMES = {BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}, CT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
 local function build(pre, mul)
   prefix = pre
   plain.mul, crate.mul, one7.mul, one6.mul = mul, mul, mul, mul
-  crate.frame, crate.dim = (pre == "FT") and 3 or 6, (pre ~= "FT") and 0.6 or nil -- (an orange crate in the market, a darkened toy box in the playroom)
+  crate.frame, crate.dim = (pre == "FT") and 3 or (pre == "CT" and 4 or 6), (pre == "BG") and 0.6 or nil -- (an orange crate in the market, a darkened toy box in the playroom)
   local nm = NAMES[pre] or NAMES.BG
   local function strips(name, one) name = nm[name] return {{8, pre .. "_" .. name .. "8"}, {4, pre .. "_" .. name .. "4"}, {2, pre .. "_" .. name .. "2"}, one} end
   STRIP = {{8, pre .. "_FLOOR8"}, {4, pre .. "_FLOOR4"}, {2, pre .. "_FLOOR2"}, {1, pre .. "_FLOORCOL"}}
   BODY = {{8, pre .. "_BODY8"}, {4, pre .. "_BODY4"}, {2, pre .. "_BODY2"}, {1, pre .. "_BODY1"}}
+  local tf = W.tile_frames or {}
+  FRAME.H, FRAME.h = tf.H or 4, tf.h or 5
   RUNS = {["="] = strips("SHELF", {1, pre .. "_TILES", one7}), T = strips("TBOX", {1, pre .. "_TILES", one6})}
 end
 

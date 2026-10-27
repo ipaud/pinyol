@@ -38,7 +38,21 @@ W.defs = {
      {250, "FM_FORE_CABBAGE", 262}, {800, "FM_FORE_CAT", 250}, {1300, "FM_FORE_BASKET", 270}, {1800, "FM_FORE_CAN", 262}, {2300, "FM_FORE_SACK", 258},
      {2800, "FM_FORE_CARROTS", 250}}},
    alias = {TOY_COIN = "FI_COIN", TOY_CREAM = "FI_LOLLI", TOY_FLAG = "FI_FLAG", TOY_KEYBOARD = "FI_KEYBOARD", TOY_SPRING = "FT_PAD"}},
-  {id = "chalk", name_key = "world_3", ready = false, cols = 192},
+  -- world 3, the chalk park: CM_* backgrounds, CT_* tiles, CE_* toys, CI_* items (data/deco3.lua, data/cm_far_slices.lua, data/world3_assets.md). The art has no hopscotch square
+  -- of its own: the chalk boxes t2 (circle) and t6 (plain) are the square and the cracked one. A picture the data lacks is replaced by the market's, tinted.
+  {id = "chalk", name_key = "world_3", ready = true, cols = 240, music = "chalk", bgcolor = 0x676279, tiles = "CT", tilemul = 0xC8E0D0,
+   frames = {H = 2, h = 6}, fb_frames = {H = 4, h = 5},
+   far = {def = "data.cm_far_slices", fallback = "data.fm_far_slices", speed = 0.09, y = 0, ycam = 0.05, fill = 0x676279, mul = 0xB8E8C8},
+   mid = {speed = 0.62, period = 3000, dim = 0.94, mul = 0xC8E8D8, list = {
+     {80, "CM_SLIDE", "FM_STALL_1"}, {330, "CM_TREE", "FM_LAMP"}, {560, "CM_SWINGS", "FM_STALL_2"}, {820, "CM_FOUNTAIN", "FM_FOUNTAIN"}, {1010, "CM_BENCH", "FM_CRATEPYR"},
+     {1200, "CM_TREE", "FM_STALL_3"}, {1450, "CM_SANDBOX", "FM_PARASOL"}, {1560, "CM_LAMP", "FM_LAMP"}, {1830, "CM_SLIDE", "FM_STALL_4"}, {2080, "CM_TREE", "FM_CART"},
+     {2260, "CM_BENCH", "FM_SIGN"}, {2430, "CM_SEESAW", "FM_STALL_5"}, {2680, "CM_CHALKHOUSE", "FM_WHEELBARROW"}, {2820, "CM_CHALKBOW", "FM_CRATEPEAR"},
+     {1320, "CM_CHALKSUN", "FM_SACKS"}}},
+   fore = {speed = 1.5, period = 3300, list = {
+     {250, "CM_FORE_LEAVES", 262, "FM_FORE_CABBAGE"}, {800, "CM_FORE_CHALKBOX", 252, "FM_FORE_CAT"}, {1300, "CM_FORE_BALL", 262, "FM_FORE_BASKET"},
+     {1800, "CM_FORE_HOOP", 246, "FM_FORE_CAN"}, {2300, "CM_FORE_BOTTLE", 258, "FM_FORE_SACK"}, {2800, "CM_FORE_SCOOTER", 258, "FM_FORE_CARROTS"}}},
+   alias = {TOY_COIN = "CI_COIN", TOY_CREAM = "CI_LOLLI", TOY_FLAG = "CI_FLAG", TOY_KEYBOARD = "CI_KEYBOARD", TOY_SPRING = "CT_PAD", FT_PAD = "CT_PAD", FT_CART = "CT_CART",
+            TOY_BALL = "CE_BALL", TOY_PLANE = "CE_KITE"}},
   {id = "stage", name_key = "world_4", ready = false, cols = 192},
 }
 
@@ -65,6 +79,7 @@ function W.load(i)
   W.far, W.case = layer(d.far), layer(d.case)
   W.tile_prefix = (d.tiles and Deco.has(d.tiles .. "_TILES")) and d.tiles or "BG"
   W.tile_mul = (W.tile_prefix == "BG" and d.tiles ~= "BG") and d.tilemul or nil
+  W.tile_frames = (W.tile_prefix == d.tiles) and d.frames or d.fb_frames
   return d
 end
 

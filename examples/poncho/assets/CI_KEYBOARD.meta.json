@@ -1,0 +1,35 @@
+{
+  "asset": "CI_KEYBOARD",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 28,
+  "w": 116,
+  "h": 109,
+  "frames": 6,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "anchor": [
+    58,
+    108
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 45546,
+    "as_rgb565": 151728
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "asset": "CT_FLOOR2",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 16,
+  "w": 64,
+  "h": 96,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3760,
+    "as_rgb565": 12288
+  }
+}

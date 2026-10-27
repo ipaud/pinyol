@@ -1,0 +1,25 @@
+{
+  "asset": "CM_SLIDE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 19,
+  "w": 156,
+  "h": 170,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    78,
+    169
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 13263,
+    "as_rgb565": 53040
+  }
+}

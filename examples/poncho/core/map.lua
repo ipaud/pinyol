@@ -76,6 +76,14 @@ function M.load(i, cols)
     local _, y = at(c0, h)
     plats[#plats + 1] = {x = c0 * 32, y = y, w = 96, vx = vx, x0 = c0 * 32, x1 = c1 * 32}
   end
+  -- a hopscotch tile ('H': the first step cracks it, the second makes it vanish) at height h above the floor
+  function kit.hop(c, h) set(c, FR - h, "H") end
+  -- a swing: a seat that swings to and fro (a pendulum) around column c at height h, amp tiles each way, one swing in `period` ticks
+  function kit.swing(c, h, amp, period, phase)
+    local _, y = at(c, h)
+    plats[#plats + 1] = {kind = "swing", x = c * 32 - 64, y = y, w = 128, vx = 0, x0 = c * 32 - 64, x1 = c * 32 - 64, cx = c * 32 - 64, amp = amp * 32,
+                         period = period, phase = phase or 0, y0 = y, t = 0}
+  end
   function kit.boss(id, c) boss = {id = id, x = c * 32 + 16, y = FR * 32} end
   function kit.start(c) start_c = c end
 
@@ -84,6 +92,9 @@ function M.load(i, cols)
 
   local crates = {}
   for r = 0, ROWS - 1 do for c = 0, cols - 1 do if grid[r][c] == "K" then crates[#crates + 1] = {c, r} end end end
+  local hops = {}
+  for r = 0, ROWS - 1 do for c = 0, cols - 1 do if grid[r][c] == "H" then hops[#hops + 1] = {c, r} end end end
+  M.hops = hops
   M.cols, M.grid, M.objs, M.foes, M.plats, M.crates, M.boss, M.start_c = cols, grid, objs, foes, plats, crates, boss, start_c
   K.COLS = cols
   return M

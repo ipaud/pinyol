@@ -16,7 +16,7 @@ F.list = {}
 F.events = {}
 
 local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26},
-              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}}
+              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}, pigeon = {46, 48}, snail = {62, 36}}
 local WAKE = 640
 
 function F.clear() F.list, F.events = {}, {} end
@@ -33,6 +33,8 @@ local function spawn(kind, x, y, range)
   elseif kind == "banana" then f.vx = -1.0
   elseif kind == "bee" then f.vx = -1.4
   elseif kind == "cherry" then f.vx = -0.8
+  elseif kind == "pigeon" then f.vx = -0.9
+  elseif kind == "snail" then f.vx = -0.35
   elseif kind == "melon" then f.vx = -2.0 f.immune = true end
   F.list[#F.list + 1] = f
   return f
@@ -150,6 +152,24 @@ local function update_one(f, hx)
     if gy then f.y, f.vy = gy, -10.4 f.squash = 6 f.bt = 0 end
     if L.solid_at(f.x + f.dir * 16, f.y - 16) or (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
     if f.squash and f.squash > 0 then f.squash = f.squash - 1 end
+  elseif k == "pigeon" then -- struts, stops to peck the ground (a moment when it is easy to jump on), then struts on
+    f.mt = f.mt + 1
+    if f.mode == "walk" then
+      walk(f, 0.9)
+      f.phase = f.phase + 0.1
+      if f.mt > 110 then f.mode, f.mt = "peck", 0 end
+    else
+      if f.mt > 46 then f.mode, f.mt = "walk", 0 end
+    end
+  elseif k == "snail" then -- very slow; stomped once it hides in its shell (harmless, you can stand on it) and comes out again, stomped twice it is gone
+    f.mt = f.mt + 1
+    if f.mode == "shell" then
+      f.stun = true
+      if f.mt > 160 then f.mode, f.mt, f.stun, f.h = "walk", 0, nil, 34 end
+    else
+      walk(f, 0.35)
+      f.phase = f.phase + 0.04
+    end
   elseif k == "melon" then -- a rolling melon: it cannot be beaten, only jumped over
     walk(f, 2.0)
     f.phase = f.phase + f.dir * 3.2
@@ -188,6 +208,9 @@ function F.update()
             Snd.play("stomp")
             Fx.sparkle(f.x, f.y - f.h / 2, 0xFFFFFF, 8)
             if f.immune then -- a melon: a bounce and nothing more
+            elseif f.kind == "snail" and f.mode ~= "shell" then
+              f.mode, f.mt, f.h = "shell", 0, 26
+              F.events.curl = true
             elseif f.kind == "apple" and f.mode ~= "roll" then -- the first stomp curls it into a ball
               f.mode, f.mt, f.dir = "roll", 0, (f.x >= s.x) and 1 or -1
               f.h = 30
@@ -272,12 +295,29 @@ local function market(f)
   end
 end
 
+-- the chalk park's walkers: CE_PIGEON (walk 0-7, peck 8-11, defeated last two) and CE_SNAIL (slide 0-7, shell 8-10, defeated last two) when the data has them, else
+-- the market's apple and banana, tinted
+local function park(f)
+  local k, x, y = f.kind, math.floor(f.x), math.floor(f.y)
+  local own = Deco.has(k == "pigeon" and "CE_PIGEON" or "CE_SNAIL")
+  local id = own and (k == "pigeon" and "CE_PIGEON" or "CE_SNAIL") or (k == "pigeon" and "FE_APPLE" or "FE_BANANA")
+  alook.flip, alook.sx, alook.sy = f.dir < 0, nil, nil
+  alook.mul = (not own) and (k == "pigeon" and 0xB8C0D8 or 0xE0B090) or nil
+  local n = Deco.count(id)
+  local fr = math.floor(f.phase) % 8
+  if k == "pigeon" and f.mode == "peck" then fr = own and ((f.mt // 7) % 2 == 0 and 1 or 3) or 8 + (f.mt // 8) % 4 end
+  if k == "snail" and f.mode == "shell" then fr = 8 + math.min(2, f.mt // 6) end
+  if not own then fr = fr % math.max(1, n - 2) end
+  if over(f) then fr = n - 2 + (f.dead < 12 and 0 or 1) end
+  Deco.img(id, fr, x, y, alook)
+end
+
 function F.draw(cam_x)
   for _, f in ipairs(F.list) do
     local dx = f.x - cam_x
     if dx > -80 and dx < K.W + 80 then
       local k = f.kind
-      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) elseif k == "plane" then plane(f) else market(f) end
+      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) elseif k == "plane" then plane(f) elseif k == "pigeon" or k == "snail" then park(f) else market(f) end
     end
   end
 end

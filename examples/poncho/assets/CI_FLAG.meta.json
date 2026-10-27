@@ -1,0 +1,31 @@
+{
+  "asset": "CI_FLAG",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 11,
+  "w": 222,
+  "h": 154,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    111,
+    151
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 23670,
+    "as_rgb565": 273504
+  }
+}

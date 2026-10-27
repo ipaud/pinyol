@@ -1,0 +1,25 @@
+{
+  "asset": "CM_LAMP",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 51,
+  "h": 190,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    25,
+    189
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3458,
+    "as_rgb565": 19380
+  }
+}

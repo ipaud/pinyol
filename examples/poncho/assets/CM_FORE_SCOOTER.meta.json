@@ -1,0 +1,25 @@
+{
+  "asset": "CM_FORE_SCOOTER",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 12,
+  "w": 100,
+  "h": 69,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2357,
+    "as_rgb565": 13800
+  }
+}

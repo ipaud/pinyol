@@ -1,0 +1,25 @@
+{
+  "asset": "CM_CHALKSUN",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 131,
+  "h": 120,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    65,
+    119
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 9398,
+    "as_rgb565": 31440
+  }
+}

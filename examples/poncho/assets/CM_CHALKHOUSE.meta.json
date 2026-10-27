@@ -1,0 +1,25 @@
+{
+  "asset": "CM_CHALKHOUSE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 25,
+  "w": 141,
+  "h": 130,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    70,
+    129
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 19791,
+    "as_rgb565": 36660
+  }
+}

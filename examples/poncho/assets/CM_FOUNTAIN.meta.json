@@ -1,0 +1,25 @@
+{
+  "asset": "CM_FOUNTAIN",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 9,
+  "w": 51,
+  "h": 80,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    25,
+    79
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2052,
+    "as_rgb565": 8160
+  }
+}

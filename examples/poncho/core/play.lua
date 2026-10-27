@@ -79,6 +79,10 @@ local function events()
   end
   if he.pound then Cam.kick(10) end
   if fe.stomp then Ach.earn("stomp") end
+  if he.land_ch == "H" or he.land_ch == "h" then
+    if L.hop(he.land_x, he.land_y) then Fx.dust(he.land_x, he.land_y, 4, 0, 1.4) end
+  end
+  if L.vanished then Fx.dust(L.vanished[1], L.vanished[2], 6, 0, 2.2) L.vanished = nil end
   if fe.curl then Ach.earn("curl") end
   if Boss.events.start then P.say(lang.tr(Boss.name()), 150) end
   if Boss.events.beaten then Ach.earn(P.world == 1 and "boss1" or "boss2") P.say(lang.tr("toast_boss_down"), 220) end
@@ -123,7 +127,7 @@ function P.update()
     Music.stop()
     P.state, P.end_t = "goal", 0
     Snd.play("win")
-    Ach.earn(P.world == 1 and "playroom" or "market")
+    Ach.earn(({"playroom", "market", "chalk"})[P.world] or "playroom")
     Fx.confetti(s.x, s.y - 120, 30)
   end
   return nil

@@ -11,4 +11,8 @@ return {
   {10, 'D.world(2) D.bot(true)'},
   {10, 'D.tp(3100) D.bot(true)'},
   {12, 'D.tp(6100) D.fight(true)'},
+  -- world 3 (the chalk park): the start, the swings over the pit, the rainbow of ramps with the scooter
+  {10, 'D.world(3) D.bot(true)'},
+  {10, 'D.tp(3300) D.bot(true)'},
+  {10, 'D.tp(4800) D.scooter(true) D.bot(true)'},
 }

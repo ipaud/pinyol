@@ -15,11 +15,14 @@ function L.reload()
   L.grid = grid
   L.rev = (L.rev or 0) + 1 -- (a changed grid: core/tiles.lua draws its tiles again)
   L.plats = {}
-  for i, p in ipairs(M.plats or {}) do L.plats[i] = {x = p.x, y = p.y, w = p.w, vx = p.vx, x0 = p.x0, x1 = p.x1} end
+  for i, p in ipairs(M.plats or {}) do
+    L.plats[i] = {kind = p.kind, x = p.x, y = p.y, w = p.w, vx = p.vx, x0 = p.x0, x1 = p.x1, cx = p.cx, amp = p.amp, period = p.period, phase = p.phase, y0 = p.y0, t = 0}
+  end
+  L.hopping, L.hop_n = {}, {}
 end
 L.reload()
 
-local SOLID = {["#"] = true, W = true, T = true, K = true, [">"] = true, ["<"] = true}
+local SOLID = {["#"] = true, W = true, T = true, K = true, [">"] = true, ["<"] = true, H = true, h = true}
 local SLOPE = {a = {0, 16}, b = {16, 32}, c = {32, 16}, d = {16, 0}} -- the wedge's height at its left and right edges
 L.SOLID, L.SLOPE = SOLID, SLOPE
 
@@ -70,9 +73,47 @@ end
 -- the carts roll to and fro
 function L.update_plats()
   for _, p in ipairs(L.plats) do
-    p.x = p.x + p.vx
-    if p.x < p.x0 then p.x, p.vx = p.x0, -p.vx elseif p.x > p.x1 then p.x, p.vx = p.x1, -p.vx end
+    if p.kind == "swing" then -- a pendulum: it is lowest and fastest in the middle
+      p.t = p.t + 1
+      local a = p.t * 6.2832 / p.period + p.phase
+      local nx = p.cx + p.amp * math.sin(a)
+      p.vx = nx - p.x
+      p.x = nx
+      p.y = p.y0 - 12 + 12 * math.cos(a)
+    else
+      p.x = p.x + p.vx
+      if p.x < p.x0 then p.x, p.vx = p.x0, -p.vx elseif p.x > p.x1 then p.x, p.vx = p.x1, -p.vx end
+    end
   end
+  local hp = L.hopping -- the hopscotch tiles that were stepped on twice go a few ticks later
+  for i = #hp, 1, -1 do
+    local h = hp[i]
+    h.t = h.t - 1
+    if h.t <= 0 then
+      grid[h.r][h.c] = " " L.rev = (L.rev or 0) + 1
+      L.vanished = {h.c * TILE + 16, h.r * TILE + 16}
+      hp[i] = hp[#hp] hp[#hp] = nil
+    end
+  end
+end
+
+-- the hero landed with his soles at (x, y): a hopscotch tile there cracks, and a cracked one goes. Returns true when a tile was stepped on
+function L.hop(x, y)
+  local r = math.floor((y + 1) / TILE)
+  for _, px in ipairs({x, x - 9, x + 9}) do
+    local c = math.floor(px / TILE)
+    local ch = r >= 0 and r < ROWS and c >= 0 and c < COLS and grid[r][c]
+    if ch == "H" then
+      grid[r][c] = "h" L.rev = (L.rev or 0) + 1
+      return true
+    elseif ch == "h" then
+      local hp = L.hopping
+      for _, h in ipairs(hp) do if h.c == c and h.r == r then return true end end
+      hp[#hp + 1] = {c = c, r = r, t = 14}
+      return true
+    end
+  end
+  return false
 end
 
 -- how far a body of this half width and height can go: is any of the body's edge points inside a solid tile
@@ -109,6 +150,7 @@ end
 function L.reset_crates()
   L.reload()
   for _, p in ipairs(M.crates) do grid[p[2]][p[1]] = "K" end
+  for _, p in ipairs(M.hops or {}) do grid[p[2]][p[1]] = "H" end
   L.rev = L.rev + 1
 end
 

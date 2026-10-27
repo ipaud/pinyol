@@ -16,6 +16,8 @@ I.list = {}
 I.events = {}   -- this tick: coin, icecream, spring, keyboard, scooter, goal
 I.checkpoint = nil
 
+local WIDE = {peel = 110, puddle = 110, seesaw = 90}
+
 -- the keyboard's arpeggio: ticks after touching, note, key (0..7)
 local TUNE = {{0, "C5", 0}, {7, "E5", 2}, {14, "G5", 4}, {21, "C6", 7}, {30, "G5", 4}, {37, "C6", 7}}
 
@@ -88,7 +90,7 @@ function I.update()
   for idx = first_from(s.x - 110), #list do
     local it = list[idx]
     if it.x - s.x > 110 then break end
-    if alive and math.abs(it.x - s.x) < (it.kind == "peel" and 110 or 60) then
+    if alive and math.abs(it.x - s.x) < (WIDE[it.kind] or 60) then
       local k = it.kind
       local dx = math.abs(it.x - s.x)
       if k == "coin" and not it.taken and dx < 26 and it.y > s.y - K.BODY_H - 12 and it.y < s.y + 12 then
@@ -136,6 +138,23 @@ function I.update()
         Hero.bounce(K.SPRING_V * 1.2 + (require("core.input").btn("a") and 2.4 or 0), false)
         I.events.spring = true
         Snd.play("boing")
+      elseif k == "seesaw" and s.vy >= 0 and dx < 70 and s.y >= it.y - 14 and s.y - s.vy <= it.y + 4 and s.y < it.y + 24 then
+        it.press = 22 busy(it) -- a seesaw: the far end is thrown down and Poncho goes up, high
+        s.y = it.y
+        Hero.bounce(K.SEESAW_V + (require("core.input").btn("a") and 1.5 or 0), false)
+        I.events.spring = true
+        I.events.seesaw = true
+        Snd.play("spring")
+        Fx.dust(it.x + 50, it.y, 5, 1, 2)
+      elseif k == "puddle" and s.ground and dx < it.w / 2 + 10 and s.y > it.y - 10 then
+        if Hero.costume == "boots" then -- rain boots: a splash, and no slowing
+          if I.tick % 9 == 0 and math.abs(s.vx) > 1 then Fx.ring(s.x, s.y - 2, 6, 26, 0x8CD8FF, 10) end
+          I.events.splash = true
+        else
+          s.vx = s.vx * 0.93 -- wading: it slows him
+          if I.tick % 12 == 0 and math.abs(s.vx) > 0.8 then Fx.dust(s.x, s.y, 1, 0, 1) end
+          I.events.wade = true
+        end
       elseif k == "peel" and s.ground and dx < it.w / 2 and s.y > it.y - 10 then
         s.slip = 3 -- a banana peel patch: no grip
         I.events.slip = true
@@ -150,7 +169,7 @@ end
 
 local function icecream(it)
   local lolli = Deco.id("TOY_CREAM") ~= "TOY_CREAM" -- the market's lollipop: anchored at its middle, in one of three kinds
-  Deco.img("TOY_CREAM", lolli and (it.x // 32) % 3 or 0, math.floor(it.x), math.floor(it.y - (lolli and 34 or 22) + math.sin(it.t / 18) * 4))
+  Deco.img("TOY_CREAM", lolli and (it.x // 32) % math.max(1, Deco.count(Deco.id("TOY_CREAM"))) or 0, math.floor(it.x), math.floor(it.y - (lolli and 34 or 22) + math.sin(it.t / 18) * 4))
 end
 
 local function spring(it)
@@ -178,7 +197,7 @@ end
 local flook = {}
 local function flag(it)
   flook.dim = it.locked and 0.45 or nil
-  Deco.img("TOY_FLAG", math.floor(it.t * 6 / (8 * 6.2832)) % 6, math.floor(it.x), math.floor(it.y), flook)
+  Deco.img("TOY_FLAG", math.floor(it.t * 6 / (8 * 6.2832)) % math.max(1, Deco.count(Deco.id("TOY_FLAG"))), math.floor(it.x), math.floor(it.y), flook)
 end
 
 -- a bouncy awning (stripes, code-drawn until the art has it) and a banana-peel patch (a flat yellow shape)
@@ -196,6 +215,22 @@ local function awning(it)
   rect(x - 3, y + 10, 6, (K.FLOOR * 32 - y) - 10, 0x8A5A2C)
 end
 
+-- a seesaw (a plank on a trestle, tilting when it throws) and a puddle (a flat pool), code-drawn until CI_SEESAW / CI_PUDDLE exist
+local function seesaw(it)
+  local x, y = math.floor(it.x), math.floor(it.y)
+  if Deco.has("CI_SEESAW") then Deco.img("CI_SEESAW", it.press > 10 and 1 or (it.press > 0 and 2 or 0), x, y) return end
+  local tilt = it.press > 0 and 14 or 0
+  tri(x - 12, y, x + 12, y, x, y - 24, 0x8A5A2C)
+  poly({x - 64, y - 20 + tilt, x + 64, y - 20 - tilt, x + 64, y - 12 - tilt, x - 64, y - 12 + tilt}, 0xFF6A8A, true)
+end
+
+local function puddle(it)
+  local x, y = math.floor(it.x), math.floor(it.y)
+  if Deco.has("CI_PUDDLE") then Deco.img("CI_PUDDLE", (it.t // 14) % math.max(1, Deco.count("CI_PUDDLE")), x, y) return end
+  rect(x - it.w // 2, y - 6, it.w, 6, 0x5A9AD8)
+  rect(x - it.w // 2 + 10, y - 6, it.w // 3, 2, 0xB8E4FF)
+end
+
 local function peel(it)
   local x, y = math.floor(it.x), math.floor(it.y)
   if Deco.has("FI_PEEL") then Deco.img("FI_PEEL", 0, x, y) return end
@@ -203,12 +238,17 @@ local function peel(it)
   rect(x - it.w // 2 + 8, y - 8, it.w - 16, 3, 0xFFF080)
 end
 
--- carts on the pit (the platforms of core/level.lua)
+-- the carts on the pit and the swings (the platforms of core/level.lua: a handful, only the ones on the screen are drawn)
 local function carts(cam_x)
   for _, p in ipairs(L.plats) do
     if p.x > cam_x - 120 and p.x < cam_x + K.W + 60 then
       local x, y = math.floor(p.x), math.floor(p.y)
-      if Deco.has("FT_CART") then Deco.img("FT_CART", 0, x + p.w // 2, y + 39) else
+      if p.kind == "swing" then
+        if Deco.has("CI_SWING") then Deco.img("CI_SWING", 0, x + p.w // 2, y + 6) else
+          line(x + 10, y, x + 18, y - 190, 0xB8B8C8) line(x + p.w - 10, y, x + p.w - 18, y - 190, 0xB8B8C8)
+          rect(x, y, p.w, 8, 0xE0804A)
+        end
+      elseif Deco.has("FT_CART") then Deco.img("FT_CART", 0, x + p.w // 2, y + 39) else
         rect(x, y, p.w, 5, 0xB07A3E)
         rect(x + 4, y + 5, p.w - 8, 16, 0x8A5A2C)
         circ(x + 14, y + 24, 8, 0x30303A, true) circ(x + p.w - 14, y + 24, 8, 0x30303A, true)
@@ -246,6 +286,8 @@ function I.draw(cam_x)
       elseif k == "flag" then flag(it)
       elseif k == "awning" then awning(it)
       elseif k == "peel" then peel(it)
+      elseif k == "seesaw" then seesaw(it)
+      elseif k == "puddle" then puddle(it)
       elseif k:sub(1, 4) == "cos_" then costume(it) end
     end
   end

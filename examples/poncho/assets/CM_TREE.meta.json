@@ -1,0 +1,25 @@
+{
+  "asset": "CM_TREE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 16,
+  "w": 226,
+  "h": 220,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    113,
+    219
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 18092,
+    "as_rgb565": 99440
+  }
+}

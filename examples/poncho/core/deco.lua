@@ -2,8 +2,10 @@
 -- data/deco.lua says each one's size, anchor and frames. Deco.img(id, frame, x, y [, {flip, sx, sy}]): the picture with its anchor at x, y
 -- (frame: a number or a frame's name; flip mirrors about the anchor's column, sx / sy scale from the anchor).
 local Data = require("data.deco")
-local ok, more = pcall(require, "data.deco2") -- the next worlds' pictures (the art agent writes it, same format)
-if ok and type(more) == "table" then for k, v in pairs(more) do Data[k] = v end end
+for _, name in ipairs({"data.deco2", "data.deco3"}) do -- the next worlds' pictures (the art agent writes them, same format)
+  local ok, more = pcall(require, name)
+  if ok and type(more) == "table" then for k, v in pairs(more) do Data[k] = v end end
+end
 local D = {}
 D.by_id = Data
 D.alias = {}   -- a world's own pictures for the common ones (worlds.lua): TOY_COIN = "FI_COIN"; used when the data has them

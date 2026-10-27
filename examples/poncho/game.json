@@ -67,6 +67,11 @@
       "id": "curl",
       "name": "Manzana enrollada",
       "description": "Pisa una manzana y hazla rodar."
+    },
+    {
+      "id": "chalk",
+      "name": "Parque de tiza completo",
+      "description": "Llega a la bandera del parque de tiza."
     }
   ],
   "picture_budget_kb": 2400,

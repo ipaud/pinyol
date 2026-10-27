@@ -129,6 +129,7 @@ end
 local function land(hard)
   s.ground, s.jumped, s.air_t = true, false, 0
   s.coyote = K.COYOTE
+  H.events.land_ch, H.events.land_x, H.events.land_y = s.gchar or false, s.x, s.y
   if hard then
     s.land_t = 9
     Fx.dust(s.x, s.y, 5, 0, 2.2)

@@ -1,0 +1,29 @@
+{
+  "asset": "CT_PAD",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 70,
+  "h": 29,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    35,
+    26
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3664,
+    "as_rgb565": 12180
+  }
+}

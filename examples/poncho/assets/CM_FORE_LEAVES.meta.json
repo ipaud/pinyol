@@ -1,0 +1,25 @@
+{
+  "asset": "CM_FORE_LEAVES",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 96,
+  "h": 65,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3133,
+    "as_rgb565": 12480
+  }
+}
