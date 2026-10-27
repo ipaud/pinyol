@@ -18,6 +18,11 @@ B.hp, B.max_hp = 100, 100
 local HP = {estrella = 235, espuma = 305, pinche = 270, arrocero = 320, brioche = 280, crianza = 320}
 B.done = false
 
+local FIRE, FIRE2 = 110, 130        -- the ticks of the beam state at which the salvo fires (and the fast boss's second one)
+local BEAM_LOCK = 50                   -- ticks before the shot that it locks the places it will hit
+local BEAM_SPREAD = 180                -- px between the three beams (each blast covers 55 px to each side of the chef's centre: gaps of 70 px between them)
+local REFILL = 6                       -- grenades the chef has at least when the pot opens
+local BEAM_LAND = 60                   -- a marker stays this long after the shot (a beam takes 33-56 ticks to reach the sand)
 local PLAN = {"rockets", "stomp", "beam", "pot"}
 
 function B.reset() B.active, B.done, B.state = false, false, nil end
@@ -134,10 +139,18 @@ function B.update(chef, cam)
   elseif B.state == "beam" then
     B.head_open = B.st > 20 and B.st < 170
     B.charge = B.st
-    if B.st == 110 or (fast and B.st == 130) then -- the beak charges 20 ticks longer than before: three beams that killed on the first try
+    if B.st == 1 then B.aim, B.marks = nil, {} end
+    -- the beam is telegraphed: BEAM_LOCK ticks before the shot it picks its three places on the sand (a red bar under each) and keeps them: the gaps between the blasts
+    -- are 70 px wide, 50 ticks of warning to walk there. The fast boss fires a second salvo at the same places 20 ticks later (the old beams were aimed at the chef at the
+    -- instant of the shot, 90 px apart: the blasts left no gap at all)
+    if B.st == FIRE - BEAM_LOCK then
+      B.aim = chef.x
+      for k = -1, 1 do B.marks[#B.marks + 1] = {x = chef.x + k * BEAM_SPREAD, to = (fast and FIRE2 or FIRE) + BEAM_LAND} end
+    end
+    if B.st == FIRE or (fast and B.st == FIRE2) then
       local mx, my = world(LOCAL.beak[1], LOCAL.beak[2]) -- the beak's muzzle
       for k = -1, 1 do
-        local tx = chef.x + k * 90
+        local tx = B.aim + k * BEAM_SPREAD
         local dx, dy = tx - mx, C.FLOOR - my
         local l = math.sqrt(dx * dx + dy * dy)
         Shots.hostile("beam", mx, my, dx / l * 6.5, dy / l * 6.5)
@@ -147,7 +160,11 @@ function B.update(chef, cam)
     if B.st > 180 then B.head_open = false next_plan() end
   elseif B.state == "pot" then
     B.pot_open = B.st > 30 and B.st < 330
-    if B.st == 30 then Sound.play("stomp", 0.5) end
+    if B.st == 30 then
+      Sound.play("stomp", 0.5)
+      -- the cookers: only they hurt the open pot, and the only refill in the arena used to be the 6 a respawn gives (a beam death a cycle). The kitchen sends a crate now
+      if chef.grenades < REFILL then chef.grenades = REFILL Sound.play("pickup") end
+    end
     if B.st > 350 then B.pot_open = false next_plan() end
   elseif B.state == "dying" then
     if B.st % 8 == 0 then
@@ -192,6 +209,14 @@ function B.draw(cam)
   if B.state == "beam" and B.head_open and B.st < 110 then
     local mx, my = world(LOCAL.beak[1], LOCAL.beak[2])
     S.draw("boss_fx", "charge_" .. (B.t // 4) % 6, mx - cam, my, {})
+  end
+  if B.state == "beam" and B.marks then
+    for _, m in ipairs(B.marks) do
+      if B.st < m.to then -- an outline as wide as the blast's reach on a chef's centre and as tall as the chef: stand outside the boxes
+        local x = m.x - 55 - cam
+        rect(x, C.FLOOR - 74, 110, 2, 0xF04030) rect(x, C.FLOOR - 74, 2, 74, 0xF04030) rect(x + 108, C.FLOOR - 74, 2, 74, 0xF04030) rect(x, C.FLOOR - 3, 110, 3, 0xF04030)
+      end
+    end
   end
 end
 

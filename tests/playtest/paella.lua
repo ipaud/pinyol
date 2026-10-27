@@ -24,39 +24,10 @@ local CFG = PT_CFG or {}
 local CHEF_ID = CFG.chef or CHEFS[(CFG.seed or 0) % 6 + 1]
 local FLOOR, W = C.FLOOR, C.W
 local MARGIN = 2 -- pixels added to every danger
-local MB = 1 -- ... and to the boss's beams (the only escape from a salvo is a few pixels wide: see the notes)
+local MB = 1 -- ... and to the boss's beams
 local H_GROUND, H_BOSS = 70, 120
-local BEAM_LOOK = 45 -- ticks before a salvo that the planner starts to care (it has gone to a spot with an escape by then)
+local BEAM_LOOK = 110 -- ticks before a salvo that the planner starts to care (it has gone to a spot with an escape by then)
 
--- The boss's beam salvo: the escape is a few pixels wide (found by an exhaustive search of every input of the next 50-70 ticks, tools in the notes), so the perfect player
--- stands on an exact spot under the head (x = key, in pixels from the arena's left edge), shooting straight up at the head, and plays back the tape found for that spot.
--- Each token is one tick: L/N/R (walk), "c" (crouch held), "J" (jump held).
-local TAPE_DATA = {
-  slow = {
-    ["125.3"] = "L..,L..,L..,L..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,Nc.,Rc.,Rc.,Rc.,Rc.,R..,Lc.,N.J,N.J,L.J,N.J,L.J,L.J,L.J,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,",
-    ["125.6"] = "L..,L..,L..,L..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,Nc.,Rc.,Rc.,Rc.,Rc.,R..,Lc.,N.J,N.J,L.J,N.J,L.J,L.J,L.J,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,",
-    ["125.9"] = "L..,L..,L..,L..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,Nc.,Rc.,Rc.,Rc.,Rc.,R..,Lc.,N.J,N.J,L.J,N.J,L.J,L.J,L.J,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,",
-    ["126.2"] = "L..,L..,L..,L..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,Nc.,Rc.,Rc.,Rc.,Rc.,R..,Lc.,N.J,N.J,L.J,N.J,L.J,L.J,L.J,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,",
-    ["126.5"] = "L..,L..,L..,L..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,R..,Nc.,Rc.,Rc.,Rc.,Rc.,R..,Lc.,N.J,N.J,L.J,N.J,L.J,L.J,L.J,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,L..,",
-  },
-  fast = {
-  },
-}
-
-local TAPES = {slow = {}, fast = {}}
-for var, set in pairs(TAPE_DATA) do
-  for k, str in pairs(set) do
-    local arr = {}
-    for tok in str:gmatch("[^,]+") do arr[#arr + 1] = {({L = -1, N = 0, R = 1})[tok:sub(1, 1)], tok:sub(2, 2) == "c", tok:sub(3, 3) == "J"} end
-    TAPES[var][tonumber(k)] = arr
-  end
-end
-local KEYS10 = {} -- spots (tenths of a pixel from the left edge of the arena) that have a tape
-for k in pairs(TAPES.slow) do if k >= 125.85 then KEYS10[#KEYS10 + 1] = math.floor(k * 10 + 0.5) end end -- (the shot goes up at x + 16 and its radius must reach the head's left edge, 150.6)
-table.sort(KEYS10)
-local KEYSET = {}
-for _, k in ipairs(KEYS10) do KEYSET[k] = true end
-local tape = nil -- the tape being played: {arr = ..., i = n}
 
 -- ------------------------------------------------------------------ bookkeeping (logs for the report)
 local last = {b = false, c = false, cancel = 0}
@@ -193,8 +164,13 @@ local function hazards(c, H, cam)
     elseif B.state == "beam" then
       local fast = B.hp < B.max_hp * 0.55
       hz.beams = {}
-      if B.st < 110 and 110 - B.st <= BEAM_LOOK then hz.beams[#hz.beams + 1] = 110 - B.st end
-      if fast and B.st < 130 and 130 - B.st <= BEAM_LOOK then hz.beams[#hz.beams + 1] = 130 - B.st end
+      -- kf: ticks until the salvo fires; kl: ticks until it locks its places (<= 0: already locked, at B.aim)
+      for n, fire in ipairs({110, 130}) do
+        if (n == 1 or fast) and B.st < fire and fire - B.st <= BEAM_LOOK then
+          local lock = 110 - 50 -- (the second salvo of the fast boss goes to the same places)
+          hz.beams[#hz.beams + 1] = {kf = fire - B.st, kl = lock - B.st, aim = B.aim}
+        end
+      end
     end
   end
   return hz
@@ -337,11 +313,12 @@ local function run_plan(c, p, hz, H, cam, tx, boss_mode)
   if hz.beams and Boss.active then
     local B = Boss
     local mx, my = (hz.boss_x or B.x) - 147, (hz.boss_y or B.y) - 224
-    for _, kf in ipairs(hz.beams) do
+    for _, bm in ipairs(hz.beams) do
+      local kf = bm.kf
       if kf <= H then
-        local px = cxs[kf]
+        local px = (bm.kl <= 0 and bm.aim) or cxs[math.max(1, math.min(bm.kl, H))]
         for lane = -1, 1 do
-          local tx2 = px + lane * 90
+          local tx2 = px + lane * 180
           local dx, dy = tx2 - mx, FLOOR - my
           local l = math.sqrt(dx * dx + dy * dy)
           local k = dyn_shot(kf, mx, my, dx / l * 6.5, dy / l * 6.5, 16, "beam")
@@ -573,78 +550,6 @@ local function macro_set(i, off)
   return MP
 end
 
--- boss beam: from which standing spot x0 (at the tick the beam fires) is there an escape? Worked out a few spots a tick while the boss walks in (the call budget is
--- 20M steps), once for the slow and once for the fast boss (a second salvo).
-local beam_cache = {}
-local function boss_final_x()
-  if Boss.state == "intro" then return Boss.target_x + (Boss.x - Boss.target_x) * 0.97 ^ (151 - Boss.st) end
-  return Boss.x
-end
-local function empty_hz(H, bx, by)
-  local hz = {shots = {}, blasts = {}, kamis = {}, pecks = {}, crabs = {}, boss_x = bx, boss_y = by}
-  for k = 1, H do hz.shots[k], hz.blasts[k] = {}, {} end
-  return hz
-end
-local function beam_spots_step(cam, n)
-  local bc = beam_cache
-  if not bc.xs then
-    bc.slow, bc.fast, bc.i, bc.done = {}, {}, 0, false
-    bc.xs = {}
-    for x0 = cam + 26, Boss.target_x - 75, 4 do bc.xs[#bc.xs + 1] = x0 end
-  end
-  if bc.done then return end
-  local H = 100
-  for _ = 1, n do
-    bc.i = bc.i + 1
-    if bc.i > 2 * #bc.xs then bc.done = true return end
-    local fast = bc.i > #bc.xs
-    local x0 = bc.xs[fast and bc.i - #bc.xs or bc.i]
-    local hz = empty_hz(H, boss_final_x(), Boss.y)
-    hz.beams = {1}
-    if fast then hz.beams[2] = 21 end
-    local c2 = {x = x0, y = FLOOR, vy = 0, ground = true, inv = 0}
-    local ok = false
-    for i = 1, #MACRO do
-      local p = macro_set(i, 0)
-      p.prevb = false
-      local k = run_plan(c2, p, hz, H, cam, x0)
-      if k > H then ok = true break end
-    end
-    (fast and bc.fast or bc.slow)[#(fast and bc.fast or bc.slow) + 1] = {x0, ok}
-  end
-end
-
--- the chef's x is always a multiple of a tenth of a pixel (steps of 2.7 and 1.3): find the fewest steps that land exactly on a spot with a tape
-local STEPS = {{27, false}, {-27, false}, {13, true}, {-13, true}}
-local function near_key(x10f)
-  for _, k in ipairs(KEYS10) do if math.abs(x10f - k) <= 2.5 then return k end end
-  return nil
-end
-local function approach_step(c, cam, left)
-  local x10 = math.floor((c.x - C.LEVEL_W) * 10 + 0.5) -- (the boss's x is from LEVEL_W; the camera may stop a pixel short of it)
-  if near_key((c.x - C.LEVEL_W) * 10) and c.dir == 1 then return 0, false, true end -- (the straight-up shot leaves 16 px to the right of a chef who faces right)
-  local seen = {[x10 * 2 + (c.dir == 1 and 1 or 0)] = true}
-  local cur = {{x10, 0, c.dir == 1 and 1 or 0}}
-  for _ = 1, math.min(left, 16) do
-    local nxt = {}
-    for _, e in ipairs(cur) do
-      for si = 1, 4 do
-        local nx = math.max(260, e[1] + STEPS[si][1])
-        local fl = STEPS[si][1] > 0 and 1 or 0
-        local k = nx * 2 + fl
-        if not seen[k] then
-          seen[k] = true
-          local first = e[2] ~= 0 and e[2] or si
-          if KEYSET[nx] and fl == 1 then return (STEPS[first][1] > 0) and 1 or -1, STEPS[first][2], false end
-          nxt[#nxt + 1] = {nx, first, fl}
-        end
-      end
-    end
-    cur = nxt
-  end
-  return nil
-end
-
 local function set_goal(c, cam)
   -- returns {x = wanted spot, face, aim} and the target (or nil)
   local maxx = Chef.max_x or 1e9
@@ -665,28 +570,16 @@ local function set_goal(c, cam)
     else
       goal.x = math.min(lim, cam + 130) -- keep room on both sides while rockets and stomps come
     end
-    if Boss.state == "beam" and Boss.st < 112 and beam_cache.done then
-      local list = (Boss.hp < Boss.max_hp * 0.55) and beam_cache.fast or beam_cache.slow
-      local best, bd
-      local gs, ge
-      local function close_group()
-        if gs then
-          local mid = (gs + ge) / 2
-          local d = math.abs(mid - goal.x) + 0.3 * math.abs(mid - c.x)
-          if (ge - gs) >= 4 and (not bd or d < bd) then best, bd = mid, d end
-        end
-        gs, ge = nil, nil
+    if Boss.state == "beam" and Boss.aim and Boss.st < 200 then
+      -- the beams are locked (red bars on the sand, blasts 55 px each side of a chef's centre, 180 px apart): wait in the middle of a gap, 90 px from the middle beam
+      local best
+      for _, sgn in ipairs({-1, 1}) do
+        local gx = Boss.aim + sgn * 90
+        if gx >= cam + 30 and gx <= lim and (not best or math.abs(gx - c.x) < math.abs(best - c.x)) then best = gx end
       end
-      for _, e in ipairs(list) do
-        if e[2] and e[1] <= lim then
-          if gs and e[1] - ge <= 4 then ge = e[1] else close_group() gs, ge = e[1], e[1] end
-        else close_group() end
-      end
-      close_group()
       if best then
-        goal.x = best
-        local sp = firing_spot(c, nil, cam, best, best, 0, "head")
-        goal.aim, goal.head = sp and sp.aim or "fwd", sp ~= nil
+        local sp = firing_spot(c, nil, cam, best, best, 0, "head") -- (from the left gap a diagonal shot reaches the head)
+        goal.x, goal.aim, goal.head = best, sp and sp.aim or "fwd", sp ~= nil
       end
     end
     return goal
@@ -731,65 +624,12 @@ end
 
 local function decide(pt)
   local c = Play.chef
-  if not c or c.state ~= "play" or c.vehicle or Play.state == "clear" or Play.state == "over" then tape = nil return {} end
+  if not c or c.state ~= "play" or c.vehicle or Play.state == "clear" or Play.state == "over" then return {} end
   local cam = Play.cam
-  -- the beam salvo: a tape being played, or the walk to the exact spot that has one
-  if tape then
-    local e = tape.arr[tape.i]
-    tape.i = tape.i + 1
-    if not e then tape = nil else
-      local out = {a = true}
-      if e[1] < 0 then out.left = true elseif e[1] > 0 then out.right = true end
-      if e[2] then out.down = true end
-      if e[3] then out.b = true end
-      last.b, last.c = e[3] and true or false, false
-      return out
-    end
-  end
-  if Boss.active and Boss.state == "beam" and Boss.st <= 109 and #KEYS10 > 0 and #Shots.theirs == 0 and c.inv <= 0 then
-    local x10 = near_key((c.x - C.LEVEL_W) * 10)
-    if Boss.st == 109 then
-      if x10 and c.dir == 1 and c.ground and c.vy == 0 and not last.b then
-        local fast = Boss.hp < Boss.max_hp * 0.55
-        local arr = (fast and TAPES.fast[x10 / 10]) or TAPES.slow[x10 / 10]
-        if CFG.dbg then log(string.format("PT_TAPE key=%.1f fast=%s", x10 / 10, tostring(fast))) end
-        tape = {arr = arr, i = 1}
-        local e = tape.arr[1]
-        tape.i = 2
-        local out = {a = true}
-        if e[1] < 0 then out.left = true elseif e[1] > 0 then out.right = true end
-        if e[2] then out.down = true end
-        if e[3] then out.b = true end
-        last.b, last.c = e[3] and true or false, false
-        return out
-      end
-    else
-      local out = {a = true}
-      local dxs, crs, stay = approach_step(c, cam, 109 - Boss.st)
-      if dxs == nil then
-        local g1, g2 = go_move(C.LEVEL_W + 126 - c.x)
-        dxs, crs = g1, g2
-      end
-      if stay then out.up = true end
-      if CFG.dbg and Boss.st % 10 == 0 then log(string.format('SPOTDBG st=%d x=%.2f stay=%s c.aim=%s cool=%d mine=%d hp=%.1f head_open=%s dir=%d w=%s p=%s s1=%s', Boss.st, c.x - cam, tostring(stay), c.aim, c.cool, #Shots.mine, Boss.hp, tostring(Boss.head_open), c.dir, c.weapon.name, tostring(c.weapon.pellets), Shots.mine[1] and string.format('%.1f,%.1f v=%.1f,%.1f', Shots.mine[1].x - cam, Shots.mine[1].y, Shots.mine[1].vx, Shots.mine[1].vy) or '-')) end
-      if dxs < 0 then out.left = true elseif dxs > 0 then out.right = true end
-      if crs then out.down = true end
-      last.b, last.c = false, false
-      return out
-    end
-  end
   local H = Boss.active and H_BOSS or H_GROUND
   NODES_TOTAL = 0
   if CFG.dbg and pt.t % 25 == 0 then log(string.format('TICK %d x=%.0f cam=%.0f foes=%d shots=%d', pt.t, c.x, cam, #Foes.list, #Shots.theirs)) end
   local goal = set_goal(c, cam)
-  if CFG.dbg and Boss.active and Boss.state == "beam" and Boss.st == 2 then
-    for _, nm in ipairs({"slow", "fast"}) do
-      local t = {}
-      for _, e in ipairs(beam_cache[nm] or {}) do t[#t + 1] = string.format("%d%s", e[1] - cam, e[2] and "+" or "-") end
-      log("SPOTS " .. nm .. " " .. table.concat(t, " "))
-    end
-  end
-  if Boss.active then beam_spots_step(cam, 2) end
   local hz = hazards(c, H, cam)
   local tx = goal.x
   local base = {go = true, prevb = last.b}
@@ -803,7 +643,7 @@ local function decide(pt)
   end
   if hit_k > H then last.cont = nil end
   if hit_k <= H and not cont_ok then
-    local macro = hz.beams and hz.beams[1]
+    local macro = nil
     if macro then
       local best, bk, bc, bp, bestp
       for i = 1, #MACRO do
@@ -832,8 +672,8 @@ local function decide(pt)
     end
   end
   local dx, crouch, jump = chosen[1], chosen[2], chosen[3]
-  if CFG.dbg and Boss.active and (Boss.state == "beam") and (Boss.st % 5 == 0 or (Boss.st > 104 and Boss.st < 135)) then
-    log(string.format("DBG st=%d x=%.1f y=%.1f goal=%.1f base_hit=%d chosen=%s,%s,%s beams=%s plan=%s", Boss.st, c.x - cam, c.y, tx - cam, hit_k, tostring(dx), tostring(crouch), tostring(jump), hz.beams and tostring(hz.beams[1]) or "-", tostring(last_plan)))
+  if CFG.dbg and Boss.active and (Boss.state == "beam") and (Boss.st % 5 == 0 or (Boss.st > 104 and Boss.st < 150)) then
+    log(string.format("DBG st=%d x=%.1f y=%.1f goal=%.1f base_hit=%d chosen=%s,%s,%s beams=%s plan=%s", Boss.st, c.x - cam, c.y, tx - cam, hit_k, tostring(dx), tostring(crouch), tostring(jump), hz.beams and tostring(#hz.beams) or "-", tostring(last_plan)) .. (function() local t = {} for _, b in ipairs(Shots.theirs) do t[#t + 1] = string.format("(%.0f,%.0f)", b.x - cam, b.y) end return " aim=" .. tostring(Boss.aim and Boss.aim - cam) .. " " .. table.concat(t, " ") end)())
   end
   if CFG.dbg then
     RING[#RING + 1] = string.format("t=%d st=%s/%s x=%.1f y=%.1f hit_k=%d plan=%s dx=%s cr=%s j=%s nshots=%d", pt.t, tostring(Boss.state), tostring(Boss.st), c.x - cam, c.y, hit_k, tostring(last_plan), tostring(chosen[1]), tostring(chosen[2]), tostring(chosen[3]), #Shots.theirs)
