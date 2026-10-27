@@ -19,32 +19,43 @@ I.checkpoint = nil
 -- the keyboard's arpeggio: ticks after touching, note, key (0..7)
 local TUNE = {{0, "C5", 0}, {7, "E5", 2}, {14, "G5", 4}, {21, "C6", 7}, {30, "G5", 4}, {37, "C6", 7}}
 
-function I.init()
-  I.list, I.checkpoint, I.events = {}, nil, {}
-  for i, o in ipairs(M.objs) do
-    I.list[i] = {w = o.w or 96, locked = o.locked, kind = o.kind, x = o.x, y = o.y, t = (i * 7) % 60, taken = false, press = 0, on = false, tune = nil}
+-- the list is kept sorted by x: a tick only looks at the items next to the hero, and a frame only at the ones on the screen (a level has hundreds of coins)
+local function first_from(x)
+  local lo, hi = 1, #I.list + 1
+  while lo < hi do
+    local mid = (lo + hi) // 2
+    if I.list[mid].x < x then lo = mid + 1 else hi = mid end
   end
+  return lo
+end
+
+-- an item with a running timer (a pressed spring, the keyboard's tune) is ticked from this short list wherever it lies
+local function busy(it)
+  if not it.busy then it.busy = true I.busy[#I.busy + 1] = it end
+end
+
+function I.init()
+  I.list, I.checkpoint, I.events, I.busy, I.flags, I.tick = {}, nil, {}, {}, {}, 0
+  I.coins, I.creams, I.total_c, I.total_i = 0, 0, 0, 0
+  for i, o in ipairs(M.objs) do
+    local it = {w = o.w or 96, locked = o.locked, kind = o.kind, x = o.x, y = o.y, i = i, t0 = (i * 7) % 60, t = (i * 7) % 60, taken = false, press = 0, on = false, tune = nil}
+    I.list[i] = it
+    if it.kind == "coin" then I.total_c = I.total_c + 1 elseif it.kind == "icecream" then I.total_i = I.total_i + 1
+    elseif it.kind == "flag" then I.flags[#I.flags + 1] = it end
+  end
+  table.sort(I.list, function(a, b) if a.x ~= b.x then return a.x < b.x end return a.i < b.i end)
 end
 
 -- the costumes lost with a death lie there again
 function I.reset_costumes() for _, it in ipairs(I.list) do if it.kind:sub(1, 4) == "cos_" then it.taken = false end end end
 
-function I.counts()
-  local coins, creams, total_c, total_i = 0, 0, 0, 0
-  for _, it in ipairs(I.list) do
-    if it.kind == "coin" then total_c = total_c + 1 if it.taken then coins = coins + 1 end
-    elseif it.kind == "icecream" then total_i = total_i + 1 if it.taken then creams = creams + 1 end end
-  end
-  return coins, creams, total_c, total_i
-end
+function I.counts() return I.coins, I.creams, I.total_c, I.total_i end
 
-function I.update()
-  I.events = {}
-  local s = Hero.s
-  if s.state == "win" then return end
-  local alive = s.state ~= "dead"
-  for _, it in ipairs(I.list) do
-    it.t = it.t + 1
+-- one tick of the timers of the busy items
+local function run_timers()
+  local list, n = I.busy, #I.busy
+  for j = n, 1, -1 do
+    local it = list[j]
     if it.press > 0 then it.press = it.press - 1 end
     if it.tune then -- the keyboard's tune, a note at a time
       it.tune.t = it.tune.t + 1
@@ -55,23 +66,46 @@ function I.update()
     end
     if it.key_t and it.key_t > 0 then it.key_t = it.key_t - 1 if it.key_t == 0 then it.key = nil end end
     if it.bounce and it.bounce > 0 then it.bounce = it.bounce - 1 end
-    if it.kind == "flag" and it.locked and Boss.beaten() then it.locked = false end -- the boss is down: the flag is open
+    if it.press == 0 and not it.tune and not (it.key_t and it.key_t > 0) and not (it.bounce and it.bounce > 0) then
+      it.busy = false
+      list[j] = list[#list]
+      list[#list] = nil
+    end
+  end
+end
+
+function I.update()
+  I.events = {}
+  local s = Hero.s
+  if s.state == "win" then return end
+  local alive = s.state ~= "dead"
+  I.tick = I.tick + 1
+  run_timers()
+  for _, it in ipairs(I.flags) do
+    if it.locked and Boss.beaten() then it.locked = false end -- the boss is down: the flag is open
+  end
+  local list = I.list
+  for idx = first_from(s.x - 110), #list do
+    local it = list[idx]
+    if it.x - s.x > 110 then break end
     if alive and math.abs(it.x - s.x) < (it.kind == "peel" and 110 or 60) then
       local k = it.kind
       local dx = math.abs(it.x - s.x)
       if k == "coin" and not it.taken and dx < 26 and it.y > s.y - K.BODY_H - 12 and it.y < s.y + 12 then
         it.taken = true
+        I.coins = I.coins + 1
         I.events.coin = true
         Fx.sparkle(it.x, it.y, 0xFFE060, 6)
         Snd.play("coin", 0.7)
       elseif k == "icecream" and not it.taken and dx < 30 and it.y > s.y - K.BODY_H - 30 and it.y < s.y + 20 then
         it.taken = true
+        I.creams = I.creams + 1
         I.events.icecream = true
         Hero.hearts = math.min(K.HEARTS, Hero.hearts + 1)
         Fx.sparkle(it.x, it.y - 20, 0xFF9AD0, 10)
         Snd.play("cream")
       elseif k == "spring" and s.vy >= 0 and dx < 26 and s.y > it.y - 26 and s.y < it.y + 4 then
-        it.press = 14
+        it.press = 14 busy(it)
         Hero.bounce(K.SPRING_V + (require("core.input").btn("a") and 2.4 or 0), true)
         I.events.spring = true
         Snd.play("spring")
@@ -79,7 +113,7 @@ function I.update()
       elseif k == "keyboard" and dx < 50 and s.y > it.y - 70 and s.y < it.y + 12 then
         if not it.on then
           it.on = true
-          it.tune = {t = 0}
+          it.tune = {t = 0} busy(it)
           I.events.keyboard = true
           Fx.sparkle(it.x, it.y - 30, 0x80E0FF, 10)
         end
@@ -97,7 +131,7 @@ function I.update()
         I.events.costume = k:sub(5)
         Fx.sparkle(it.x, it.y - 30, 0xFFFFFF, 10)
       elseif k == "awning" and s.vy >= 0 and dx < 44 and s.y >= it.y - 6 and s.y - s.vy <= it.y + 4 and s.y < it.y + 22 then
-        it.press = 14 -- a bouncy awning: a trampoline you can also walk under
+        it.press = 14 busy(it) -- a bouncy awning: a trampoline you can also walk under
         s.y = it.y
         Hero.bounce(K.SPRING_V * 1.2 + (require("core.input").btn("a") and 2.4 or 0), false)
         I.events.spring = true
@@ -196,11 +230,15 @@ end
 function I.draw(cam_x)
   coins:clear()
   local it_t = ticks()
-  for i, it in ipairs(I.list) do
+  local list = I.list
+  for idx = first_from(cam_x - 90), #list do
+    local it = list[idx]
     local dx = it.x - cam_x
-    if dx > -90 and dx < K.W + 90 and not it.taken then
+    if dx >= K.W + 90 then break end
+    if dx > -90 and not it.taken then
       local k = it.kind
-      if k == "coin" then coins:add(it.x, it.y + math.sin(it.t / 20 + i) * 3)
+      it.t = I.tick + it.t0
+      if k == "coin" then coins:add(it.x, it.y + math.sin(it.t / 20 + it.i) * 3)
       elseif k == "icecream" then icecream(it)
       elseif k == "spring" then spring(it)
       elseif k == "keyboard" then keyboard(it)

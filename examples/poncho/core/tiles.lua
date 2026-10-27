@@ -26,6 +26,20 @@ end
 
 function T.init() end -- (the pictures are assets)
 
+-- the pictures of a stretch of tiles only change when the camera crosses a tile: they are kept as a list (id, x, y, look...) and drawn again until it does
+local cache, cache_key, looks = {}, nil, {}
+local function emit(id, x, y, look)
+  if look then -- (the shared `look` tables change between calls: each picture keeps its own, one per kind)
+    local k = (look.frame or "") .. "|" .. (look.dim or "") .. "|" .. (look.mul or "")
+    local own = looks[k]
+    if not own then own = {frame = look.frame, dim = look.dim, mul = look.mul} looks[k] = own end
+    look = own
+  end
+  local n = #cache
+  cache[n + 1], cache[n + 2], cache[n + 3], cache[n + 4] = id, x, y, look or false
+  img(id, x, y, look)
+end
+
 local fcr, fbody = {}, {} -- for each visible column: the row of its floor column (a floor top with two bodies under it), or false
 local belts = {}
 
@@ -36,6 +50,13 @@ function T.draw(cam_x, cam_y)
   local r0, r1 = math.max(0, math.floor(cam_y / TILE)), math.min(K.ROWS - 1, math.floor((cam_y + K.H - 1) / TILE))
   local g = L.grid
   local n = 0
+  local key = table.concat({c0, c1, r0, r1, prefix, plain.mul or "", L.rev or 0}, ",")
+  if key == cache_key then
+    for i = 1, #cache, 4 do img(cache[i], cache[i + 1], cache[i + 2], cache[i + 3] or nil) end
+    n = #cache // 4
+  else
+  for k in pairs(looks) do looks[k] = nil end
+  for i = #cache, 1, -1 do cache[i] = nil end
   for c = c0, c1 do
     local fr = false
     for r = r0, r1 do
@@ -59,7 +80,7 @@ function T.draw(cam_x, cam_y)
       local i = c
       while i < c + run do
         for _, st in ipairs(fbody[c] and BODY or STRIP) do
-          if i + st[1] <= c + run then img(st[2], i * TILE, fr * TILE, plain.mul and {mul = plain.mul} or nil) n = n + 1 i = i + st[1] break end
+          if i + st[1] <= c + run then emit(st[2], i * TILE, fr * TILE, plain.mul and {mul = plain.mul} or nil) n = n + 1 i = i + st[1] break end
         end
       end
       c = c + run
@@ -81,7 +102,7 @@ function T.draw(cam_x, cam_y)
         while i <= e do
           local took = false
           for _, st in ipairs(RUNS[ch]) do
-            if i + st[1] - 1 <= e then img(st[2], i * TILE, r * TILE, st[3] or (plain.mul and {mul = plain.mul} or nil)) n = n + 1 i = i + st[1] took = true break end
+            if i + st[1] - 1 <= e then emit(st[2], i * TILE, r * TILE, st[3] or (plain.mul and {mul = plain.mul} or nil)) n = n + 1 i = i + st[1] took = true break end
           end
           if not took then i = i + 1 end
         end
@@ -96,11 +117,13 @@ function T.draw(cam_x, cam_y)
         else
           look.frame = ch == "W" and (2 + ((c * 7 + r * 3) % 4)) or FRAME[ch]
         end
-        img(prefix .. "_TILES", c * TILE, r * TILE, look)
+        emit(prefix .. "_TILES", c * TILE, r * TILE, look)
         n = n + 1
         c = c + 1
       end
     end
+  end
+  cache_key = key
   end
   -- the conveyor belts: the market's tiles have the belt (4 frames sliding, an end cap on each side); the playroom has none (a dark band with dashes as a fallback)
   local tk = ticks()

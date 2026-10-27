@@ -13,6 +13,7 @@ function L.reload()
   COLS, grid = M.cols, M.grid
   L.W, L.H = COLS * TILE, ROWS * TILE
   L.grid = grid
+  L.rev = (L.rev or 0) + 1 -- (a changed grid: core/tiles.lua draws its tiles again)
   L.plats = {}
   for i, p in ipairs(M.plats or {}) do L.plats[i] = {x = p.x, y = p.y, w = p.w, vx = p.vx, x0 = p.x0, x1 = p.x1} end
 end
@@ -96,7 +97,7 @@ function L.break_crates(x0, y0, x1, y1)
   for r = math.floor(y0 / TILE), math.floor(y1 / TILE) do
     for c = math.floor(x0 / TILE), math.floor(x1 / TILE) do
       if r >= 0 and r < ROWS and c >= 0 and c < COLS and grid[r][c] == "K" then
-        grid[r][c] = " "
+        grid[r][c] = " " L.rev = (L.rev or 0) + 1
         n = n + 1
         L.broke_at[n] = {c * TILE + 16, r * TILE + 16}
       end
@@ -108,6 +109,7 @@ end
 function L.reset_crates()
   L.reload()
   for _, p in ipairs(M.crates) do grid[p[2]][p[1]] = "K" end
+  L.rev = L.rev + 1
 end
 
 return L

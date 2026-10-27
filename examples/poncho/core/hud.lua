@@ -11,10 +11,29 @@ local H = {}
 H.FONT, H.SMALL, H.TITLE = "snes_body", "snes_small", "snes_title"
 
 -- label(str, x, y, {color, align, font, scale}): text with the game's outline
+local lo = {}
 function H.label(str, x, y, o)
-  o = o or {}
-  return text(str, x, y, {font = o.font or H.FONT, color = o.color or 0xFFFFFF, outline = o.outline or 0x2A1A3A, align = o.align, scale = o.scale or 1,
-                          shadow = o.shadow, gradient = o.gradient, width = o.width})
+  o = o or lo
+  local opts = H.opts
+  opts.font, opts.color, opts.outline, opts.align, opts.scale = o.font or H.FONT, o.color or 0xFFFFFF, o.outline or 0x2A1A3A, o.align, o.scale or 1
+  opts.shadow, opts.gradient, opts.width = o.shadow, o.gradient, o.width
+  return text(str, x, y, opts)
+end
+H.opts = {}
+
+-- the width of a text in the HUD's font, worked out once per text (a frame asks for the same few)
+local widths = {}
+local function width(str)
+  local w = widths[str]
+  if not w then w = textw(str, {font = H.FONT}) widths[str] = w end
+  return w
+end
+
+-- "3/66" and the like: put together again only when the numbers change
+local pair_a, pair_b, pair_s = {}, {}, {}
+local function pair(slot, a, b)
+  if pair_a[slot] ~= a or pair_b[slot] ~= b then pair_a[slot], pair_b[slot], pair_s[slot] = a, b, a .. "/" .. b end
+  return pair_s[slot]
 end
 
 function H.time_text(ticks)
@@ -24,8 +43,7 @@ end
 
 -- a small dark plate behind a counter, so the numbers read over the busy wall
 local function plate(str, x, y)
-  local w = textw(str, {font = H.FONT})
-  rect(x - 6, y - 4, w + 12, 24, 0x2A1A3A)
+  rect(x - 6, y - 4, width(str) + 12, 24, 0x2A1A3A)
 end
 
 function H.draw(play)
@@ -33,13 +51,15 @@ function H.draw(play)
   local coins, creams, tc, ti = Items.counts()
   -- a coin and an ice cream with their counts
   Deco.img("TOY_HUD", 2, 2, 39)
-  plate(coins .. "/" .. tc, 40, 47)
-  H.label(coins .. "/" .. tc, 40, 47)
+  local cs = pair(1, coins, tc)
+  plate(cs, 40, 47)
+  H.label(cs, 40, 47)
   Deco.img("TOY_HUD", 3, 108, 37)
-  plate(creams .. "/" .. ti, 134, 47)
-  H.label(creams .. "/" .. ti, 134, 47)
+  local is = pair(2, creams, ti)
+  plate(is, 134, 47)
+  H.label(is, 134, 47)
   local tt = H.time_text(play.time)
-  rect(K.W - 12 - textw(tt, {font = H.FONT}) - 6, 6, textw(tt, {font = H.FONT}) + 12, 24, 0x2A1A3A)
+  rect(K.W - 12 - width(tt) - 6, 6, width(tt) + 12, 24, 0x2A1A3A)
   H.label(tt, K.W - 12, 10, {align = "right"})
   if Hero.has_scooter then
     Deco.img("TOY_HUD", Hero.s and Hero.s.scooter and 4 or 5, K.W - 72, 22)
