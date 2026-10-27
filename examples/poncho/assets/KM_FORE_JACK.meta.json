@@ -1,0 +1,25 @@
+{
+  "asset": "KM_FORE_JACK",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 12,
+  "w": 90,
+  "h": 78,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3560,
+    "as_rgb565": 14040
+  }
+}

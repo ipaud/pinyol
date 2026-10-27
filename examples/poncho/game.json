@@ -72,6 +72,16 @@
       "id": "chalk",
       "name": "Parque de tiza completo",
       "description": "Llega a la bandera del parque de tiza."
+    },
+    {
+      "id": "silencio",
+      "name": "El Gran Silencio",
+      "description": "Vence al Gran Silencio en el escenario del teclado."
+    },
+    {
+      "id": "ritmo",
+      "name": "Ritmo perfecto",
+      "description": "Toca las cuatro notas de una ronda justo al compás."
     }
   ],
   "picture_budget_kb": 2400,

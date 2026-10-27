@@ -1,0 +1,25 @@
+{
+  "asset": "KM_MONITOR",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 19,
+  "w": 99,
+  "h": 60,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    49,
+    59
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5929,
+    "as_rgb565": 11880
+  }
+}

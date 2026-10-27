@@ -1,0 +1,25 @@
+{
+  "asset": "KM_LIGHTS",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 14,
+  "w": 104,
+  "h": 90,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    52,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3205,
+    "as_rgb565": 18720
+  }
+}

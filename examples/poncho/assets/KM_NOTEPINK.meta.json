@@ -1,0 +1,25 @@
+{
+  "asset": "KM_NOTEPINK",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 102,
+  "h": 50,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    51,
+    25
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2106,
+    "as_rgb565": 10200
+  }
+}

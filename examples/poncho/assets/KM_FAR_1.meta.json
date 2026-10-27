@@ -1,0 +1,25 @@
+{
+  "asset": "KM_FAR_1",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 27,
+  "w": 160,
+  "h": 200,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    80,
+    199
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 33672,
+    "as_rgb565": 64000
+  }
+}

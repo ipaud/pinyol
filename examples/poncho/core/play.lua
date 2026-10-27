@@ -14,6 +14,8 @@ local Ach = require("core.ach")
 local Hud = require("core.hud")
 local Music = require("core.music")
 local Power = require("core.power")
+local Beat = require("core.beat")
+local Keys = require("core.keys")
 local W = require("core.worlds")
 local Boss = require("core.boss")
 local lang = require("lang")
@@ -44,6 +46,8 @@ function P.enter(world)
   Power.reset_run()
   P.crates = 0
   Boss.reset(M.boss)
+  Beat.reset()
+  Keys.clear()
   Hero.bounds = nil
   Hero.has_scooter = false
   Hero.reset(START_X, START_Y)
@@ -79,13 +83,16 @@ local function events()
   end
   if he.pound then Cam.kick(10) end
   if fe.stomp then Ach.earn("stomp") end
+  local rd = Boss.events.round
+  if rd and rd.perfect == 4 then Ach.earn("ritmo") end
+  if Boss.events.round_start then P.say(lang.tr("toast_rhythm"), 150) end
   if he.land_ch == "H" or he.land_ch == "h" then
     if L.hop(he.land_x, he.land_y) then Fx.dust(he.land_x, he.land_y, 4, 0, 1.4) end
   end
   if L.vanished then Fx.dust(L.vanished[1], L.vanished[2], 6, 0, 2.2) L.vanished = nil end
   if fe.curl then Ach.earn("curl") end
   if Boss.events.start then P.say(lang.tr(Boss.name()), 150) end
-  if Boss.events.beaten then Ach.earn(P.world == 1 and "boss1" or "boss2") P.say(lang.tr("toast_boss_down"), 220) end
+  if Boss.events.beaten then Ach.earn(({"boss1", "boss2", "boss2", "silencio"})[P.world] or "boss1") P.say(lang.tr("toast_boss_down"), 220) end
   if he.ramp_fast then Ach.earn("ramp") end
   if he.land_hard then Cam.kick(4) end
   if he.bump or he.hurt then Cam.kick(10) end
@@ -94,6 +101,7 @@ end
 
 function P.update()
   Fx.update()
+  Beat.update()
   Music.update()
   transition.update()
   if P.toast_t > 0 then P.toast_t = P.toast_t - 1 end
@@ -111,6 +119,7 @@ function P.update()
   Items.update()
   Foes.update()
   Boss.update()
+  if W.theme.piano then Keys.track(Hero.s) Keys.update() end
   events()
   Cam.update(s)
   if s.state == "dead" and not transition.active() then
@@ -127,7 +136,7 @@ function P.update()
     Music.stop()
     P.state, P.end_t = "goal", 0
     Snd.play("win")
-    Ach.earn(({"playroom", "market", "chalk"})[P.world] or "playroom")
+    Ach.earn(({"playroom", "market", "chalk", "silencio"})[P.world] or "playroom")
     Fx.confetti(s.x, s.y - 120, 30)
   end
   return nil
@@ -139,6 +148,11 @@ function P.draw()
   Bg.mid(cx, cy)
   camera(cx, cy)
   Tiles.draw(cx, cy)
+  if W.theme.piano then Keys.draw() end
+  local bx = Foes.beam()
+  if bx and M.spot and cx < M.spot.x1 and cx + K.W > M.spot.x0 then -- the spotlight's beam, added to the light
+    grad(math.floor(bx) - 40, cy, 80, K.FLOOR * 32 - cy, 0x181030, 0x686030, {add = true})
+  end
   Items.draw(cx)
   Foes.draw(cx)
   Boss.draw(cx)

@@ -26,7 +26,11 @@ local MEL3 = {"G5 0 B5 0 D6 0 B5 G5 A5 0 C6 0 E6 0 C6 A5", "G5 0 B5 0 D6 B5 G5 0
               "E5 0 G5 0 B5 0 G5 E5 F#5 0 A5 0 C6 0 A5 0", "D6 0 B5 G5 A5 0 F#5 0 G5 0 0 0 G5 B5 D6 0"}
 local BASS3 = {"G2 0 D3 0 G2 0 D3 0 A2 0 E3 0 A2 0 E3 0", "G2 0 D3 0 G2 0 D3 0 D3 0 A2 0 D3 0 A2 0",
                "E2 0 B2 0 E2 0 B2 0 F#2 0 C#3 0 F#2 0 C#3 0", "D3 0 A2 0 D3 0 A2 0 G2 0 D3 0 G2 0 D3 0"}
-local TUNES = {playroom = {parse(MEL), parse(BASS), 7}, market = {parse(MEL2), parse(BASS2), 6}, chalk = {parse(MEL3), parse(BASS3), 6}}
+-- the stage's tune: a slow groove in A minor, one note on every second step (steps of 7.5 ticks make a beat of 30)
+local MEL4 = {"A5 0 0 C6 0 0 E6 0 A5 0 0 C6 0 0 B5 0", "G5 0 0 B5 0 0 D6 0 G5 0 0 B5 0 0 A5 0",
+              "F5 0 0 A5 0 0 C6 0 F5 0 0 A5 0 0 G5 0", "E5 0 0 G5 0 0 B5 0 E6 0 0 D6 0 0 C6 0"}
+local BASS4 = {"A2 0 0 0 A2 0 0 0 E3 0 0 0 E3 0 0 0", "G2 0 0 0 G2 0 0 0 D3 0 0 0 D3 0 0 0", "F2 0 0 0 F2 0 0 0 C3 0 0 0 C3 0 0 0", "E2 0 0 0 E2 0 0 0 B2 0 0 0 B2 0 0 0"}
+local TUNES = {playroom = {parse(MEL), parse(BASS), 7}, market = {parse(MEL2), parse(BASS2), 6}, chalk = {parse(MEL3), parse(BASS3), 6}, stage = {parse(MEL4), parse(BASS4), 8}}
 local mel, bass = TUNES.playroom[1], TUNES.playroom[2]
 
 M.on, M.t, M.step = false, 0, 0

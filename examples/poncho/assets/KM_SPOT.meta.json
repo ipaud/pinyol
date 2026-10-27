@@ -1,0 +1,25 @@
+{
+  "asset": "KM_SPOT",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 18,
+  "w": 68,
+  "h": 170,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    34,
+    169
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5839,
+    "as_rgb565": 23120
+  }
+}

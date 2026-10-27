@@ -67,7 +67,7 @@ local function finish()
   local t, w = Play.time, Play.world
   W.finish(w, t)
   local coins, creams, tc, ti = Items.counts()
-  Scr.results.enter({coins = coins, creams = creams, total_coins = tc, total_creams = ti, time = t, best = W.best(w), next = W.next_ready(w), world = w})
+  Scr.results.enter({coins = coins, creams = creams, total_coins = tc, total_creams = ti, time = t, best = W.best(w), next = W.next_ready(w), world = w, final = (w == #W.defs)})
   G.state = "results"
 end
 
@@ -89,9 +89,12 @@ function _update()
     if G.after_play then G.after_play() end
   elseif st == "explain" then
     if Scr.how.update() then G.state = G.back end
+  elseif st == "credits" then
+    if Scr.credits.update() then to_select(Scr.results.info.world) end
   elseif st == "results" then
     local pick = Scr.results.update()
-    if pick == "next" then to_play(Scr.results.info.next)
+    if pick == "credits" then Scr.credits.enter() G.state = "credits"
+    elseif pick == "next" then to_play(Scr.results.info.next)
     elseif pick == "worlds" then to_select(Scr.results.info.world) end
   end
 end
@@ -102,6 +105,7 @@ function _draw()
     Scr.how.draw(G.back == "title" and Scr.title.draw or (G.back == "results" and Scr.results.draw or (G.back == "select" and function() Scr.select.draw(Scr.title.back) end or Play.draw)))
   elseif st == "title" then Scr.title.draw()
   elseif st == "select" then Scr.select.draw(Scr.title.back)
+  elseif st == "credits" then Scr.credits.draw(Scr.title.back)
   elseif st == "results" then Scr.results.draw(Play.draw)
   else Play.draw() end
 end

@@ -16,6 +16,7 @@ local sign, approach, clamp = U.sign, U.approach, U.clamp
 
 H.costume = nil          -- "barretina", "dino", "boots" or "futbol" (core/power.lua): its strips replace the standing and running ones
 H.has_scooter = false
+H.frozen = false
 H.hearts = K.HEARTS
 H.events = {}            -- what happened this tick, for the achievements and the camera ("land", "jump", "ramp", "bump", "stomp")
 
@@ -36,6 +37,7 @@ function H.reset(x, y, keep_scooter)
   H.costume = nil
   H.s = s
   H.hearts = K.HEARTS
+  H.frozen = false
   return s
 end
 
@@ -325,9 +327,11 @@ function H.update()
   end
   local dir = (In.btn("right") and 1 or 0) - (In.btn("left") and 1 or 0)
   local down = In.btn("down")
-  if st == "hurt" then
-    s.hurt_t = s.hurt_t - 1
-    if s.hurt_t <= 0 then s.state = "play" end
+  if st == "hurt" or H.frozen then -- (frozen: the stage's rhythm rounds: he stands and plays)
+    if st == "hurt" then
+      s.hurt_t = s.hurt_t - 1
+      if s.hurt_t <= 0 then s.state = "play" end
+    end
     dir = 0
     s.jbuf = 0
     if s.ground then s.vx = approach(s.vx, 0, 0.2) end

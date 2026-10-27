@@ -10,16 +10,18 @@ local Snd = require("core.sound")
 local In = require("core.input")
 local Power = require("core.power")
 local Deco = require("core.deco")
+local Beat = require("core.beat")
 
 local F = {}
 F.list = {}
 F.events = {}
 
 local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26},
-              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}, pigeon = {46, 48}, snail = {62, 36}}
+              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}, pigeon = {46, 48}, snail = {62, 36}, note = {40, 46}, cable = {64, 30}, speaker = {48, 62}, bubble = {64, 54}}
 local WAKE = 640
 
-function F.clear() F.list, F.events = {}, {} end
+F.rings = {} -- the speakers' sound rings in flight
+function F.clear() F.list, F.events, F.rings = {}, {}, {} end
 
 local function spawn(kind, x, y, range)
   local sz = SIZE[kind]
@@ -33,6 +35,10 @@ local function spawn(kind, x, y, range)
   elseif kind == "banana" then f.vx = -1.0
   elseif kind == "bee" then f.vx = -1.4
   elseif kind == "cherry" then f.vx = -0.8
+  elseif kind == "note" then f.vx = -0.5 f.vy = 0
+  elseif kind == "cable" then f.vx = -1.0
+  elseif kind == "speaker" then f.vx = 0 f.pulse = 0
+  elseif kind == "bubble" then f.vx = -0.8
   elseif kind == "pigeon" then f.vx = -0.9
   elseif kind == "snail" then f.vx = -0.35
   elseif kind == "melon" then f.vx = -2.0 f.immune = true end
@@ -45,7 +51,7 @@ function F.init()
   F.clear()
   for _, d in ipairs(M.foes) do
     local y = d.y
-    if d.kind ~= "plane" and d.kind ~= "bee" then -- walkers and balls start on the ground under their tile
+    if d.kind ~= "plane" and d.kind ~= "bee" and d.kind ~= "bubble" then -- walkers and balls start on the ground under their tile
       y = L.ground(d.x, d.y - 40, d.y + 200, 40) or d.y
     end
     local f = spawn(d.kind, d.x, y, d.range)
@@ -170,6 +176,47 @@ local function update_one(f, hx)
       walk(f, 0.35)
       f.phase = f.phase + 0.04
     end
+  elseif k == "note" then -- a note that hops on every beat, drifting a little
+    f.vy = f.vy + 0.42
+    f.y = f.y + f.vy
+    local gy = L.ground(f.x, f.y - f.vy - 2, f.y, 2)
+    if gy then
+      f.y, f.vy = gy, 0
+      if Beat.downbeat() then f.vy = -9.2 f.squash = 6 end
+    end
+    if f.vy ~= 0 then
+      f.x = f.x + f.dir * 0.6
+      if L.solid_at(f.x + f.dir * 16, f.y - 16) or (f.x - f.home) * f.dir > f.range then f.dir = -f.dir end
+    end
+    f.phase = f.phase + 0.1
+    if f.squash and f.squash > 0 then f.squash = f.squash - 1 end
+  elseif k == "cable" then -- a cable slithers, then shoots along the floor at the hero
+    f.mt = f.mt + 1
+    if f.mode == "walk" then
+      walk(f, 0.9)
+      f.phase = f.phase + 0.1
+      if math.abs(hx - f.x) < 260 and f.mt > 60 then f.mode, f.mt, f.dir = "slide", 0, (hx > f.x) and 1 or -1 f.vx = f.dir * math.abs(f.vx) end
+    elseif f.mode == "slide" then
+      walk(f, 3.2)
+      f.phase = f.phase + 0.3
+      if f.mt > 40 then f.mode, f.mt = "rest", 0 end
+    else
+      if f.mt > 50 then f.mode, f.mt = "walk", 0 end
+    end
+  elseif k == "speaker" then -- it stands still and, every second beat, sends a sound ring along the floor toward the hero
+    f.dir = (hx > f.x) and 1 or -1
+    if f.pulse > 0 then f.pulse = f.pulse - 1 end
+    if Beat.t % 60 == 0 and math.abs(hx - f.x) < 420 and #F.rings < 6 then
+      F.rings[#F.rings + 1] = {x = f.x + f.dir * 22, y = f.y - 30, dir = f.dir, t = 0}
+      f.pulse = 10
+      Snd.play("wind", 0.6)
+    end
+  elseif k == "bubble" then -- a mute cloud: floats in a sine, leaning toward the hero
+    f.t = f.t + 0
+    local d = (hx > f.x) and 1 or -1
+    if math.abs(hx - f.x) < 320 then f.x = f.x + d * 0.7 f.dir = d end
+    f.y = f.base_y - 90 + math.sin(f.t / 24) * 30
+    f.phase = f.t
   elseif k == "melon" then -- a rolling melon: it cannot be beaten, only jumped over
     walk(f, 2.0)
     f.phase = f.phase + f.dir * 3.2
@@ -181,8 +228,36 @@ local function update_one(f, hx)
   end
 end
 
+-- the spotlight: a beam sweeps the stage's zone; a toy in it stands still
+local beam_x = nil
+local function frozen(f)
+  local sp = M.spot
+  if not sp or f.x < sp.x0 or f.x > sp.x1 then return false end
+  return math.abs(f.x - beam_x) < 74
+end
+function F.beam() return beam_x end
+
+-- the sound rings: they fly along the floor and are gone on a wall; a ring that meets him costs a heart (a jump clears it)
+local function update_rings(s)
+  local rs = F.rings
+  for i = #rs, 1, -1 do
+    local r = rs[i]
+    r.t = r.t + 1
+    r.x = r.x + r.dir * 2.4
+    if r.t > 150 or L.solid_at(r.x, r.y) then rs[i] = rs[#rs] rs[#rs] = nil
+    elseif s.state == "play" and s.inv == 0 and math.abs(r.x - s.x) < 22 and r.y > s.y - K.BODY_H - 8 and r.y < s.y + 6 then
+      rs[i] = rs[#rs] rs[#rs] = nil
+      Hero.hurt(r.x)
+      F.events.hurt = true
+    end
+  end
+end
+
 function F.update()
   F.events = {}
+  local sp = M.spot
+  if sp then beam_x = sp.x0 + (sp.x1 - sp.x0) * (0.5 + 0.5 * math.sin(Beat.t / 70)) end
+  update_rings(Hero.s)
   local s = Hero.s
   local hx0, hy0, hw, hh = Hero.box()
   for i = #F.list, 1, -1 do
@@ -191,7 +266,7 @@ function F.update()
       f.dead = f.dead + 1
       if f.dead > 26 then table.remove(F.list, i) end
     elseif math.abs(f.x - s.x) < WAKE then
-      update_one(f, s.x)
+      if not frozen(f) then update_one(f, s.x) else f.t = f.t + 1 end
       local ak, ax, ay, aw, ah = Hero.attack()
       if ak and f.dead == 0 and not f.immune and Power.beats(ak, f.kind) and U.overlap(ax, ay, aw, ah, f.x - f.w / 2, f.y - f.h, f.w, f.h) then
         f.dead = 1
@@ -297,6 +372,38 @@ end
 
 -- the chalk park's walkers: CE_PIGEON (walk 0-7, peck 8-11, defeated last two) and CE_SNAIL (slide 0-7, shell 8-10, defeated last two) when the data has them, else
 -- the market's apple and banana, tinted
+-- the stage's toys (KE_*) when the data has them, else the park's, tinted: a note hops, a cable slides, a speaker pulses, a bubble floats
+local KE = {note = {"KE_NOTE", "CE_BALL", 0xE0A0FF}, cable = {"KE_CABLE", "CE_SNAIL", 0xFFE070}, bubble = {"KE_BUBBLE", "CE_KITE", 0xB0B0D0}}
+local function stage(f)
+  local k, x, y = f.kind, math.floor(f.x), math.floor(f.y)
+  alook.flip, alook.sx, alook.sy, alook.mul = f.dir < 0, nil, nil, nil
+  if k == "speaker" then
+    local own = Deco.has("KE_SPEAKER")
+    if own then
+      local fr = f.pulse > 0 and 6 + (f.pulse // 5) % 2 or (Beat.t // 5) % 6 -- pulse 0-5, shout 6-7
+      if over(f) then fr = f.dead < 12 and 8 or 9 end
+      Deco.img("KE_SPEAKER", fr, x, y, alook)
+    else -- a box with two cones, swelling on the pulse
+      local g = f.pulse > 0 and 3 or 0
+      if over(f) then g = -8 end
+      rect(x - 22 - g, y - 56 - g, 44 + 2 * g, 56 + g, 0x302848)
+      circ(x, y - 38, 12 + g, 0x6A60A0, true)
+      circ(x, y - 14, 8 + g, 0x6A60A0, true)
+    end
+    return
+  end
+  local e = KE[k]
+  local own = Deco.has(e[1])
+  local id = own and e[1] or e[2]
+  alook.mul = (not own) and e[3] or nil
+  local n = Deco.count(id)
+  local fr = math.floor(f.phase) % math.max(1, n - 2)
+  if own and k == "cable" then fr = (f.mode == "rest") and 8 + (f.mt // 10) % 3 or math.floor(f.phase) % 8 end -- slide 0-7, coil 8-10
+  if k == "bubble" then y = y - (own and 0 or f.h // 2) + 0 end
+  if over(f) then fr = n - 2 + (f.dead < 12 and 0 or 1) end
+  Deco.img(id, fr, x, y, alook)
+end
+
 local function park(f)
   local k, x, y = f.kind, math.floor(f.x), math.floor(f.y)
   local own = Deco.has(k == "pigeon" and "CE_PIGEON" or "CE_SNAIL")
@@ -313,11 +420,12 @@ local function park(f)
 end
 
 function F.draw(cam_x)
+  for _, r in ipairs(F.rings) do circ(math.floor(r.x), math.floor(r.y), 10 + (r.t // 6) % 3 * 2, 0xE8E0FF, false) end
   for _, f in ipairs(F.list) do
     local dx = f.x - cam_x
     if dx > -80 and dx < K.W + 80 then
       local k = f.kind
-      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) elseif k == "plane" then plane(f) elseif k == "pigeon" or k == "snail" then park(f) else market(f) end
+      if k == "car" then car(f) elseif k == "robot" then robot(f) elseif k == "ball" then ball(f) elseif k == "plane" then plane(f) elseif k == "pigeon" or k == "snail" then park(f) elseif k == "note" or k == "cable" or k == "speaker" or k == "bubble" then stage(f) else market(f) end
     end
   end
 end

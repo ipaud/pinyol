@@ -1,0 +1,25 @@
+{
+  "asset": "KM_PIANO",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 17,
+  "w": 139,
+  "h": 120,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    69,
+    119
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 11052,
+    "as_rgb565": 33360
+  }
+}

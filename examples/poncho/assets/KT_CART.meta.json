@@ -1,0 +1,25 @@
+{
+  "asset": "KT_CART",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 16,
+  "w": 96,
+  "h": 66,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    48,
+    65
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3816,
+    "as_rgb565": 12672
+  }
+}

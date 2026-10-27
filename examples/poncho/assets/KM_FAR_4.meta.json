@@ -1,0 +1,25 @@
+{
+  "asset": "KM_FAR_4",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 26,
+  "w": 137,
+  "h": 200,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    68,
+    199
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 28838,
+    "as_rgb565": 54800
+  }
+}

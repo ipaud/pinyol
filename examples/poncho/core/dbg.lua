@@ -57,6 +57,14 @@ function D.watch_bee() -- true once a bee has dived
   G.after_play = function() for _, f in ipairs(Foes.list) do if f.kind == "bee" and f.mode == "dive" then G.seen_dive = true end end end
   return true
 end
+-- the stage: stop the beat at tick t (or let it run again), and watch whether a note hopper has left the floor
+function D.beat_hold(t) local B = require("core.beat") B.hold = t ~= nil if t then B.t = t end return true end
+function D.watch_hop()
+  G.hopped = false
+  G.after_play = function() for _, f in ipairs(Foes.list) do if f.kind == "note" and f.y < f.base_y - 6 then G.hopped = true end end end
+  return true
+end
+function D.boss_meter() return require("core.boss").meter end
 function D.new_crates() L.reset_crates() Play.crates = 0 return true end
 function D.tile(c, r) return L.at(c, r) end
 function D.foe(kind, dx, range) local s = Hero.s return Foes.spawn(kind, s.x + dx, s.y, range or 8) ~= nil end

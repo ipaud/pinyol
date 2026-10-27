@@ -15,25 +15,31 @@ local Snd = require("core.sound")
 local U = require("core.util")
 local Foes = require("core.foes")
 local Deco = require("core.deco")
+local In = require("core.input")
+local Beat = require("core.beat")
 
 local B = {}
 local def          -- {id, x, y} from the map, or nil
 local b            -- the boss
 B.started, B.dead, B.events = false, false, {}
-B.maxhp = 6
+B.t_end = 0
+B.meter = 100  -- Silencio's: the music meter, drained while it inhales
 
 local SPEC = {
   cuerda = {w = 80, h = 84, name = "boss_cuerda"},
   sandia = {w = 110, h = 84, name = "boss_sandia"},
+  silencio = {w = 120, h = 140, name = "boss_silencio", maxhp = 9},
 }
 
 function B.reset(d)
   def = d
   B.started, B.dead, B.events, b = false, false, {}, nil
+  B.meter = 100
+  Hero.frozen = false
   Cam.lock, Hero.bounds = nil, nil
   if d then
     local sp = SPEC[d.id]
-    b = {id = d.id, x = d.x, y = d.y, w = sp.w, h = sp.h, hp = B.maxhp, inv = 0, mode = "wait", mt = 0, dir = -1, vx = 0, t = 0, ang = 0, passes = 0, seeds = {}, shots = 0}
+    b = {id = d.id, x = d.x, y = d.y, w = sp.w, h = sp.h, hp = sp.maxhp or 6, maxhp = sp.maxhp or 6, inv = 0, mode = "wait", mt = 0, dir = -1, vx = 0, t = 0, ang = 0, passes = 0, seeds = {}, shots = 0}
   end
 end
 function B.pending() return def ~= nil and not B.dead end
@@ -144,6 +150,124 @@ local function update_sandia(s, x0, x1)
   end
 end
 
+-- ---------------------------------------------------------------- el Gran Silencio: a friend-to-be, three phases of three lives.
+-- It cannot be hurt by jumping on it. Its cycle: idle, SHH (it inhales: within 320 px, standing low, he is pulled toward it and his music meter drains; at nothing left
+-- it costs a heart; stay far, or high, or in the air), the WAVE of its breath along the floor (jump it), then the rhythm round: he stands at the stage's four keys
+-- (left, A, B, right) and four rings close in on them, one a beat (30 ticks): press the key as a ring reaches it. A ring caught within 3 ticks is perfect (2 points), within
+-- 8 good (1); up to 3 points a round hurt it (never past the end of the phase); no points and it recovers a life. A scooter dash into it also starts a round.
+local LANES = {"left", "a", "b", "right"}
+local PATTERN = {{2, 3, 1, 4}, {1, 3, 2, 4}, {4, 1, 3, 2}}   -- the lane of each of the four rings, per phase
+local R_START, R_GAP = 50, 30                                  -- the first ring's beat (ticks into the round), and the beat between rings
+local NOTE_NAMES = {"C5", "E5", "G5", "C6"}
+
+local function phase() return math.min(3, 3 - (b.hp - 1) // 3) end
+function B.phase() return b and phase() or 0 end
+
+local function start_round()
+  b.mode, b.mt = "rhythm", 0
+  b.notes, b.perfect, b.good = {}, 0, 0
+  local pat = PATTERN[phase()]
+  for i = 1, 4 do b.notes[i] = {lane = pat[i], T = R_START + R_GAP * (i - 1), done = false} end
+  b.waves = {}
+  Hero.frozen = true
+  B.events.round_start = true
+end
+
+local function end_round()
+  Hero.frozen = false
+  local ph = phase()
+  local dmg = math.min(3, b.perfect * 2 + b.good, b.hp - (3 - ph) * 3)
+  B.events.round = {perfect = b.perfect, good = b.good}
+  if dmg > 0 then
+    b.hp = b.hp - dmg
+    b.inv = 55
+    Fx.sparkle(b.x, b.y - b.h * 0.7, 0xFFFFFF, 8)
+    Fx.ring(b.x, b.y - b.h / 2, 10, 80, 0xFFD060, 14)
+    Snd.play("pound")
+    Cam.kick(10)
+    B.events.hit = true
+    if b.hp <= 0 then b.mode, b.mt = "dying", 0 B.events.beaten_start = true return end
+  else
+    b.hp = math.min((4 - ph) * 3, b.hp + 1) -- it recovers
+  end
+  b.mode, b.mt = "recover", 0
+end
+
+-- the rhythm round's key presses: a lane (1-4) judged against the ring nearest its beat
+function B.press(lane)
+  if not b or b.mode ~= "rhythm" then return end
+  b.lit = b.lit or {}
+  b.lit[lane] = 8
+  for _, nt in ipairs(b.notes) do
+    if not nt.done and nt.lane == lane and math.abs(b.mt - nt.T) <= 8 then
+      nt.done = true
+      local perfect = math.abs(b.mt - nt.T) <= 3
+      if perfect then b.perfect = b.perfect + 1 else b.good = b.good + 1 end
+      nt.hit = perfect and 2 or 1
+      Snd.note(NOTE_NAMES[lane], 0.45)
+      Fx.sparkle(Hero.s.x, Hero.s.y - 60, perfect and 0xFFE070 or 0x80E0FF, 5)
+      return
+    end
+  end
+end
+
+-- for the bot: the lane and how many ticks to the beat of the next ring still to be played (nil when none)
+function B.next_note()
+  if not b or b.mode ~= "rhythm" then return nil end
+  for _, nt in ipairs(b.notes) do
+    if not nt.done and b.mt - nt.T <= 8 then return nt.lane, nt.T - b.mt end
+  end
+end
+function B.waves() return b and b.waves or {} end
+
+local function update_silencio(s, x0, x1)
+  local m, ph = b.mode, phase()
+  b.mt = b.mt + 1
+  b.dir = s.x > b.x and 1 or -1
+  if b.lit then for k, v in pairs(b.lit) do b.lit[k] = v > 1 and v - 1 or nil end end
+  if m == "intro" then
+    if b.mt > 60 then b.mode, b.mt = "idle", 0 end
+  elseif m == "idle" then
+    B.meter = math.min(100, B.meter + 0.6)
+    if b.mt > (ph == 1 and 70 or 50) then b.mode, b.mt = "shh", 0 end
+  elseif m == "shh" then
+    if b.mt > 25 then
+      local low = s.y >= b.y - 30 and s.state == "play"
+      if low and math.abs(s.x - b.x) < 320 then
+        s.vx = s.vx + (b.x > s.x and 1 or -1) * 0.17 * (1 + 0.25 * (ph - 1))
+        B.meter = B.meter - 0.9
+        if B.meter <= 0 then Hero.hurt(b.x) B.meter = 60 end
+      else
+        B.meter = math.min(100, B.meter + 0.5)
+      end
+    end
+    if b.mt > 100 + 20 * (ph - 1) then
+      b.mode, b.mt = "wave", 0
+      b.waves = {{x = b.x - 40, dir = -1}}
+    end
+  elseif m == "wave" then
+    if ph >= 2 and b.mt == 50 then b.waves[#b.waves + 1] = {x = b.x - 40, dir = -1} end
+    local v = ph == 3 and 3.6 or 3.0
+    local alive = 0
+    for _, w in ipairs(b.waves) do
+      if not w.gone then
+        w.x = w.x + w.dir * v
+        if w.x < x0 + 12 then w.gone = true
+        else
+          alive = alive + 1
+          if s.state == "play" and s.inv == 0 and s.y > b.y - 26 and math.abs(w.x - s.x) < 24 then Hero.hurt(w.x) end
+        end
+      end
+    end
+    if alive == 0 and (ph < 2 or b.mt > 50) then start_round() end
+  elseif m == "rhythm" then
+    for lane = 1, 4 do if In.btnp(LANES[lane]) then B.press(lane) end end
+    if b.mt > R_START + R_GAP * 3 + 20 then end_round() end
+  elseif m == "recover" then
+    if b.mt > 60 then b.mode, b.mt = "idle", 0 end
+  end
+end
+
 function B.update()
   B.events = {}
   if not b then return end
@@ -174,8 +298,25 @@ function B.update()
     end
     return
   end
-  if b.id == "cuerda" then update_cuerda(s, x0, x1) else update_sandia(s, x0, x1) end
+  if b.id == "cuerda" then update_cuerda(s, x0, x1) elseif b.id == "silencio" then update_silencio(s, x0, x1) else update_sandia(s, x0, x1) end
   if b.mode == "intro" or b.mode == "wait" then return end
+  if b.id == "silencio" then -- it is not hurt by jumping on it; a scooter dash starts the rhythm round; in the round it is harmless
+    if b.mode == "rhythm" or b.mode == "dying" then return end
+    local bx0, by0 = b.x - b.w / 2, b.y - b.h
+    local hx0, hy0, hw, hh = Hero.box()
+    if U.overlap(hx0 + 3, hy0 + 4, hw - 6, hh - 4, bx0, by0, b.w, b.h) and s.state == "play" then
+      if s.scooter and math.abs(s.vx) > 5.5 and (b.mode == "idle" or b.mode == "shh" or b.mode == "wave") then
+        s.vx = (s.x < b.x) and -4 or 4
+        Fx.ring(b.x, b.y - 50, 10, 70, 0xFFFFFF, 12)
+        start_round()
+      elseif s.vy > 0.3 and s.y < b.y - b.h * 0.55 then
+        Hero.bounce(K.STOMP_V, false) Snd.play("bump")
+      elseif s.inv == 0 then
+        Hero.hurt(b.x)
+      end
+    end
+    return
+  end
   -- the hero meets it
   local bx0, by0 = b.x - b.w / 2, b.y - b.h
   local hx0, hy0, hw, hh = Hero.box()
@@ -207,6 +348,39 @@ function B.draw(cam_x)
   local x, y = math.floor(b.x), math.floor(b.y)
   look.sx, look.sy, look.alpha, look.mul, look.angle = nil, nil, nil, nil, nil
   look.flip = b.dir < 0
+  if b.id == "silencio" then
+    -- BOSS_SILENCIO when the art is in the data (frames by name: idle_0.., inhale_0.., wave_0.., hurt_0.., def_0..), else Mama Sandia's picture, dimmed and tinted
+    local own = Deco.has("BOSS_SILENCIO")
+    local id = own and "BOSS_SILENCIO" or "BOSS_SANDIA"
+    local m, fr = b.mode, 0
+    if B.dead then -- beaten: a small smiling cloud at the stage's keyboard
+      B.t_end = B.t_end + 1
+      if own then
+        Deco.img(id, "def_3", x, y - 24 + math.floor(math.sin(B.t_end / 14) * 4), look)
+      else
+        local cx, cy = x, y - 40 + math.floor(math.sin(B.t_end / 14) * 4)
+        circ(cx - 16, cy, 14, 0xE8E4FF, true) circ(cx + 4, cy - 8, 18, 0xE8E4FF, true) circ(cx + 22, cy, 14, 0xE8E4FF, true) rect(cx - 16, cy, 38, 14, 0xE8E4FF)
+        circ(cx - 3, cy - 4, 3, 0x2A1A3A, true) circ(cx + 12, cy - 4, 3, 0x2A1A3A, true)
+      end
+      rect(x - 30, y - 8, 60, 8, 0x2A1A3A) rect(x - 28, y - 6, 56, 3, 0xF4F0FF) -- the keyboard it plays
+      return
+    end
+    if m == "dying" then fr = own and ("def_" .. math.min(2, b.mt // 36)) or 27 + math.min(3, b.mt // 28)
+    elseif b.inv > 0 then fr = own and ("hurt_" .. (b.inv > 36 and 0 or (b.inv > 18 and 1 or 2))) or hurt_frame(20)
+    elseif m == "shh" then fr = own and ("swallow_" .. (b.mt // 7) % 6) or 14 + math.min(5, b.mt // 14)
+    elseif m == "wave" then fr = own and ("shh_" .. math.min(5, b.mt // 8)) or 23 + (b.mt // 4) % 4
+    elseif m == "recover" or m == "rhythm" then fr = own and ("stun_" .. (b.mt // 8) % 4) or 20
+    else fr = own and ("idle_" .. (b.mt // 8) % 6) or (b.mt // 8) % 6 end
+    look.flip = false
+    if not own then look.mul, look.sx, look.sy = 0x8878B0, 1, 1 end
+    Deco.img(id, fr, x, y, look)
+    look.sx, look.sy = nil, nil
+    for _, w in ipairs(b.waves or {}) do -- the breath's wave along the floor
+      if not w.gone then rect(math.floor(w.x) - 8, y - 38 - (b.mt // 3 % 2) * 4, 16, 38, 0xD8D0FF) end
+    end
+    if m == "shh" and b.mt > 25 then circ(x, y - 55, 150 - (b.mt * 3) % 120, 0xB8A8F0, false) end -- the pull, drawn as a ring closing in
+    return
+  end
   if b.id == "cuerda" then
     local fr
     local m = b.mode
@@ -248,8 +422,28 @@ function B.hud(lang)
   local x, y = (K.W - w) // 2, 12
   rect(x - 3, y - 3, w + 6, 30, 0x2A1A3A)
   rect(x, y + 14, w, 9, 0x4A2A4A)
-  rect(x, y + 14, math.floor(w * math.max(0, b.hp) / B.maxhp), 9, 0xE04050)
+  rect(x, y + 14, math.floor(w * math.max(0, b.hp) / b.maxhp), 9, 0xE04050)
   text(lang.tr(SPEC[b.id].name), K.W // 2, y - 1, {font = "snes_small", color = 0xFFFFFF, align = "center"})
+  if b.id ~= "silencio" then return end
+  -- the music meter, under the life bar
+  rect(x - 3, y + 30, w + 6, 12, 0x2A1A3A)
+  rect(x, y + 33, math.floor(w * math.max(0, B.meter) / 100), 6, B.meter < 35 and 0xFF5050 or 0x70E0FF)
+  if b.mode ~= "rhythm" then return end
+  -- the four keys, and the rings closing on them
+  local COL = {0xFF7090, 0x70D0FF, 0xFFD060, 0x90E070}
+  local LAB = {"<", "A", "B", ">"}
+  for lane = 1, 4 do
+    local kx = 150 + 60 * (lane - 1)
+    local lit = b.lit and b.lit[lane]
+    rect(kx - 22, 214, 44, 28, lit and 0xFFFFFF or COL[lane])
+    text(LAB[lane], kx, 219, {font = "snes_body", color = 0x2A1A3A, align = "center"})
+  end
+  for _, nt in ipairs(b.notes) do
+    local dt = nt.T - b.mt
+    if not nt.done and dt <= 60 and dt >= -8 then
+      circ(150 + 60 * (nt.lane - 1), 228, 12 + math.max(0, dt) * 2 // 3, COL[nt.lane], false)
+    end
+  end
 end
 
 return B

@@ -166,6 +166,28 @@ function sel.draw(bgfn)
   text(lang.tr("select_help"), K.W // 2, 296, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A})
 end
 
+-- ---------------------------------------------------------------- the credits: the ending's three pages (A or a few seconds to turn the page)
+
+local cre = {t = 0, page = 1}
+S.credits = cre
+function cre.enter() cre.t, cre.page = 0, 1 end
+function cre.update()
+  cre.t = cre.t + 1
+  if In.btnp("a") or In.btnp("start") or cre.t > 420 then
+    cre.t = 0
+    cre.page = cre.page + 1
+    if cre.page > 3 then return true end
+  end
+end
+function cre.draw(bgfn)
+  if bgfn then bgfn() end
+  rect(0, 0, K.W, K.H, 0x1A1230)
+  local x, y, w, h = 40, 60, K.W - 80, 190
+  panel(x, y, w, h)
+  textbox(lang.tr("credits_" .. cre.page), x + 24, y + 20, w - 48, h - 60, {font = Hud.FONT, fonts = {Hud.FONT, Hud.SMALL}, color = 0x3A2A4A, valign = "middle", align = "center"})
+  text(lang.tr("credits_next"), K.W // 2, y + h - 32, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+end
+
 -- ---------------------------------------------------------------- results
 
 local res = {t = 0}
@@ -178,7 +200,7 @@ end
 function res.update()
   res.t = res.t + 1
   if res.t <= 90 then return end
-  if In.btnp("a") or In.btnp("start") then return res.info.next and "next" or "worlds" end
+  if In.btnp("a") or In.btnp("start") then return res.info.final and "credits" or (res.info.next and "next" or "worlds") end
   if In.btnp("b") then return "worlds" end
 end
 
@@ -201,8 +223,8 @@ function res.draw(bgfn)
     text(r[2], x + w - 40, yy, {font = Hud.FONT, color = 0x3A2A4A, align = "right"})
   end
   if res.t > 90 and (res.t // 30) % 2 == 0 or U.calm() then
-    text(lang.tr(res.info.next and "res_next_world" or "res_worlds"), K.W // 2, y + h - 40, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
-    if res.info.next then text(lang.tr("res_worlds_b"), K.W // 2, y + h - 22, {font = Hud.SMALL, align = "center", color = 0x3E6AA8}) end
+    text(lang.tr(res.info.final and "credits_next" or (res.info.next and "res_next_world" or "res_worlds")), K.W // 2, y + h - 40, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+    if res.info.next and not res.info.final then text(lang.tr("res_worlds_b"), K.W // 2, y + h - 22, {font = Hud.SMALL, align = "center", color = 0x3E6AA8}) end
   end
 end
 

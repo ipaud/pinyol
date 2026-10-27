@@ -1,0 +1,25 @@
+{
+  "asset": "KM_CURTAIN",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 99,
+  "h": 230,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    49,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 9880,
+    "as_rgb565": 45540
+  }
+}

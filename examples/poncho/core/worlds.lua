@@ -53,7 +53,22 @@ W.defs = {
      {1800, "CM_FORE_HOOP", 246, "FM_FORE_CAN"}, {2300, "CM_FORE_BOTTLE", 258, "FM_FORE_SACK"}, {2800, "CM_FORE_SCOOTER", 258, "FM_FORE_CARROTS"}}},
    alias = {TOY_COIN = "CI_COIN", TOY_CREAM = "CI_LOLLI", TOY_FLAG = "CI_FLAG", TOY_KEYBOARD = "CI_KEYBOARD", TOY_SPRING = "CT_PAD", FT_PAD = "CT_PAD", FT_CART = "CT_CART",
             TOY_BALL = "CE_BALL", TOY_PLANE = "CE_KITE"}},
-  {id = "stage", name_key = "world_4", ready = false, cols = 192},
+  -- world 4, the keyboard stage: KM_* backgrounds, KT_* tiles, KE_* toys (KE_NOTE hopper, KE_CABLE slider, KE_SPEAKER shooter, KE_BUBBLE flyer), KI_* items, BOSS_SILENCIO
+  -- (data/deco4.lua, data/km_far_slices.lua). Until they are in the data, world 3's pictures stand in, tinted.
+  {id = "stage", name_key = "world_4", ready = true, cols = 232, music = "stage", bgcolor = 0x2A2048, boss = "silencio", tiles = "KT", fallback_tiles = "CT", tilemul = 0xB8A0E0,
+   piano = true, beat = true, frames = {H = 2, h = 6, B = 2}, fb_frames = {H = 2, h = 6},
+   far = {def = "data.km_far_slices", fallback = "data.cm_far_slices", speed = 0.09, y = 0, ycam = 0.05, fill = 0x2A2048, mul = 0x9078C0},
+   mid = {speed = 0.62, period = 3000, dim = 0.9, mul = 0xA890E0, list = {
+     {80, "KM_SPEAKERS", "CM_SLIDE"}, {330, "KM_PIANO", "CM_TREE"}, {560, "KM_MIC", "CM_LAMP"}, {820, "KM_DRUMS", "CM_SANDBOX"}, {1010, "KM_CASES", "CM_BENCH"},
+     {1200, "KM_CLEF", "CM_TREE"}, {1450, "KM_EQ", "CM_FOUNTAIN"}, {1620, "KM_MONITOR", "CM_LAMP"}, {1830, "KM_PIANO", "CM_SLIDE"}, {2080, "KM_SPEAKERS", "CM_TREE"},
+     {2260, "KM_DRUMS", "CM_BENCH"}, {2430, "KM_SPOT", "CM_SEESAW"}, {2680, "KM_TRUMPET", "CM_CHALKHOUSE"}, {2820, "KM_MIC", "CM_LAMP"},
+     {200, "KM_CURTAIN", nil, {top = 0}}, {760, "KM_DISCO", nil, {top = 0}}, {1350, "KM_LIGHTS", nil, {top = 0}}, {1980, "KM_CURTAIN", nil, {top = 0}},
+     {2540, "KM_LIGHTS", nil, {top = 0}}, {1100, "KM_NOTES2", nil, {top = 120}}, {2200, "KM_NOTEPINK", nil, {top = 100}}, {2900, "KM_NOTES16", nil, {top = 130}}}},
+   fore = {speed = 1.5, period = 3300, list = {
+     {250, "KM_FORE_JACK", 250, "CM_FORE_LEAVES"}, {800, "KM_FORE_MIC", 246, "CM_FORE_CHALKBOX"}, {1300, "KM_FORE_NOTES", 258, "CM_FORE_BALL"},
+     {1800, "KM_FORE_PHONES", 248, "CM_FORE_HOOP"}, {2300, "KM_FORE_PICK", 272, "CM_FORE_BOTTLE"}, {2800, "KM_FORE_STICKS", 240, "CM_FORE_SCOOTER"}}},
+   alias = {TOY_COIN = "KI_COIN", TOY_CREAM = "KI_LOLLI", TOY_FLAG = "KI_FLAG", TOY_KEYBOARD = "KI_KEYBOARD", TOY_SPRING = "KT_PAD", FT_PAD = "KT_PAD", FT_CART = "KT_CART"},
+   stand_in = {KI_COIN = "CI_COIN", KI_LOLLI = "CI_LOLLI", KI_FLAG = "CI_FLAG", KI_KEYBOARD = "CI_KEYBOARD", KT_PAD = "CT_PAD", KT_CART = "CT_CART"}},
 }
 
 W.cur, W.theme = 1, W.defs[1]
@@ -75,10 +90,13 @@ function W.load(i)
   local d = W.defs[i]
   W.cur, W.theme = i, d
   M.load(i)
-  Deco.alias = d.alias or {}
+  Deco.alias = {}
+  for k, v in pairs(d.alias or {}) do -- a picture the data lacks is replaced by its stand-in (d.stand_in[v]), if the theme has one
+    Deco.alias[k] = (not Deco.has(v) and d.stand_in and d.stand_in[v]) or v
+  end
   W.far, W.case = layer(d.far), layer(d.case)
-  W.tile_prefix = (d.tiles and Deco.has(d.tiles .. "_TILES")) and d.tiles or "BG"
-  W.tile_mul = (W.tile_prefix == "BG" and d.tiles ~= "BG") and d.tilemul or nil
+  W.tile_prefix = (d.tiles and Deco.has(d.tiles .. "_TILES")) and d.tiles or ((d.fallback_tiles and Deco.has(d.fallback_tiles .. "_TILES")) and d.fallback_tiles or "BG")
+  W.tile_mul = (W.tile_prefix ~= d.tiles) and d.tilemul or nil
   W.tile_frames = (W.tile_prefix == d.tiles) and d.frames or d.fb_frames
   return d
 end

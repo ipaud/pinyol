@@ -6,6 +6,8 @@ local Items = require("core.items")
 local U = require("core.util")
 local Deco = require("core.deco")
 local Boss = require("core.boss")
+local W = require("core.worlds")
+local Beat = require("core.beat")
 
 local H = {}
 H.FONT, H.SMALL, H.TITLE = "snes_body", "snes_small", "snes_title"
@@ -65,6 +67,9 @@ function H.draw(play)
     Deco.img("TOY_HUD", Hero.s and Hero.s.scooter and 4 or 5, K.W - 72, 22)
   end
   Boss.hud(lang)
+  if W.theme.beat then -- the beat: a dot that swells on every beat of the stage
+    circ(K.W // 2, 306, 4 + math.floor(Beat.pulse() * 6), 0xFFE070, true)
+  end
   if Hero.costume then -- the costume worn: its colour (and, for the football shirt, the time left of being unbeatable)
     local c = ({barretina = 0xD83A3A, dino = 0x72D84A, boots = 0x2E8A3E, futbol = 0xF4F4F4})[Hero.costume]
     rect(K.W - 118, 34, 30, 30, 0x2A1A3A)

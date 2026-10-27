@@ -8,15 +8,18 @@ local T = {}
 
 local TILE = K.TILE
 local FRAME = {["="] = 7, T = 6, a = 8, b = 9, c = 10, d = 11}
-local FLOORISH = {["#"] = true, [">"] = true, ["<"] = true}
+local FLOORISH = {["#"] = true, [">"] = true, ["<"] = true, P = true}
 
 local plain, crate, one7, one6 = {frame = 0}, {frame = 6, dim = 0.6}, {frame = 7}, {frame = 6}
+local black = {frame = 6, dim = 0.3} -- a black key
 local prefix, STRIP, BODY, RUNS
-local NAMES = {BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}, CT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
+local NAMES = {KT = {SHELF = "COUNTER", TBOX = "CRATES"}, BG = {SHELF = "SHELF", TBOX = "TBOX"}, FT = {SHELF = "COUNTER", TBOX = "CRATES"}, CT = {SHELF = "COUNTER", TBOX = "CRATES"}} -- (the market's shelves are stall counters, its boxes crates)
 local function build(pre, mul)
   prefix = pre
-  plain.mul, crate.mul, one7.mul, one6.mul = mul, mul, mul, mul
-  crate.frame, crate.dim = (pre == "FT") and 3 or (pre == "CT" and 4 or 6), (pre == "BG") and 0.6 or nil -- (an orange crate in the market, a darkened toy box in the playroom)
+  plain.mul, crate.mul, one7.mul, one6.mul, black.mul = mul, mul, mul, mul, mul
+  crate.frame, crate.dim = (pre == "FT") and 3 or (pre == "CT" and 4 or 6), (pre == "BG") and 0.6 or nil
+  local tf0 = W.tile_frames or {}
+  black.frame, black.dim = tf0.B or 6, (not tf0.B) and 0.3 or nil -- (a black key: the art's own block, else a darkened case) -- (an orange crate in the market, a darkened toy box in the playroom)
   local nm = NAMES[pre] or NAMES.BG
   local function strips(name, one) name = nm[name] return {{8, pre .. "_" .. name .. "8"}, {4, pre .. "_" .. name .. "4"}, {2, pre .. "_" .. name .. "2"}, one} end
   STRIP = {{8, pre .. "_FLOOR8"}, {4, pre .. "_FLOOR4"}, {2, pre .. "_FLOOR2"}, {1, pre .. "_FLOORCOL"}}
@@ -42,6 +45,7 @@ local function emit(id, x, y, look)
   img(id, x, y, look)
 end
 
+local used = {}
 local fcr, fbody = {}, {} -- for each visible column: the row of its floor column (a floor top with two bodies under it), or false
 local belts = {}
 
@@ -90,12 +94,33 @@ function T.draw(cam_x, cam_y)
       c = c + 1
     end
   end
+  -- stacks of body stone under a ramp: three rows at a time, one picture (BODY1)
+  for k in pairs(used) do used[k] = nil end
+  for c = c0, c1 do
+    local r = r0
+    while r <= r1 do
+      local fr = fcr[c]
+      if g[r][c] == "#" and not (fr and r >= fr) and L.at(c, r - 1) ~= " " and L.at(c, r - 1) ~= "=" and L.at(c, r - 1) ~= "#" then
+        local e = r
+        while e + 1 <= r1 and g[e + 1][c] == "#" and not (fr and e + 1 >= fr) do e = e + 1 end
+        local rr = r
+        while rr + 2 <= e do
+          emit(prefix .. "_BODY1", c * TILE, rr * TILE, plain.mul and {mul = plain.mul} or nil) n = n + 1
+          used[rr * 512 + c], used[(rr + 1) * 512 + c], used[(rr + 2) * 512 + c] = true, true, true
+          rr = rr + 3
+        end
+        r = e + 1
+      else
+        r = r + 1
+      end
+    end
+  end
   for r = r0, r1 do
     local row = g[r]
     local c = c0
     while c <= c1 do
       local ch, fr = row[c], fcr[c]
-      if ch == " " or (fr and r >= fr) then
+      if ch == " " or (fr and r >= fr) or used[r * 512 + c] then
         c = c + 1
       elseif RUNS[ch] then -- a run of shelf or toy boxes: strips of 8, 4, 2 or 1
         local e = c
@@ -113,7 +138,9 @@ function T.draw(cam_x, cam_y)
         local look = plain
         if ch == "K" then
           look = crate
-        elseif ch == "#" or ch == ">" or ch == "<" then
+        elseif ch == "B" then
+          look = black
+        elseif ch == "#" or ch == ">" or ch == "<" or ch == "P" then
           local up = L.at(c, r - 1)
           look.frame = (up == " " or up == "=") and 0 or 1
         else

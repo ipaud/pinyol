@@ -17,6 +17,7 @@ function M.load(i, cols)
     for c = 0, cols - 1 do grid[r][c] = " " end
   end
   local objs, foes, plats = {}, {}, {}
+  M.spot = nil
   local kit = {FR = FR, COLS = cols, ROWS = ROWS}
   local boss, start_c = nil, 3
 
@@ -84,6 +85,10 @@ function M.load(i, cols)
     plats[#plats + 1] = {kind = "swing", x = c * 32 - 64, y = y, w = 128, vx = 0, x0 = c * 32 - 64, x1 = c * 32 - 64, cx = c * 32 - 64, amp = amp * 32,
                          period = period, phase = phase or 0, y0 = y, t = 0}
   end
+  -- the stage: a stretch of piano keys ('P', a white key each tile: it sinks and plays a note), black keys ('B': solid blocks), a spotlight zone (a beam sweeps it, foes in it freeze)
+  function kit.piano(c0, c1) fill(c0, c1, FR, FR, "P") end
+  function kit.black(c, n, w, base) fill(c, c + (w or 1) - 1, (base or FR) - n, (base or FR) - 1, "B") end
+  function kit.spot(c0, c1) M.spot = {x0 = c0 * 32, x1 = (c1 + 1) * 32} end
   function kit.boss(id, c) boss = {id = id, x = c * 32 + 16, y = FR * 32} end
   function kit.start(c) start_c = c end
 

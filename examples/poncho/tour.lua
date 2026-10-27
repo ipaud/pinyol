@@ -15,4 +15,9 @@ return {
   {10, 'D.world(3) D.bot(true)'},
   {10, 'D.tp(3300) D.bot(true)'},
   {10, 'D.tp(4800) D.scooter(true) D.bot(true)'},
+  -- world 4 (the keyboard stage): the piano start, the spotlight, the drum pads over the pit, the arena of el Gran Silencio (the bot plays the rhythm)
+  {10, 'D.world(4) D.bot(true)'},
+  {10, 'D.tp(2900) D.bot(true)'},
+  {10, 'D.tp(3800) D.bot(true)'},
+  {16, 'D.tp(7000) D.bot(true)'},
 }

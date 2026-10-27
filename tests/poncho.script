@@ -353,15 +353,75 @@ tick 2900
 expect_lua G.state == "results" or D.state().x > 7400
 tick 300
 shot results3
-expect_lua G.state == "results" and require("core.worlds").done(3) and not require("core.worlds").next_ready(3)
+expect_lua G.state == "results" and require("core.worlds").done(3) and require("core.worlds").next_ready(3) == 4
 lua D.bot(false)
-press B
+press A
+tick 30
+expect_lua G.state == "play" and require("core.play").world == 4
+shot w4_start
+# world 4, the keyboard stage: piano keys play a note as he steps on them (higher along the level), black keys are blocks, a drum pad bounces more on the beat,
+# a sweeping spotlight freezes the toys it touches, speakers send rings, notes hop on the beat
+expect_lua require("core.map").cols == 232 and D.tile(48, 10) == "B" and D.tile(20, 11) == "P"
+lua D.clear() D.tp(464)
+tick 4
+expect_lua require("core.keys").pressed == 14 and require("core.keys").note_of(14) == "A3" and require("core.keys").note_of(100) == "C4"
+shot w4_keys
+lua D.tp(2000, 300) D.beat_hold(0)
+tick 14
+expect_lua D.state().vy < -15
+shot w4_drum
+lua D.tp(2000, 300) D.beat_hold(15)
+tick 14
+expect_lua D.state().vy > -14.5 and D.state().vy < -9
+lua D.beat_hold(nil)
+lua D.clear() D.tp(3000) D.beat_hold(0) D.foe("cable", 152)
+tick 40
+expect_lua math.abs(D.foe_state("cable").x - 3152) < 2
+shot w4_spot
+lua D.clear() D.tp(2400) D.foe("cable", 120)
+tick 40
+expect_lua math.abs(D.foe_state("cable").x - 2520) > 8
+lua D.beat_hold(nil) D.clear() D.tp(1800) D.foe("speaker", 250)
+tick 70
+expect_lua rawlen(require("core.foes").rings) >= 1
+shot w4_speaker
+lua D.clear() D.tp(1000) D.foe("note", 100, 2) D.watch_hop()
+tick 70
+expect_lua G.hopped
+lua G.after_play = nil D.clear()
+# el Gran Silencio: the arena closes, he inhales (the music meter drains within the pull), a scooter dash starts the rhythm round
+lua D.tp(7000)
+tick 190
+expect_lua require("core.boss").active() and D.state().cam == 6944 and D.boss_meter() < 100
+shot boss4
+lua D.tp(7230) D.scooter(true) require("core.hero").s.vx = 8
+tick 6
+expect_lua D.boss().mode == "rhythm"
+shot boss4_rhythm
+# and the bot plays the rest: it waits out of the pull, hops the waves and presses each key on the beat, three phases of three lives
+lua D.bot(true)
+tick 3600
+expect_lua require("core.boss").beaten()
+shot boss4_down
+expect_lua (function() for _, a in ipairs(achievements()) do if a.id == "ritmo" then return a.done end end end)()
+tick 900
+expect_lua G.state == "results" and require("core.worlds").done(4)
+lua D.bot(false)
+press A
+tick 4
+expect_lua G.state == "credits"
+shot credits
+press A
+tick 4
+press A
+tick 4
+press A
 tick 4
 expect_lua G.state == "select"
 press B
 tick 4
 expect_lua G.state == "title"
 shot title_continue
-expect_lua rawlen(achievements()) == 13
+expect_lua rawlen(achievements()) == 15
 expect_lua (function() local n = 0 for _, a in ipairs(achievements()) do if a.done then n = n + 1 end end return n >= 9 end)()
 expect_ok

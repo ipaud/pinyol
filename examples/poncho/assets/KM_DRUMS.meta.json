@@ -1,0 +1,25 @@
+{
+  "asset": "KM_DRUMS",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 25,
+  "w": 213,
+  "h": 120,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    106,
+    119
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 18815,
+    "as_rgb565": 51120
+  }
+}

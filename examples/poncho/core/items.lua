@@ -8,6 +8,7 @@ local Fx = require("core.fx")
 local Snd = require("core.sound")
 local L = require("core.level")
 local Boss = require("core.boss")
+local Beat = require("core.beat")
 
 local Deco = require("core.deco")
 local I = {}
@@ -16,7 +17,7 @@ I.list = {}
 I.events = {}   -- this tick: coin, icecream, spring, keyboard, scooter, goal
 I.checkpoint = nil
 
-local WIDE = {peel = 110, puddle = 110, seesaw = 90}
+local WIDE = {peel = 110, puddle = 110, seesaw = 90, drum = 70}
 
 -- the keyboard's arpeggio: ticks after touching, note, key (0..7)
 local TUNE = {{0, "C5", 0}, {7, "E5", 2}, {14, "G5", 4}, {21, "C6", 7}, {30, "G5", 4}, {37, "C6", 7}}
@@ -146,6 +147,15 @@ function I.update()
         I.events.seesaw = true
         Snd.play("spring")
         Fx.dust(it.x + 50, it.y, 5, 1, 2)
+      elseif k == "drum" and s.vy >= 0 and dx < 40 and s.y >= it.y - 8 and s.y - s.vy <= it.y + 4 and s.y < it.y + 22 then
+        it.press = 14 busy(it) -- a drum pad: a big bounce when he lands on the beat, a small one off it
+        s.y = it.y
+        local on = Beat.near(5)
+        Hero.bounce(on and K.SPRING_V * 1.22 or 13.5, false)
+        I.events.spring = true
+        if on then I.events.drum_beat = true Fx.ring(it.x, it.y - 4, 8, 40, 0xFFE070, 12) end
+        Snd.play("boing")
+        tone(2, on and "C4" or "G3", {wave = "noise", vol = 0.3, decay = 0.12, sustain = 0})
       elseif k == "puddle" and s.ground and dx < it.w / 2 + 10 and s.y > it.y - 10 then
         if Hero.costume == "boots" then -- rain boots: a splash, and no slowing
           if I.tick % 9 == 0 and math.abs(s.vx) > 1 then Fx.ring(s.x, s.y - 2, 6, 26, 0x8CD8FF, 10) end
@@ -231,6 +241,18 @@ local function puddle(it)
   rect(x - it.w // 2 + 10, y - 6, it.w // 3, 2, 0xB8E4FF)
 end
 
+-- a drum pad: a flat drum that swells on the beat (code-drawn until KI_DRUM exists)
+local function drum(it)
+  local x, y = math.floor(it.x), math.floor(it.y)
+  if Deco.has("KT_PAD") then -- the drum skin: taut, pressed on a hit and for a moment on every beat, squashed after
+    Deco.img("KT_PAD", it.press > 8 and 1 or (it.press > 0 and 2 or (Beat.pulse() > 0.6 and 1 or 0)), x, y)
+    return
+  end
+  local g = math.floor(Beat.pulse() * 4) + (it.press > 0 and -3 or 0)
+  rect(x - 28 - g, y - 12 - g, 56 + 2 * g, 12 + g, 0xE04A6A)
+  rect(x - 28 - g, y - 12 - g, 56 + 2 * g, 4, 0xFFD0DC)
+end
+
 local function peel(it)
   local x, y = math.floor(it.x), math.floor(it.y)
   if Deco.has("FI_PEEL") then Deco.img("FI_PEEL", 0, x, y) return end
@@ -287,6 +309,7 @@ function I.draw(cam_x)
       elseif k == "awning" then awning(it)
       elseif k == "peel" then peel(it)
       elseif k == "seesaw" then seesaw(it)
+      elseif k == "drum" then drum(it)
       elseif k == "puddle" then puddle(it)
       elseif k:sub(1, 4) == "cos_" then costume(it) end
     end

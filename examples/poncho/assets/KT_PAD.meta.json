@@ -1,0 +1,29 @@
+{
+  "asset": "KT_PAD",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 17,
+  "w": 70,
+  "h": 47,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    35,
+    44
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8101,
+    "as_rgb565": 19740
+  }
+}

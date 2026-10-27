@@ -22,7 +22,7 @@ function L.reload()
 end
 L.reload()
 
-local SOLID = {["#"] = true, W = true, T = true, K = true, [">"] = true, ["<"] = true, H = true, h = true}
+local SOLID = {["#"] = true, W = true, T = true, K = true, [">"] = true, ["<"] = true, H = true, h = true, P = true, B = true}
 local SLOPE = {a = {0, 16}, b = {16, 32}, c = {32, 16}, d = {16, 0}} -- the wedge's height at its left and right edges
 L.SOLID, L.SLOPE = SOLID, SLOPE
 

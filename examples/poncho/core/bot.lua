@@ -5,16 +5,36 @@ local L = require("core.level")
 local Hero = require("core.hero")
 local Foes = require("core.foes")
 local In = require("core.input")
+local Boss = require("core.boss")
 
 local B = {}
 B.hold_a, B.rest, B.tap, B.cool = 0, 0, 0, 0
 B.scooter = false -- (the scooter is tried by hand in the test script; the bot walks and runs)
 
+local KEYS = {"left", "a", "b", "right"}
+
+-- el Gran Silencio: wait at the far end of the arena (out of the inhale's pull), hop the breath's waves, and in the rhythm round press each key on the beat
+local function silencio(s, bi, st)
+  if bi.mode == "rhythm" then
+    local lane, dt = Boss.next_note()
+    if lane and dt == 0 then st[KEYS[lane]] = true end
+    return
+  end
+  local tx = L.W - K.W + 60
+  if s.x > tx + 10 then st.left = true elseif s.x < tx - 10 then st.right = true end
+  for _, w in ipairs(Boss.waves()) do
+    if not w.gone and math.abs(w.x - s.x) < 90 and s.ground then B.hold_a = 22 end
+  end
+  if B.hold_a > 0 then st.a = true B.hold_a = B.hold_a - 1 end
+end
+
 function B.step()
   local s = Hero.s
   local st = In.state
   st.left, st.right, st.up, st.down, st.a, st.b, st.c, st.start = false, false, false, false, false, false, false, false
-  if s.state ~= "play" then return end
+  if s.state ~= "play" and not Hero.frozen then return end
+  local bi = Boss.info()
+  if bi and bi.id == "silencio" and Boss.active() then silencio(s, bi, st) return end
   st.right = true
   -- costumed: tap C (3 ticks) at a crate or a toy ahead (the power); otherwise hold C to run. Uncostumed: hold C
   if Hero.costume then
@@ -75,6 +95,11 @@ function B.step()
       for d = 20, 80 + sp * 30, 20 do if not L.ground(s.x + d, s.y - 40, s.y + 70, 24) then safe = false end end
       if safe then jump = true end
     end
+  end
+  -- a sound ring coming along the floor: hop it
+  for _, r in ipairs(Foes.rings) do
+    local d = (r.x - s.x) * r.dir
+    if d < 0 and d > -110 and s.ground and math.abs(r.x - s.x) < 110 then jump = true end
   end
   if B.rest > 0 then B.rest = B.rest - 1
   elseif jump and B.hold_a == 0 and (s.ground or s.coyote > 0) and B.tap == 0 and not s.pw then B.hold_a = 30 end

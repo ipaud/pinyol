@@ -1,0 +1,27 @@
+{
+  "asset": "KI_LOLLI",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 58,
+  "h": 48,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    29,
+    24
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2696,
+    "as_rgb565": 11136
+  }
+}

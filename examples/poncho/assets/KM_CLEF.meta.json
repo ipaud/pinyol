@@ -1,0 +1,25 @@
+{
+  "asset": "KM_CLEF",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 15,
+  "w": 57,
+  "h": 130,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    28,
+    129
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3291,
+    "as_rgb565": 14820
+  }
+}

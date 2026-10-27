@@ -1,0 +1,25 @@
+{
+  "asset": "KM_NOTES2",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 7,
+  "w": 59,
+  "h": 60,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    29,
+    30
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1543,
+    "as_rgb565": 7080
+  }
+}
