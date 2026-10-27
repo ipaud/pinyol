@@ -119,3 +119,13 @@ lua btnp = function(n) return n == "b" and G.t % 6 == 0 end
 tick 600
 expect_lua dbg_cell(20, 12) ~= "b" and dbg_cell(21, 13) ~= "b"
 expect_ok
+# level 4, the piece over the steam: the steam lifts the feet to y 73, so the ledge has to be lower than that (it was at 64 and the piece could not be taken)
+new
+lua dbg_level(4)
+tick 10
+expect_lua dbg_tp(35, 10)
+tick 2
+hold UP+A 90
+hold RIGHT 20
+expect_lua dbg_run().jewels >= 1 and require("core.run").jewels[2] == true
+expect_ok

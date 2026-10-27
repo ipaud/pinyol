@@ -47,6 +47,9 @@ expect_lua math.type(stored("inv").gold) == "integer" and math.type(stored("best
 lua loop = {} loop.self = loop
 expect_lua_error store("loop", loop)
 expect_lua_error store("bad", {[5] = 1, x = 2})
+# the message names the key and the way out (a table keyed by cell numbers is the mistake Cerezo made)
+lua local ok, e = pcall(store, "bad", {[41] = "x"}) BADKEY = (not ok) and e:find("key 41 is a number", 1, true) ~= nil and e:find("tostring", 1, true) ~= nil
+expect_lua BADKEY
 expect_lua_error store("fn", {f = print})
 expect_lua_error store("big", string.rep("x", 70000))
 expect_lua stored("big") == nil and stored("loop") == nil and stored("inv").gold == 25

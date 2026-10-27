@@ -272,8 +272,8 @@ def level4() -> Level:
     # steam vents lift the hero up to a high ledge
     lv.put(35, 10, "S")
     lv.rect(35, 6, 35, 9, "S")
-    lv.h_(4, 33, 37, "=")
-    lv.thing("jewel", 36, 3, n=2)
+    lv.h_(5, 33, 37, "=")  # one row lower than it was (4): the steam lifts the feet to y 73 and the ledge's top was 64, so the piece could not be taken
+    lv.thing("jewel", 36, 4, n=2)
     # the gear room
     lv.rect(52, 11, 60, 13, "L")
     lv.h_(13, 52, 60, "#")
@@ -288,6 +288,7 @@ def level4() -> Level:
     lv.thing("chest", 66, 10)
     lv.thing("heart", 68, 9)
     lv.thing("enemy", 72, 10, type="golem_chico", dir=-1, range=3)
+    lv.h_(9, 73, 75, "=")  # a step: the ledge below is 48 px above the ground and the highest jump is 45.6
     lv.h_(8, 76, 78, "=")
     lv.h_(6, 79, 81, "=")
     lv.put(80, 3, "J")

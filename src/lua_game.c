@@ -1637,9 +1637,16 @@ cJSON *json_from_lua(lua_State *L, int i, int depth, const char *who, int *count
         lua_pushnil(L);
         while (lua_next(L, i)) {
             if (lua_type(L, -2) != LUA_TSTRING) {
-                lua_pop(L, 2);
+                /* name the key: "a key of 41 (a number)" is found in a minute, "a table's keys" in an hour. A number is not turned into text by itself: it would
+                 * come back as a string and tables[41] would be nil after a load. */
+                if (lua_type(L, -2) == LUA_TNUMBER)
+                    lua_pushfstring(L, "%s: the key %s is a number; only a plain list (1..n) can have number keys. Write it as text (tostring(k)) and read it back with tonumber(k)", who,
+                                    lua_tostring(L, -2));
+                else
+                    lua_pushfstring(L, "%s: a table's keys must be strings (a %s cannot be a key), or it must be a list", who, luaL_typename(L, -2));
+                lua_remove(L, -2); /* the key... */
+                lua_remove(L, -2); /* ...and the value, under the message */
                 cJSON_Delete(t);
-                lua_pushfstring(L, "%s: a table's keys must be strings, or it must be a list", who);
                 return NULL;
             }
             cJSON *v = json_from_lua(L, -1, depth + 1, who, count);
