@@ -70,7 +70,18 @@ boss_silencio,EL GRAN SILENCIO,EL GRAN SILENCI,THE GREAT SILENCE
 toast_rhythm,¡Toca el teclado al ritmo!,Toca el teclat al ritme!,Play the keyboard on the beat!
 ach_silencio,El Gran Silencio,El Gran Silenci,The Great Silence
 ach_ritmo,Ritmo perfecto,Ritme perfecte,Perfect rhythm
-credits_1,PONCHO Y EL PATINETE LOCO. ¡Gracias por jugar!,PONCHO I EL PATINET BOIG. Gràcies per jugar!,PONCHO AND THE CRAZY SCOOTER. Thanks for playing!
-credits_2,El Gran Silencio solo quería escuchar música. Ahora toca el teclado con Poncho.,El Gran Silenci només volia escoltar música. Ara toca el teclat amb en Poncho.,The Great Silence only wanted to hear music. Now it plays the keyboard with Poncho.
-credits_3,Hecho con pinyol. ¡Hasta la próxima!,Fet amb pinyol. Fins aviat!,Made with pinyol. See you next time!
 credits_next,A: seguir,A: continuar,A: continue
+boss_paloma,DOÑA PALOMA GORDA,DONA COLOMA GROSSA,LADY PLUMP PIGEON
+ach_paloma,Doña Paloma Gorda,Dona Coloma Grossa,Lady Plump Pigeon
+credits_title,PONCHO Y EL PATINETE LOCO,PONCHO I EL PATINET BOIG,PONCHO AND THE CRAZY SCOOTER
+credits_1,¡Gracias por jugar!,Gràcies per jugar!,Thanks for playing!
+credits_h_worlds,MUNDOS,MONS,WORLDS
+credits_h_bosses,JEFES,CAPS,BOSSES
+credits_h_made,HECHO CON,FET AMB,MADE WITH
+credits_made,"pinyol, la consola Cirera y Lua","pinyol, la consola Cirera i Lua","pinyol, the Cirera console and Lua"
+credits_art,Dibujos hechos con un modelo de imágenes,Dibuixos fets amb un model d'imatges,Pictures made with an image model
+credits_2,El Gran Silencio solo quería escuchar música. Ahora toca el teclado con Poncho.,El Gran Silenci només volia escoltar música. Ara toca el teclat amb en Poncho.,The Great Silence only wanted to hear music. Now it plays the keyboard with Poncho.
+credits_h_thanks,GRACIAS,GRÀCIES,THANKS
+credits_3,"A ti, y al teclado de juguete, que siempre fue su amigo.","A tu, i al teclat de joguina, que sempre va ser el seu amic.","To you, and to the toy keyboard, who was always his friend."
+menu_worlds,Mundos,Mons,Worlds
+touch_hint,Toca la pantalla o pulsa A,Toca la pantalla o prem A,Tap the screen or press A

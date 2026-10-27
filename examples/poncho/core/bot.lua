@@ -12,18 +12,64 @@ B.hold_a, B.rest, B.tap, B.cool = 0, 0, 0, 0
 B.scooter = false -- (the scooter is tried by hand in the test script; the bot walks and runs)
 
 local KEYS = {"left", "a", "b", "right"}
+B.sloppy = false -- a deliberately imperfect player: it misses one rhythm note in three, presses the others a few ticks off, and does not dodge every attack
+local JIT = {0, -3, 4, -6, 2}
+local incident, last_mode = 0, nil
+local function dodges() -- every second attack is not dodged by a sloppy bot
+  return not B.sloppy or incident % 2 == 1
+end
 
 -- el Gran Silencio: wait at the far end of the arena (out of the inhale's pull), hop the breath's waves, and in the rhythm round press each key on the beat
 local function silencio(s, bi, st)
   if bi.mode == "rhythm" then
-    local lane, dt = Boss.next_note()
-    if lane and dt == 0 then st[KEYS[lane]] = true end
+    local lane, dt, idx = Boss.next_note()
+    if lane and B.sloppy then
+      if idx % 3 == 0 then lane = nil end -- a missed note
+      if lane and dt == JIT[idx % 5 + 1] then st[KEYS[lane]] = true end
+    elseif lane and dt == 0 then st[KEYS[lane]] = true end
     return
   end
-  local tx = L.W - K.W + 60
+  if bi.mode ~= last_mode then
+    last_mode = bi.mode
+    if bi.mode == "wave" then incident = incident + 1 end
+  end
+  local tx = L.W - K.W + 40
   if s.x > tx + 10 then st.left = true elseif s.x < tx - 10 then st.right = true end
   for _, w in ipairs(Boss.waves()) do
-    if not w.gone and math.abs(w.x - s.x) < 90 and s.ground then B.hold_a = 22 end
+    if not w.gone and math.abs(w.x - s.x) < 90 and s.ground and dodges() then B.hold_a = 22 end
+  end
+  if B.hold_a > 0 then st.a = true B.hold_a = B.hold_a - 1 end
+end
+
+-- Capitan Cuerda, Mama Sandia and Dona Paloma: stay on the far side and hop (or run from) what they throw; when the boss is down, run to it and jump on its head
+local function boss_ai(s, bi, st)
+  local x0, x1 = L.W - K.W, L.W
+  if bi.mode ~= last_mode then
+    last_mode = bi.mode
+    if bi.mode == "charge" or bi.mode == "roll" or bi.mode == "rise" or bi.mode == "spit" then incident = incident + 1 end
+  end
+  local vuln = bi.mode == "stun" or bi.mode == "tired"
+  local dx = bi.x - s.x
+  if vuln then
+    if math.abs(dx) > 30 then st[dx > 0 and "right" or "left"] = true end
+    if s.ground and math.abs(dx) < 105 and B.hold_a == 0 then B.hold_a = 30 end
+    if not s.ground and math.abs(dx) > 12 then st[dx > 0 and "right" or "left"] = true end
+  elseif bi.mode == "rise" or bi.mode == "swoop" then -- she marks where he is when she dives: keep running, to the side with more room, so he is far from it when she lands
+    if bi.mode == "rise" and bi.mt <= 1 then B.run_dir = (s.x < (x0 + x1) / 2) and 1 or -1 end
+    if dodges() then
+      local d = B.run_dir or 1
+      if (d > 0 and s.x > x1 - 40) or (d < 0 and s.x < x0 + 40) then d = -d B.run_dir = d end
+      st[d > 0 and "right" or "left"] = true st.c = true
+    end
+  else
+    local tx = (s.x < bi.x) and x0 + 60 or x1 - 60 -- the far end of the side he is on (never across the boss)
+    if s.x > tx + 10 then st.left = true elseif s.x < tx - 10 then st.right = true end
+    for _, sd in ipairs(bi.seeds or {}) do -- a seed in the air near him: hop it
+      if math.abs(sd.x - s.x) < 90 and sd.y < s.y and s.ground and dodges() and B.hold_a == 0 then B.hold_a = 24 end
+    end
+    local near = math.abs(dx) < 140
+    if s.ground and near and (bi.mode == "charge" or bi.mode == "roll" or bi.mode == "walk") and dodges() and B.hold_a == 0 then B.hold_a = 28 end
+    if not s.ground and near and bi.mode == "walk" then st.left, st.right = false, false st[dx > 0 and "right" or "left"] = true end -- over the walker and on
   end
   if B.hold_a > 0 then st.a = true B.hold_a = B.hold_a - 1 end
 end
@@ -35,6 +81,7 @@ function B.step()
   if s.state ~= "play" and not Hero.frozen then return end
   local bi = Boss.info()
   if bi and bi.id == "silencio" and Boss.active() then silencio(s, bi, st) return end
+  if bi and Boss.active() and bi.mode ~= "wait" and bi.mode ~= "dying" then boss_ai(s, bi, st) return end
   st.right = true
   -- costumed: tap C (3 ticks) at a crate or a toy ahead (the power); otherwise hold C to run. Uncostumed: hold C
   if Hero.costume then

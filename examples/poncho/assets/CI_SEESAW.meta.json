@@ -1,0 +1,27 @@
+{
+  "asset": "CI_SEESAW",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 27,
+  "w": 142,
+  "h": 61,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    71,
+    58
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 7796,
+    "as_rgb565": 34648
+  }
+}

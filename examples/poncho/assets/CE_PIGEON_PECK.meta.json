@@ -1,0 +1,31 @@
+{
+  "asset": "CE_PIGEON_PECK",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 24,
+  "w": 78,
+  "h": 60,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    39,
+    57
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 10067,
+    "as_rgb565": 37440
+  }
+}

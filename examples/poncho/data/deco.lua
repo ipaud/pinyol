@@ -559,6 +559,20 @@ return {
       ["notes"] = 1
     }
   },
+  ["TOY_PAD"] = {
+    ["w"] = 70,
+    ["h"] = 37,
+    ["ax"] = 35,
+    ["ay"] = 34,
+    ["n"] = 3,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["taut"] = 0,
+      ["press"] = 1,
+      ["squash"] = 2
+    }
+  },
   ["TOY_PLANE"] = {
     ["w"] = 68,
     ["h"] = 57,

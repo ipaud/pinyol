@@ -33,6 +33,7 @@ function T.init() end -- (the pictures are assets)
 
 -- the pictures of a stretch of tiles only change when the camera crosses a tile: they are kept as a list (id, x, y, look...) and drawn again until it does
 local cache, cache_key, looks = {}, nil, {}
+local k_c0, k_c1, k_r0, k_r1, k_pre, k_mul, k_rev
 local function emit(id, x, y, look)
   if look then -- (the shared `look` tables change between calls: each picture keeps its own, one per kind)
     local k = (look.frame or "") .. "|" .. (look.dim or "") .. "|" .. (look.mul or "")
@@ -56,8 +57,8 @@ function T.draw(cam_x, cam_y)
   local r0, r1 = math.max(0, math.floor(cam_y / TILE)), math.min(K.ROWS - 1, math.floor((cam_y + K.H - 1) / TILE))
   local g = L.grid
   local n = 0
-  local key = table.concat({c0, c1, r0, r1, prefix, plain.mul or "", L.rev or 0}, ",")
-  if key == cache_key then
+  local rev, pm = L.rev or 0, plain.mul or false
+  if cache_key and k_c0 == c0 and k_c1 == c1 and k_r0 == r0 and k_r1 == r1 and k_pre == prefix and k_mul == pm and k_rev == rev then
     for i = 1, #cache, 4 do img(cache[i], cache[i + 1], cache[i + 2], cache[i + 3] or nil) end
     n = #cache // 4
   else
@@ -152,7 +153,7 @@ function T.draw(cam_x, cam_y)
       end
     end
   end
-  cache_key = key
+  cache_key, k_c0, k_c1, k_r0, k_r1, k_pre, k_mul, k_rev = true, c0, c1, r0, r1, prefix, pm, rev
   end
   -- the conveyor belts: the market's tiles have the belt (4 frames sliding, an end cap on each side); the playroom has none (a dark band with dashes as a fallback)
   local tk = ticks()

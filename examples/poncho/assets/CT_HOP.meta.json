@@ -1,0 +1,27 @@
+{
+  "asset": "CT_HOP",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 110,
+  "h": 37,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    55,
+    34
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 5174,
+    "as_rgb565": 16280
+  }
+}

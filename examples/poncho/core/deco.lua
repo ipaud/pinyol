@@ -15,6 +15,7 @@ function D.id(id) local a = D.alias[id] return (a and Data[a]) and a or id end
 function D.count(id) local s = Data[id] return s and s.n or 0 end
 
 local look = {}
+local piece_ids = {} -- piece_ids[id][n] = "id_Cn"
 function D.img(id, f, x, y, o)
   local a = D.alias[id]
   if a and Data[a] then id = a end
@@ -28,7 +29,14 @@ function D.img(id, f, x, y, o)
   look.dim = o and o.dim or nil
   look.mul, look.angle, look.alpha = o and o.mul or nil, o and o.angle or nil, o and o.alpha or nil
   local aid = id
-  if s.pieces then aid, look.frame = id .. "_C" .. (f // s.per), f % s.per end
+  if s.pieces then
+    local pc = piece_ids[id]
+    if not pc then pc = {} piece_ids[id] = pc end
+    local p = f // s.per
+    aid = pc[p]
+    if not aid then aid = id .. "_C" .. p pc[p] = aid end
+    look.frame = f % s.per
+  end
   img(aid, math.floor(left), math.floor(y - s.ay * sy), look)
 end
 

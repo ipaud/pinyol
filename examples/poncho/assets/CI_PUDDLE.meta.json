@@ -1,0 +1,29 @@
+{
+  "asset": "CI_PUDDLE",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 68,
+  "h": 29,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    34,
+    26
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3636,
+    "as_rgb565": 11832
+  }
+}

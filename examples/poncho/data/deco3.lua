@@ -63,6 +63,21 @@ return {
       ["def_0"] = 9
     }
   },
+  ["CE_PIGEON_PECK"] = {
+    ["w"] = 78,
+    ["h"] = 60,
+    ["ax"] = 39,
+    ["ay"] = 57,
+    ["n"] = 4,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["peck_0"] = 0,
+      ["peck_1"] = 1,
+      ["peck_2"] = 2,
+      ["peck_3"] = 3
+    }
+  },
   ["CE_SNAIL"] = {
     ["w"] = 92,
     ["h"] = 67,
@@ -149,6 +164,33 @@ return {
     ["frames"] = {
       ["icecream"] = 0,
       ["lolly"] = 1
+    }
+  },
+  ["CI_PUDDLE"] = {
+    ["w"] = 68,
+    ["h"] = 29,
+    ["ax"] = 34,
+    ["ay"] = 26,
+    ["n"] = 3,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["calm"] = 0,
+      ["ripple_0"] = 1,
+      ["ripple_1"] = 2
+    }
+  },
+  ["CI_SEESAW"] = {
+    ["w"] = 142,
+    ["h"] = 61,
+    ["ax"] = 71,
+    ["ay"] = 58,
+    ["n"] = 2,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["left_down"] = 0,
+      ["right_down"] = 1
     }
   },
   ["CM_BENCH"] = {
@@ -535,6 +577,19 @@ return {
       ["CT_FLOORCOL"] = 0
     }
   },
+  ["CT_HOP"] = {
+    ["w"] = 110,
+    ["h"] = 37,
+    ["ax"] = 55,
+    ["ay"] = 34,
+    ["n"] = 2,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["normal"] = 0,
+      ["cracked"] = 1
+    }
+  },
   ["CT_PAD"] = {
     ["w"] = 70,
     ["h"] = 29,
@@ -547,6 +602,21 @@ return {
       ["taut"] = 0,
       ["press"] = 1,
       ["squash"] = 2
+    }
+  },
+  ["CT_RAMP_RB"] = {
+    ["w"] = 32,
+    ["h"] = 32,
+    ["ax"] = 0,
+    ["ay"] = 0,
+    ["n"] = 4,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["a"] = 0,
+      ["b"] = 1,
+      ["c"] = 2,
+      ["d"] = 3
     }
   },
   ["CT_TILES"] = {

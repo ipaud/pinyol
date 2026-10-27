@@ -16,8 +16,10 @@ local F = {}
 F.list = {}
 F.events = {}
 
-local SIZE = {car = {54, 32}, robot = {30, 54}, ball = {36, 36}, plane = {46, 26},
-              apple = {46, 50}, banana = {50, 30}, bee = {42, 38}, cherry = {40, 54}, melon = {60, 60}, pigeon = {46, 48}, snail = {62, 36}, note = {40, 46}, cable = {64, 30}, speaker = {48, 62}, bubble = {64, 54}}
+-- hitboxes (w, h; feet at the bottom middle, a flyer's body centred), 90% of the art's visible body: gen/hitbox_check.py compares them with the pictures
+local SIZE = {car = {57, 37}, robot = {38, 56}, ball = {43, 42}, plane = {56, 42},
+              apple = {40, 50}, banana = {45, 45}, bee = {50, 53}, cherry = {46, 55}, melon = {36, 41}, pigeon = {46, 51}, snail = {63, 46},
+              note = {42, 54}, cable = {54, 42}, speaker = {41, 52}, bubble = {70, 58}}
 local WAKE = 640
 
 F.rings = {} -- the speakers' sound rings in flight
@@ -282,6 +284,7 @@ function F.update()
             Hero.bounce(In.btn("a") and K.STOMP_V_HELD or K.STOMP_V, In.btn("a"))
             Snd.play("stomp")
             Fx.sparkle(f.x, f.y - f.h / 2, 0xFFFFFF, 8)
+            Fx.burst(f.x, f.y - f.h / 2)
             if f.immune then -- a melon: a bounce and nothing more
             elseif f.kind == "snail" and f.mode ~= "shell" then
               f.mode, f.mt, f.h = "shell", 0, 26
@@ -364,7 +367,11 @@ local function market(f)
     local fr = math.min(7, (f.bt or 0) * 8 // 46)
     if over(f) then fr = f.dead < 12 and 8 or 9 end
     Deco.img("FE_CHERRY", fr, x, y, alook)
-  else -- the melon: a ball that rolls
+  elseif Deco.has("FE_MELON") then -- the melon: roll_0..5 (frames 8-13), hurt 14, defeated 15
+    local fr = 8 + math.floor(f.phase / 40) % 6
+    if over(f) then fr = 15 end
+    Deco.img("FE_MELON", fr, x, y, alook)
+  else -- (the stand-in: Mama Sandia's rolling picture, small)
     alook.sx, alook.sy = 0.4, 0.4
     Deco.img("BOSS_SANDIA", 6 + math.floor(f.phase / 45) % 8, x, y, alook)
   end
@@ -399,7 +406,7 @@ local function stage(f)
   local n = Deco.count(id)
   local fr = math.floor(f.phase) % math.max(1, n - 2)
   if own and k == "cable" then fr = (f.mode == "rest") and 8 + (f.mt // 10) % 3 or math.floor(f.phase) % 8 end -- slide 0-7, coil 8-10
-  if k == "bubble" then y = y - (own and 0 or f.h // 2) + 0 end
+  if k == "bubble" then y = y - f.h // 2 end -- (the body's centre: the hitbox hangs from f.y)
   if over(f) then fr = n - 2 + (f.dead < 12 and 0 or 1) end
   Deco.img(id, fr, x, y, alook)
 end

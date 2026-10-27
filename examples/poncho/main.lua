@@ -24,9 +24,12 @@ local function open_how() -- the console's menu item: also on the title, before 
   G.back, G.state = G.state, "explain"
 end
 
+local to_select
+WORLDS = function() if G.state ~= "explain" then to_select() end end -- (global: tests/poncho.script)
 local function set_menu()
   menuitem()
   menuitem(lang.tr("how_item"), open_how)
+  menuitem(lang.tr("menu_worlds"), WORLDS) -- from anywhere: the world select (the console's own menu has resume, restart and settings with the language)
 end
 
 local function to_title()
@@ -52,7 +55,7 @@ function _resume()
   set_menu()
 end
 
-local function to_select(i)
+to_select = function(i)
   require("core.music").stop()
   G.state = "select"
   Scr.select.enter(i)
@@ -64,6 +67,7 @@ local function to_play(world)
 end
 
 local function finish()
+  Play.toast_t = 0
   local t, w = Play.time, Play.world
   W.finish(w, t)
   local coins, creams, tc, ti = Items.counts()

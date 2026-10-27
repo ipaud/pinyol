@@ -44,6 +44,21 @@ return {
       ["def_3"] = 32
     }
   },
+  ["FX_BURST"] = {
+    ["w"] = 124,
+    ["h"] = 115,
+    ["ax"] = 62,
+    ["ay"] = 57,
+    ["n"] = 4,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["burst_0"] = 0,
+      ["burst_1"] = 1,
+      ["burst_2"] = 2,
+      ["burst_3"] = 3
+    }
+  },
   ["KE_BUBBLE"] = {
     ["w"] = 96,
     ["h"] = 103,
@@ -151,9 +166,9 @@ return {
     }
   },
   ["KI_FLAG"] = {
-    ["w"] = 164,
+    ["w"] = 104,
     ["h"] = 154,
-    ["ax"] = 82,
+    ["ax"] = 21,
     ["ay"] = 151,
     ["n"] = 4,
     ["pieces"] = false,
@@ -352,13 +367,13 @@ return {
     }
   },
   ["KM_LIGHTS"] = {
-    ["w"] = 104,
-    ["h"] = 90,
-    ["ax"] = 52,
+    ["w"] = 180,
+    ["h"] = 79,
+    ["ax"] = 90,
     ["ay"] = 0,
     ["n"] = 1,
     ["pieces"] = false,
-    ["per"] = 10,
+    ["per"] = 9,
     ["frames"] = {
       ["KM_LIGHTS"] = 0
     }
@@ -649,6 +664,19 @@ return {
     ["per"] = 10,
     ["frames"] = {
       ["KT_FLOORCOL"] = 0
+    }
+  },
+  ["KT_FLOORKEY"] = {
+    ["w"] = 32,
+    ["h"] = 96,
+    ["ax"] = 0,
+    ["ay"] = 0,
+    ["n"] = 2,
+    ["pieces"] = false,
+    ["per"] = 10,
+    ["frames"] = {
+      ["blackkey"] = 0,
+      ["pressed"] = 1
     }
   },
   ["KT_PAD"] = {

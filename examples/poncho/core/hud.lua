@@ -48,6 +48,9 @@ local function plate(str, x, y)
   rect(x - 6, y - 4, width(str) + 12, 24, 0x2A1A3A)
 end
 
+H.record, H.rects = false, {}
+local function R(name, x, y, w, h) if H.record then H.rects[name] = {x, y, w, h} end end
+
 function H.draw(play)
   Deco.img("TOY_HEARTS", math.max(0, math.min(3, Hero.hearts)), 6, 7)
   local coins, creams, tc, ti = Items.counts()

@@ -5,19 +5,22 @@ local S = {}
 
 S.sheets = D.sheets
 local look = {}
-local counts = {}
+local counts = {}   -- counts[sheet][prefix] = how many frames of that run
+local names = {}    -- names[prefix][i] = "prefix_i" (so a frame's name is not built again every frame)
+local pieces = {}   -- pieces[id][n] = "id_Cn"
 
 function S.has(sheet, frame) local s = D.sheets[sheet] return s ~= nil and s.frames[frame] ~= nil end
 
 -- how many frames a strip has of a run named prefix_0, prefix_1...
 function S.n(sheet, prefix)
-  local key = sheet .. "." .. prefix
-  local n = counts[key]
+  local c = counts[sheet]
+  if not c then c = {} counts[sheet] = c end
+  local n = c[prefix]
   if not n then
     n = 0
     local s = D.sheets[sheet]
     while s and s.frames[prefix .. "_" .. n] do n = n + 1 end
-    counts[key] = n
+    c[prefix] = n
   end
   return n
 end
@@ -26,7 +29,12 @@ end
 function S.seq(sheet, prefix, i)
   local n = S.n(sheet, prefix)
   if n == 0 then return nil end
-  return prefix .. "_" .. (math.floor(i) % n)
+  local k = math.floor(i) % n
+  local nm = names[prefix]
+  if not nm then nm = {} names[prefix] = nm end
+  local f = nm[k]
+  if not f then f = prefix .. "_" .. k nm[k] = f end
+  return f
 end
 
 function S.size(sheet) local s = D.sheets[sheet] return s.w, s.h, s.ax, s.ay end
@@ -38,7 +46,12 @@ function S.draw(name, frame, x, y, o)
   if not idx then return false end
   local id = sh.id
   if sh.pieces then
-    id = id .. "_C" .. (idx // sh.per)
+    local p = idx // sh.per
+    local pc = pieces[id]
+    if not pc then pc = {} pieces[id] = pc end
+    local pid = pc[p]
+    if not pid then pid = id .. "_C" .. p pc[p] = pid end
+    id = pid
     idx = idx % sh.per
   end
   local flip = o and o.flip

@@ -2,7 +2,7 @@
 -- chalk dust), puddles (they slow him down unless he wears the rain boots), a seesaw that throws him high, swings that swing (moving platforms), a rainbow of chalk ramps for
 -- the scooter. Two keyboards on picnic blankets (checkpoints), the four costumes, and the park's toys in readable groups: pigeons (they stop to peck), balls (bouncers),
 -- snails (slow, a stomp sends them into the shell), kites (a sine path above).
--- The last screen (cols 214-239) is left empty for a boss to come: kit.boss would go there; the flag is open.
+-- The last screen (cols 225-239) is the arena of Dona Paloma Gorda, a giant pigeon; the flag opens when she is beaten.
 return function(k)
 local gap, blocks, shelf, ramp, rampdown, obj, coins, arc, foe, hop, swing = k.gap, k.blocks, k.shelf, k.ramp, k.rampdown, k.obj, k.coins, k.arc, k.foe, k.hop, k.swing
 local FR = k.FR
@@ -63,9 +63,11 @@ hop(206, 1) hop(208, 2) hop(210, 1)
 obj("puddle", 212, 0, {w = 96})
 foe("snail", 217, 0, {range = 2})
 foe("ball", 221, 0, {range = 3})
-foe("pigeon", 226, 0, {range = 3})
-blocks(231, 1, 2, "W")
-obj("flag", 236, 0)
+foe("pigeon", 222, 0, {range = 2})
 coins(214, 1, 8, 1, 0)
+-- 11. the arena of Dona Paloma Gorda (cols 225-239): hopscotch squares to stand on, which she pecks away; the flag is shut until she is beaten
+hop(228, 2) hop(232, 2) hop(236, 2) hop(230, 1) hop(234, 1)
+obj("flag", 238, 0, {locked = true})
+k.boss("paloma", 235)
 k.start(3)
 end

@@ -278,7 +278,7 @@ expect_lua rawlen(D.cherries()) == 4 and D.cherries()[1] ~= D.cherries()[2]
 lua D.bot(true)
 tick 4800
 expect_lua require("core.boss").active() or D.state().x > 6000
-lua D.bot(false) D.tp(6100) D.clear()
+lua D.bot(false) D.world(2) D.tp(6100) D.clear()
 tick 100
 expect_lua require("core.boss").active() and D.state().cam == 6048
 shot boss2
@@ -349,9 +349,9 @@ tick 60
 expect_lua D.foes_alive() == 2
 # the little bot plays the chalk park, from the gate to the flag
 lua D.world(3) D.bot(true)
-tick 2900
-expect_lua G.state == "results" or D.state().x > 7400
-tick 300
+tick 5400
+expect_lua require("core.boss").beaten()
+tick 600
 shot results3
 expect_lua G.state == "results" and require("core.worlds").done(3) and require("core.worlds").next_ready(3) == 4
 lua D.bot(false)
@@ -390,7 +390,7 @@ tick 70
 expect_lua G.hopped
 lua G.after_play = nil D.clear()
 # el Gran Silencio: the arena closes, he inhales (the music meter drains within the pull), a scooter dash starts the rhythm round
-lua D.tp(7000)
+lua D.record(true) D.tp(7000)
 tick 190
 expect_lua require("core.boss").active() and D.state().cam == 6944 and D.boss_meter() < 100
 shot boss4
@@ -398,6 +398,7 @@ lua D.tp(7230) D.scooter(true) require("core.hero").s.vx = 8
 tick 6
 expect_lua D.boss().mode == "rhythm"
 shot boss4_rhythm
+expect_lua rawlen(D.overlaps()) == 0
 # and the bot plays the rest: it waits out of the pull, hops the waves and presses each key on the beat, three phases of three lives
 lua D.bot(true)
 tick 3600
@@ -410,11 +411,11 @@ lua D.bot(false)
 press A
 tick 4
 expect_lua G.state == "credits"
-shot credits
+tick 70
+shot credits_roll
 press A
 tick 4
-press A
-tick 4
+shot credits_end
 press A
 tick 4
 expect_lua G.state == "select"
@@ -422,6 +423,65 @@ press B
 tick 4
 expect_lua G.state == "title"
 shot title_continue
-expect_lua rawlen(achievements()) == 15
+
+# ---- polish: feel (the costume's power on the press, a press a little early still fires, a hard landing raises dust, the camera looks ahead), the hitboxes, the bosses played badly
+expect_lua D.tap_delay() <= 3
+expect_lua D.tap_buffer()
+expect_lua D.land_dust() > 0
+lua D.world(1) D.tp(300) D.clear()
+hold RIGHT 80
+expect_lua require("core.cam").lead > 30
+lua D.hitboxes(true) D.world(2) D.tp(300) D.clear() D.foe("apple", 200)
+tick 3
+shot hitboxes
+expect_lua D.hit_on
+lua D.hitboxes(false)
+# a deliberately imperfect player (it misses a rhythm note in three, is a few ticks off on the rest, does not dodge every attack): every boss is still beaten, and it costs hearts
+lua D.world(1) D.tp(5700) D.checkpoint(5600) D.clear() D.bot(true) D.sloppy(true)
+tick 2200
+expect_lua require("core.boss").beaten() and (D.state().hearts < 3 or D.state().deaths > 0)
+lua D.world(2) D.tp(6100) D.checkpoint(6000) D.clear() D.bot(true) D.sloppy(true)
+tick 3200
+expect_lua require("core.boss").beaten() and (D.state().hearts < 3 or D.state().deaths > 0)
+lua D.world(3) D.tp(7300) D.checkpoint(7100) D.clear() D.bot(true) D.sloppy(true)
+tick 2600
+shot paloma_fight
+expect_lua require("core.boss").beaten() and (D.state().hearts < 3 or D.state().deaths > 0)
+lua D.world(4) D.tp(7000) D.checkpoint(6900) D.clear() D.bot(true) D.sloppy(true)
+tick 2300
+expect_lua require("core.boss").beaten() and (D.state().hearts < 3 or D.state().deaths > 0)
+lua D.sloppy(false) D.bot(false)
+# the console's menu on every screen, the world select from its own item, touch on the menus
+lua G.state = "title" require("core.screens").title.enter()
+press MENU
+tick 45
+expect_menu open
+press B
+tick 45
+expect_menu closed
+tap 240 205
+tick 3
+expect_lua G.state == "select"
+press MENU
+tick 45
+expect_menu open
+press B
+tick 45
+tap 100 80
+tick 2
+tap 100 80
+tick 30
+expect_lua G.state == "play"
+lua WORLDS()
+tick 2
+expect_lua G.state == "select"
+lua G.state = "credits" require("core.screens").credits.enter()
+press MENU
+tick 45
+expect_menu open
+press B
+tick 45
+lua G.state = "title"
+expect_lua rawlen(achievements()) == 16
 expect_lua (function() local n = 0 for _, a in ipairs(achievements()) do if a.done then n = n + 1 end end return n >= 9 end)()
 expect_ok

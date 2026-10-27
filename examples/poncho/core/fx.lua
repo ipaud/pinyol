@@ -3,9 +3,19 @@ local F = {}
 local MAXN = 4
 local ps = {}
 local n = 0
+local bursts, nb = {}, 0
 
 local rings, nr = {}, 0 -- up to three rings (a shock, a splash): one command each
-function F.clear() n, nr = 0, 0 end
+function F.clear() n, nr, nb = 0, 0, 0 end
+function F.count() return n + nr + nb end
+
+-- a burst picture (FX_BURST, 4 frames) where something is beaten or broken: up to two at once, 12 ticks
+function F.burst(x, y)
+  if not require("core.deco").has("FX_BURST") then return end
+  if nb >= 2 then table.remove(bursts, 1) nb = nb - 1 end
+  nb = nb + 1
+  bursts[nb] = {x = x, y = y, t = 12}
+end
 
 -- a ring that grows from r0 to r1 in `life` ticks (about a wave: ground pound, splash)
 function F.ring(x, y, r0, r1, color, life)
@@ -54,6 +64,7 @@ function F.confetti(x, y, count)
 end
 
 function F.update()
+  for i = nb, 1, -1 do local b = bursts[i] b.t = b.t - 1 if b.t <= 0 then table.remove(bursts, i) nb = nb - 1 end end
   for i = nr, 1, -1 do
     local r = rings[i]
     r.life = r.life - 1
@@ -75,6 +86,7 @@ function F.update()
 end
 
 function F.draw()
+  for i = 1, nb do local b = bursts[i] require("core.deco").img("FX_BURST", math.min(3, (12 - b.t) // 3), math.floor(b.x), math.floor(b.y)) end
   for i = 1, nr do
     local r = rings[i]
     local k = 1 - r.life / r.max

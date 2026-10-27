@@ -1,0 +1,27 @@
+{
+  "asset": "FI_PEEL",
+  "type": "background",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 50,
+  "h": 30,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    25,
+    27
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 1621,
+    "as_rgb565": 6000
+  }
+}

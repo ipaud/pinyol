@@ -32,7 +32,7 @@ function H.reset(x, y, keep_scooter)
     hold = 0, hold_dir = 0, gait = "walk", phase = 0, idle_t = 0, idle_cycle = 0,
     scooter = mount, mode_s = "glide", push_p = 0, drift_t = 0, brake_t = 0, glide_t = 0,
     state = "play", hurt_t = 0, inv = 0, dead_t = 0, win_t = 0, t = 0, air_t = 0, step_f = 0, skid_t = 0, lean = 0,
-    c_t = 0, slip = 0, act = false, pw = nil, pw_cd = 0, fut_t = 0, boots_air = false,
+    c_t = 0, slip = 0, act = false, want = 0, c_fast = false, pw = nil, pw_cd = 0, fut_t = 0, boots_air = false,
   }
   H.costume = nil
   H.s = s
@@ -348,14 +348,21 @@ function H.update()
     Fx.dust(s.x, s.y, 3, 0, 1.5)
     ev("mount")
   end
-  s.act = false -- a tap of C is the costume's power; holding it runs
+  -- C: the costume's power on the press itself when he stands or walks (no delay), or, running fast (where C only holds the run), on the release of a short tap.
+  -- A press is kept for K.ACT_BUF ticks, so one a little early (power still resting) fires as soon as it can.
+  if In.btnp("c") then
+    s.c_fast = math.abs(s.vx) >= K.ACT_FAST
+    if not s.c_fast then s.want = K.ACT_BUF end
+  end
   if In.btn("c") then s.c_t = s.c_t + 1
   else
-    if s.c_t > 0 and s.c_t <= K.TAP then s.act = true end
+    if s.c_fast and s.c_t > 0 and s.c_t <= K.TAP then s.want = K.ACT_BUF end
     s.c_t = 0
   end
+  s.act = s.want > 0
   control(dir, down)
   Power.update(s, down)
+  if s.want > 0 then s.want = s.want - 1 end
   move_x()
   move_y()
   if s.slip > 0 then s.slip = s.slip - 1 end
@@ -448,7 +455,12 @@ function H.pose()
       if k == "shock" then return cs, seq(cs, "stomp", pw.t < 6 and 1 or 2) end
       if k == "splash" then return cs, seq(cs, "splash", pw.t * 6 / pw.len) end
     end
-    if not s.ground then return cs, seq(cs, "run", 2) end
+    if not s.ground then
+      if Spr.has(cs, "jump_0") then -- the costumes have their own jump frames: rising, the peak, falling
+        return cs, (s.vy < -2.2 and "jump_0") or (s.vy < 2 and "jump_1") or "fall_0"
+      end
+      return cs, seq(cs, "run", 2)
+    end
     if av > 0.15 then
       local g = Spr.n("poncho", s.gait)
       return cs, seq(cs, "run", (s.phase % g) / g * Spr.n(cs, "run"))

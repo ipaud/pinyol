@@ -40,7 +40,7 @@ W.defs = {
    alias = {TOY_COIN = "FI_COIN", TOY_CREAM = "FI_LOLLI", TOY_FLAG = "FI_FLAG", TOY_KEYBOARD = "FI_KEYBOARD", TOY_SPRING = "FT_PAD"}},
   -- world 3, the chalk park: CM_* backgrounds, CT_* tiles, CE_* toys, CI_* items (data/deco3.lua, data/cm_far_slices.lua, data/world3_assets.md). The art has no hopscotch square
   -- of its own: the chalk boxes t2 (circle) and t6 (plain) are the square and the cracked one. A picture the data lacks is replaced by the market's, tinted.
-  {id = "chalk", name_key = "world_3", ready = true, cols = 240, music = "chalk", bgcolor = 0x676279, tiles = "CT", tilemul = 0xC8E0D0,
+  {id = "chalk", name_key = "world_3", ready = true, cols = 240, music = "chalk", bgcolor = 0x676279, boss = "paloma", tiles = "CT", tilemul = 0xC8E0D0,
    frames = {H = 2, h = 6}, fb_frames = {H = 4, h = 5},
    far = {def = "data.cm_far_slices", fallback = "data.fm_far_slices", speed = 0.09, y = 0, ycam = 0.05, fill = 0x676279, mul = 0xB8E8C8},
    mid = {speed = 0.62, period = 3000, dim = 0.94, mul = 0xC8E8D8, list = {

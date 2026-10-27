@@ -39,6 +39,9 @@ function title.update()
   local its = items()
   if In.btnp("up") then title.sel = (title.sel - 2) % #its + 1 Snd.play("select") end
   if In.btnp("down") then title.sel = title.sel % #its + 1 Snd.play("select") end
+  for i = 1, #its do -- a tap on an item picks it
+    if In.tap_in(150, 192 + (i - 1) * 34 - 6, 180, 32) then title.sel = i Snd.play("confirm") return PICK[its[i]] end
+  end
   if In.btnp("a") or In.btnp("start") then
     Snd.play("confirm")
     return PICK[its[title.sel] or "title_start"]
@@ -66,6 +69,7 @@ function title.draw()
   -- the logo (a picture of the word, from the image model) and the subtitle in the player's language
   local bob = math.floor(math.sin(t / 30) * 3)
   Deco.img("UI_LOGO_" .. lang.code:upper(), 0, 240, 2 + bob)
+  text(lang.tr("touch_hint"), 240, 300, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A})
   local ly = 180 + bob
   local its = items()
   rect(150, ly, 180, 8 + #its * 34, 0x2A1A3A) rect(150, ly, 180, 3, 0xFFD43A)
@@ -94,7 +98,7 @@ function how.update()
   if In.btnp("right") then how.page = how.page % #PAGES + 1 Snd.play("select") end
   if In.btnp("left") then how.page = (how.page - 2) % #PAGES + 1 Snd.play("select") end
   if In.btnp("b") or In.btnp("start") then how.page = 1 return true end
-  if In.btnp("a") then
+  if In.btnp("a") or In.tapped then
     if how.page >= #PAGES then how.page = 1 return true end
     how.page = how.page + 1
     Snd.play("select")
@@ -136,6 +140,12 @@ function sel.update()
   if In.btnp("up") or In.btnp("down") then i = (i + 1) % n + 1 end
   if i ~= sel.i then sel.i = i Snd.play("select") end
   if In.btnp("b") then return "back" end
+  for w = 1, #W.defs do -- a tap on a card: the first tap picks it, a tap on the picked one plays it
+    if In.tap_in(28 + ((w - 1) % 2) * 226, 52 + ((w - 1) // 2) * 124, 198, 108) then
+      if sel.i == w and W.unlocked(w) then Snd.play("confirm") return w end
+      sel.i = w Snd.play("select")
+    end
+  end
   if In.btnp("a") or In.btnp("start") then
     if W.unlocked(sel.i) then Snd.play("confirm") return sel.i end
     Snd.play("select")
@@ -166,26 +176,51 @@ function sel.draw(bgfn)
   text(lang.tr("select_help"), K.W // 2, 296, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A})
 end
 
--- ---------------------------------------------------------------- the credits: the ending's three pages (A or a few seconds to turn the page)
+-- ---------------------------------------------------------------- the credits: a roll of text going up, and at the end the toy keyboard, his friend, playing
 
-local cre = {t = 0, page = 1}
+local cre = {t = 0}
 S.credits = cre
-function cre.enter() cre.t, cre.page = 0, 1 end
+-- {key, style}: "h" a heading, "t" a line of text; each takes one row of ROW pixels (a long line takes two)
+local ROLL = {{"credits_title", "h"}, {"credits_1", "t"}, {"", "t"}, {"credits_h_worlds", "h"}, {"world_1", "t"}, {"world_2", "t"}, {"world_3", "t"}, {"world_4", "t"}, {"", "t"},
+              {"credits_h_bosses", "h"}, {"boss_cuerda", "t"}, {"boss_sandia", "t"}, {"boss_paloma", "t"}, {"boss_silencio", "t"}, {"", "t"},
+              {"credits_h_made", "h"}, {"credits_made", "t"}, {"credits_art", "t"}, {"", "t"}, {"credits_2", "t"}, {"", "t"}, {"credits_h_thanks", "h"}, {"credits_3", "t"}}
+local ROW, SPEED = 34, 0.55
+local STOP = (#ROLL - 1) * ROW + K.H + 20 - 165       -- how far it scrolls: the last row stops at y = 165
+local END_T = math.floor(STOP / SPEED)               -- when that is
+
+function cre.enter() cre.t = 0 end
 function cre.update()
   cre.t = cre.t + 1
-  if In.btnp("a") or In.btnp("start") or cre.t > 420 then
-    cre.t = 0
-    cre.page = cre.page + 1
-    if cre.page > 3 then return true end
+  if (In.btnp("a") or In.btnp("start") or In.tapped) and cre.t > 60 then
+    if cre.t < END_T then cre.t = END_T else return true end -- the first press goes to the end, the next leaves
   end
+  if cre.t > END_T + 600 then return true end
 end
+
 function cre.draw(bgfn)
   if bgfn then bgfn() end
   rect(0, 0, K.W, K.H, 0x1A1230)
-  local x, y, w, h = 40, 60, K.W - 80, 190
-  panel(x, y, w, h)
-  textbox(lang.tr("credits_" .. cre.page), x + 24, y + 20, w - 48, h - 60, {font = Hud.FONT, fonts = {Hud.FONT, Hud.SMALL}, color = 0x3A2A4A, valign = "middle", align = "center"})
-  text(lang.tr("credits_next"), K.W // 2, y + h - 32, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
+  local scroll = math.min(cre.t, END_T) * SPEED
+  for i, r in ipairs(ROLL) do
+    local y = K.H + 20 + (i - 1) * ROW - scroll
+    if y > -40 and y < K.H + 10 and r[1] ~= "" then
+      if r[2] == "h" then
+        text(lang.tr(r[1]), K.W // 2, y, {font = Hud.FONT, align = "center", color = 0xFFD43A, outline = 0x2A1A3A, slide = true})
+      else
+        text(lang.tr(r[1]), K.W // 2, y, {font = Hud.SMALL, align = "center", color = 0xFFFFFF, outline = 0x2A1A3A, width = 420, slide = true})
+      end
+    end
+  end
+  rect(0, 0, K.W, 34, 0x1A1230) -- (the rows go up under a bar)
+  -- the end: the keyboard, his friend, playing, with a note rising
+  local k = math.max(0, math.min(1, (cre.t - END_T + 60) / 60))
+  if k > 0 then
+    local fr = 2 + (cre.t // 6) % 4
+    Deco.img("TOY_KEYBOARD", fr, K.W // 2, 300 + math.floor((1 - k) * 80))
+    if cre.t > END_T then
+      text(lang.tr("credits_next"), K.W // 2, 12, {font = Hud.SMALL, align = "center", color = 0x9FB8FF, outline = 0x2A1A3A})
+    end
+  end
 end
 
 -- ---------------------------------------------------------------- results
@@ -199,8 +234,8 @@ end
 
 function res.update()
   res.t = res.t + 1
-  if res.t <= 90 then return end
-  if In.btnp("a") or In.btnp("start") then return res.info.final and "credits" or (res.info.next and "next" or "worlds") end
+  if res.t <= (res.info.final and 45 or 90) then return end
+  if In.btnp("a") or In.btnp("start") or In.tapped then return res.info.final and "credits" or (res.info.next and "next" or "worlds") end
   if In.btnp("b") then return "worlds" end
 end
 
@@ -222,7 +257,7 @@ function res.draw(bgfn)
     text(r[1], x + 40, yy, {font = Hud.FONT, color = 0x3A2A4A})
     text(r[2], x + w - 40, yy, {font = Hud.FONT, color = 0x3A2A4A, align = "right"})
   end
-  if res.t > 90 and (res.t // 30) % 2 == 0 or U.calm() then
+  if res.info.final or (res.t > 90 and (res.t // 30) % 2 == 0) or U.calm() then -- (the last world's prompt is there at once)
     text(lang.tr(res.info.final and "credits_next" or (res.info.next and "res_next_world" or "res_worlds")), K.W // 2, y + h - 40, {font = Hud.SMALL, align = "center", color = 0x3E6AA8})
     if res.info.next and not res.info.final then text(lang.tr("res_worlds_b"), K.W // 2, y + h - 22, {font = Hud.SMALL, align = "center", color = 0x3E6AA8}) end
   end

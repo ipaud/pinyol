@@ -26,12 +26,13 @@ B.t_end = 0
 B.meter = 100  -- Silencio's: the music meter, drained while it inhales
 
 local SPEC = {
-  cuerda = {w = 80, h = 84, name = "boss_cuerda"},
-  sandia = {w = 110, h = 84, name = "boss_sandia"},
-  silencio = {w = 120, h = 140, name = "boss_silencio", maxhp = 9},
+  cuerda = {w = 104, h = 126, name = "boss_cuerda"},
+  sandia = {w = 122, h = 126, name = "boss_sandia"},
+  silencio = {w = 153, h = 153, name = "boss_silencio", maxhp = 9},
+  paloma = {w = 92, h = 102, name = "boss_paloma"},   -- Dona Paloma Gorda: a giant pigeon (CE_PIGEON at x2), 6 lives in 2 phases
 }
 
-function B.reset(d)
+function B.reset(d, keep_hp)
   def = d
   B.started, B.dead, B.events, b = false, false, {}, nil
   B.meter = 100
@@ -39,18 +40,19 @@ function B.reset(d)
   Cam.lock, Hero.bounds = nil, nil
   if d then
     local sp = SPEC[d.id]
-    b = {id = d.id, x = d.x, y = d.y, w = sp.w, h = sp.h, hp = sp.maxhp or 6, maxhp = sp.maxhp or 6, inv = 0, mode = "wait", mt = 0, dir = -1, vx = 0, t = 0, ang = 0, passes = 0, seeds = {}, shots = 0}
+    b = {id = d.id, x = d.x, y = d.y, y0 = d.y, w = sp.w, h = sp.h, hp = keep_hp or sp.maxhp or 6, maxhp = sp.maxhp or 6, inv = 0, mode = "wait", mt = 0, dir = -1, vx = 0, t = 0, ang = 0, passes = 0, seeds = {}, shots = 0}
   end
 end
 function B.pending() return def ~= nil and not B.dead end
 function B.beaten() return def == nil or B.dead end
 function B.info() return b end
+function B.box() if not b then return nil end return b.x - b.w / 2, b.y - b.h, b.w, b.h end
 function B.name() return def and SPEC[def.id].name end
 function B.hp() return b and b.hp or 0 end
 function B.active() return B.started and not B.dead end
 
--- the fight is lost (the hero died): the arena opens and the boss starts again at full life, to be woken at the next try
-function B.retry() if def and not B.dead then B.reset(def) end end
+-- the fight is lost (the hero died): the arena opens and the boss starts again, with the lives it has lost still lost, to be woken at the next try
+function B.retry() if def and not B.dead then L.restore_hops() B.reset(def, b and b.hp > 0 and b.hp or nil) end end -- (the lives it has lost stay lost)
 
 local function arena() return L.W - K.W, L.W end
 
@@ -91,14 +93,14 @@ local function update_cuerda(s, x0, x1)
   elseif m == "charge" then
     local v = b.hp <= 2 and 6.4 or (b.hp <= 4 and 5.6 or 4.6)
     b.x = b.x + b.dir * v
-    if b.x < x0 + 34 or b.x > x1 - 34 then
-      b.x = U.clamp(b.x, x0 + 34, x1 - 34)
+    if b.x < x0 + b.w / 2 or b.x > x1 - b.w / 2 then
+      b.x = U.clamp(b.x, x0 + b.w / 2, x1 - b.w / 2)
       Cam.kick(12) Snd.play("bump")
       b.passes = b.passes - 1
       if b.passes > 0 then b.dir = -b.dir else b.mode, b.mt = "stun", 0 end
     end
   elseif m == "stun" then
-    if b.mt > 140 then b.mode, b.mt = "walk", 0 end
+    if b.mt > 140 then b.mode, b.mt, b.grace = "walk", 0, 50 end
   end
 end
 
@@ -111,8 +113,8 @@ local function update_sandia(s, x0, x1)
     local v = b.hp <= 3 and 4.4 or 3.4
     b.x = b.x + b.dir * v
     b.ang = b.ang + b.dir * v * 2.2
-    if b.x < x0 + 50 or b.x > x1 - 50 then
-      b.x = U.clamp(b.x, x0 + 50, x1 - 50)
+    if b.x < x0 + b.w / 2 or b.x > x1 - b.w / 2 then
+      b.x = U.clamp(b.x, x0 + b.w / 2, x1 - b.w / 2)
       b.dir = -b.dir
       Cam.kick(8) Snd.play("bump")
       b.passes = b.passes - 1
@@ -134,7 +136,7 @@ local function update_sandia(s, x0, x1)
     end
     if b.mt > (b.hp <= 3 and 96 or 90) then b.mode, b.mt = "tired", 0 end
   elseif m == "tired" then
-    if b.mt > 150 then b.mode, b.mt, b.passes = "roll", 0, 3 b.dir = s.x > b.x and 1 or -1 end
+    if b.mt > 150 then b.mode, b.mt, b.passes, b.grace = "roll", 0, 3, 50 b.dir = s.x > b.x and 1 or -1 end
   end
   for i = #b.seeds, 1, -1 do -- the seeds fly in an arc and break on the floor
     local sd = b.seeds[i]
@@ -153,8 +155,8 @@ end
 -- ---------------------------------------------------------------- el Gran Silencio: a friend-to-be, three phases of three lives.
 -- It cannot be hurt by jumping on it. Its cycle: idle, SHH (it inhales: within 320 px, standing low, he is pulled toward it and his music meter drains; at nothing left
 -- it costs a heart; stay far, or high, or in the air), the WAVE of its breath along the floor (jump it), then the rhythm round: he stands at the stage's four keys
--- (left, A, B, right) and four rings close in on them, one a beat (30 ticks): press the key as a ring reaches it. A ring caught within 3 ticks is perfect (2 points), within
--- 8 good (1); up to 3 points a round hurt it (never past the end of the phase); no points and it recovers a life. A scooter dash into it also starts a round.
+-- (left, A, B, right) and four rings close in on them, one a beat (30 ticks): press the key as a ring reaches it. A ring caught within 5 ticks is perfect (2 points), within
+-- 10 good (1); up to 3 points a round hurt it (never past the end of the phase); no points and it recovers a life. A scooter dash into it also starts a round.
 local LANES = {"left", "a", "b", "right"}
 local PATTERN = {{2, 3, 1, 4}, {1, 3, 2, 4}, {4, 1, 3, 2}}   -- the lane of each of the four rings, per phase
 local R_START, R_GAP = 50, 30                                  -- the first ring's beat (ticks into the round), and the beat between rings
@@ -164,6 +166,7 @@ local function phase() return math.min(3, 3 - (b.hp - 1) // 3) end
 function B.phase() return b and phase() or 0 end
 
 local function start_round()
+  b.round = (b.round or 0) + 1
   b.mode, b.mt = "rhythm", 0
   b.notes, b.perfect, b.good = {}, 0, 0
   local pat = PATTERN[phase()]
@@ -199,9 +202,9 @@ function B.press(lane)
   b.lit = b.lit or {}
   b.lit[lane] = 8
   for _, nt in ipairs(b.notes) do
-    if not nt.done and nt.lane == lane and math.abs(b.mt - nt.T) <= 8 then
+    if not nt.done and nt.lane == lane and math.abs(b.mt - nt.T) <= 10 then
       nt.done = true
-      local perfect = math.abs(b.mt - nt.T) <= 3
+      local perfect = math.abs(b.mt - nt.T) <= 5
       if perfect then b.perfect = b.perfect + 1 else b.good = b.good + 1 end
       nt.hit = perfect and 2 or 1
       Snd.note(NOTE_NAMES[lane], 0.45)
@@ -214,8 +217,8 @@ end
 -- for the bot: the lane and how many ticks to the beat of the next ring still to be played (nil when none)
 function B.next_note()
   if not b or b.mode ~= "rhythm" then return nil end
-  for _, nt in ipairs(b.notes) do
-    if not nt.done and b.mt - nt.T <= 8 then return nt.lane, nt.T - b.mt end
+  for i, nt in ipairs(b.notes) do
+    if not nt.done and b.mt - nt.T <= 10 then return nt.lane, nt.T - b.mt, (b.round or 0) * 4 + i end
   end
 end
 function B.waves() return b and b.waves or {} end
@@ -268,6 +271,42 @@ local function update_silencio(s, x0, x1)
   end
 end
 
+-- ---------------------------------------------------------------- Dona Paloma Gorda: a giant pigeon, two phases of three lives. She struts, rises with a shiver, and
+-- SWOOPS at where he stands; where she lands she pecks the hopscotch squares away (L.peck) and is dizzy for a moment: that is when a stomp on her head hurts her.
+-- In the second phase she swoops twice before she tires, and faster.
+local function update_paloma(s, x0, x1)
+  local m, ph = b.mode, (b.hp > 3) and 1 or 2
+  b.mt = b.mt + 1
+  if m == "intro" then
+    if b.mt > 60 then b.mode, b.mt = "perch", 0 end
+  elseif m == "perch" then
+    b.dir = s.x > b.x and 1 or -1
+    steer(U.clamp(s.x, x0 + b.w / 2, x1 - b.w / 2), 0.5)
+    b.x = U.clamp(b.x, x0 + b.w / 2, x1 - b.w / 2)
+    if b.mt > (ph == 1 and 80 or 50) then b.mode, b.mt, b.passes = "rise", 0, ph end
+  elseif m == "rise" then -- up with a shiver, following him
+    b.y = b.y0 - 150 * math.min(1, b.mt / 30)
+    b.dir = s.x > b.x and 1 or -1
+    b.x = U.clamp(b.x + (s.x - b.x) * 0.04, x0 + b.w / 2, x1 - b.w / 2)
+    if b.mt > (ph == 1 and 50 or 34) then b.mode, b.mt, b.tx = "swoop", 0, U.clamp(s.x, x0 + b.w / 2, x1 - b.w / 2) end
+  elseif m == "swoop" then
+    local n = ph == 1 and 26 or 20
+    local k = math.min(1, b.mt / n)
+    b.x = b.x + (b.tx - b.x) * 0.12
+    b.y = b.y0 - 150 * (1 - k * k)
+    if b.mt >= n then
+      b.y = b.y0
+      L.peck(b.x - 56, b.x + 56)
+      Fx.dust(b.x, b.y, 8, 0, 3)
+      Cam.kick(12) Snd.play("pound")
+      b.passes = b.passes - 1
+      if b.passes > 0 then b.mode, b.mt = "rise", 0 else b.mode, b.mt = "stun", 0 end
+    end
+  elseif m == "stun" then
+    if b.mt > (ph == 1 and 130 or 100) then b.mode, b.mt, b.grace = "perch", 0, 50 end
+  end
+end
+
 function B.update()
   B.events = {}
   if not b then return end
@@ -285,6 +324,7 @@ function B.update()
   end
   if B.dead then return end
   if b.inv > 0 then b.inv = b.inv - 1 end
+  if b.grace and b.grace > 0 then b.grace = b.grace - 1 end -- (after it is down, a moment in which touching it is harmless)
   if b.mode == "dying" then
     b.mt = b.mt + 1
     if b.mt % 6 == 0 then Fx.sparkle(b.x + (math.random() - 0.5) * 60, b.y - math.random() * b.h, 0xFFE060, 3) end
@@ -298,7 +338,7 @@ function B.update()
     end
     return
   end
-  if b.id == "cuerda" then update_cuerda(s, x0, x1) elseif b.id == "silencio" then update_silencio(s, x0, x1) else update_sandia(s, x0, x1) end
+  if b.id == "cuerda" then update_cuerda(s, x0, x1) elseif b.id == "silencio" then update_silencio(s, x0, x1) elseif b.id == "paloma" then update_paloma(s, x0, x1) else update_sandia(s, x0, x1) end
   if b.mode == "intro" or b.mode == "wait" then return end
   if b.id == "silencio" then -- it is not hurt by jumping on it; a scooter dash starts the rhythm round; in the round it is harmless
     if b.mode == "rhythm" or b.mode == "dying" then return end
@@ -317,10 +357,12 @@ function B.update()
     end
     return
   end
-  -- the hero meets it
+  -- the hero meets it. Its whole body is struck (a stomp, a power), but it only HURTS with its lower part (a jumpable height), except the giant pigeon, all of whom hurts
   local bx0, by0 = b.x - b.w / 2, b.y - b.h
+  local lowh = (b.id == "paloma") and b.h or b.h * 0.62
   local hx0, hy0, hw, hh = Hero.box()
   local touching = U.overlap(hx0 + 3, hy0 + 4, hw - 6, hh - 4, bx0, by0, b.w, b.h)
+  local harming = U.overlap(hx0 + 3, hy0 + 4, hw - 6, hh - 4, bx0, b.y - lowh, b.w, lowh)
   local stomp = touching and s.vy > 0.3 and s.y < b.y - b.h * 0.55 and s.state == "play"
   if vulnerable() and b.inv == 0 then
     local ak, ax, ay, aw, ah = Hero.attack()
@@ -333,7 +375,7 @@ function B.update()
   elseif touching and stomp then
     Hero.bounce(K.STOMP_V, false) -- it is not down: a bounce, no harm done
     Snd.play("bump")
-  elseif touching and not vulnerable() and s.inv == 0 and s.state == "play" then
+  elseif harming and not vulnerable() and s.inv == 0 and s.state == "play" and not (b.grace and b.grace > 0) then
     hurt_hero(b.x)
   end
 end
@@ -348,6 +390,21 @@ function B.draw(cam_x)
   local x, y = math.floor(b.x), math.floor(b.y)
   look.sx, look.sy, look.alpha, look.mul, look.angle = nil, nil, nil, nil, nil
   look.flip = b.dir < 0
+  if b.id == "paloma" then
+    if B.dead then return end
+    local m = b.mode
+    local fr = (b.mt // (m == "swoop" and 2 or 5)) % 8
+    if m == "stun" then fr = 8 elseif m == "dying" then fr = 9 end
+    look.flip, look.sx, look.sy = b.dir < 0, 2, 2
+    look.alpha = (b.inv > 0 and (b.inv // 4) % 2 == 0) and 0.5 or nil
+    Deco.img("CE_PIGEON", fr, x + (m == "rise" and (b.mt % 2 == 0 and 2 or -2) or 0), y, look)
+    look.sx, look.sy, look.alpha = nil, nil, nil
+    if m == "stun" then
+      local a = b.mt * 0.18
+      for i = 0, 2 do rect(x + math.floor(math.cos(a + i * 2.09) * 38) - 3, y - 112 + math.floor(math.sin(a + i * 2.09) * 7), 7, 7, 0xFFE060) end
+    end
+    return
+  end
   if b.id == "silencio" then
     -- BOSS_SILENCIO when the art is in the data (frames by name: idle_0.., inhale_0.., wave_0.., hurt_0.., def_0..), else Mama Sandia's picture, dimmed and tinted
     local own = Deco.has("BOSS_SILENCIO")
@@ -418,18 +475,23 @@ end
 -- the life bar, in screen pixels: its name and a row of lives
 function B.rhythm_round() return b ~= nil and B.started and not B.dead and b.mode == "rhythm" end
 
+B.record, B.rects = false, {}  -- (the test script asks where the bar and the rhythm keys are: they must not meet the status bar or the toast)
+local function R(name, x, y, w, h) if B.record then B.rects[name] = {x, y, w, h} end end
+
 function B.hud(lang)
   if not b or not B.started or B.dead then return end
-  local w = 170
-  local x, y = 214, 12 -- (between the counters on the left and the clock on the right)
+  local w = 200
+  local x, y = (K.W - w) // 2, 74
   rect(x - 3, y - 3, w + 6, 30, 0x2A1A3A)
   rect(x, y + 14, w, 9, 0x4A2A4A)
   rect(x, y + 14, math.floor(w * math.max(0, b.hp) / b.maxhp), 9, 0xE04050)
-  text(lang.tr(SPEC[b.id].name), x + w // 2, y - 1, {font = "snes_small", color = 0xFFFFFF, align = "center"})
+  text(lang.tr(SPEC[b.id].name), K.W // 2, y - 1, {font = "snes_small", color = 0xFFFFFF, align = "center"})
+  R("bar", x - 3, y - 3, w + 6, 30)
   if b.id ~= "silencio" then return end
   -- the music meter, under the life bar
   rect(x - 3, y + 30, w + 6, 12, 0x2A1A3A)
   rect(x, y + 33, math.floor(w * math.max(0, B.meter) / 100), 6, B.meter < 35 and 0xFF5050 or 0x70E0FF)
+  R("meter", x - 3, y + 30, w + 6, 12)
   if b.mode ~= "rhythm" then return end
   -- the four keys, and the rings closing on them
   local COL = {0xFF7090, 0x70D0FF, 0xFFD060, 0x90E070}
@@ -440,9 +502,10 @@ function B.hud(lang)
     rect(kx - 22, 214, 44, 28, lit and 0xFFFFFF or COL[lane])
     text(LAB[lane], kx, 219, {font = "snes_body", color = 0x2A1A3A, align = "center"})
   end
+  R("keys", 128, 190, 224, 52)
   for _, nt in ipairs(b.notes) do
     local dt = nt.T - b.mt
-    if not nt.done and dt <= 60 and dt >= -8 then
+    if not nt.done and dt <= 60 and dt >= -10 then
       circ(150 + 60 * (nt.lane - 1), 228, 12 + math.max(0, dt) * 2 // 3, COL[nt.lane], false)
     end
   end

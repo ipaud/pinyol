@@ -103,7 +103,7 @@ return {
       ["h"] = 96,
       ["ax"] = 72,
       ["ay"] = 90,
-      ["n"] = 16,
+      ["n"] = 19,
       ["pieces"] = true,
       ["per"] = 10,
       ["frames"] = {
@@ -122,7 +122,10 @@ return {
         ["headbutt_2"] = 12,
         ["headbutt_3"] = 13,
         ["headbutt_4"] = 14,
-        ["headbutt_5"] = 15
+        ["headbutt_5"] = 15,
+        ["jump_0"] = 16,
+        ["jump_1"] = 17,
+        ["fall_0"] = 18
       }
     },
     ["poncho_dino"] = {
@@ -131,7 +134,7 @@ return {
       ["h"] = 104,
       ["ax"] = 48,
       ["ay"] = 91,
-      ["n"] = 16,
+      ["n"] = 19,
       ["pieces"] = true,
       ["per"] = 10,
       ["frames"] = {
@@ -150,7 +153,10 @@ return {
         ["stomp_2"] = 12,
         ["fire_0"] = 13,
         ["fire_1"] = 14,
-        ["fire_2"] = 15
+        ["fire_2"] = 15,
+        ["jump_0"] = 16,
+        ["jump_1"] = 17,
+        ["fall_0"] = 18
       }
     },
     ["poncho_boots"] = {
@@ -159,7 +165,7 @@ return {
       ["h"] = 104,
       ["ax"] = 44,
       ["ay"] = 91,
-      ["n"] = 16,
+      ["n"] = 19,
       ["pieces"] = true,
       ["per"] = 10,
       ["frames"] = {
@@ -178,7 +184,10 @@ return {
         ["splash_2"] = 12,
         ["splash_3"] = 13,
         ["splash_4"] = 14,
-        ["splash_5"] = 15
+        ["splash_5"] = 15,
+        ["jump_0"] = 16,
+        ["jump_1"] = 17,
+        ["fall_0"] = 18
       }
     },
     ["poncho_futbol"] = {
@@ -187,7 +196,7 @@ return {
       ["h"] = 96,
       ["ax"] = 52,
       ["ay"] = 90,
-      ["n"] = 16,
+      ["n"] = 19,
       ["pieces"] = true,
       ["per"] = 10,
       ["frames"] = {
@@ -206,7 +215,10 @@ return {
         ["dash_2"] = 12,
         ["dash_3"] = 13,
         ["dash_4"] = 14,
-        ["dash_5"] = 15
+        ["dash_5"] = 15,
+        ["jump_0"] = 16,
+        ["jump_1"] = 17,
+        ["fall_0"] = 18
       }
     }
   }

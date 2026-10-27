@@ -30,7 +30,19 @@ local BASS3 = {"G2 0 D3 0 G2 0 D3 0 A2 0 E3 0 A2 0 E3 0", "G2 0 D3 0 G2 0 D3 0 D
 local MEL4 = {"A5 0 0 C6 0 0 E6 0 A5 0 0 C6 0 0 B5 0", "G5 0 0 B5 0 0 D6 0 G5 0 0 B5 0 0 A5 0",
               "F5 0 0 A5 0 0 C6 0 F5 0 0 A5 0 0 G5 0", "E5 0 0 G5 0 0 B5 0 E6 0 0 D6 0 0 C6 0"}
 local BASS4 = {"A2 0 0 0 A2 0 0 0 E3 0 0 0 E3 0 0 0", "G2 0 0 0 G2 0 0 0 D3 0 0 0 D3 0 0 0", "F2 0 0 0 F2 0 0 0 C3 0 0 0 C3 0 0 0", "E2 0 0 0 E2 0 0 0 B2 0 0 0 B2 0 0 0"}
+-- the bosses' themes: faster, in minor, a driving bass (one for each world's boss), and the victory jingle
+local BMEL = {
+  b1 = {"A5 0 A5 C6 0 A5 E5 0 G5 0 G5 B5 0 G5 D5 0", "F5 0 F5 A5 0 F5 C5 0 E5 G5 B5 0 E6 0 0 0"},
+  b2 = {"D5 F5 A5 0 D6 0 A5 F5 E5 G5 Bb5 0 E6 0 Bb5 G5", "C5 E5 G5 0 C6 0 G5 E5 D5 F5 A5 0 D6 0 A5 F5"},
+  b3 = {"E5 0 E5 G5 0 B5 0 G5 A5 0 A5 C6 0 E6 0 C6", "D5 0 D5 F5 0 A5 0 F5 B4 0 D5 F#5 0 B5 0 0"},
+  b4 = {"A4 0 0 C5 0 0 E5 0 0 G5 0 0 F5 0 E5 0", "F4 0 0 A4 0 0 C5 0 0 E5 0 0 D5 0 C5 0"},
+}
+local BBASS = {
+  b1 = {"A2 A2 0 A2 A2 0 A2 0 G2 G2 0 G2 G2 0 G2 0"}, b2 = {"D3 0 D3 0 D3 0 D3 0 C3 0 C3 0 C3 0 C3 0"},
+  b3 = {"E2 E2 0 E2 E2 0 E2 E2 D2 D2 0 D2 D2 0 D2 D2"}, b4 = {"A2 0 0 0 A2 0 0 0 F2 0 0 0 F2 0 0 0"},
+}
 local TUNES = {playroom = {parse(MEL), parse(BASS), 7}, market = {parse(MEL2), parse(BASS2), 6}, chalk = {parse(MEL3), parse(BASS3), 6}, stage = {parse(MEL4), parse(BASS4), 8}}
+for id, l in pairs(BMEL) do TUNES[id] = {parse(l), parse(BBASS[id]), id == "b4" and 8 or 5} end
 local mel, bass = TUNES.playroom[1], TUNES.playroom[2]
 
 M.on, M.t, M.step = false, 0, 0
@@ -40,9 +52,18 @@ function M.start(id)
   mel, bass, STEP = t[1], t[2], t[3]
   M.on, M.t, M.step = true, 0, 0
 end
+-- the victory jingle: a rising arpeggio and a held chord, played whatever the tune
+local JINGLE = {{0, "C5"}, {6, "E5"}, {12, "G5"}, {18, "C6"}, {30, "G5"}, {36, "C6"}, {48, "E6"}, {60, "G6"}}
+M.jt = nil
+function M.jingle() M.jt = 0 end
 function M.stop() if M.on then tone(0) tone(1) end M.on = false end
 
 function M.update()
+  if M.jt then
+    M.jt = M.jt + 1
+    for _, n in ipairs(JINGLE) do if n[1] == M.jt then tone(2, n[2], {wave = "square", duty = 0.25, vol = 0.22, decay = 0.35, sustain = 0}) end end
+    if M.jt > 80 then M.jt = nil end
+  end
   if not M.on then return end
   M.t = M.t + 1
   if M.t % STEP ~= 1 then return end

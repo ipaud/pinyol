@@ -41,7 +41,7 @@ function I.init()
   I.list, I.checkpoint, I.events, I.busy, I.flags, I.tick = {}, nil, {}, {}, {}, 0
   I.coins, I.creams, I.total_c, I.total_i = 0, 0, 0, 0
   for i, o in ipairs(M.objs) do
-    local it = {w = o.w or 96, locked = o.locked, kind = o.kind, x = o.x, y = o.y, i = i, t0 = (i * 7) % 60, t = (i * 7) % 60, taken = false, press = 0, on = false, tune = nil}
+    local it = {cos = o.kind:sub(1, 4) == "cos_", w = o.w or 96, locked = o.locked, kind = o.kind, x = o.x, y = o.y, i = i, t0 = (i * 7) % 60, t = (i * 7) % 60, taken = false, press = 0, on = false, tune = nil}
     I.list[i] = it
     if it.kind == "coin" then I.total_c = I.total_c + 1 elseif it.kind == "icecream" then I.total_i = I.total_i + 1
     elseif it.kind == "flag" then I.flags[#I.flags + 1] = it end
@@ -128,7 +128,7 @@ function I.update()
         I.events.scooter = true
         Fx.sparkle(it.x, it.y - 20, 0x60C0FF, 12)
         Snd.play("scooter")
-      elseif k:sub(1, 4) == "cos_" and not it.taken and dx < 36 and s.y > it.y - 80 and s.y < it.y + 16 then
+      elseif it.cos and not it.taken and dx < 36 and s.y > it.y - 80 and s.y < it.y + 16 then
         it.taken = true
         Hero.give(k:sub(5))
         I.events.costume = k:sub(5)
@@ -228,7 +228,7 @@ end
 -- a seesaw (a plank on a trestle, tilting when it throws) and a puddle (a flat pool), code-drawn until CI_SEESAW / CI_PUDDLE exist
 local function seesaw(it)
   local x, y = math.floor(it.x), math.floor(it.y)
-  if Deco.has("CI_SEESAW") then Deco.img("CI_SEESAW", it.press > 10 and 1 or (it.press > 0 and 2 or 0), x, y) return end
+  if Deco.has("CI_SEESAW") then Deco.img("CI_SEESAW", it.press > 0 and 1 or 0, x, y) return end -- left_down, right_down
   local tilt = it.press > 0 and 14 or 0
   tri(x - 12, y, x + 12, y, x, y - 24, 0x8A5A2C)
   poly({x - 64, y - 20 + tilt, x + 64, y - 20 - tilt, x + 64, y - 12 - tilt, x - 64, y - 12 + tilt}, 0xFF6A8A, true)
@@ -236,7 +236,11 @@ end
 
 local function puddle(it)
   local x, y = math.floor(it.x), math.floor(it.y)
-  if Deco.has("CI_PUDDLE") then Deco.img("CI_PUDDLE", (it.t // 14) % math.max(1, Deco.count("CI_PUDDLE")), x, y) return end
+  if Deco.has("CI_PUDDLE") then -- calm, ripple_0, ripple_1: the picture repeated along the puddle
+    local fr = (it.t // 14) % 3
+    for dx = -it.w // 2 + 34, it.w // 2 - 20, 60 do Deco.img("CI_PUDDLE", fr, x + dx, y) end
+    return
+  end
   rect(x - it.w // 2, y - 6, it.w, 6, 0x5A9AD8)
   rect(x - it.w // 2 + 10, y - 6, it.w // 3, 2, 0xB8E4FF)
 end
@@ -255,7 +259,10 @@ end
 
 local function peel(it)
   local x, y = math.floor(it.x), math.floor(it.y)
-  if Deco.has("FI_PEEL") then Deco.img("FI_PEEL", 0, x, y) return end
+  if Deco.has("FI_PEEL") then
+    for dx = -it.w // 2 + 25, it.w // 2 - 20, 46 do Deco.img("FI_PEEL", 0, x + dx, y) end
+    return
+  end
   rect(x - it.w // 2, y - 5, it.w, 5, 0xF2D43A)
   rect(x - it.w // 2 + 8, y - 8, it.w - 16, 3, 0xFFF080)
 end
@@ -311,7 +318,7 @@ function I.draw(cam_x)
       elseif k == "seesaw" then seesaw(it)
       elseif k == "drum" then drum(it)
       elseif k == "puddle" then puddle(it)
-      elseif k:sub(1, 4) == "cos_" then costume(it) end
+      elseif it.cos then costume(it) end
     end
   end
   carts(cam_x)

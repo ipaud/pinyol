@@ -82,6 +82,11 @@
       "id": "ritmo",
       "name": "Ritmo perfecto",
       "description": "Toca las cuatro notas de una ronda justo al compás."
+    },
+    {
+      "id": "paloma",
+      "name": "Doña Paloma Gorda",
+      "description": "Vence a Doña Paloma Gorda, la paloma gigante del parque de tiza."
     }
   ],
   "picture_budget_kb": 2400,

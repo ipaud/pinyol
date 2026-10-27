@@ -64,3 +64,11 @@ Performance design: ONE opaque layer only (FM_FAR, 150 px tall, 480 visible). Ev
 `FM_FAR` (far layer) is `art/w2/FM_FAR.png` 820x150, assets `FM_FAR_0..FM_FAR_5` (160 px columns), loops seamlessly (period 820).
 
 Check: `python3 gen/w2_verify.py` (nothing cut), `raw/w2_mock.png` is a composed mock of a market scene.
+
+## Polish round additions
+
+| asset | w x h | anchor | frames | use |
+|---|---|---|---|---|
+| FE_MELON | 94x55 | 47,52 | 16: walk_0, walk_1, walk_2, walk_3, walk_4, walk_5, walk_6, walk_7, roll_0, roll_1, roll_2, roll_3, roll_4, roll_5, hurt_0, def_0 | real melon foe: walk_0..7, roll_0..5 (loop), hurt_0, def_0 (split in two halves, wide cell). Anchor soles |
+| FI_PEEL | 50x30 | 25,27 | 2: peel, peel_shine | banana peel patch (replaces the code-drawn one): peel, peel_shine; stepping on it slips |
+| FT_PAD | 70x37 | 35,34 | 3: taut, press, squash | REPLACED: strong hot-pink/white awning pad with a yellow up arrow: taut, press, squash (same name, 3 frames, anchor bottom centre) |

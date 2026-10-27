@@ -63,6 +63,7 @@ function P.respawn()
   Foes.init()
   Fx.clear()
   Boss.retry()
+  Music.start(W.theme.music)
   Items.reset_costumes()
   Hero.reset(cp and cp.x or START_X, cp and cp.y or START_Y, true)
   Cam.snap(Hero.s)
@@ -91,8 +92,8 @@ local function events()
   end
   if L.vanished then Fx.dust(L.vanished[1], L.vanished[2], 6, 0, 2.2) L.vanished = nil end
   if fe.curl then Ach.earn("curl") end
-  if Boss.events.start then P.say(lang.tr(Boss.name()), 150) end
-  if Boss.events.beaten then Ach.earn(({"boss1", "boss2", "boss2", "silencio"})[P.world] or "boss1") P.say(lang.tr("toast_boss_down"), 220) end
+  if Boss.events.start then P.say(lang.tr(Boss.name()), 150) Music.start("b" .. P.world) end
+  if Boss.events.beaten then Music.stop() Music.jingle() Ach.earn(({"boss1", "boss2", "paloma", "silencio"})[P.world] or "boss1") P.say(lang.tr("toast_boss_down"), 220) end
   if he.ramp_fast then Ach.earn("ramp") end
   if he.land_hard then Cam.kick(4) end
   if he.bump or he.hurt then Cam.kick(10) end
@@ -158,6 +159,7 @@ function P.draw()
   Boss.draw(cx)
   Hero.draw()
   Fx.draw()
+  if D and D.hit_on then D.draw_hitboxes(cx) end
   camera()
   Bg.fore(cx, cy)
   Hud.draw(P)

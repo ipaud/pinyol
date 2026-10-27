@@ -54,3 +54,12 @@ Packed 8-bit, 32 colours; a strip in `pieces` is `<ID>_C<n>`. Total about 1.32 M
 | KT_FLOORCOL | 32x96 | 0,0 | 1 | floor column (32x96) |
 | KT_PAD | 70x47 | 35,44 | 3: taut, press, squash | bounce pad: drum skin taut / press / squash (anchor bottom centre) |
 | KT_TILES | 32x32 | 0,0 | 18: t0..t17 | 32x32 tiles t0..t17 (same layout as FT_/CT_): t0 white key top, t1 key front, t2 black key block, t3 speaker cube, t4 note case, t5 heart case, t6 plain flight case (stackable), t7 stage plank with lights, t8..t11 ramps a b c d (piano-key stripes), t12..t15 conveyor belt (4-frame animation), t16 belt left end, t17 belt right end |
+
+## Polish round additions
+
+| asset | w x h | anchor | frames | use |
+|---|---|---|---|---|
+| KT_FLOORKEY | 32x96 | 0,0 | 2: blackkey, pressed | 32x96 floor columns with a raised black key (blackkey) and a pressed key sunk (pressed): drop-in for KT_FLOORCOL |
+| KM_LIGHTS | 180x79 | 90,0 | 1: KM_LIGHTS | REPLACED: bigger light string (180x79, anchor top centre) |
+| KI_FLAG | 104x154 | 21,151 | 4: wave_0, wave_1, wave_2, wave_3 | REPLACED: 4 distinct waves wave_0..3 |
+| FX_BURST | 124x115 | 62,57 | 4: burst_0, burst_1, burst_2, burst_3 | stun burst effect for BOSS_SILENCIO: burst_0..3 (small flash, star ring, wide ring, fading sparkles), centre anchor 124x115 |

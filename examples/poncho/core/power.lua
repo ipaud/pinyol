@@ -1,4 +1,4 @@
--- power: the four costumes and what C does in each (a TAP of C, up to K.TAP ticks, is the power; holding C runs):
+-- power: the four costumes and what C does in each (the press of C is the power when standing or walking; running fast, a short tap of C; holding C runs):
 --   barretina (red cap)   a headbutt dash: breaks crates and beats any toy it touches
 --   dino (onesie)         C: breath of fire (beats paper planes and robots); DOWN in the air: a ground pound with a shock ring (beats toys around, breaks crates)
 --   boots (green)         C: a splash jump, once more in the air (a higher jump, beats toys it touches)
@@ -71,7 +71,7 @@ function P.update(s, down)
   if s.ground then s.boots_air = false end
   if not H.costume or s.scooter then s.pw = nil return end
   local pw = s.pw
-  if not pw and s.act and s.pw_cd == 0 then start(s) pw = s.pw end
+  if not pw and s.act and s.pw_cd == 0 then start(s) pw = s.pw s.want = 0 end
   if not pw and H.costume == "dino" and not s.ground and In.btnp("down") then
     s.pw = {kind = "pound", t = 0, len = 999}
     pw = s.pw

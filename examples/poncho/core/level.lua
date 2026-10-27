@@ -116,6 +116,23 @@ function L.hop(x, y)
   return false
 end
 
+-- the giant pigeon pecks the hopscotch squares (H / h) between x0 and x1 away; L.restore_hops puts them back
+function L.peck(x0, x1)
+  local n = 0
+  for c = math.max(0, math.floor(x0 / TILE)), math.min(COLS - 1, math.floor(x1 / TILE)) do
+    for r = 0, ROWS - 1 do
+      local ch = grid[r][c]
+      if ch == "H" or ch == "h" then grid[r][c] = " " n = n + 1 end
+    end
+  end
+  if n > 0 then L.rev = (L.rev or 0) + 1 end
+  return n
+end
+function L.restore_hops()
+  for _, p in ipairs(M.hops or {}) do grid[p[2]][p[1]] = "H" end
+  L.rev = (L.rev or 0) + 1
+end
+
 -- how far a body of this half width and height can go: is any of the body's edge points inside a solid tile
 function L.wall_x(x, y, half_w, h, dir)
   local px = x + dir * half_w
@@ -141,6 +158,7 @@ function L.break_crates(x0, y0, x1, y1)
         grid[r][c] = " " L.rev = (L.rev or 0) + 1
         n = n + 1
         L.broke_at[n] = {c * TILE + 16, r * TILE + 16}
+        require("core.fx").burst(c * TILE + 16, r * TILE + 16)
       end
     end
   end

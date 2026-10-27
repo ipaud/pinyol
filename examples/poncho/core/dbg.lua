@@ -65,6 +65,35 @@ function D.watch_hop()
   return true
 end
 function D.boss_meter() return require("core.boss").meter end
+-- the hitboxes, drawn over the world (under camera()): the hero's, every foe's in the window, the boss's, the carts; D.hitboxes(true) / (false)
+D.hit_on = false
+function D.hitboxes(on) D.hit_on = on ~= false return true end
+function D.draw_hitboxes(cam_x)
+  local x, y, w, h = Hero.box()
+  box(x, y, w, h, 0x00FF00)
+  for _, f in ipairs(Foes.list) do
+    if f.x > cam_x - 100 and f.x < cam_x + K.W + 100 then box(math.floor(f.x - f.w / 2), math.floor(f.y - f.h), f.w, f.h, 0xFF2020) end
+  end
+  local bx, by, bw, bh = require("core.boss").box()
+  if bx then box(math.floor(bx), math.floor(by), bw, bh, 0xFF00FF) end
+  for _, p in ipairs(L.plats) do box(math.floor(p.x), math.floor(p.y), p.w, 6, 0x00FFFF) end
+end
+function D.sloppy(on) require("core.bot").sloppy = on ~= false return true end
+-- do the boss's bar and keys, the status bar's counters and the toast keep clear of each other? (needs one frame drawn: a `shot`)
+function D.overlaps()
+  local rs = {}
+  for k, r in pairs(require("core.hud").rects) do rs[k] = r end
+  for k, r in pairs(require("core.boss").rects) do rs[k] = r end
+  local bad = {}
+  for a, ra in pairs(rs) do
+    for b, rb in pairs(rs) do
+      if a < b and ra[1] < rb[1] + rb[3] and rb[1] < ra[1] + ra[3] and ra[2] < rb[2] + rb[4] and rb[2] < ra[2] + ra[4] then bad[#bad + 1] = a .. "/" .. b end
+    end
+  end
+  return bad
+end
+function D.record(on) require("core.hud").record = on require("core.boss").record = on return true end
+function D.checkpoint(x, y) Items.checkpoint = {x = x, y = y or FLOOR} return true end
 function D.new_crates() L.reset_crates() Play.crates = 0 return true end
 function D.tile(c, r) return L.at(c, r) end
 function D.foe(kind, dx, range) local s = Hero.s return Foes.spawn(kind, s.x + dx, s.y, range or 8) ~= nil end
@@ -75,7 +104,7 @@ function D.bot(on) In.bot = on ~= false return true end
 function D.state()
   local s = Hero.s
   return {state = G.state, play = Play.state, x = math.floor(s.x), y = math.floor(s.y), vx = s.vx, vy = s.vy, ground = s.ground, scooter = s.scooter,
-          hs = s.state, hearts = Hero.hearts, costume = Hero.costume, pw = s.pw and s.pw.kind, fut = s.fut_t, crates = Play.crates, inv = s.inv, cp = Items.checkpoint and Items.checkpoint.x, time = Play.time, deaths = Play.deaths, cam = math.floor(Cam.x)}
+          hs = s.state, hearts = Hero.hearts, cd = s.pw_cd, costume = Hero.costume, pw = s.pw and s.pw.kind, fut = s.fut_t, crates = Play.crates, inv = s.inv, cp = Items.checkpoint and Items.checkpoint.x, time = Play.time, deaths = Play.deaths, cam = math.floor(Cam.x)}
 end
 
 -- a trace of the hero each tick of play, from x >= from
@@ -189,4 +218,41 @@ function D.foes_alive()
   return n
 end
 function D.coins() local c = Items.counts() return c end
+-- ticks from a press of C (standing, wearing the cap) to the power starting; and whether a press three ticks before the power rests fires it
+function D.tap_delay()
+  sim_begin()
+  D.tp(400) D.costume("barretina")
+  local s = Hero.s
+  local n = 0
+  step({c = true})
+  while not s.pw and n < 10 do step({}) n = n + 1 end
+  local started = s.pw ~= nil
+  sim_end()
+  return started and n or 99
+end
+function D.tap_buffer()
+  sim_begin()
+  D.tp(400) D.costume("barretina")
+  local s = Hero.s
+  step({c = true})
+  local n = 0
+  while not (s.pw == nil and s.pw_cd <= 3 and s.pw_cd > 0) and n < 120 do step({}) n = n + 1 end
+  step({c = true})            -- a press with the power still resting for three ticks
+  local fired = false
+  for _ = 1, 6 do step({}) if s.pw then fired = true end end
+  sim_end()
+  return fired
+end
+-- a hard landing raises dust
+function D.land_dust()
+  sim_begin()
+  D.tp(400, 150)
+  Fx.clear()
+  local n = 0
+  while not Hero.s.ground and n < 100 do step({}) n = n + 1 end
+  local c = Fx.count()
+  sim_end()
+  return c
+end
+
 return D

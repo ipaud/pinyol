@@ -1,0 +1,31 @@
+{
+  "asset": "CT_RAMP_RB",
+  "type": "background",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 20,
+  "w": 32,
+  "h": 32,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 4348,
+    "as_rgb565": 8192
+  }
+}

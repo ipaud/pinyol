@@ -49,3 +49,13 @@ Performance design: ONE opaque layer only (CM_FAR, 190 px tall). Everything else
 | CT_FLOORCOL | 32x96 | 0,0 | 1 | floor column top + 2 bodies (32x96) |
 | CT_PAD | 70x29 | 35,26 | 3: taut, press, squash | trampoline bounce pad: taut / press / squash (70x29, anchor bottom centre) |
 | CT_TILES | 32x32 | 0,0 | 18: t0..t17 | 32x32 tiles t0..t17 (same layout as FT_TILES): t0 pavement top (kerb + asphalt), t1 kerb body, t2..t5 chalk boxes (circle, star, heart, sun), t6 plain box (stackable), t7 hopscotch plank, t8..t11 ramps a b c d, t12..t15 conveyor belt (4-frame animation, arrows slide 8 px a frame), t16 belt left end, t17 belt right end |
+
+## Polish round additions
+
+| asset | w x h | anchor | frames | use |
+|---|---|---|---|---|
+| CT_HOP | 110x37 | 55,34 | 2: normal, cracked | hopscotch board object (chalk 1 2 3): normal, cracked (the cracked one when it breaks). Anchor bottom centre, 110x37 |
+| CT_RAMP_RB | 32x32 | 0,0 | 4: a, b, c, d | chalk-rainbow ramp tiles a b c d (same geometry as the ramps in CT_TILES t8..t11) |
+| CI_PUDDLE | 68x29 | 34,26 | 3: calm, ripple_0, ripple_1 | puddle item: calm, ripple_0, ripple_1 (play ripples when stepped in). Anchor bottom centre |
+| CI_SEESAW | 142x61 | 71,58 | 2: left_down, right_down | seesaw object: left_down, right_down (an object on the floor). Anchor bottom centre |
+| CE_PIGEON_PECK | 78x60 | 39,57 | 4: peck_0, peck_1, peck_2, peck_3 | pigeon peck frames peck_0..3 (separate strip: same scale as CE_PIGEON walk), anchor soles |
