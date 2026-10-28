@@ -68,11 +68,13 @@ A game is not finished until a perfect player can finish it. Tests that teleport
 prove that: four examples passed all their tests and could not be won (a key behind a one-way floor, a door that never opened, a boss that took
 no damage from the weapon). So:
 
-1. Give the game `tests/playtest.lua` (an adapter, docs/playtest.md): `progress()`, `done()`, `where()` and a `perfect()` player that plays the real
-   game with the game's own state (a solver or a BFS over the real map). Put `-- playtest-gate: win` on its second line: `ctest` (tests/playtest_gate.py)
-   then fails if that player ever stops finishing the game.
-2. `uv run tools/playtest.py games/<id>` plays 50 perfect and 50 imperfect bots (human-like at skill 0.1 to 0.9, and monkeys that mash buttons and open the
-   console's menu items) and writes a report of crashes, softlocks, flashing, where players die and how hard it is. Read it; fix what it finds.
+1. A Lua game made with `tools/new_game.py --lua` already has `tests/playtest.lua` (an adapter, docs/playtest.md) that finishes the template. Keep it true
+   as the game grows: `progress()`, `done()`, `where()` and a `perfect()` player that plays the real game with the game's own state (a solver or a BFS over
+   the real map). Its second line, `-- playtest-gate: win`, makes `ctest` (tests/playtest_gate.py) fail if that player ever stops finishing the game; an
+   example without one fails the gate too (the older ones are listed in tests/playtest/without_adapter.txt, which only shrinks).
+2. When the game is done, run `uv run tools/finish_game.py games/<id>`: 50 perfect and 50 imperfect bots (human-like at skill 0.1 to 0.9, and monkeys that
+   mash buttons and open the console's menu items). It prints PASS or FAIL and writes a report of crashes, softlocks, flashing, where players die and how hard
+   it is. A game is finished only on PASS. Read the report; fix what it finds. (`tools/playtest.py` is the same run without the verdict.)
 3. A level checker that is cheaper than the real physics (a reachability flood, a rule of thumb) is not proof: check the levels by playing them.
 
 What the bots found, so you do not write it again:

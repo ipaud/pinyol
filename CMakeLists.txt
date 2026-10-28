@@ -306,6 +306,11 @@ if(NOT NO_PIL)
            "import shutil, subprocess, sys; shutil.rmtree(sys.argv[1], True); subprocess.run([sys.executable, sys.argv[2], sys.argv[1], '--lua'], check=True)"
            ${CMAKE_BINARY_DIR}/template_lua ${CMAKE_CURRENT_SOURCE_DIR}/tools/new_game.py)
   set_tests_properties(new_lua_game PROPERTIES FIXTURES_SETUP lua_template)
+  if(TARGET pinyol_headless) # the template's adapter keeps a new game finishable: tools/finish_game.py on it must PASS
+    add_test(NAME template_finish_game COMMAND ${CMAKE_COMMAND} -E env PINYOL_HEADLESS=$<TARGET_FILE:pinyol_headless> ${Python3_EXECUTABLE}
+             ${CMAKE_CURRENT_SOURCE_DIR}/tools/finish_game.py ${CMAKE_BINARY_DIR}/template_lua --perfect 3 --imperfect 5 --workers 2 --out ${CMAKE_BINARY_DIR}/template_finish)
+    set_tests_properties(template_finish_game PROPERTIES FIXTURES_REQUIRED lua_template TIMEOUT 300)
+  endif()
   add_test(NAME make_tiled_game COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/make_tiled_game.py
            ${CMAKE_BINARY_DIR}/tiled)
   set_tests_properties(make_tiled_game PROPERTIES FIXTURES_SETUP tiled_game)

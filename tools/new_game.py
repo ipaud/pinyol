@@ -295,6 +295,8 @@ def main() -> None:
         if found:
             print(apply_look(game, *found))
         print(f"{game}: ready. Try it: ./build/pinyol_sim --game {game}  (then edit {game}/main.lua)")
+        if args.lua:
+            print(f"When it is done: uv run tools/finish_game.py {game}  (plays it 100 times; keep {game}/tests/playtest.lua true as the game grows)")
         return
     args.title = args.title or "Hola pinyol"
     for sub in ("assets", "fonts", "zones", "dialogues", "audio", "saves"):

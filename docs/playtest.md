@@ -1,5 +1,10 @@
 # Playtest: bots that play a finished game
 
+A game is finished when `uv run tools/finish_game.py games/mygame` says PASS: it plays the 50 + 50 games below and fails if the game has no adapter marked
+`-- playtest-gate: win` (or `survive`), if a perfect game does not end that way, if anything crashes or breaks an invariant, or if a seed does not repeat.
+`new_game.py --lua` writes a working adapter for the template; ctest keeps every example honest (tests/playtest_gate.py; the ones made before it are in
+tests/playtest/without_adapter.txt).
+
 ```sh
 uv run tools/playtest.py games/mygame                    # 50 perfect + 50 imperfect games -> ~/pinyol-playtests/mygame/report.md
 uv run tools/playtest.py examples/pozo --perfect 10 --imperfect 10 --workers 2
