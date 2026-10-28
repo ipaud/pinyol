@@ -147,7 +147,7 @@ function I.update()
         I.events.seesaw = true
         Snd.play("spring")
         Fx.dust(it.x + 50, it.y, 5, 1, 2)
-      elseif k == "drum" and s.vy >= 0 and dx < 40 and s.y >= it.y - 8 and s.y - s.vy <= it.y + 4 and s.y < it.y + 22 then
+      elseif k == "drum" and s.vy >= 0 and dx < 60 and s.y >= it.y - 26 and s.y - s.vy <= it.y + 4 and s.y < it.y + 22 then
         it.press = 14 busy(it) -- a drum pad: a big bounce when he lands on the beat, a small one off it
         s.y = it.y
         local on = Beat.near(5)
