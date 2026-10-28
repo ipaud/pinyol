@@ -126,7 +126,8 @@ def minutes(reached: dict[int, int]) -> int:
 
 
 def counts(hits: dict[str, int], gid: str) -> dict:
-    visits = sum(hits.get(f"{site}{lang}juegos/{gid}/", 0) for site in SITE_PATHS for lang in ("", "ca/", "en/"))
+    visits = sum(hits.get(f"{site}{lang}juegos/{gid}{end}", 0) for site in SITE_PATHS for lang in ("", "ca/", "en/")
+                 for end in ("", "/"))  # (GoatCounter keeps the path as the page sent it: with or without the last slash)
     reached = {m: hits.get(f"tiempo/{gid}/{m}", 0) for m in MILESTONES}
     return {"visits": visits, "plays": hits.get(f"partida/{gid}", 0), "minutes": minutes(reached)}
 
