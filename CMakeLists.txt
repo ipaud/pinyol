@@ -400,10 +400,10 @@ foreach(s ${SCRIPTS})
   endif()
 endforeach()
 # Cromota's own scripts (its rules, the tutorial's screens, a short play); --strict-assets: its art is packed. `humano` (6 min) and `partida`
-# (3 min), two bots playing whole paintings, are run by hand: examples/cromota/tests/
+# (3 min), two bots playing whole paintings, are run by hand: tests/games/cromota/tests/
 foreach(n reglas visual juego)
-  add_test(NAME cromota_${n} COMMAND pinyol_headless --game ${CMAKE_CURRENT_SOURCE_DIR}/examples/cromota
-           --saves ${CMAKE_BINARY_DIR}/saves_cromota_${n} --fresh --script ${CMAKE_CURRENT_SOURCE_DIR}/examples/cromota/tests/${n}.script
+  add_test(NAME cromota_${n} COMMAND pinyol_headless --game ${CMAKE_CURRENT_SOURCE_DIR}/tests/games/cromota
+           --saves ${CMAKE_BINARY_DIR}/saves_cromota_${n} --fresh --script ${CMAKE_CURRENT_SOURCE_DIR}/tests/games/cromota/tests/${n}.script
            --strict-assets --check-strips)
 endforeach()
 # text that cannot be read: a line the screen's edge cuts and a box that is too small fail --check-text (5); a slide = true text and a

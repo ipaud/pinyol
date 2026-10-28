@@ -52,7 +52,7 @@ HIGHLIGHTS = {"neogeo", "cps2", "32bits", "gba", "gameboy", "spectrum"}  # the h
 HERO_EXTRA = [("loading", "La pantalla de carga de un juego de ZX Spectrum"), ("32bits_boss", "El jefe calavera girando y creciendo")]
 
 # The other examples, playable too (id, title)
-OTHERS: list[tuple[str, str]] = [("cromota", "Cromota")]  # (a touch puzzle: not one of the twelve looks)
+OTHERS: list[tuple[str, str]] = []  # (a touch puzzle: not one of the twelve looks)
 # The demos not shown on the site (no page, no zip, not in the lists): to bring one back, move it to OTHERS
 HIDDEN_DEMOS = [
     ("selva", "Selva"), ("niebla", "Niebla"), ("recortes", "Recortes"), ("cajas", "Cajas"),

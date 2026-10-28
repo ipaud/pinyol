@@ -1,5 +1,15 @@
 [
  {
+  "id": "cromota",
+  "title": "Cromota",
+  "description": "Combina gotas de pigmento, mezcla colores y devuelve el color a tres obras maestras: La noche estrellada, La gran ola y Nenúfares. Táctil.",
+  "author": "ipaud",
+  "license": "CC BY 4.0",
+  "issue": 0,
+  "date": "2026-10-28",
+  "cover": true
+ },
+ {
   "id": "poncho_y_el_silencio",
   "title": "Poncho y el Patinete Loco",
   "description": "Plataformas de scroll lateral al estilo de los 16 bits: Poncho, un niño de tres años, patina por cuatro mundos (la sala de juegos, el mercado, el parque de tiza y el escenario del teclado), se disfraza para ganar poderes y acaba tocando el teclado al ritmo para vencer al Gran Silencio. En castellano, catalán e inglés.",
