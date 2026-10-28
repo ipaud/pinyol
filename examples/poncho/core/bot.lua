@@ -6,6 +6,7 @@ local Hero = require("core.hero")
 local Foes = require("core.foes")
 local In = require("core.input")
 local Boss = require("core.boss")
+local Items = require("core.items")
 
 local B = {}
 B.hold_a, B.rest, B.tap, B.cool = 0, 0, 0, 0
@@ -83,6 +84,9 @@ function B.step()
   if bi and bi.id == "silencio" and Boss.active() then silencio(s, bi, st) return end
   if bi and Boss.active() and bi.mode ~= "wait" and bi.mode ~= "dying" then boss_ai(s, bi, st) return end
   st.right = true
+  for _, f in ipairs(Items.flags) do -- past an open flag (a jump over it): turn back to it
+    if not f.locked and s.x > f.x + 20 then st.right, st.left = false, true end
+  end
   -- costumed: tap C (3 ticks) at a crate or a toy ahead (the power); otherwise hold C to run. Uncostumed: hold C
   if Hero.costume then
     -- how far ahead the ground is flat (a crate is not a step: the headbutt breaks it)
