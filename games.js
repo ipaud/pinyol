@@ -139,10 +139,13 @@ if (lib) {
   const decorate = card => {
     if (!games || card.querySelector('.react')) return;
     const id = card.dataset.id;
-    const parts = id && games[id] ? reactionChips(games[id]) : [];
-    const list = el('ul', { class: 'chips react', 'aria-label': W.reactionsOf },
+    const g = id && games[id];
+    const parts = g ? reactionChips(g) : [];
+    const played = g && g.plays ? [el('li', { class: 'chip' }, '▶ ' + num(g.plays) + ' ' + W.plays),
+                                   ...(g.minutes ? [el('li', { class: 'chip' }, '⏱ ' + time(g.minutes))] : [])] : [];
+    const list = el('ul', { class: 'chips react', 'aria-label': W.reactionsOf }, ...played,
       ...(parts.length ? parts.map(([e, n]) => el('li', { class: 'chip like' }, e + ' ' + num(n)))
-                       : [el('li', { class: 'chip quiet' }, W.noReactions)]));
+                       : played.length ? [] : [el('li', { class: 'chip quiet' }, W.noReactions)]));
     (card.querySelector('.chips') || card.querySelector('.row')).after(list);
   };
   const scan = () => {

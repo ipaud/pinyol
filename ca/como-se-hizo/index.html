@@ -20,7 +20,7 @@
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css?v=abc9c027">
 <script src="../../site.js?v=b718360e" defer></script>
-<script src="../../games.js?v=17183748" defer></script>
+<script src="../../games.js?v=d276c3b9" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script>
 </head>
 <body>
@@ -36,7 +36,7 @@
 </div></section>
 <section id="making" aria-labelledby="making-t"><div class="wrap">
 <h2 id="making-t" class="sr">En xifres</h2>
-<ul class="stats reveal"><li><b data-count="23643" data-dec="0">23.643</b><span>línies de C al motor</span></li><li><b data-count="17" data-dec="0">17</b><span>jocs d'exemple</span></li><li><b data-count="278" data-dec="0">278</b><span>proves a cada canvi</span></li><li><b data-count="577" data-dec="0">577</b><span>commits al repositori</span></li></ul>
+<ul class="stats reveal"><li><b data-count="23643" data-dec="0">23.643</b><span>línies de C al motor</span></li><li><b data-count="17" data-dec="0">17</b><span>jocs d'exemple</span></li><li><b data-count="279" data-dec="0">279</b><span>proves a cada canvi</span></li><li><b data-count="581" data-dec="0">581</b><span>commits al repositori</span></li></ul>
 <div class="story">
 <p><strong>Una persona i Claude.</strong> El motor, els exemples, les eines i aquest web es van escriure parlant amb Claude Code: cada idea es provava al simulador, es mesurava a la placa i es corregia segons el que deia la placa.</p>
 <p><strong>L'art, generat i encaixat.</strong> Els aspectes que ho demanen (Neo Geo, CPS2, 32 bits) fan servir imatges generades amb IA. Les eines del motor les retallen, les escalen a l'alçada justa, en separen els fotogrames i les redueixen a la paleta de la consola. Els aspectes de baixa resolució es dibuixen amb codi.</p>
@@ -56,7 +56,7 @@
 <p class="kicker pixel">ESP32-S3R8 · 240 MHz · PSRAM octal a 80 MHz · pantalla QSPI a 80 MHz</p>
 <h2 id="perf-t">Mesurat a la consola, no promès</h2>
 <p class="intro">Cada xifra d'aquesta secció surt de la placa: un firmware que juga sol seguint un guió i escriu una línia de rendiment per segon, o un banc de proves que repeteix cada escena cinc vegades. Sense emulador. A 60 fps, cada fotograma dura 16,6 ms.</p>
-<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli a l'escena més pesada: capa afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un fotograma sencer al panell; només el cable ja en són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so d'un joc senzill; amb música en capes, fins al 18 %</span></li><li><b><span data-count="278" data-dec="0">278</span><small></small></b><span>proves que juguen soles i comparen cada fotograma, a cada canvi</span></li></ul>
+<ul class="stats perf-stats reveal"><li><b><span data-count="71" data-dec="0">71</span><small>%</small></b><span>d'un nucli a l'escena més pesada: capa afí, quatre capes i 128 sprites</span></li><li><b><span data-count="8.1" data-dec="1">8,1</span><small>ms</small></b><span>per enviar un fotograma sencer al panell; només el cable ja en són 7,7</span></li><li><b><span data-count="3" data-dec="0">3</span><small>%</small></b><span>d'un nucli per al so d'un joc senzill; amb música en capes, fins al 18 %</span></li><li><b><span data-count="279" data-dec="0">279</span><small></small></b><span>proves que juguen soles i comparen cada fotograma, a cada canvi</span></li></ul>
 <figure class="chart reveal" id="chart-looks">
 <figcaption><h3>Dotze aspectes, en fotogrames per segon</h3>
 <p>El segon més lent i el més ràpid de cada exemple jugat a la consola. En gris, la primera mesura, abans d'optimitzar.</p></figcaption>
