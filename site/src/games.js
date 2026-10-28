@@ -139,10 +139,13 @@ if (lib) {
   const decorate = card => {
     if (!games || card.querySelector('.react')) return;
     const id = card.dataset.id;
-    const parts = id && games[id] ? reactionChips(games[id]) : [];
-    const list = el('ul', { class: 'chips react', 'aria-label': W.reactionsOf },
+    const g = id && games[id];
+    const parts = g ? reactionChips(g) : [];
+    const played = g && g.plays ? [el('li', { class: 'chip' }, '▶ ' + num(g.plays) + ' ' + W.plays),
+                                   ...(g.minutes ? [el('li', { class: 'chip' }, '⏱ ' + time(g.minutes))] : [])] : [];
+    const list = el('ul', { class: 'chips react', 'aria-label': W.reactionsOf }, ...played,
       ...(parts.length ? parts.map(([e, n]) => el('li', { class: 'chip like' }, e + ' ' + num(n)))
-                       : [el('li', { class: 'chip quiet' }, W.noReactions)]));
+                       : played.length ? [] : [el('li', { class: 'chip quiet' }, W.noReactions)]));
     (card.querySelector('.chips') || card.querySelector('.row')).after(list);
   };
   const scan = () => {
@@ -152,7 +155,7 @@ if (lib) {
       const id = zip && (zip.getAttribute('href').match(/\/library\/([a-z0-9_-]{1,40})\/game\.zip$/) || [])[1];
       const title = (card.querySelector('h3') || {}).textContent || id;
       if (id) card.dataset.id = id;
-      if (id && pages.has(id)) zip.after(' ', el('a', { class: 'sheet-link stretch', href: sheetUrl(id), 'aria-label': W.sheetX(title) }, W.sheet));
+      if (id && pages.has(id)) zip.after(' ', el('a', { class: 'sheet-link', href: sheetUrl(id), 'aria-label': W.sheetX(title) }, W.sheet));
     }
     for (const card of lib.querySelectorAll('.cart[data-id]')) decorate(card);
   };
