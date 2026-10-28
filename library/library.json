@@ -1,5 +1,15 @@
 [
  {
+  "id": "maqueta",
+  "title": "MAQUETA",
+  "description": "Verano de 2004: una caja de ritmos en el desván de tu abuela y una cinta a medias. Haz música con tus manos, de tu cuarto al estudio más grande, y termina la canción. Ritmo 88, bajo ácido, sampler, mesa, rack, un teclado con arpegiador y un sinte de lead con glide; todo suena sintetizado en vivo.",
+  "author": "ipaud",
+  "license": "CC BY 4.0",
+  "issue": 17,
+  "date": "2026-10-28",
+  "cover": true
+ },
+ {
   "id": "time_fighters",
   "title": "Plasma Heroes",
   "description": "Puzzle arcade de combates entre figuras de la cultura. Organiza el plasma por colores, detonalo y envia ataques al rival. Version 2.0.2: 19 personajes, Arcade de 7 rivales mas Tesla, versus local, Clasico y Ultimate, tutorial, galeria y records; canciones completas.",
