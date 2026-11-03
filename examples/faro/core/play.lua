@@ -176,9 +176,8 @@ function P.update()
   if (lv.water and b.y > lv.water + 14) or (lv.sea and b.y > lv.sea) then
     S.at("SPLASH", b.x)
     P.hook("wet")
-    respawn()
-    hurt(b.x + 1, "water")
-    s.hurt = C.INVULN
+    respawn() -- a soaking and the climb back costs time, not warmth: the cistern is for learning the barrels
+    s.hurt = C.INVULN - 20
   end
   for _, g in ipairs(lv.gears or {}) do
     if gear_hit(g, b) then hurt(g.x, "gear") S.at("GEAR", g.x) end

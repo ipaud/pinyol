@@ -15,8 +15,8 @@ Pau said to make it without asking: every decision below was taken here, one lin
 - **Cover**: the title screen (the lighthouse dark in the storm, the title), `tools/cover.py` at a moment chosen by hand.
 - **Where it lives**: the card and the web demo (es/ca/en, cover, test). 2.3 MB packed pictures, about 0.9 MB of sound.
 - **Play**: a platformer by floors, four floors and the lantern room, 2-5 minutes. ‹ › walk, A (or up) jumps, B (or C) held raises the
-  lantern (slower walk, no jumping, burns oil that refills when lowered). Four warmths (flames), three matches (a match lost = the floor again;
-  none = game over). Floors: 1 the boats (tutorial, 1 ánima), 2 the cistern (water below, barrels that bob, 2 ánimas), 3 the clockwork
+  lantern (slower walk, no jumping, burns oil that refills when lowered). Five warmths (flames), three matches (a match lost = the floor again;
+  none = game over); an oil can gives one warmth back, each wick lit at the top all of them; falling in the cistern costs time, not warmth. Floors: 1 the boats (tutorial, 1 ánima), 2 the cistern (water below, barrels that bob, 2 ánimas), 3 the clockwork
   (gears turning as quads, 3 ánimas, 2 needed), 4 the gallery outside (rain, gusts of wind every 7 s, ánimas from the sea that go off by
   themselves), 5 the lantern room (take fire from a pilot flame, carry it up to the lamp, three wicks, tentacles burst up where you stand).
 - **The era's trick shown**: light and transparency on what moves (ánimas alpha 0.55; calm ones add their light; `light()` for the lantern,
@@ -31,6 +31,8 @@ Pau said to make it without asking: every decision below was taken here, one lin
 - **Achievements** (7): primera, seca, abrigada, todas, faro, alba, curiosa. **Record**: the best time (`store("best")`).
 - **Demo**: after 15 s on the title the game's own bot plays a floor. **Bot**: `core/bot.lua` on `core/route.lua` (jumps flown ahead with
   Estel's own body); the playtest adapter is `tests/playtest/faro.lua`, `-- playtest-gate: win`.
+- **Tuned with the playtest bots** (`tools/finish_game.py`): perfect 50/50; human-like 0% under skill 0.5, 30% at 0.5-0.7, 90% at 0.7-1.0; the
+  lantern room is where most games end (the last boss), then the clockwork's gears.
 - **reduce_flashing**: lightning brightens the room to a third as much; a lightning is one flash every 7-13 s, never a strobe.
 - **Not done here (needs the board)**: fps, the cost of `distort(screen = true)` (not measured on the console yet), crt's cost, the
   quads' and lights' budget in the lantern room.
