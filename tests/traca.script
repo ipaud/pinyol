@@ -1,0 +1,179 @@
+# Traca: the title, a game, the arrows read turned, a lantern shot down, the powder bag shot to another colour and caught, a ring of
+# bullets in a swarm, the traca (bomb) clearing them into points, a hit, the shield, grazes, a stage cleared without a scratch, the bell
+# tower's bell rung and silenced, the clouds, the stars, the cardboard moon in its three moods, its fall and the palmera, the record, the
+# title playing by itself, "Cómo funciona" (its four pages, from the console's menu), a continue, the end, reduce_flashing and the languages.
+tick 30
+expect_lua state == "title"
+shot traca_titulo
+press A
+tick 2
+expect_lua state == "play" and P.stage == 1 and P.lives == 3 and P.score == 0 and P.credits == 2
+# the arrows as the console is held: its RIGHT takes the rocket up, its DOWN to the right
+lua x0, y0 = P.me.x, P.me.y
+hold RIGHT 20
+expect_lua P.me.y < y0 - 20 and P.me.x == x0
+hold DOWN 20
+expect_lua P.me.x > x0 + 20
+hold LEFT 20
+hold UP 20
+# a lantern right above: shot down, 100 points, the first achievement
+lua P.foes = {} P.wave_i = 99 P.orbs:clear() f = require("foes").spawn(P, "lantern", P.me.x, P.me.y - 60, {vy = 0}) f.fire = 9999 s0 = P.score
+hold A 40
+expect_lua P.kills == 1 and P.score >= s0 + 100 and achievements()[1].done == true
+shot traca_disparo
+# the bag of powder: a shot turns it to the next colour; caught green, it is one more traca
+lua P.pickups = {} P.drop(P.me.x, P.me.y - 40)
+tick 12
+hold A 6
+tick 2
+expect_lua P.pickups[1].colour == 2
+lua P.pickups[1].x, P.pickups[1].y = P.me.x, P.me.y b0 = P.bombs
+tick 2
+expect_lua P.bombs == b0 + 1 and P.colours[2] == true
+# a ring of forty bullets: one swarm moves them all
+lua P.ring(P.orbs, 80, 50, 40, 0.4)
+tick 10
+expect_lua (#P.orbs) == 40
+shot traca_balas
+# the traca: the bullets go, each worth 10 points, a string of bangs climbs the sky
+lua s0, b0 = P.score, P.bombs
+press C
+tick 2
+expect_lua (#P.orbs) == 0 and P.score >= s0 + 400 and P.bombs == b0 - 1 and P.traca ~= nil and achievements()[2].done == true
+tick 20
+shot traca_traca
+tick 50
+expect_lua P.traca == nil
+# a bullet on the rocket's heart: a life gone, and back after a moment, safe for a while
+lua P.me.safe = 0 P.orbs:add(P.me.x, P.me.y, 0, 0)
+tick 2
+expect_lua P.lives == 2 and P.mode == "dying"
+tick 80
+expect_lua P.mode == "play" and P.me.safe > 0
+# the blue powder's shield takes one hit instead
+lua P.shield = true P.me.safe = 0 P.orbs:add(P.me.x, P.me.y, 0, 0)
+tick 2
+expect_lua P.lives == 2 and P.shield == false and P.me.safe > 0
+# grazes: bullets that pass close light the fuse and count for "by a whisker"
+lua P.me.safe = 0 P.graze = 590 P.orbs:add(P.me.x + 5, P.me.y, 0, 0)
+tick 12
+expect_lua P.graze >= 600 and P.lives == 2
+lua P.orbs:clear()
+# the stage's end without a scratch: a bonus and its achievement, then the bell tower
+lua P.hit_in_stage = false P.foes = {} P.sc = 1150 s0 = P.score
+tick 3
+expect_lua P.mode == "clear" and P.score >= s0 + 5000
+shot traca_tramo
+tick 160
+expect_lua P.stage == 2 and P.mode == "play"
+tick 200
+shot traca_campanario
+# the belfry comes into view: the climb stops and the bell rings rings of orbs; shot quiet, the climb goes on
+lua P.wave_i = 99 P.foes = {} P.sc = require("stages").BELFRY + 20
+tick 40
+expect_lua P.bell ~= nil and P.hold == true
+tick 50
+shot traca_campana
+lua P.bell.hp = 3 P.me.x = P.bell.x P.me.safe = 600
+hold A 50
+expect_lua P.bell == nil and P.hold == false and achievements()[3].done == true
+# the clouds and the stars
+lua P.begin_stage(3) P.me.safe = 600
+tick 300
+shot traca_nubes
+lua P.begin_stage(4) P.me.safe = 600
+tick 400
+shot traca_estrellas
+# the cardboard moon: it comes down on its strings, smiling; cross; patched up
+lua P.begin_stage(5) P.wave_i = 99 P.sc = 110 P.me.safe = 3000
+tick 2
+expect_lua P.boss ~= nil and P.hold == true
+tick 150
+shot traca_luna
+lua P.boss.hp = 900
+tick 120
+expect_lua P.boss.phase == 2
+shot traca_luna_enfadada
+lua P.boss.hp = 300
+tick 120
+expect_lua P.boss.phase == 3
+shot traca_luna_tirita
+# beaten: it falls, the real moon is behind, and the rocket bursts as the palmera
+lua P.boss.hp = 1 P.me.x = P.boss.x
+hold A 45
+expect_lua P.boss.fall == true
+tick 150
+expect_lua P.mode == "finale"
+tick 90
+shot traca_palmera
+tick 60
+shot traca_palmera2
+tick 200
+expect_lua state == "won" and achievements()[7].done == true and stored("high", 0) == P.score
+shot traca_fin
+tick 130
+press A
+tick 3
+expect_lua state == "title"
+# the title plays by itself, and any button stops it
+tick 610
+expect_lua state == "demo"
+tick 700
+shot traca_demo
+press B
+tick 3
+expect_lua state == "title"
+# "Cómo funciona": the console's menu, its item, four pages, back with B where it was
+press MENU
+tick 3
+expect_menu open
+press DOWN
+press A
+tick 4
+expect_lua state == "how" and achievements()[8].done == true
+tick 200
+shot traca_como1
+press A
+hold RIGHT 10
+shot traca_como2
+press A
+tick 120
+shot traca_como3
+press A
+tick 10
+shot traca_como4
+press B
+tick 3
+expect_lua state == "title"
+# a game lost: the last life asks for a credit, which goes on from there at nought
+press A
+tick 30
+lua P.lives = 1 P.me.safe = 0 P.orbs:add(P.me.x, P.me.y, 0, 0)
+tick 3
+expect_lua P.mode == "continue"
+tick 60
+shot traca_continuar
+press A
+tick 20
+expect_lua P.lives == 3 and P.credits == 1 and P.score == 0 and P.mode == "play"
+lua P.lives = 1 P.credits = 0 P.me.safe = 0 P.orbs:add(P.me.x, P.me.y, 0, 0)
+tick 3
+expect_lua state == "over"
+shot traca_gameover
+tick 130
+press A
+tick 3
+expect_lua state == "title"
+# reduce_flashing: the title's words stop blinking
+settings flash less
+expect_lua calm() == true
+tick 40
+shot traca_calma
+settings flash normal
+# the languages
+lua require("lang").set("ca")
+expect_lua require("lang").tr("press") == "PREM A" and require("lang").tr("stage_2") == "EL CAMPANAR"
+lua require("lang").set("en")
+expect_lua require("lang").tr("won") == "WHAT A BANG!"
+lua require("lang").set("es")
+expect_ok

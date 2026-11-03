@@ -1,0 +1,27 @@
+{
+  "asset": "BG_FACADE_R",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 26,
+  "h": 96,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2902,
+    "as_rgb565": 9984
+  }
+}

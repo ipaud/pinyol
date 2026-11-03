@@ -1,0 +1,20 @@
+{
+  "id": "traca",
+  "title": "Traca",
+  "subtitle": "Recreativa vertical",
+  "look": "vertical",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "pinyol examples",
+  "description": "Un cohete de fuegos artificiales sube por el cielo de una noche de fiestas para estallar en la palmera final, entre farolillos, murciélagos, globos de feria y cohetes borrachos que escupen chispas. Una recreativa de pantalla vertical: se juega con la consola de pie.",
+  "achievements": [
+    {"id": "farolillo", "name": "Farolillo apagado", "description": "Derriba tu primer farolillo de papel."},
+    {"id": "traca", "name": "¡Traca!", "description": "Enciende una traca y limpia el cielo de chispas."},
+    {"id": "campana", "name": "Silencio en el campanario", "description": "Haz callar la campana del campanario."},
+    {"id": "colores", "name": "Pólvora de colores", "description": "Coge pólvora roja, verde y azul en una partida."},
+    {"id": "roce", "name": "Por los pelos", "description": "Roza 600 balas en una partida."},
+    {"id": "intacto", "name": "Sin un rasguño", "description": "Supera un tramo de cielo sin que te toquen."},
+    {"id": "palmera", "name": "La palmera final", "description": "Gana a la luna de cartón y estalla en la palmera."},
+    {"id": "curioso", "name": "Curioso", "description": "Mira en «Cómo funciona» por qué la pantalla está de pie."}
+  ]
+}

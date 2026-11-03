@@ -1,0 +1,29 @@
+{
+  "asset": "SPR_ROCKET",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 12,
+  "w": 9,
+  "h": 22,
+  "frames": 3,
+  "frame_ms": [
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 435,
+    "as_rgb565": 1188
+  }
+}

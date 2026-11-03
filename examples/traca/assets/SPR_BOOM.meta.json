@@ -1,0 +1,31 @@
+{
+  "asset": "SPR_BOOM",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 6,
+  "w": 17,
+  "h": 17,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 824,
+    "as_rgb565": 2312
+  }
+}
