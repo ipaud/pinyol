@@ -29,7 +29,7 @@ function V.init()
   palette("OBJ", true)
   face_sheet = sheet("FACE")
   local base, normals = {}, {}
-  for _, s in ipairs(require("gen.face")) do base[s.entry], normals[s.entry] = s.colour, s.normal end
+  for _, s in ipairs(require("data.face")) do base[s.entry], normals[s.entry] = s.colour, s.normal end
   lamp = palette_light.new({bank = 0, obj = true, base = base, normals = normals, ambient = 0.28})
 end
 

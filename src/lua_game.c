@@ -338,6 +338,12 @@ static int load_chunk(lua_State *L, const char *rel) { /* pushes the compiled ch
 static int l_require(lua_State *L) {
     const char *mod = luaL_checkstring(L, 1);
     if (!safe_name(mod)) return luaL_error(L, "require: bad module name '%s'", mod);
+    static const char *const off[] = {"gen", "raw", "docs", "art"}; /* never sent to the console (firmware, board_perf): refused here too */
+    for (size_t i = 0; i < sizeof off / sizeof *off; i++) {
+        const size_t n = strlen(off[i]);
+        if (!strncmp(mod, off[i], n) && mod[n] == '.')
+            return luaL_error(L, "require '%s': %s/ stays on the computer (the console never gets it); put what the game reads in data/", mod, off[i]);
+    }
     lua_getfield(L, LUA_REGISTRYINDEX, "pinyol.loaded");
     lua_getfield(L, -1, mod);
     if (!lua_isnil(L, -1)) return 1;

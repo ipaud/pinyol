@@ -4,7 +4,7 @@
 # ///
 """El Celler's art, all drawn here by code, in the way a 1992 PC raycaster's was painted pixel by pixel.
 
-    uv run examples/celler/art.py      # art/*.png, assets/ and gen/face.lua
+    uv run examples/celler/art.py      # art/*.png, assets/ and data/face.lua
 
 - Walls: 64x64 textures (raycast() wraps each across a square of wall): rock, the brick vault, bottle racks "en rima",
   barrel heads, riddling racks (pupitres), a wooden door and its jamb, two iron gates, a lever off and on, the stairs
@@ -15,7 +15,7 @@
 - The hands at the bottom of the view (the cork gun and the lantern) and the status bar's icons: packed pictures.
 - The status bar: a tile layer of the picture processor, and the night watchman's face, an indexed sprite whose
   palette entries are surfaces (forehead, cheeks, nose, chin...): lib/light turns them towards the lantern's flame.
-  gen/face.lua says which entry is which surface.
+  data/face.lua says which entry is which surface.
 - The dawn at the end: a height map and a colour map of the vineyards and the mountain, for voxels().
 """
 from __future__ import annotations
@@ -32,7 +32,7 @@ from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-ART, ASSETS, GEN = HERE / "art", HERE / "assets", HERE / "gen"
+ART, ASSETS, DATA = HERE / "art", HERE / "assets", HERE / "data"  # (data/: read by the game; gen/ stays off the console)
 T = 64  # wall texture side
 S = 32  # thing side
 
@@ -671,7 +671,7 @@ def convert(png: str, aid: str, *opts: str) -> None:
 
 
 def face_palette() -> None:
-    """Which entry of OBJ.pal each surface of the face got: gen/face.lua, for lib/light."""
+    """Which entry of OBJ.pal each surface of the face got: data/face.lua, for lib/light."""
     raw = (ASSETS / "OBJ.pal").read_bytes()
     vals = list(struct.unpack(f"<{len(raw) // 2}H", raw))
 
@@ -683,8 +683,8 @@ def face_palette() -> None:
         e = vals.index(p565(key_colour(i)))
         lines.append(f"  {{entry = {e}, name = \"{name}\", colour = 0x{flat[0]:02X}{flat[1]:02X}{flat[2]:02X}, normal = {{{normal[0]}, {normal[1]}, {normal[2]}}}}},")
     lines.append("}")
-    GEN.mkdir(exist_ok=True)
-    (GEN / "face.lua").write_text("\n".join(lines) + "\n")
+    DATA.mkdir(exist_ok=True)
+    (DATA / "face.lua").write_text("\n".join(lines) + "\n")
 
 
 def main() -> None:

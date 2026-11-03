@@ -30,6 +30,10 @@ function _update() end    -- 60 times a second: input, movement, rules
 function _draw() end      -- before each frame: scroll, sprites, text
 ```
 
+`require` takes the game's own modules (`require("core.hero")` is core/hero.lua); `gen/`, `raw/`, `docs/` and `art/`
+are the computer's (made art, tools, sources) and never reach the console, so `require` refuses them everywhere: what the
+game reads goes in `data/` or beside main.lua.
+
 `_draw` may run before the first `_update` (on the console a slow start brings a frame first, and `--validate` draws
 one to check the pictures it asks for): make in `_init` what `_draw` reads, never only in `_update`.
 
