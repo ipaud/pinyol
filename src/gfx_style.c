@@ -127,6 +127,21 @@ static inline __attribute__((always_inline)) void line_along(uint16_t *d, int st
 static inline __attribute__((always_inline)) void line_along2(uint16_t *d, uint16_t *e, int step, const uint16_t *srow,
                                                               const uint8_t *mrow, int32_t u, int32_t du, int n, int32_t wf,
                                                               bool swap) {
+    if (!mrow && (du == 32768 || du == -32768)) { /* twice as big with no mask (a full canvas turned on its side): the part of the
+                                                   * line inside the row found once, each source pixel read once for its two steps */
+        int k = 0;
+        for (; k < n && (uint32_t)u >= (uint32_t)wf; k++) u += du, d += step, e += step;
+        int end = k;
+        for (int32_t v = u; end < n && (uint32_t)v < (uint32_t)wf; end++) v += du;
+        while (k < end) {
+            const int iu = u >> 16;
+            uint16_t c = srow[iu];
+            if (swap) c = (uint16_t)(c << 8 | c >> 8);
+            *d = *e = c, k++, u += du, d += step, e += step;
+            if (k < end && (u >> 16) == iu) *d = *e = c, k++, u += du, d += step, e += step;
+        }
+        return;
+    }
     for (int k = 0; k < n; k++, u += du, d += step, e += step) {
         if ((uint32_t)u >= (uint32_t)wf) continue;
         int iu = u >> 16;
