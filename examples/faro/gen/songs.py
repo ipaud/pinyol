@@ -64,10 +64,10 @@ def titulo():
     s.track("acc", 0, 21, 96, -0.1, 50).track("gtr", 1, 24, 84, 0.3, 40).track("bass", 2, 32, 110, 0, 30)
     s.track("str", 3, 48, 58, -0.35, 60).track("fl", 4, 73, 80, 0.25, 60).track("bell", 5, 14, 70, 0.1, 70).track("kit", 9, 0, 70)
     s.part("intro", 4, bell="D5:8 | r:8 | A4:8 | r:8 |", str=comp([("Dm", 16), ("A7", 16)], "x-------", "A3", "F5"),
-           gtr=comp([("Dm", 16), ("A7", 16)], HAB_GUIT, "D3", "A4", 4, 8), kit=rep("....n...", 3, "...nn.n."))
-    s.part("A", 8, acc=HAB_A, gtr=comp(HAB_PA, HAB_GUIT, "D3", "A4", 4, 8), bass=bassline(HAB_PA, HAB_BASS, "A1", 8),
+           gtr=comp([("Dm", 16), ("A7", 16)], HAB_GUIT, "D3", "A4", 3, 8), kit=rep("....n...", 3, "...nn.n."))
+    s.part("A", 8, acc=HAB_A, gtr=comp(HAB_PA, HAB_GUIT, "D3", "A4", 3, 8), bass=bassline(HAB_PA, HAB_BASS, "A1", 8),
            str=comp(HAB_PA, "x-------", "A3", "F5", 3, 8), kit=rep("k...n.n.", 8))
-    s.part("B", 8, fl=HAB_B, acc=transpose(HAB_B, -12), gtr=comp(HAB_PB, HAB_GUIT, "C3", "A4", 4, 8), bass=bassline(HAB_PB, HAB_BASS, "A1", 8),
+    s.part("B", 8, fl=HAB_B, acc=transpose(HAB_B, -12), gtr=comp(HAB_PB, HAB_GUIT, "C3", "A4", 3, 8), bass=bassline(HAB_PB, HAB_BASS, "A1", 8),
            str=comp(HAB_PB, "x-------", "A3", "F5", 3, 8), kit=rep("k...n.n.", 8, "k..nn.nn"))
     return s.form(["intro"], ["A", "B"])
 
@@ -81,9 +81,9 @@ def fin():
     major_a = bars("A4:3 D5:1 F#5:2 E5:2", "D5:6 A4:2", "C#5:3 D5:1 E5:2 G5:2", "F#5:4 E5:4",
                    "E5:3 F#5:1 G5:2 B5:2", "A5:6 F#5:2", "G5:3 F#5:1 E5:2 C#5:2", "D5:8")
     pa = [("D", 8), ("D", 8), ("A7", 8), ("A7", 8), ("A7", 8), ("D", 8), ("G", 4), ("A7", 4), ("D", 8)]
-    s.part("B", 8, fl=HAB_B, gtr=comp(HAB_PB, HAB_GUIT, "C3", "A4", 4, 8), bass=bassline(HAB_PB, HAB_BASS, "A1", 8),
+    s.part("B", 8, fl=HAB_B, gtr=comp(HAB_PB, HAB_GUIT, "C3", "A4", 3, 8), bass=bassline(HAB_PB, HAB_BASS, "A1", 8),
            str=comp(HAB_PB, "x-------", "A3", "F5", 3, 8), mb=transpose(HAB_B, 12))
-    s.part("A", 8, acc=major_a, gtr=comp(pa, HAB_GUIT, "D3", "A4", 4, 8), bass=bassline(pa, HAB_BASS, "A1", 8),
+    s.part("A", 8, acc=major_a, gtr=comp(pa, HAB_GUIT, "D3", "A4", 3, 8), bass=bassline(pa, HAB_BASS, "A1", 8),
            str=comp(pa, "x-------", "A3", "F#5", 3, 8), mb=arp(pa, [0, 1, 2, 3], "A5", "F#6", 2, 3))
     return s.form([], ["B", "A"])
 
@@ -191,7 +191,7 @@ def helada():
     return s.form(["a"], [])
 
 
-LEVELS: dict[str, float] = {"titulo": 1.0, "fin": 1.0, "torre": 1.05, "maquina": 1.0, "tormenta": 0.8, "pop": 0.75, "planta": 1.0, "helada": 1.1}
+LEVELS: dict[str, float] = {"titulo": 1.0, "fin": 1.0, "torre": 1.2, "maquina": 1.3, "tormenta": 1.05, "pop": 1.0, "planta": 1.1, "helada": 1.4}
 
 
 def make(name: str) -> Song:
