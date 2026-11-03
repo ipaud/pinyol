@@ -27,5 +27,15 @@ expect_lua r3 == 0 and b3 > 0
 lua view(3.5, 1.5, 90, {{x = 3, y = 2, open = 0}, {x = 99, y = 99}}, 0xFF0000)
 lua r3, g3, b3 = rgb(120, 68)
 expect_lua g3 > 0 and r3 == 0 and b3 == 0
+# fog_colour: past the fog's reach a wall is that colour, not black (the far wall 2.5 away, fog 2); none: black as before
+lua raycast("VIEW", {map = MAP, walls = WALLS, x = 3.5, y = 1.5, angle = 90, doors = {{x = 3, y = 2, open = 1}}, fog = 2, fog_colour = 0xFF0000})
+lua r3, g3, b3 = rgb(120, 68)
+expect_lua r3 > 200 and g3 == 0 and b3 == 0
+lua raycast("VIEW", {map = MAP, walls = WALLS, x = 3.5, y = 1.5, angle = 90, doors = {{x = 3, y = 2, open = 1}}, fog = 2})
+lua r3, g3, b3 = rgb(120, 68)
+expect_lua r3 == 0 and g3 == 0 and b3 == 0
+lua raycast("VIEW", {map = MAP, walls = WALLS, x = 3.5, y = 1.5, angle = 90, doors = {{x = 3, y = 2, open = 1}}, fog = 5, fog_colour = 0xFF0000})
+lua r3, g3, b3 = rgb(120, 68)
+expect_lua r3 > 60 and r3 < 200 and b3 > 60 and b3 < 200
 shot puerta
 expect_ok

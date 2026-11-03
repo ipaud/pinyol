@@ -401,7 +401,8 @@ local dist, wall = raycast("VIEW", {
 It returns the distance to the wall in the middle of the view (along the view, in squares) and that wall's
 character: what a shot straight ahead would hit, and how far. Walking, colliding and the ghosts' thinking are the
 game's, in Lua, on the same map. Wall and sprite pictures are plain ones (not `--packed`); a whole view of 240×160
-is about 38,000 pixels.
+is about 38,000 pixels. `fog_colour = 0xRRGGBB` makes the fog fade to that colour instead of black: a mist, smoke, the
+warm edge of a candle's light (beside `fog`; the walls facing north or south still a little darker).
 
 Doors as Wolfenstein 3D's: `doors = {{x = 7, y = 3, open = 0.4}, ...}` makes those wall squares (counted from 0, as the
 map's columns and rows) doors: a thin wall across the middle of the square, drawn with its character's picture and slid
@@ -416,7 +417,7 @@ map and a colour map the way Comanche (1992) did, a column at a time, nearest fi
 whose brightness is the ground's height (0..255), `colour` one with its colours (both wrap; `colour` left out: the
 height map's own), the camera at `x, y` on the map, `angle` in degrees (0 east, 90 south), `z` its height, `horizon`
 the screen row of the far horizon, `distance` how far it looks (map pixels, 300), `scale` how tall the hills stand,
-`sky` the colour above, `fog` the distance from which the ground fades to it (0: none). A 240×160 view out to 300 is
+`sky` the colour above (or `{top, horizon}`: from one colour at the top down to the other at the horizon row, a dawn), `fog` the distance from which the ground fades to it, the horizon's colour (0: none). A 240×160 view out to 300 is
 about 60,000 samples. `tests/games/looks` has one.
 
 ## Swarms
@@ -503,7 +504,9 @@ screen to screen. Its test plays the other consoles with `link_from <id> <json>`
 `expect_link_sent <text>`.
 
 A game runs the same on every console: Lua's numbers are 32-bit everywhere and `pairs()` walks a table in the same
-order, so consoles that get the same messages can compute the same thing.
+order, so consoles that get the same messages can compute the same thing. Not a table whose keys are tables or
+functions: those are placed by their address in memory, which differs from run to run, so walk a list (`ipairs`) or
+sort the keys when the order matters (a bot, a replay, two consoles).
 
 ## Sound
 

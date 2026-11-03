@@ -8,7 +8,8 @@
  *
  * map: the rows, one character a square (space or "." open). A wall's character is in walls: a picture (its frame 0
  * wraps across each square of wall) or a colour. x, y in squares; angle in degrees, 0 east and 90 south; fov in
- * degrees. Walls and floor darken with distance (fog: squares to black; 0, none) and the walls facing north or south
+ * degrees. Walls and floor darken with distance (fog: squares to black, or to fog_colour = 0xRRGGBB: a mist, a smoke, the
+ * glow of a candle; 0, none) and the walls facing north or south
  * are a little darker, so corners show. Sprites stand on the floor centred on their point, as tall as a wall at the
  * same distance times scale, hidden by the walls in front. Returns the distance to the wall in the middle of the view
  * (in squares, along the view) and that wall's character.
@@ -62,6 +63,16 @@ static inline uint16_t shaded(uint16_t c, int k) { /* c times k/256, in 32 steps
     uint32_t x = ((c | (uint32_t)c << 16) & 0x07E0F81Fu) * (uint32_t)((k + 4) >> 3) >> 5 & 0x07E0F81Fu;
     uint16_t v = (uint16_t)(x | x >> 16);
     return v == CANVAS_KEY ? v ^ 1 : v; /* the key colour is see-through on a canvas */
+}
+
+static uint32_t fog_spread; /* the fog's colour, its channels spread over 32 bits (0: black, as before) */
+
+static inline uint16_t fogged(uint16_t c, int k) { /* c with 256 - k of the fog's colour, in 32 steps */
+    if (!fog_spread) return shaded(c, k);
+    const uint32_t m = (uint32_t)((k + 4) >> 3) > 32 ? 32 : (uint32_t)((k + 4) >> 3);
+    uint32_t x = (((c | (uint32_t)c << 16) & 0x07E0F81Fu) * m + fog_spread * (32 - m)) >> 5 & 0x07E0F81Fu;
+    uint16_t v = (uint16_t)(x | x >> 16);
+    return v == CANVAS_KEY ? v ^ 1 : v;
 }
 
 static int fog_k(float d, float fog) { /* 256 near, 0 at fog squares */
@@ -212,6 +223,12 @@ static int l_raycast(lua_State *L) {
     float ang = opt_float(L, 2, "angle", 0, -NUM_MAX, NUM_MAX) * DEG;
     float fov = opt_float(L, 2, "fov", 66, 20, 150) * DEG;
     float fog = opt_float(L, 2, "fog", 0, 0, 1000);
+    lua_getfield(L, 2, "fog_colour");
+    if (lua_isinteger(L, -1)) {
+        const uint16_t f = to565(lua_tointeger(L, -1));
+        fog_spread = (f | (uint32_t)f << 16) & 0x07E0F81Fu;
+    } else fog_spread = 0;
+    lua_pop(L, 1);
     lua_Integer ceil_rgb = opt_int(L, 2, "ceiling", 0x303040), floor_rgb = opt_int(L, 2, "floor", 0x505050);
     uint16_t ceil_c = to565(ceil_rgb), floor_c0 = to565(floor_rgb);
     int nsp = read_sprites(L, 2, sp, px, py);
@@ -282,7 +299,7 @@ static int l_raycast(lua_State *L) {
         }
     }
     uint16_t ceil_s = shaded(ceil_c, 256);
-    for (int y = H / 2; y < H; y++) floor_c[y] = shaded(floor_c0, fog_k((float)H / (2.0f * (float)y - (float)H + 1.0f), fog));
+    for (int y = H / 2; y < H; y++) floor_c[y] = fogged(floor_c0, fog_k((float)H / (2.0f * (float)y - (float)H + 1.0f), fog));
     float inv = 1.0f / (plx * dy - dx * ply);
     static struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; } sv[MAX_SPRITES];
     int nsv = 0;
@@ -316,10 +333,10 @@ static int l_raycast(lua_State *L) {
                 int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
                 for (int y = a; y < b; y++, v += step) {
                     int vv = v >> 16;
-                    band[y * BAND + i] = shaded(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+                    band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
                 }
             } else {
-                uint16_t c = shaded(q->look ? q->look->colour : 0x8410, q->k);
+                uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
                 for (int y = a; y < b; y++) band[y * BAND + i] = c;
             }
         }
@@ -331,7 +348,7 @@ static int l_raycast(lua_State *L) {
                 int u = (x - sv[i].xl) * t->w / sv[i].w;
                 for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
                     int v = (y - sv[i].ytop) * t->h / sv[i].h;
-                    if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = shaded(sv[i].px[v * t->w + u], sv[i].k);
+                    if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
                 }
             }
         }
@@ -351,6 +368,7 @@ static int l_raycast(lua_State *L) {
  *
  *   voxels("VIEW", {height = "HILLS", colour = "HILLS_C", x = 100, y = 100, angle = 0, z = 80, horizon = 60,
  *                   distance = 300, fov = 90, scale = 120, sky = 0x9ED6F0, fog = 200})
+ *   (sky = {0x203060, 0xF0A070}: from the top's colour down to the horizon's, a dawn)
  *
  * height: a picture or canvas whose brightness is the ground's height (0..255); colour: one the same size (or any:
  * both wrap); x, y the camera on the map, angle in degrees (0 east, 90 south), z its height, horizon the screen row
@@ -399,10 +417,29 @@ static int l_voxels(lua_State *L) {
     const float cz = opt_float(L, 2, "z", 80, -1e4f, 1e4f), scale = opt_float(L, 2, "scale", 120, 1, 1e4f);
     const float horizon = opt_float(L, 2, "horizon", (float)H / 2, -1e4f, 1e4f), dist = opt_float(L, 2, "distance", 300, 2, 4000);
     const float fog = opt_float(L, 2, "fog", 0, 0, 1e5f);
-    uint16_t sky = to565(opt_int(L, 2, "sky", 0x9ED6F0));
+    int top = -1, bottom = 0x9ED6F0; /* sky = colour, or {top, horizon}: a gradient down to the horizon */
+    lua_getfield(L, 2, "sky");
+    if (lua_istable(L, -1)) {
+        lua_rawgeti(L, -1, 1), top = (int)(luaL_checkinteger(L, -1) & 0xFFFFFF), lua_pop(L, 1);
+        lua_rawgeti(L, -1, 2), bottom = (int)(luaL_checkinteger(L, -1) & 0xFFFFFF), lua_pop(L, 1);
+    } else if (!lua_isnil(L, -1)) bottom = (int)(luaL_checkinteger(L, -1) & 0xFFFFFF);
+    lua_pop(L, 1);
+    uint16_t sky = to565(bottom); /* (the fog fades to the horizon's colour) */
     if (sky == CANVAS_KEY) sky ^= 1; /* (the key colour is see-through on a canvas) */
     uint16_t *out = cv->pixels;
-    for (int i = 0; i < W * H; i++) out[i] = sky;
+    if (top < 0) for (int i = 0; i < W * H; i++) out[i] = sky;
+    else {
+        const int rows = horizon < 1 ? 1 : horizon > H ? H : (int)horizon;
+        for (int y = 0; y < H; y++) {
+            const int t = y >= rows ? 256 : y * 256 / rows; /* 0 at the top, 256 at the horizon and below */
+            int c = 0;
+            for (int sh = 0; sh <= 16; sh += 8)
+                c |= ((((top >> sh) & 255) * (256 - t) + ((bottom >> sh) & 255) * t) >> 8) << sh;
+            uint16_t v = to565(c);
+            if (v == CANVAS_KEY) v ^= 1;
+            for (int x = 0; x < W; x++) out[y * W + x] = v;
+        }
+    }
     int16_t *ybuf = ray_ybuf; /* the lowest row still open in each column (slow memory: the console's internal RAM is counted) */
     if (!ybuf && !(ybuf = ray_ybuf = hal_realloc_slow(NULL, MAX_W * sizeof *ybuf))) return luaL_error(L, "voxels: out of memory");
     for (int x = 0; x < W; x++) ybuf[x] = (int16_t)H;

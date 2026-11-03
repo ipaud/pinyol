@@ -34,6 +34,10 @@ shot looks_sil
 lua mode = "voxel"
 tick 1
 shot looks_voxel
+# a sky in two colours: the top row is the first, the horizon's row (40) the second, half way between half of each
+lua voxels("VX", {height = "HM", colour = "CM", x = 32, y = 60, angle = -90, z = 140, horizon = 40, distance = 120, scale = 60, sky = {0x0000FF, 0xFF0000}})
+expect_lua (pget(5, 0, "VX") & 0xFF) > 0xF0 and (pget(5, 0, "VX") >> 16) < 0x10
+expect_lua (pget(5, 20, "VX") >> 16) > 0x70 and (pget(5, 20, "VX") >> 16) < 0x90 and (pget(5, 20, "VX") & 0xFF) > 0x70
 lua mode = "road"
 tick 3
 shot looks_road
