@@ -1,0 +1,25 @@
+{
+  "asset": "FX_RAIN_NEAR",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 16,
+  "w": 2,
+  "h": 16,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    1,
+    15
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 84,
+    "as_rgb565": 64
+  }
+}

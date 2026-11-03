@@ -1,0 +1,33 @@
+{
+  "asset": "SPR_ESTEL_WALK",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 223,
+  "w": 128,
+  "h": 144,
+  "frames": 5,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "anchor": [
+    64,
+    143
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 13556,
+    "as_rgb565": 184320
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "faro",
+  "title": "El Faro de las Ánimas",
+  "subtitle": "PlayStation · Saturn",
+  "look": "32bits",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "pinyol examples",
+  "description": "Noche de temporal en un cabo de la costa: la lámpara del faro se ha apagado. Estel, la hija del farero, sube planta a planta con el farol de su abuelo, calma a las ánimas de los marineros y las guía hasta el mar, y arriba se las ve con el Pop de la Tempesta. Luz translúcida, cuadriláteros que giran y se doblan, sonido ADPCM en una sala de reverberación: los 32 bits.",
+  "achievements": [
+    {
+      "id": "primera",
+      "name": "Primera ánima al mar",
+      "description": "Guía una ánima hasta la ventana."
+    },
+    {
+      "id": "seca",
+      "name": "Pies secos",
+      "description": "Cruza la cisterna sin caer al agua."
+    },
+    {
+      "id": "abrigada",
+      "name": "Bien abrigada",
+      "description": "Sube una planta sin que el frío te toque."
+    },
+    {
+      "id": "todas",
+      "name": "Ninguna se queda",
+      "description": "Libera las ocho ánimas del faro antes de encender la lámpara."
+    },
+    {
+      "id": "faro",
+      "name": "El faro brilla",
+      "description": "Enciende la lámpara del faro."
+    },
+    {
+      "id": "alba",
+      "name": "Antes del alba",
+      "description": "Enciende la lámpara en menos de cinco minutos."
+    },
+    {
+      "id": "curiosa",
+      "name": "Curiosa",
+      "description": "Mira cómo funciona el truco de los 32 bits en el menú."
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+key,es,ca,en
+title1,El Faro,El Far,The Lighthouse
+title2,de las Ánimas,de les Ànimes,of Lost Souls
+press,Pulsa A,Prem A,Press A
+m_start,Subir al faro,Pujar al far,Climb the lighthouse
+m_how,Cómo funciona,Com funciona,How it works
+m_crt,Pantalla de tubo: {v},Pantalla de tub: {v},Tube screen: {v}
+on,sí,sí,on
+off,no,no,off
+best,Mejor tiempo {t},Millor temps {t},Best time {t}
+nobest,Aún nadie ha encendido el faro,Encara ningú no ha encès el far,Nobody has lit the lamp yet
+keys_title,Arriba/abajo: elegir · A: aceptar,Amunt/avall: triar · A: acceptar,Up/down: choose · A: accept
+demo,DEMOSTRACIÓN · pulsa un botón,DEMOSTRACIÓ · prem un botó,DEMO · press a button
+intro1,"Noche de temporal en el Cap de les Ànimes. La lámpara del faro se ha apagado y las barcas del pueblo buscan el puerto a ciegas.","Nit de temporal al Cap de les Ànimes. El llum del far s'ha apagat i les barques del poble busquen el port a les palpentes.","A stormy night on the Cape of Souls. The lighthouse lamp has gone out, and the village boats are searching blindly for the harbour."
+intro2,"Dicen que, cuando el faro se apaga, las ánimas de los marineros ahogados suben por la torre buscando la luz.","Diuen que, quan el far s'apaga, les ànimes dels mariners ofegats pugen per la torre buscant la llum.","They say that when the light goes out, the souls of drowned sailors climb the tower looking for it."
+intro3,"Estel, la hija del farero, coge el farol de su abuelo. No les tiene miedo: solo están perdidas.","L'Estel, la filla del faroner, agafa el fanal del seu avi. No en té por: només estan perdudes.","Estel, the keeper's daughter, takes her grandfather's lantern. She is not afraid of them: they are only lost."
+skip,A: seguir,A: continuar,A: continue
+f1,Planta 1 · Las barcas,Planta 1 · Les barques,Floor 1 · The boats
+f2,Planta 2 · La cisterna,Planta 2 · La cisterna,Floor 2 · The cistern
+f3,Planta 3 · La maquinaria,Planta 3 · La maquinària,Floor 3 · The clockwork
+f4,La galería,La galeria,The gallery
+f5,La linterna,La llanterna,The lantern room
+hint_f1,"B: alza el farol. Las ánimas calmadas te siguen; llévalas a la ventana.","B: alça el fanal. Les ànimes calmades et segueixen; porta-les a la finestra.","B: raise the lantern. Calm souls follow you: lead them to the window."
+hint_f2,"No caigas al agua: los barriles flotan. Dos ánimas a la ventana.","No caiguis a l'aigua: els barrils suren. Dues ànimes a la finestra.","Don't fall in the water: the barrels float. Two souls to the window."
+hint_f3,"Cuidado con los engranajes que giran. Dos ánimas a la ventana.","Compte amb els engranatges que giren. Dues ànimes a la finestra.","Mind the turning gears. Two souls to the window."
+hint_f4,"Fuera, el viento empuja: espera a que amaine para saltar.","A fora, el vent empeny: espera que amaini per saltar.","Outside, the wind pushes: wait for a lull to jump."
+hint_f5,"Alza el farol junto a una llama piloto y lleva el fuego a la lámpara.","Alça el fanal al costat d'una flama pilot i porta el foc al llum.","Raise the lantern by a pilot flame and carry the fire to the lamp."
+controls,‹ › andar · A saltar · B alzar el farol,‹ › caminar · A saltar · B alçar el fanal,‹ › walk · A jump · B raise the lantern
+animas,Ánimas {n}/{q},Ànimes {n}/{q},Souls {n}/{q}
+hatch,¡La trampilla se abre!,La trapa s'obre!,The hatch opens!
+wicks,Mechas {n}/3,Metxes {n}/3,Wicks {n}/3
+charged,¡Fuego en el farol!,Foc al fanal!,Fire in the lantern!
+frozen,El frío apaga el farol…,El fred apaga el fanal…,The cold puts the lantern out…
+matches_left,Quedan {n} cerillas,Queden {n} llumins,{n} matches left
+match_last,Queda la última cerilla,Queda l'últim llumí,One match left
+over,Sin cerillas,Sense llumins,No matches left
+over2,La tormenta pasará. El faro te espera.,La tempesta passarà. El far t'espera.,The storm will pass. The lighthouse waits.
+end1,"La lámpara del faro gira otra vez, y una a una las barcas encuentran el puerto.","El llum del far torna a girar, i una a una les barques troben el port.","The lighthouse lamp turns again, and one by one the boats find the harbour."
+end2,"El Pop de la Tempesta se aleja mar adentro, deslumbrado y un poco avergonzado.","El Pop de la Tempesta s'allunya mar endins, enlluernat i una mica avergonyit.","The Octopus of the Storm slips out to sea, dazzled and a little embarrassed."
+end3,"Desde entonces, en las noches de temporal, una lucecita acompaña a las barcas bajo el agua.","Des d'aleshores, les nits de temporal, una llumeta acompanya les barques sota l'aigua.","Since then, on stormy nights, a little light goes with the boats under the water."
+end_stats,Tiempo {t} · Ánimas {n}/8 · Puntos {s},Temps {t} · Ànimes {n}/8 · Punts {s},Time {t} · Souls {n}/8 · Score {s}
+new_best,¡Nuevo récord!,Nou rècord!,New record!
+the_end,FIN,FI,THE END
+ach_primera,Primera ánima al mar,Primera ànima al mar,First soul out to sea
+ach_seca,Pies secos,Peus secs,Dry feet
+ach_abrigada,Bien abrigada,Ben abrigada,Wrapped up warm
+ach_todas,Ninguna se queda,No en queda cap,None left behind
+ach_faro,El faro brilla,El far brilla,The lighthouse shines
+ach_alba,Antes del alba,Abans de l'alba,Before dawn
+ach_curiosa,Curiosa,Curiosa,Curious
+ex_back,‹ › página · A probar · B volver,‹ › pàgina · A provar · B tornar,‹ › page · A try · B back
+ex_luz_t,Luz que se suma,Llum que se suma,Light that adds up
+ex_luz,"La PlayStation mezclaba un dibujo con lo que había debajo de cuatro maneras: mitad y mitad, sumar, restar y sumar un cuarto. Las ánimas son medio transparentes; calmadas, suman su luz. Cada píxel mezclado cuesta como tres: solo en lo que se mueve.","La PlayStation barrejava un dibuix amb el que hi havia a sota de quatre maneres: meitat i meitat, sumar, restar i sumar un quart. Les ànimes són mig transparents; calmades, sumen la seva llum. Cada píxel barrejat costa com tres: només en el que es mou.","The PlayStation mixed a picture with what was under it four ways: half and half, add, subtract and add a quarter. The souls are half see-through; calm, they add their light. A mixed pixel costs about three: only on what moves."
+ex_luz_l1,opaco,opac,opaque
+ex_luz_l2,½ + ½,½ + ½,½ + ½
+ex_luz_l3,suma,suma,add
+ex_luz_l4,resta,resta,subtract
+ex_luz_l5,+ ¼,+ ¼,+ ¼
+ex_quad_t,Cuadriláteros que giran,Quadrilàters que giren,Quads that turn
+ex_quad,"Un engranaje es un dibujo de 128x128 puesto en cuatro esquinas: dos triángulos, sin corregir la perspectiva, como los pintaba la consola. Los tentáculos son cuatro cuadriláteros a lo largo de una curva. A: tramado 4x4 de la PlayStation sí o no.","Un engranatge és un dibuix de 128x128 posat en quatre cantonades: dos triangles, sense corregir la perspectiva, com els pintava la consola. Els tentacles són quatre quadrilàters al llarg d'una corba. A: tramat 4x4 de la PlayStation sí o no.","A gear is a 128x128 picture laid on four corners: two triangles, no perspective correction, the way the console drew them. The tentacles are four quads along a curve. A: the PlayStation's 4x4 dither on or off."
+ex_dither,Tramado: {v},Tramat: {v},Dither: {v}
+ex_agua_t,Agua sobre la pantalla,Aigua sobre la pantalla,Water on the screen
+ex_agua,"La cisterna ondula columnas enteras de la pantalla, encima de los dibujos: así se movían las capas de la Saturn. El reflejo es Estel del revés y medio transparente. A: el cristal de un televisor de tubo.","La cisterna ondula columnes senceres de la pantalla, damunt dels dibuixos: així es movien les capes de la Saturn. El reflex és l'Estel de cap per avall i mig transparent. A: el vidre d'un televisor de tub.","The cistern ripples whole columns of the screen, over the pictures: the way the Saturn moved its layers. The reflection is Estel upside down and half see-through. A: the glass of a tube TV."
+ex_son_t,Sonido en una sala,So en una sala,Sound in a room
+ex_son,"Cada sonido es ADPCM de la PlayStation: 4 bits por muestra, un tercio de la memoria. La música son notas MIDI sobre un banco de muestras, como su SEQ y su VAB. Y todo pasa por una sola sala de reverberación. A: suena la campana.","Cada so és ADPCM de la PlayStation: 4 bits per mostra, un terç de la memòria. La música són notes MIDI sobre un banc de mostres, com el seu SEQ i el seu VAB. I tot passa per una sola sala de reverberació. A: sona la campana.","Every sound is the PlayStation's ADPCM: 4 bits a sample, a third of the memory. The music is MIDI notes on a bank of samples, like its SEQ and VAB. And all of it goes through one reverb room. A: ring the bell."
+ex_room,Sala: {v},Sala: {v},Room: {v}
+room_hall,salón de piedra,saló de pedra,stone hall
+room_none,sin sala,sense sala,no room
