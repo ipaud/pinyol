@@ -707,7 +707,7 @@ void gfx_warp(surface *s, const asset *a, int frame, int x, int y, const int16_t
     if (!a->pixels || frame < 0 || frame >= a->frames) return;
     const int W = a->w, H = a->h, stride = (W + 7) / 8;
     const uint16_t *src = a->pixels + (size_t)frame * W * H;
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * H : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * H : NULL; /* (a full canvas: none to read) */
     const int ys = step_y(s);
     int cmin = 0, cmax = 0, rmin = 0, rmax = 0;
     for (int j = 0; rows && j < H; j++) rmin = rows[j] < rmin ? rows[j] : rmin, rmax = rows[j] > rmax ? rows[j] : rmax;

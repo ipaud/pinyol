@@ -165,7 +165,7 @@ void gfx_blit_ex(surface *s, const asset *a, int frame, int x, int y, float sx, 
     }
     const uint16_t *src = a->pixels + (size_t)frame * a->w * a->h;
     const int stride = (a->w + 7) / 8;
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * a->h : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * a->h : NULL; /* (a full canvas: none to read) */
     const int32_t wf = a->w << 16, hf = a->h << 16;
     /* lines along the way s keeps its pixels next to each other: rows on a plain frame, columns on the console's
      * turned strips; a pixel's (u, v) is the same sum of whole steps either way */
@@ -251,7 +251,7 @@ static void part(surface *s, const asset *a, int frame, int u, int v, int pw, in
     if (n <= 0 || m <= 0) return;
     const uint16_t *src = a->pixels + (size_t)frame * a->w * a->h;
     const int stride = (a->w + 7) / 8;
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * a->h : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * a->h : NULL; /* (a full canvas: none to read) */
     const bool by_column = step_y(s) == 1 || step_y(s) == -1;
     const int lines = by_column ? n : m, len = by_column ? m : n, step = by_column ? step_y(s) : step_x(s);
     for (int l = 0; l < lines; l++) {

@@ -716,7 +716,7 @@ void gfx_blit_flip(surface *s, const asset *a, int frame, int x, int y, bool fli
     int u0, v0, n = CLIP_X(s, x, a->w, &u0), m = CLIP_Y(s, y, a->h, &v0), stride = (a->w + 7) / 8;
     if (n <= 0 || m <= 0) return;
     const uint16_t *src = a->pixels + (size_t)frame * a->w * a->h;
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * a->h : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * a->h : NULL; /* (a full canvas: none to read) */
     const int ys = step_y(s);
     for (int k = 0; k < n; k++) { /* each screen column from the picture's mirrored one */
         int u = u0 + k, su = flip_x ? a->w - 1 - u : u;
@@ -783,7 +783,7 @@ void gfx_blit2x(surface *s, const asset *a, int frame, int x, int y) {
     if (frame < 0 || frame >= a->frames) frame = 0;
     const uint16_t *src = a->pixels + (size_t)frame * a->w * a->h;
     int stride = (a->w + 7) / 8;
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * a->h : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * a->h : NULL; /* (a full canvas: none to read) */
     if (!s->xs && !s->swap) { /* a plain buffer: the frame itself */
         for (int v = 0; v < a->h; v++) {
             int dy = y + 2 * v;

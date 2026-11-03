@@ -77,6 +77,24 @@ int main(void) {
     a->pixels[17 * CW + 60] = 0x0F0F;
     gfx_canvas_mask(a, 60, 17, 1, 1);
     CHECK(a->full);
+    /* turned a quarter and twice as big (a vertical game's canvas), on the console's strips: the same pixels whether the
+     * full canvas's mask is read or not */
+    {
+        static uint16_t with[FW * FH], without[FW * FH];
+        for (int pass = 0; pass < 2; pass++) {
+            uint16_t *o = pass ? without : with;
+            a->full = pass == 1;
+            for (int i = 0; i < FW * FH; i++) o[i] = BG;
+            for (int r0 = 0; r0 < FW; r0 += 32) {
+                surface t = gfx_turned(o + (size_t)r0 * FH, r0, 32, FW, FH, false, true);
+                gfx_blit_ex(&t, a, 0, 4, -10, 2, 2, 90, NULL, -1);
+            }
+        }
+        CHECK(!memcmp(with, without, sizeof with));
+        int drawn = 0;
+        for (int i = 0; i < FW * FH; i++) drawn += with[i] != BG;
+        CHECK(drawn > 1000);
+    }
     /* a mask worked out eight pixels a byte: the same as one at a time, with a box that starts and ends inside bytes */
     for (int i = 0; i < CW * CH; i++) a->pixels[i] = (i * 2654435761u) % 7 == 0 ? CANVAS_KEY : (uint16_t)(i | 1);
     gfx_canvas_mask(a, 3, 2, CW - 5, CH - 4);
