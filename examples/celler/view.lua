@@ -83,7 +83,7 @@ local function hands()
   local lf = (ticks() // 6) % 3
   if (W.mode == "relight" and W.t < 40) or W.mode == "dark" then lf = 3 end
   img("HUD_LANTERN", 14, ly, {frame = lf, scale = 2, dim = dim})
-  if lf ~= 3 then light(62, ly + 56, 54 + 30 * k, 0xFF9A40, {intensity = 0.35 + 0.3 * k}) end
+  if lf ~= 3 then light(58, ly + 50, 40 + 20 * k, 0xFF9A40, {intensity = 0.35 + 0.3 * k}) end -- (about 2 ms on the console at its widest)
   local gy = 166 - bob // 2 + (W.gun > 6 and 8 or 0)
   img("HUD_GUN", 290, gy, {frame = W.gun > 0 and 1 or 0, scale = 2, dim = dim})
   clip()

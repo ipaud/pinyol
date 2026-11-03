@@ -30,7 +30,7 @@ function D.draw()
                   distance = 230, fov = 70, scale = 92, sky = sky, fog = 320})
   img("DAWN", 0, 0, {scale = 2})
   local sy = 120 - 60 * k -- the sun coming up behind the mountain
-  light(330, sy, 130, 0xFFA040, {intensity = 0.2 + 0.2 * k})
+  light(330, sy, 100, 0xFFA040, {intensity = 0.25 + 0.2 * k})
   light(330, sy, 24, 0xFFF0C0, {intensity = 0.9})
   if t < 120 then return end
   local a = math.min(1, (t - 120) / 60)
