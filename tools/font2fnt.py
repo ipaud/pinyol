@@ -263,10 +263,11 @@ def role_font(cat: dict, spec: dict) -> tuple[str, dict]:
                        "spacing": spec.get("spacing", 0), "axes": spec.get("axes")}
 
 
-def make_pack(name: str, game: str, prefix: str | None = None) -> list[str]:
+def make_pack(name: str, game: str, prefix: str | None = None, scale: int | None = None) -> list[str]:
     """Pack `name`'s title, body and small fonts, made into game/fonts/<prefix>_<role>.fnt (the file names are the pack's,
     not the fonts': several of the fonts keep their names reserved under the licence, and what is made from them may not
-    carry those names). Returns the names to give text()'s font."""
+    carry those names). scale: the pixel size the screen's 2 stands for (1: for a canvas shown twice as big, so each of the
+    pack's fonts at half its scale, and never under 1). Returns the names to give text()'s font."""
     cat = catalog()
     if name not in cat["packs"]:
         sys.exit(f"no pack \"{name}\": --catalog lists them")
@@ -276,7 +277,8 @@ def make_pack(name: str, game: str, prefix: str | None = None) -> list[str]:
     for role in ROLES:
         path, o = role_font(cat, cat["packs"][name]["roles"][role])
         fnt = f"{prefix or name}_{role}"
-        build(path, str(out / (fnt + ".fnt")), o["px"], o["scale"], o["weight"], o["spacing"], None, 32, o["axes"])
+        k = o["scale"] if scale is None else max(1, round(o["scale"] * scale / 2))
+        build(path, str(out / (fnt + ".fnt")), o["px"], k, o["weight"], o["spacing"], None, 32, o["axes"])
         made.append(fnt)
     return made
 
@@ -305,7 +307,7 @@ def markdown(path: str) -> None:
            "```lua", 'text("PUSH START", 240, 60, {font = "snes_title", align = "center", color = 0xFFFFFF})',
            'text("Hamburgefonstiv", 20, 140, {font = "snes_body"})', "```", "",
            "`uv run tools/font2fnt.py --catalog` lists the packs, `--sheet out.png [pack]` draws them. A game can have 16 fonts "
-           "of its own besides the four every game has, so mix packs freely (`--prefix` renames a pack's files). Letters are "
+           "of its own besides the four every game has, so mix packs freely (`--prefix` renames a pack's files; `--scale 1` makes a pack for a canvas shown twice as big, as the vertical look's). Letters are "
            "the 256 of Windows-1252: Spanish, Catalan, French, German, Portuguese, Italian and the Nordic languages, not "
            "Japanese or Cyrillic. Fonts with an `*` keep a Reserved Font Name: what is made from them (your `.fnt`) must not "
            "be called by it, so the packs name their files by pack (`snes_title`), never by font.", "",
@@ -379,7 +381,7 @@ def main() -> None:
     ap.add_argument("--markdown", metavar="FILE.md", help="write the catalog as docs/fonts.md")
     ap.add_argument("--axes", help="a variable font's axes, comma separated, in the order it lists them")
     ap.add_argument("--px", type=float)
-    ap.add_argument("--scale", type=int, default=2)
+    ap.add_argument("--scale", type=int, help="each pixel K x K (2); with --pack, 1 makes the pack for a canvas shown twice as big")
     ap.add_argument("--weight", type=int)
     ap.add_argument("--spacing", type=int, default=0)
     ap.add_argument("--cell", help="WxH, a PNG sheet's glyph cell")
@@ -404,13 +406,13 @@ def main() -> None:
     if a.pack:
         if not a.src:
             ap.error("--pack NAME GAME")
-        print("made", ", ".join(make_pack(a.pack, a.src, a.prefix)), "in", Path(a.src) / "fonts")
+        print("made", ", ".join(make_pack(a.pack, a.src, a.prefix, a.scale)), "in", Path(a.src) / "fonts")
         return
     if not a.src or not a.out:
         ap.error("SOURCE and out.fnt, or --list, --catalog, --pack, --sheet")
     cell = tuple(int(v) for v in a.cell.lower().split("x")) if a.cell else None
     axes = [float(v) for v in a.axes.split(",")] if a.axes else None
-    build(a.src, a.out, a.px, a.scale, a.weight, a.spacing, cell, a.first, axes)
+    build(a.src, a.out, a.px, a.scale or 2, a.weight, a.spacing, cell, a.first, axes)
 
 
 if __name__ == "__main__":

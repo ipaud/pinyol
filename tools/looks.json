@@ -123,11 +123,11 @@
     {
       "id": "vertical", "name": "Vertical arcade", "example": "tormenta", "method": "code", "font_pack": "arcade_80s",
       "era": "1985 · the screen stood up", "fps": 60,
-      "world": "320x480 canvas shown turned 90 degrees",
+      "world": "160x240 canvas shown turned 90 degrees and twice as big",
       "aliases": ["vertical", "arcade vertical", "recreativa vertical", "shmup", "shoot em up", "matamarcianos", "1942", "raiden", "tate", "scroll vertical"],
       "limits": {},
       "style": "vertical arcade shooter, bright sprites on a dark scrolling field",
-      "rules": ["draw on a 320x480 canvas standing up, shown with img(..., {angle = 90}); the console is held on its side", "read the arrows turned the same way", "hundreds of bullets as swarms"],
+      "rules": ["draw on a 160x240 canvas standing up, shown with img(\"V\", 80, -80, {angle = 90, scale = 2}) (a 320x480 one costs 18 ms a frame to clear); the console is held on its side", "letters for the canvas: font2fnt.py --pack arcade_80s GAME --scale 1", "read the arrows turned the same way", "hundreds of bullets as swarms"],
       "avoid": ["forgetting that the player holds the console on its side"]
     },
     {

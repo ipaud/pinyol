@@ -282,8 +282,12 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
 
 ### A vertical screen: `examples/tormenta`
 
-- The game drawn on a **320×480 canvas standing up**, shown turned a quarter round (`img(..., {angle = 90})`): the
-  console is held on its side, its left edge down. Read the arrows turned the same way.
+- The game drawn on a **160×240 canvas standing up**, shown turned a quarter round and twice as big
+  (`img("V", 80, -80, {angle = 90, scale = 2})`): the console is held on its side, its left edge down. Read the arrows
+  turned the same way. (Not 320×480: clearing one costs 18 ms a frame, and the quick turn is the one at scale 2;
+  docs/measurements.md, tormenta.) Its letters at half size: `font2fnt.py --pack arcade_80s GAME --scale 1`.
+- A canvas that is drawn on every frame is turned straight onto the strips; one that stays the same for a frame is
+  made into a 480×320 picture of its own (300 KB in one block), so a still screen in a vertical game costs that memory.
 - Hundreds of bullets as swarms (they draw on the canvas too).
 
 Name the look, never a company's game or characters: the art must be the game's own.

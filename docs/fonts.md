@@ -12,7 +12,7 @@ text("PUSH START", 240, 60, {font = "snes_title", align = "center", color = 0xFF
 text("Hamburgefonstiv", 20, 140, {font = "snes_body"})
 ```
 
-`uv run tools/font2fnt.py --catalog` lists the packs, `--sheet out.png [pack]` draws them. A game can have 16 fonts of its own besides the four every game has, so mix packs freely (`--prefix` renames a pack's files). Letters are the 256 of Windows-1252: Spanish, Catalan, French, German, Portuguese, Italian and the Nordic languages, not Japanese or Cyrillic. Fonts with an `*` keep a Reserved Font Name: what is made from them (your `.fnt`) must not be called by it, so the packs name their files by pack (`snes_title`), never by font.
+`uv run tools/font2fnt.py --catalog` lists the packs, `--sheet out.png [pack]` draws them. A game can have 16 fonts of its own besides the four every game has, so mix packs freely (`--prefix` renames a pack's files; `--scale 1` makes a pack for a canvas shown twice as big, as the vertical look's). Letters are the 256 of Windows-1252: Spanish, Catalan, French, German, Portuguese, Italian and the Nordic languages, not Japanese or Cyrillic. Fonts with an `*` keep a Reserved Font Name: what is made from them (your `.fnt`) must not be called by it, so the packs name their files by pack (`snes_title`), never by font.
 
 ![Every pack](media/fonts.png)
 
