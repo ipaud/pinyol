@@ -48,6 +48,11 @@ function _init()
   show(0) -- no world of tiles: everything is drawn on the standing canvas
   canvas("V", VW, VH)
   canvas("SNAP", VW, VH)
+  canvas("LOGO", VW, 40) -- the title's letters, styled once (a styled text is dear to draw every frame on a canvas)
+  target("LOGO")
+  text("TRACA", VW // 2, 6, {font = FONT_T, scale = 3, align = "center", color = 0xFFF0A0, gradient = 0xFF7020,
+                             outline = 0x5A1028, shadow = 0x0A0818, spacing = 1})
+  target()
   high = stored("high", 0)
   M.init()
   P.init()
@@ -130,9 +135,7 @@ local function blink() return calm() or (T // 30) % 2 == 0 end
 
 local function draw_title()
   S.draw_title(T)
-  local k = math.sin(T / 40) * 1.5
-  text("TRACA", VW // 2, 34 + k, {font = FONT_T, scale = 3, align = "center", color = 0xFFF0A0, gradient = 0xFF7020,
-                                   outline = 0x5A1028, shadow = 0x0A0818, spacing = 1})
+  img("LOGO", 0, 28 + math.floor(math.sin(T / 40) * 1.5 + 0.5))
   say(lang.tr("subtitle"), 66, 0xFFB0D0, FONT_S)
   textbox(lang.tr("turn"), 14, 100, VW - 28, 22, {font = FONT_S, align = "center", color = 0xA0C8FF, shadow = 0x0A0818})
   if blink() then say(lang.tr("press"), 128, 0xFFFFFF) end
