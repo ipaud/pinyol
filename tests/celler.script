@@ -1,0 +1,119 @@
+# El Celler: the title, "Cómo funciona" (from the title and in play, its three pages), the first gallery played by hand
+# (walking, turning, a door pushed open, a cork fired, the map), then the whole night played by the autopilot (bot.lua,
+# the same buttons): a lever, the secret rack and the Reserva, a match struck, the dark and a retry, the dawn and the demo.
+tick 30
+expect_lua state == "title"
+shot titulo
+# "Cómo funciona" before any game: it works on the title and goes back to it
+press MENU
+press DOWN
+press A
+tick 5
+expect_lua state == "explain"
+tick 60
+shot como1
+press RIGHT
+tick 120
+shot como2
+press RIGHT
+tick 40
+shot como3
+press B
+tick 5
+expect_lua state == "title"
+expect_lua achievements()[9].done == true
+press A
+tick 30
+expect_lua state == "intro" and G.level == 1
+shot intro
+press A
+tick 5
+expect_lua state == "play" and G.P.x == 1.5 and G.corks == 6
+# walk east along the first corridor and push the door open
+hold UP 50
+expect_lua G.P.x > 4 and G.P.y == 1.5
+hold UP 40
+expect_lua G.door_at(6, 1).open > 0
+tick 30
+shot puerta
+expect_lua G.door_at(6, 1).open == 1
+hold UP 50
+expect_lua G.P.x > 7
+shot sala
+# a cork fired: one less, and it flies
+press A
+tick 1
+expect_lua G.corks == 5 and rawlen(G.shots) == 1
+tick 4
+shot disparo
+tick 40
+expect_lua rawlen(G.shots) == 0
+# the map of what the candle has shown
+press START
+tick 2
+expect_lua G.seen_n > 10
+shot mapa
+press START
+# the autopilot from here: the first gallery's key, gate and stairs
+lua AUTO = true
+tick 1500
+expect_lua G.level >= 2
+expect_lua achievements()[1].done and achievements()[2].done
+tick 300
+shot galeria2
+# gallery 2: the lever opens the gate to the key
+tick 2400
+expect_lua G.level >= 3
+shot galeria3
+# gallery 3: the rack with the missing bottle is a door (B pushes it) and the Reserva is behind it
+lua AUTO = false
+lua G.drive(nil)
+lua G.P.x, G.P.y, G.P.a = 3.5, 9.5, 90
+lua G.ghosts = {}
+press B
+tick 80
+expect_lua G.door_at(3, 10).open == 1
+shot secreto
+hold UP 120
+expect_lua G.reserva == true and achievements()[4].done
+shot reserva
+# the candle burns out: a match is struck
+lua G.wax = 0.01
+tick 2
+expect_lua G.mode == "relight" and G.matches == 2
+tick 20
+shot cerilla
+tick 90
+expect_lua G.mode == "play" and G.wax > 50
+# no candle and no matches: the dark, and the gallery again with a new box
+lua G.wax, G.matches = 0.01, 0
+tick 3
+expect_lua state == "dark"
+tick 70
+shot oscuras
+press A
+tick 5
+expect_lua state == "intro" and G.level == 3 and G.matches == 3 and G.wax == 100
+# the rest of the night by the autopilot
+lua AUTO = true
+tick 9000
+expect_lua state == "dawn"
+expect_lua achievements()[8].done
+tick 100
+shot amanecer_1
+tick 260
+shot amanecer_2
+expect_lua stored("record", 0) > 0
+press A
+tick 5
+expect_lua state == "title"
+# the demo plays itself from the title; a button ends it
+lua AUTO = false
+tick 620
+expect_lua state == "demo"
+tick 400
+shot demo
+press A
+tick 5
+expect_lua state == "title"
+expect_ok

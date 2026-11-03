@@ -1,0 +1,8 @@
+{
+  "asset": "BAR",
+  "type": "tilemap",
+  "tiles": 18,
+  "map_w": 30,
+  "map_h": 20,
+  "palette": "BAR"
+}

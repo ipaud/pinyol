@@ -1,0 +1,31 @@
+{
+  "asset": "HUD_LANTERN",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 44,
+  "h": 64,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    22,
+    63
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 6052,
+    "as_rgb565": 22528
+  }
+}

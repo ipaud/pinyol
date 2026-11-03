@@ -1,0 +1,57 @@
+{
+  "id": "celler",
+  "title": "El Celler",
+  "subtitle": "Primera persona",
+  "look": "firstperson",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "pinyol examples",
+  "description": "Primera persona a la manera de 1992: un sereno con una vela que se gasta y una escopeta de tapones cruza de noche las cinco galerías de unas cavas del Penedès, donde los tapones de cava se han vuelto fantasmas. Puertas que se deslizan, rejas con llave, palancas, un botellero que esconde un pasadizo, un mapa que se dibuja con la luz y la salida al amanecer sobre las viñas. Y un menú que enseña el raycasting columna a columna.",
+  "achievements": [
+    {
+      "id": "primera_llave",
+      "name": "Primera llave",
+      "description": "Encuentra la llave de una reja."
+    },
+    {
+      "id": "taponazo",
+      "name": "Taponazo",
+      "description": "Devuelve un tapón fantasma a su forma de corcho de un disparo."
+    },
+    {
+      "id": "espantar",
+      "name": "Luz que espanta",
+      "description": "Espanta un tapón fantasma alzando el farol."
+    },
+    {
+      "id": "reserva",
+      "name": "La Reserva del 92",
+      "description": "Encuentra la botella escondida detrás del botellero falso."
+    },
+    {
+      "id": "cartografo",
+      "name": "Cartógrafo",
+      "description": "Ilumina todas las casillas de una galería."
+    },
+    {
+      "id": "todos",
+      "name": "Ni un tapón suelto",
+      "description": "Recupera todos los tapones fantasma de una galería."
+    },
+    {
+      "id": "una_vela",
+      "name": "Sin cerillas",
+      "description": "Sal al amanecer sin encender ni una cerilla."
+    },
+    {
+      "id": "amanecer",
+      "name": "Ya amanece",
+      "description": "Cruza las cinco galerías y sal a la calle al alba."
+    },
+    {
+      "id": "curioso",
+      "name": "Curioso",
+      "description": "Mira cómo funciona el raycasting en el menú."
+    }
+  ]
+}
