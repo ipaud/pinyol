@@ -1072,3 +1072,33 @@ test).
 Packing `FONDO` too (121 colours, lossless) gave 29.4 against 28.7. The title (44 fps) draws no raw picture: its cost is the text (two
 shadowed lines 2.5 ms) and the REF canvases. A tour step can print `perf("ops")` and `tools/board_perf.py --log` keeps it.
 
+
+## 2026-11-03 · The demos round on the console (firmware motor e43643a9, silent copies with tools/board_perf.py)
+
+The full-screen canvas: huevos (tests/games), which keeps its glass in a 480×320 canvas, went from **30-47 fps (render 29.4 ms) on
+0.8.0 to 59-60 (15.0 ms)**: a canvas with no see-through pixel is copied without its mask and counts as covering the screen (the
+world is no longer drawn under it).
+
+Drawing on a 160×240 canvas (a vertical game's), a test game, `perf()`'s `_draw`:
+
+| What | before | after the mask in bytes | 
+|---|---|---|
+| nothing | 0.4 ms | 0.4 ms |
+| `cls` | 1.6 ms | 1.6 ms |
+| 12 `rect` covering it | 4.7 ms | 3.4 ms (and opaque rects on a full canvas now skip the mask) |
+| `cls` + 4 packed pictures | 6.6 ms | 5.2 ms |
+
+| Game | fps min / mean / max | frame | what it goes to |
+|---|---|---|---|
+| Traca (title and its demo) | 30.0 / 33.8 / 44.0 | world 8.0-8.5 + strips 6.8 + tick 1.8 ms | just past a frame, so every other scan is missed; the demo's pilot is 1-3 ms of the tick; the turned canvas 11 ms of strips (both cores) |
+| El Celler (title and its demo) | 27.5 / 29.6 / 38.7 | world 12.7-13.7 + strips 8.4 ms | the raycast view and its status bar in `_draw` (11-12 ms), the 240×136 view twice as big 10.9 ms of strips; audio 34 % of a core (its FM tones) |
+| El Faro (title and its demo) | 7.1 / 32.6 / 49.5 | world 2.7 + strips 11.7 ms | the demo's bot simulates jumps (`_update` 9.9 ms), `grad` 6.9 and the backdrop 9.5 ms of strips, the rain mixed 2.7; **audio 44-68 % of a core**, 44 % with the music, the ambience and the reverb all off |
+| Poncho (tour, four worlds) | 30.7 / 48.4 / 59.8 | | world 1 59-60, worlds 2-4 36-45 |
+| Paella (tour, six cooks and the boss) | 34.3 / 47.9 / 59.7 | | the chosen cook's sheet preloaded: no clear gain (the tour of 24 October was 38.1 / 52.1); PSRAM down to 33 KB free, largest block 11 KB |
+| Taller (tour) | 10.1 / 54.3 / 59.9 | | levels 55-59 (the first was 40.9 on 24 October); the boss's arrival 10 fps with 17 KB of PSRAM left (largest block 4 KB): the stages' preloads stay until memory runs out |
+
+Found on the board, not in the desktop tests: Faro drew a frame before its first tick (its rain swarms were made in `_update`,
+fixed; docs/lua.md says `_draw` may come first) and Celler required `gen/face.lua`, which never reaches the console (moved to
+`data/`; `require` now refuses gen/, raw/, docs/ and art/ everywhere). A game that has stopped on its error screen showed 30 fps,
+render 32 ms and its audio at 98-99 % of a core with hundreds of underruns: the error screen is costly to draw and the sound is not
+stopped (not looked into).
