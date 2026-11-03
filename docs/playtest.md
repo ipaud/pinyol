@@ -31,7 +31,11 @@ The bots work without help, but the report is only useful about difficulty if th
 | `invariants()` | a rule the game's numbers must keep, checked every 10 ticks: return nil, or a word saying what broke (`balls_1_of_3`): it shows as an anomaly |
 | `deaths()`, `stuck_ticks` | how many times it died; how long without progress is "stuck" (default 3600) |
 
-See `tests/playtest/malabar.lua` (a perfect player in ten lines) and `pozo.lua`. The bot replaces `btn`/`btnp`; a game that reads its input some other way (its own layer, touch) installs the bot's `held` table there from the adapter.
+See `tests/playtest/malabar.lua` (a perfect player in ten lines) and `pozo.lua`. The human-like players replay what `perfect()` held 5 to 30 ticks before, so write it as a person plays: a
+jump's button held a person's while after it is pressed (a `perfect()` that lets A go the next tick, because the hero it sees is still on the
+ground, gives them hops: the press has not reached him yet), and moves that work from a window of places, not from one exact pixel (a late
+player never stands on it). `examples/faro`'s `core/bot.lua` (`Bot.buttons`) and `core/route.lua` do both; before, its 40 human-like players
+never left the first floor. The bot replaces `btn`/`btnp`; a game that reads its input some other way (its own layer, touch) installs the bot's `held` table there from the adapter.
 
 ## Reading it
 

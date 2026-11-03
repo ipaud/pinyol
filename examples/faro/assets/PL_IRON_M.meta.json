@@ -1,0 +1,25 @@
+{
+  "asset": "PL_IRON_M",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 52,
+  "w": 64,
+  "h": 30,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    32,
+    29
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2335,
+    "as_rgb565": 3840
+  }
+}

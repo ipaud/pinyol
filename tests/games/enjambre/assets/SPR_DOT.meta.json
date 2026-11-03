@@ -1,0 +1,25 @@
+{
+  "asset": "SPR_DOT",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 1,
+  "w": 4,
+  "h": 4,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    2,
+    3
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 68,
+    "as_rgb565": 32
+  }
+}

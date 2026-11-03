@@ -7,8 +7,9 @@
  *                                                  -- speed gains ax, ay (gravity) and loses `drag` of itself (air)
  *   orbs:add(x, y, vx, vy [, life])                -- false when full; life in ticks (0 or none: until it leaves)
  *   orbs:step()                                    -- each moves by its speed; those out of the area or of life go
- *   orbs:draw(picture [, frame | {by_life = true}])  -- each drawn centred on its point; by_life: the picture's frames
- *                                                  -- from first to last as each one's life runs out (a spark cooling)
+ *   orbs:draw(picture [, frame] [, {frame, alpha, add, sub, quarter, by_life}])  -- each drawn centred on its point (mixed:
+ *                                                  -- a packed picture); by_life: the picture's frames from first to last
+ *                                                  -- as each one's life runs out (a spark cooling)
  *   orbs:hit(x, y, w, h [, keep])                  -- how many are in that box; they go, unless keep
  *   orbs:near(x, y, r)                             -- how many within r, and the nearest: its index, dx, dy (or nil)
  *   orbs:get(i) / orbs:set(i, x, y [, vx, vy])     -- one of them, 1..#orbs; orbs:remove(i); orbs:clear(); #orbs
@@ -100,26 +101,38 @@ static int l_draw(lua_State *L) {
     const char *id = luaL_checkstring(L, 2);
     asset *a = safe_name(id) ? gfx_asset(id) : NULL;
     if (!a || a->missing) return 0;
-    if (lua_istable(L, 3)) {
-        lua_getfield(L, 3, "by_life");
-        const bool by_life = lua_toboolean(L, -1);
-        lua_pop(L, 1);
-        if (by_life && a->frames > 1) { /* one command a frame: those of each age together (a frame with none: no command) */
-            for (int f = 0; f < a->frames; f++) {
-                int m = 0;
-                for (int i = 0; i < s->n; i++) {
-                    const int g = s->life0[i] ? (s->life0[i] - s->life[i]) * a->frames / s->life0[i] : 0;
-                    if ((g < a->frames ? g : a->frames - 1) == f) s->idx[m++] = (uint16_t)i;
-                }
-                if (m) draw_points(a, f, s->x, s->y, s->idx, m);
-            }
-            return 0;
+    int opt = 4; /* s:draw(picture [, frame] [, {frame, alpha, add, sub, quarter, by_life}]) */
+    lua_Integer f = 0;
+    if (lua_istable(L, 3)) opt = 3;
+    else f = luaL_optinteger(L, 3, 0);
+    int mode = BLEND_ALPHA, alpha = 255;
+    bool by_life = false;
+    if (lua_istable(L, opt)) {
+        lua_getfield(L, opt, "frame");
+        if (!lua_isnil(L, -1)) f = luaL_checkinteger(L, -1);
+        lua_getfield(L, opt, "alpha");
+        if (!lua_isnil(L, -1)) {
+            lua_Number v = luaL_checknumber(L, -1);
+            alpha = (int)((v < 0 ? 0 : v > 1 ? 1 : v) * 255 + 0.5);
         }
-        draw_points(a, 0, s->x, s->y, NULL, s->n);
+        lua_getfield(L, opt, "add"), mode = lua_toboolean(L, -1) ? BLEND_ADD : mode;
+        lua_getfield(L, opt, "sub"), mode = lua_toboolean(L, -1) ? BLEND_SUB : mode;
+        lua_getfield(L, opt, "quarter"), mode = lua_toboolean(L, -1) ? BLEND_QUARTER : mode;
+        lua_getfield(L, opt, "by_life"), by_life = lua_toboolean(L, -1);
+        lua_pop(L, 6);
+    }
+    if (by_life && a->frames > 1) { /* one command a frame: those of each age together (a frame with none: no command) */
+        for (int k = 0; k < a->frames; k++) {
+            int m = 0;
+            for (int i = 0; i < s->n; i++) {
+                const int g = s->life0[i] ? (s->life0[i] - s->life[i]) * a->frames / s->life0[i] : 0;
+                if ((g < a->frames ? g : a->frames - 1) == k) s->idx[m++] = (uint16_t)i;
+            }
+            if (m) draw_points(a, k, s->x, s->y, s->idx, m, mode, alpha);
+        }
         return 0;
     }
-    lua_Integer f = luaL_optinteger(L, 3, 0);
-    draw_points(a, (int)(f < 0 || f >= a->frames ? 0 : f), s->x, s->y, NULL, s->n);
+    draw_points(a, (int)(f < 0 || f >= a->frames ? 0 : f), s->x, s->y, NULL, s->n, mode, alpha);
     return 0;
 }
 

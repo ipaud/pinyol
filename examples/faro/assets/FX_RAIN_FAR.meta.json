@@ -1,0 +1,25 @@
+{
+  "asset": "FX_RAIN_FAR",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 9,
+  "w": 1,
+  "h": 9,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    8
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 51,
+    "as_rgb565": 18
+  }
+}

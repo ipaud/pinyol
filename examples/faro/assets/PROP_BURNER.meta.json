@@ -1,0 +1,25 @@
+{
+  "asset": "PROP_BURNER",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 52,
+  "w": 51,
+  "h": 56,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    25,
+    55
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 2482,
+    "as_rgb565": 5712
+  }
+}

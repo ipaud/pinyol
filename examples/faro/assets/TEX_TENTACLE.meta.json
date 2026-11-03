@@ -1,0 +1,25 @@
+{
+  "asset": "TEX_TENTACLE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 104,
+  "w": 48,
+  "h": 128,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    24,
+    127
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3494,
+    "as_rgb565": 12288
+  }
+}

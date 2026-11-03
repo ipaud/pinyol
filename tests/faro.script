@@ -1,0 +1,91 @@
+# El Faro de las Ánimas (examples/faro): the title and its menu, "Cómo funciona" from the title and from the console's menu (its four pages),
+# the story, then the whole climb played by the game's own bot (dbg_bot: the same buttons a player presses, along the routes core/route.lua flew):
+# four floors, the lantern room and the dawn. CMake runs it with --check-strips --check-text in es, ca and en.
+tick 40
+shot faro_title
+expect_lua G.state == "title"
+# "Cómo funciona" from the title
+press DOWN
+press A
+tick 30
+expect_lua G.state == "explain" and require("core.explain").page == 1
+shot faro_how_luz
+press RIGHT
+tick 30
+shot faro_how_quad
+press A
+tick 4
+expect_lua require("core.explain").dither == false
+press A
+press RIGHT
+tick 30
+shot faro_how_agua
+press RIGHT
+press A
+tick 30
+shot faro_how_son
+expect_lua require("core.explain").room == false
+press B
+tick 4
+expect_lua G.state == "title" and require("core.explain").room == true
+# the story, three lines
+press UP
+press A
+tick 10
+expect_lua G.state == "intro"
+shot faro_intro
+press A
+tick 3
+press A
+tick 30
+press A
+tick 3
+press A
+tick 30
+press A
+tick 3
+press A
+tick 80
+expect_lua G.state == "play" and require("core.run").floor == 1
+shot faro_floor1
+# "Cómo funciona" from the console's menu, in the middle of a floor, and back to it as it was
+lua X0 = require("core.play").body.x
+press MENU
+tick 3
+expect_menu open
+press DOWN
+press A
+tick 4
+expect_lua G.state == "explain" and achievements()[7].done == true
+press B
+tick 3
+expect_lua G.state == "play" and require("core.play").body.x == X0
+# the climb, by the bot
+lua dbg_bot(true)
+tick 500
+shot faro_floor1_window
+tick 400
+expect_lua require("core.run").floor >= 2 and require("core.run").freed >= 1
+tick 500
+shot faro_cistern
+tick 900
+expect_lua require("core.run").floor >= 3
+shot faro_clockwork
+tick 1200
+expect_lua require("core.run").floor >= 4
+shot faro_gallery
+tick 700
+expect_lua G.state == "boss"
+shot faro_lamp_room
+tick 900
+shot faro_tentacles
+tick 1500
+expect_lua G.state == "ending" and require("core.boss").wicks == 3
+expect_lua achievements()[5].done == true
+tick 650
+shot faro_ending
+press A
+tick 10
+expect_lua G.state == "title" and stored("best") ~= nil
+shot faro_title_best
+expect_ok

@@ -1,0 +1,292 @@
+{
+ "SPR_ESTEL_WALK": {
+  "digest": "ab3aeba043e4460828a4d53892f6fa502a33e26ba5d543d22fa7cc17793e74a6",
+  "info": {
+   "frames": 5,
+   "w": 128,
+   "h": 144,
+   "colours": 223,
+   "bytes": 13556
+  }
+ },
+ "SPR_ESTEL_LIFT": {
+  "digest": "3447c6ac021ac2fe706d190eab0d0b220680fbc4a01ee63518ec88d045f759b2",
+  "info": {
+   "frames": 5,
+   "w": 128,
+   "h": 144,
+   "colours": 211,
+   "bytes": 15291
+  }
+ },
+ "SPR_ESTEL_MOVES": {
+  "digest": "ebb070f18f2b9f132aa2f65babddb446990a39e57da261abdf1340a6d1ef2b65",
+  "info": {
+   "frames": 5,
+   "w": 128,
+   "h": 144,
+   "colours": 224,
+   "bytes": 15036
+  }
+ },
+ "SPR_ANIMA": {
+  "digest": "2c5b067d39e7874ae9fa8581850b8723b7823f90a64d1846f49634c44a7d99e6",
+  "info": {
+   "frames": 5,
+   "w": 112,
+   "h": 112,
+   "colours": 118,
+   "bytes": 19273
+  }
+ },
+ "SPR_POP": {
+  "digest": "c93011575d27ce66beef72eda573ac65697a78615ce9921d48c3fd48646ea45a",
+  "info": {
+   "frames": 4,
+   "w": 288,
+   "h": 260,
+   "colours": 147,
+   "bytes": 192690
+  }
+ },
+ "TEX_TENTACLE": {
+  "digest": "01c9dae7c4884324b062fcda63790110e15705ed33f2115509cfef8b3d7a735b",
+  "info": {
+   "frames": 1,
+   "w": 48,
+   "h": 128,
+   "colours": 104,
+   "bytes": 3494
+  }
+ },
+ "TEX_GEAR": {
+  "digest": "7418515639b63bd3998d19f60a0fd5db18ef57a41f7fdf6e771a9b59306f41c4",
+  "info": {
+   "frames": 1,
+   "w": 128,
+   "h": 128,
+   "colours": 79,
+   "bytes": 10951
+  }
+ },
+ "TEX_LENS": {
+  "digest": "8c1c91ac638f74120b014c8b47b7ad8a823195d2fb6fc180f2542bb48adc476b",
+  "info": {
+   "frames": 1,
+   "w": 128,
+   "h": 128,
+   "colours": 124,
+   "bytes": 13078
+  }
+ },
+ "PROP_BURNER": {
+  "digest": "90a8b2b71261adcfad003d777cf3e8ac96547ba53ae64290e00e11fa8730ea9e",
+  "info": {
+   "frames": 1,
+   "w": 51,
+   "h": 56,
+   "colours": 52,
+   "bytes": 2482
+  }
+ },
+ "PROP_OILCAN": {
+  "digest": "82bf4681fc0a5e79dee2eefee091abe3f6f5b0e3f563fc9734b64350c43b2bb6",
+  "info": {
+   "frames": 1,
+   "w": 21,
+   "h": 28,
+   "colours": 26,
+   "bytes": 592
+  }
+ },
+ "PROP_BARREL": {
+  "digest": "9bf4b6d41bd4a799553eb4dc202663217da3224a6fcbf1dbb1fef96a4fdcd783",
+  "info": {
+   "frames": 1,
+   "w": 63,
+   "h": 48,
+   "colours": 56,
+   "bytes": 3393
+  }
+ },
+ "PL_WOOD_L": {
+  "digest": "94066f9b8073d848ddd743699f82e5252cc763b6735ef7e5cf575d186c933d07",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 50,
+   "bytes": 621
+  }
+ },
+ "PL_WOOD_M": {
+  "digest": "cc327131450b73406f9ffda33c2ee14180eca59f6f96826a8048281b26571719",
+  "info": {
+   "frames": 1,
+   "w": 64,
+   "h": 30,
+   "colours": 53,
+   "bytes": 2357
+  }
+ },
+ "PL_WOOD_R": {
+  "digest": "9d2bb85aa5ccc109e7d3d82483c557d8c6799ee9b4a6267504c8152d653f28a6",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 49,
+   "bytes": 582
+  }
+ },
+ "PL_STONE_L": {
+  "digest": "9e8c72f353210cff6adef1d2b8ab64f8a82efdda8bec89f88604698cfe943f1e",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 52,
+   "bytes": 641
+  }
+ },
+ "PL_STONE_M": {
+  "digest": "a8bf95e00557621c6c727f0a6b99c58f9d4b2d5d7926f7261f5cfdb270fb2400",
+  "info": {
+   "frames": 1,
+   "w": 64,
+   "h": 30,
+   "colours": 55,
+   "bytes": 2628
+  }
+ },
+ "PL_STONE_R": {
+  "digest": "760cd8a22397eaebf8beb6d11ceea707ffada962592c00a3bf368bbd453ef285",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 52,
+   "bytes": 604
+  }
+ },
+ "PL_IRON_L": {
+  "digest": "f71c3c076c516026e6b22a750186aa959abc73d98fbb0c80912470959b1500c8",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 57,
+   "bytes": 569
+  }
+ },
+ "PL_IRON_M": {
+  "digest": "5729c2b0c11d72a98155e69265708899743cbbd54c36e696ef2c13a11d853768",
+  "info": {
+   "frames": 1,
+   "w": 64,
+   "h": 30,
+   "colours": 52,
+   "bytes": 2335
+  }
+ },
+ "PL_IRON_R": {
+  "digest": "912d2c67903386007b7e8b2dfe11d680af43b2bc3df8db10c9714f1af2edf9ef",
+  "info": {
+   "frames": 1,
+   "w": 16,
+   "h": 30,
+   "colours": 56,
+   "bytes": 567
+  }
+ },
+ "FX_RAIN_FAR": {
+  "digest": "d4a0bacd6426596647b51eb0fa085a4a8073b8a8ace7309afa7140e53af91f9b",
+  "info": {
+   "frames": 1,
+   "w": 1,
+   "h": 9,
+   "colours": 9,
+   "bytes": 51
+  }
+ },
+ "FX_RAIN_NEAR": {
+  "digest": "5285ed94f133a807bf1e9bac7f00f4aa1ca0d84b8d73dd1d652bfe87912b3ba5",
+  "info": {
+   "frames": 1,
+   "w": 2,
+   "h": 16,
+   "colours": 16,
+   "bytes": 84
+  }
+ },
+ "BG_F1": {
+  "digest": "31cd9d284de64086dc4ac9b0a8b3800fab93d8b2338007e08d8c88ffbe65d13b",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 720,
+   "colours": 187,
+   "bytes": 350792
+  }
+ },
+ "BG_F2": {
+  "digest": "4a556b962409e9d65146e10cdfece05fad5bb8383c139edcc2fd432d2fcefe16",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 720,
+   "colours": 192,
+   "bytes": 350800
+  }
+ },
+ "BG_F3": {
+  "digest": "3285eab95bfd9ebd873004ed353ce0a4a0c7dff991daf18a58decb596efe57a8",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 720,
+   "colours": 178,
+   "bytes": 350772
+  }
+ },
+ "BG_F4": {
+  "digest": "fde8bc4c66a32e1fb14b13a9e98dd8a3e87710618688fabb3afee930bd689ae1",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 720,
+   "colours": 165,
+   "bytes": 350748
+  }
+ },
+ "BG_LAMP": {
+  "digest": "75cf7c6898330445a8d7717a657771234f1e61ca725569f8600d640f4f311989",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 720,
+   "colours": 197,
+   "bytes": 350812
+  }
+ },
+ "BG_TITLE": {
+  "digest": "e6ebdb3cba486b6e827fb60489726b70b586fca26e8179df781c3e7de7fcaf26",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 320,
+   "colours": 141,
+   "bytes": 158700
+  }
+ },
+ "BG_ENDING": {
+  "digest": "e5ff2701466257a8a761004f3ca6e01aed1760469c42d52246ba1209f552836d",
+  "info": {
+   "frames": 1,
+   "w": 480,
+   "h": 320,
+   "colours": 191,
+   "bytes": 158800
+  }
+ }
+}

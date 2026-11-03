@@ -1,0 +1,31 @@
+{
+  "asset": "SPR_POP",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 147,
+  "w": 288,
+  "h": 260,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    144,
+    259
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 192690,
+    "as_rgb565": 599040
+  }
+}
