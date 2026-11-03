@@ -253,6 +253,7 @@ static int l_raycast(lua_State *L) {
         for (int y = 0; y < H; y++) memcpy(out + y * cv->w + bx, band + y * BAND, (size_t)bw * sizeof *band);
     }
     memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
+    cv->full = true;
     cv->gen++;
     lua_pushnumber(L, centre_d);
     char s[2] = {centre_c, 0};
@@ -360,6 +361,7 @@ static int l_voxels(lua_State *L) {
         }
     }
     memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
+    cv->full = true;
     cv->gen++;
     return 0;
 }

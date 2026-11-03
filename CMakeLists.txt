@@ -172,6 +172,10 @@ add_executable(grad_test tests/grad_test.c platform/null/hal_null.c platform/lin
 target_compile_options(grad_test PRIVATE -Wall -Wextra -Werror ${SAN})
 target_link_libraries(grad_test pinyol_core)
 add_test(NAME grad_table COMMAND grad_test) # a dithered gradient from its ramp worked out ahead is the one that works it out itself
+add_executable(canvas_test tests/canvas_test.c platform/null/hal_null.c platform/link_udp.c)
+target_compile_options(canvas_test PRIVATE -Wall -Wextra -Werror ${SAN})
+target_link_libraries(canvas_test pinyol_core)
+add_test(NAME canvas_full COMMAND canvas_test) # a canvas with no see-through pixel copied without its mask, the same pixels
 add_executable(ppu_golden_test tests/ppu_golden_test.c platform/null/hal_null.c platform/link_udp.c)
 target_compile_options(ppu_golden_test PRIVATE -Wall -Wextra -Werror ${SAN})
 target_link_libraries(ppu_golden_test pinyol_core)

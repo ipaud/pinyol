@@ -101,6 +101,19 @@ void gfx_canvas_mask(asset *a, int x, int y, int w, int h) {
             else row[i >> 3] |= (uint8_t)(0x80 >> (i & 7));
         }
     }
+    /* full: every bit set (a whole-screen glass, a backdrop). The screen's strips then copy it as a plain picture: no
+     * mask line read per row, no bit tested per pixel. The bits past the width in each row's last byte are 0. */
+    a->full = true;
+    const int last = a->w & 7 ? (uint8_t)(0xFF00 >> (a->w & 7)) : 0xFF;
+    for (int j = 0; j < a->h && a->full; j++) {
+        const uint8_t *row = a->mask + (size_t)j * stride;
+        for (int b = 0; b < stride - 1; b++)
+            if (row[b] != 0xFF) {
+                a->full = false;
+                break;
+            }
+        if ((row[stride - 1] & last) != last) a->full = false;
+    }
 }
 
 /* shade() on a canvas: darker by half, but its see-through pixels stay see-through (halved, a colour never comes

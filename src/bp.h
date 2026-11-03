@@ -156,6 +156,7 @@ typedef struct {
     bool invalid_mask;
     bool canvas;      /* made by the game while it runs (gfx_canvas): its pixels change */
     uint32_t gen;     /* a canvas: one more each time it is drawn on, so what was made from it is made again */
+    bool full;        /* a canvas with no see-through pixel: copied without reading its mask (gfx_canvas_mask keeps it) */
     /* packed (tools/png2asset.py --packed): a palette and each frame's columns, only their opaque runs */
     uint8_t *pk;            /* the .pk file, checked whole when loaded */
     const uint16_t *pal;    /* its colours (RGB565), in pk */

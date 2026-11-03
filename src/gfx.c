@@ -387,6 +387,7 @@ const char *gfx_canvas(const char *id, int w, int h, const asset *from, asset **
             a->pixels[y * w + x] = from && gfx_opaque(from, 0, x, y) ? v : CANVAS_KEY;
         }
     memset(a->mask, 0, (size_t)stride * h);
+    a->full = false;
     if (from) gfx_canvas_mask(a, 0, 0, w, h);
     a->gen++;
     *out = a;
@@ -614,13 +615,14 @@ static void blit_plain(surface *s, const asset *a, int frame, int x, int y, int 
     if (n <= 0 || m <= 0) return;
     const uint16_t *src = a->pixels + (size_t)frame * a->w * a->h;
     int stride = (a->w + 7) / 8, xs = step_x(s);
-    const uint8_t *mask = a->mask ? a->mask + (size_t)frame * stride * a->h : NULL;
+    const uint8_t *mask = a->mask && !a->full ? a->mask + (size_t)frame * stride * a->h : NULL;
     const int ys = step_y(s);
     if (!half && (ys == 1 || ys == -1) && xs != 1 && xs != -1) {
         /* a turned strip: each destination column is contiguous but the picture's rows are not. Taken a column at a time the picture is
          * read with a stride of its width (a PSRAM cache miss for every pixel: 34 ms for 448x288, measured); taken in blocks of PBLK
-         * columns, each row's PBLK pixels are one cache line, read once and put in PBLK columns of the strip, which is fast memory */
-        enum { PBLK = 16 };
+         * columns, each row's PBLK pixels are one cache line (64 bytes on the console), read once and put in PBLK columns of the
+         * strip, which is fast memory. A strip is 32 columns: one block. */
+        enum { PBLK = 32 };
         for (int ub = u0; ub < u0 + n; ub += PBLK) {
             const int nb = u0 + n - ub < PBLK ? u0 + n - ub : PBLK;
             uint16_t *dc[PBLK];

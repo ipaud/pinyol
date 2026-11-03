@@ -926,6 +926,12 @@ is on. With the miner holding both hands and the balls going: 57.7 to 60.0 fps, 
 memory 62 KB. The cause of the canvas cost was not looked for; the data cache was made 32 KB and the code run from PSRAM on 22 October
 (95efeb7), after the 14 October measurements.
 
+**3 November, not yet measured on the board.** A canvas showed with `img()` goes the unpacked way (`blit_plain`): on a turned strip it
+read its pixels in blocks of 16 columns (half a 64-byte cache line, so each line twice) and, for every row, a line of its mask, testing a
+bit a pixel. Now a canvas with no see-through pixel (`asset.full`, kept by `gfx_canvas_mask` and set by raycast, voxels and clips) is
+copied without its mask, and the blocks are 32 columns (a strip, one line a row). Pixel-identical (`tests/canvas_test.c`). Whether this is
+the 10 fps is for the board to say: show huevos (tests/games) and the C480 test again.
+
 
 ## 2026-10-23 · Game Boy Advance platformer (Botín) on the console: what a layer costs
 
