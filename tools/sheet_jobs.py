@@ -37,6 +37,7 @@ class Job:
     prompt: str
     out: Path
     ref: Path | None = None
+    size: str | None = None  # "1536x1024": the bridge's --size (with a ref, the bridge keeps the ref's size and shape instead)
 
 
 def sheet(prompt: str) -> str:
@@ -78,7 +79,7 @@ def ask(job: Job, tries: int = 2) -> bool:
         return True
     job.out.parent.mkdir(parents=True, exist_ok=True)
     for _ in range(tries):
-        cmd = [str(BRIDGE), job.prompt, str(job.out)] + (["--ref", str(job.ref)] if job.ref else [])
+        cmd = [str(BRIDGE), job.prompt, str(job.out)] + (["--ref", str(job.ref)] if job.ref else []) + (["--size", job.size] if job.size else [])
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=1500)
         if done(job.out):
             print("ok", job.out.name, flush=True)
