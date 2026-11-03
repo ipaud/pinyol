@@ -1603,7 +1603,7 @@ void draw_free(void) {
 bool draw_covers_screen(void) {
     const ov_cmd *c = nov ? &ov[0] : NULL;
     int k = c && c->op == OV_IMG ? c->scale : 0;
-    bool opaque = c && c->a && (c->a->pk && !c->a->pixels ? c->a->pk_opaque : !c->a->mask);
+    bool opaque = c && c->a && (c->a->pk && !c->a->pixels ? c->a->pk_opaque : !c->a->mask || c->a->full); /* (a canvas with no see-through pixel too) */
     return k && !c->ext && !c->flip && opaque && c->x <= 0 && c->y <= 0 && c->x + k * c->a->w >= SCREEN_W &&
            c->y + k * c->a->h >= SCREEN_H;
 }
