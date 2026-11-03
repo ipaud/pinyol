@@ -441,6 +441,7 @@ moves, culls, tests and draws them in C: 300 orbs and more at 60 frames a second
 | `s:draw(picture [, frame] [, {frame, alpha, add, sub, quarter, by_life}])` | each drawn centred on its point: one command for them all (the camera applies). With `alpha`, `add`, `sub` or `quarter` (as `img`'s) a packed picture meets what is under it: rain that adds its light, sparks, a crowd half seen through; each mixed pixel costs about three plain ones. A picture that is not packed (a canvas) is drawn as it is. `by_life = true` takes the picture's frames from first to last as each one's life runs out (a spark that cools, a puff that fades: one command a frame in use) |
 | `s:hit(x, y, w, h [, keep])` | how many are in that box; they go, unless `keep` |
 | `n, i, dx, dy = s:near(x, y, r)` | how many are within `r` of x, y, and the nearest: its index and where it is from x, y (only `n`, 0, when none): a pilot dodging bullets without walking the swarm in Lua |
+| `n = s:collect(x, y, w, h, t)` | those in the box written into `t`, four numbers each from `t[1]` (x, y, vx, vy); how many: everything a pilot or a homing shot needs to look at, in one call instead of a `get` a bullet (what is past `4 * n` in `t` is left as it was) |
 | `#s`, `s:get(i)`, `s:set(i, x, y [, vx, vy])`, `s:remove(i)`, `s:clear()` | how many; one of them, 1 to `#s` (x, y, vx, vy, life); move one; take one out; all out |
 
 ```lua

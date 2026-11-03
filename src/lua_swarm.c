@@ -12,6 +12,7 @@
  *                                                  -- as each one's life runs out (a spark cooling)
  *   orbs:hit(x, y, w, h [, keep])                  -- how many are in that box; they go, unless keep
  *   orbs:near(x, y, r)                             -- how many within r, and the nearest: its index, dx, dy (or nil)
+ *   orbs:collect(x, y, w, h, t)                    -- those in the box into t (x, y, vx, vy each, from t[1]); how many
  *   orbs:get(i) / orbs:set(i, x, y [, vx, vy])     -- one of them, 1..#orbs; orbs:remove(i); orbs:clear(); #orbs
  */
 #include "lua_api.h"
@@ -173,6 +174,24 @@ static int l_hit(lua_State *L) {
     return 1;
 }
 
+static int l_collect(lua_State *L) { /* those in the box into t, four numbers each (x, y, vx, vy); how many: a pilot's look, one call */
+    swarm *s = check(L);
+    const float x = fin(luaL_checknumber(L, 2)), y = fin(luaL_checknumber(L, 3));
+    const float w = fin(luaL_checknumber(L, 4)), h = fin(luaL_checknumber(L, 5));
+    luaL_checktype(L, 6, LUA_TTABLE);
+    int n = 0;
+    for (int i = 0; i < s->n; i++) {
+        if (s->x[i] < x || s->x[i] >= x + w || s->y[i] < y || s->y[i] >= y + h) continue;
+        lua_pushnumber(L, s->x[i]), lua_rawseti(L, 6, 4 * n + 1);
+        lua_pushnumber(L, s->y[i]), lua_rawseti(L, 6, 4 * n + 2);
+        lua_pushnumber(L, s->vx[i]), lua_rawseti(L, 6, 4 * n + 3);
+        lua_pushnumber(L, s->vy[i]), lua_rawseti(L, 6, 4 * n + 4);
+        n++;
+    }
+    lua_pushinteger(L, n);
+    return 1;
+}
+
 static int l_get(lua_State *L) {
     swarm *s = check(L);
     int i = index_arg(L, s);
@@ -207,7 +226,7 @@ static int l_len(lua_State *L) {
 }
 
 void swarm_register(lua_State *L) {
-    static const luaL_Reg M[] = {{"add", l_add}, {"step", l_step}, {"draw", l_draw}, {"hit", l_hit}, {"near", l_near}, {"get", l_get},
+    static const luaL_Reg M[] = {{"add", l_add}, {"step", l_step}, {"draw", l_draw}, {"hit", l_hit}, {"near", l_near}, {"collect", l_collect}, {"get", l_get},
                                  {"set", l_set}, {"remove", l_remove}, {"clear", l_clear}, {NULL, NULL}};
     luaL_newmetatable(L, "pinyol.swarm");
     lua_newtable(L);

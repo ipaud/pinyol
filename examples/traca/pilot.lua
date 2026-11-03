@@ -20,22 +20,17 @@ for dy = -1, 1 do
   end
 end
 
-local bx, by, bvx, bvy, br = {}, {}, {}, {}, {}
+local bx, by, bvx, bvy, br, near = {}, {}, {}, {}, {}, {}
 local last, last_bomb = nil, -99
 
 local function gather(P)
   local me, n = P.me, 0
-  for k, s in ipairs(P.BULLETS) do
-    if s:hit(me.x - 50, me.y - 70, 100, 110, true) > 0 then
-      local r = P.BULLET_R[k] + 1.8
-      for i = 1, #s do
-        local x, y, vx, vy = s:get(i)
-        local dx, dy = x - me.x, y - me.y
-        if dx > -50 and dx < 50 and dy > -70 and dy < 40 then
-          n = n + 1
-          bx[n], by[n], bvx[n], bvy[n], br[n] = x, y, vx, vy, r
-        end
-      end
+  for k, s in ipairs(P.BULLETS) do -- the bullets near enough to matter, in one call a swarm
+    local m = s:collect(me.x - 50, me.y - 70, 100, 110, near)
+    local r = P.BULLET_R[k] + 1.8
+    for i = 0, m - 1 do
+      n = n + 1
+      bx[n], by[n], bvx[n], bvy[n], br[n] = near[4 * i + 1], near[4 * i + 2], near[4 * i + 3], near[4 * i + 4], r
     end
   end
   for _, f in ipairs(P.foes) do -- a foe is a bullet too: touching it hurts
