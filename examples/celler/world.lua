@@ -14,9 +14,9 @@ local BLOCKS = {barrel = true, demijohn = true}
 W.WALL = WALL
 
 W.SPEED, W.BACK, W.TURN, W.R = 0.066, 0.045, 3.2, 0.22
-W.WAX_TICK = 100 / (60 * 150)       -- a candle lasts two minutes and a half
+W.WAX_TICK = 100 / (60 * 200)       -- a candle lasts three minutes and a bit
 W.RAISED = 2.5                      -- the lantern held up burns that much faster
-W.BLOW = 18                         -- what a ghost cork's breath takes from the candle
+W.BLOW = 15                         -- what a ghost cork's breath takes from the candle
 W.CANDLE = 45
 W.GHOST_SPEED, W.FLEE_SPEED = 0.024, 0.04
 W.SHOT_SPEED = 0.3
@@ -220,8 +220,9 @@ local function walk()
   local a = math.rad(P.a)
   if W.btn("b") and side ~= 0 then -- B held: a step aside
     move(-math.sin(a) * side * 0.05, math.cos(a) * side * 0.05)
-  else
-    P.a = (P.a + side * W.TURN) % 360
+  else -- turning starts slow and gathers speed: a tap turns a little (aiming), a held button turns fast
+    P.turn = side ~= 0 and (P.turn or 0) + 1 or 0
+    P.a = (P.a + side * (1.2 + (W.TURN - 1.2) * math.min(1, P.turn / 14))) % 360
   end
   if fwd ~= 0 then
     local sp = fwd > 0 and W.SPEED or -W.BACK

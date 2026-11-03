@@ -96,7 +96,7 @@ tick 5
 expect_lua state == "intro" and G.level == 3 and G.matches == 3 and G.wax == 100
 # the rest of the night by the autopilot
 lua AUTO = true
-tick 9000
+tick 12000
 expect_lua state == "dawn"
 expect_lua achievements()[8].done
 tick 100

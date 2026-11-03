@@ -86,7 +86,8 @@ local function angle_to(x, y)
 end
 
 local function steer(out, diff, walk)
-  if diff > 6 then out.right = true elseif diff < -6 then out.left = true end
+  local fine = math.abs(diff) < 20 and ticks() % 2 == 1 -- near: a turn every other tick, slow and exact
+  if not fine then if diff > 6 then out.right = true elseif diff < -6 then out.left = true end end
   if walk and math.abs(diff) < 30 then out.up = true end
 end
 

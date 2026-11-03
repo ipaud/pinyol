@@ -11,8 +11,8 @@ Decided without asking (Pau: "hazlo todo sin preguntar").
 - Where it lives: the card and the web (es/ca/en, cover, test); no big raw pictures drawn with img.
 - Size: five galleries (ramp, bottle racks, barrel hall, riddling racks, old well), about 2.5 min for a perfect player, 4-6 for a person.
 - Controls: d-pad walk/turn (B held: step aside), A cork, B open/lever/push, C held lantern up, START map.
-- Rules: the candle is the fog distance (it burns down; a fresh one at every stair, candles on the floor, 3 matches relight it);
-  a ghost cork that reaches you blows 18 % of it; the lantern held up sees further and scares them but burns 2.5x.
+- Rules: the candle is the fog distance (three minutes of light; it burns down; a fresh one at every stair, candles on the floor, 3 matches relight it);
+  a ghost cork that reaches you blows 15 % of it; the lantern held up sees further and scares them but burns 2.5x.
 - Era tricks used that laberinto did not: doors that slide in their frames with jambs (engine: raycast doors, this branch), a secret rack,
   levers and gates, grid fov for the map (revealed by the candle's reach), grid sees/distances/rescan for the ghost corks (chase, flee),
   lib/light on the status bar's face (palette entries as surfaces, lit by the flame), voxels for the dawn over the vineyards,
