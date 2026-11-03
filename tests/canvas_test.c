@@ -77,6 +77,13 @@ int main(void) {
     a->pixels[17 * CW + 60] = 0x0F0F;
     gfx_canvas_mask(a, 60, 17, 1, 1);
     CHECK(a->full);
+    /* a mask worked out eight pixels a byte: the same as one at a time, with a box that starts and ends inside bytes */
+    for (int i = 0; i < CW * CH; i++) a->pixels[i] = (i * 2654435761u) % 7 == 0 ? CANVAS_KEY : (uint16_t)(i | 1);
+    gfx_canvas_mask(a, 3, 2, CW - 5, CH - 4);
+    int bad = 0;
+    for (int y = 2; y < CH - 2; y++)
+        for (int x = 3; x < CW - 2; x++) bad += !gfx_opaque(a, 0, x, y) != (a->pixels[y * CW + x] == CANVAS_KEY);
+    CHECK(bad == 0 && !a->full);
     printf("canvas_test: %d checks, %d failed\n", checks, failures);
     return failures != 0;
 }

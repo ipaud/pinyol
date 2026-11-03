@@ -93,10 +93,21 @@ void gfx_canvas_mask(asset *a, int x, int y, int w, int h) {
     if (!a->mask) return;
     int i0, j0, n = clip(x, w, 0, a->w, &i0), m = clip(y, h, 0, a->h, &j0), stride = (a->w + 7) / 8;
     if (n <= 0 || m <= 0) return;
+    const int xa = x + i0, xb = x + i0 + n; /* the columns, ends excluded */
     for (int j = y + j0; j < y + j0 + m; j++) {
         const uint16_t *p = a->pixels + (size_t)j * a->w;
         uint8_t *row = a->mask + (size_t)j * stride;
-        for (int i = x + i0; i < x + i0 + n; i++) {
+        int i = xa;
+        for (; i < xb && (i & 7); i++) { /* to a whole byte */
+            if (p[i] == CANVAS_KEY) row[i >> 3] &= (uint8_t)~(0x80 >> (i & 7));
+            else row[i >> 3] |= (uint8_t)(0x80 >> (i & 7));
+        }
+        for (; i + 8 <= xb; i += 8) { /* eight pixels a byte, one write (the canvas is in slow memory: each write is dear) */
+            const uint16_t *q = p + i;
+            row[i >> 3] = (uint8_t)((q[0] != CANVAS_KEY) << 7 | (q[1] != CANVAS_KEY) << 6 | (q[2] != CANVAS_KEY) << 5 | (q[3] != CANVAS_KEY) << 4 |
+                                    (q[4] != CANVAS_KEY) << 3 | (q[5] != CANVAS_KEY) << 2 | (q[6] != CANVAS_KEY) << 1 | (q[7] != CANVAS_KEY));
+        }
+        for (; i < xb; i++) {
             if (p[i] == CANVAS_KEY) row[i >> 3] &= (uint8_t)~(0x80 >> (i & 7));
             else row[i >> 3] |= (uint8_t)(0x80 >> (i & 7));
         }

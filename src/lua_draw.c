@@ -1462,6 +1462,7 @@ static int l_cls(lua_State *L) { /* cls([colour]): the canvas see-through (or th
     if (npx & 1) target->pixels[npx - 1] = col;
     target->gen++;
     memset(target->mask, col == CANVAS_KEY ? 0 : 0xFF, (size_t)((target->w + 7) / 8) * target->h);
+    target->full = col != CANVAS_KEY;
     return 0;
 }
 
