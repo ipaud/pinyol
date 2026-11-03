@@ -253,6 +253,8 @@ def main() -> None:
     p.add_argument("--packed", action="store_true",
                    help="packed: a palette and only the opaque runs, column by column; up to 7x smaller and faster to "
                         "draw at the screen's full resolution (big characters, many frames, wide backgrounds)")
+    p.add_argument("--plain", action="store_true",
+                   help="kept plain on purpose (read a pixel at a time: raycast walls and sprites, voxels maps, quad pictures): no warning")
     p.add_argument("--colours", type=int, help="with --packed: at most this many colours (16: 4 bits a pixel, as a "
                                               "Neo Geo sprite); more are drawn: quantized")
     a = p.parse_args()
@@ -324,9 +326,9 @@ def convert(a: argparse.Namespace, p: argparse.ArgumentParser) -> None:
         return
     export(a.assets, a.id, frames, a.ms, anchor, a.type)
     print(f"{a.assets / a.id}: {a.frames} frame(s) of {fw}x{img.height}")
-    if img.width * img.height * 2 >= SLOW_RAW and (img.width, img.height) != (480, 320) and len(img.getcolors(1 << 16) or range(257)) <= 256:
+    if not a.plain and img.width * img.height * 2 >= SLOW_RAW and (img.width, img.height) != (480, 320) and len(img.getcolors(1 << 16) or range(257)) <= 256:
         print(f"warning: {a.id} is a raw {fw}x{img.height} picture: the console's strips are turned, so a raw RGB565 picture that is not the whole screen "
-              f"is drawn pixel by pixel across them (34 ms measured for 448x288 in Socavon, 12 fps; Cromota's 56 drops and 6 paintings as raw sheets: 32 fps, packed 56); add --packed (same picture, 4x smaller)",
+              f"is drawn pixel by pixel across them (34 ms measured for 448x288 in Socavon, 12 fps; Cromota's 56 drops and 6 paintings as raw sheets: 32 fps, packed 56); add --packed (same picture, 4x smaller), or --plain if raycast, voxels or quad reads it",
               file=sys.stderr)
 
 

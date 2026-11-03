@@ -3,8 +3,8 @@
 -- GBA and DS era did; the library turns the lamp's direction into the entries' colours, so a ball, a cave or a
 -- face turns towards a torch that moves, with no shading drawn by hand.
 --
---   local light = require("light")
---   local ball = light.new({
+--   local lamp = require("light")   -- (not `local light`: that name would hide the light() of docs/lua.md, which draws a glow)
+--   local ball = lamp.new({
 --     bank = 2, obj = true,                           -- the sprites' palette, bank 2 (entries 32..47); obj = false: the backgrounds'
 --     base = {[1] = 0xD04030, [2] = 0xD04030, [3] = 0xD04030, [4] = 0x402020},  -- each entry's colour in flat light
 --     normals = {[1] = {0, -1, 0.3}, [2] = {0.7, -0.7, 0.3}, [3] = {0, 0, 1}, [4] = {0, 1, 0.3}},  -- which way each faces: x right, y down, z out
@@ -13,7 +13,7 @@
 --   ball:set(lamp_x - ball_x, lamp_y - ball_y, 40)    -- the lamp, from the thing's centre (any scale: it is normalised)
 --   ball:set(nil)                                     -- flat light: the base colours
 --
--- light.shade(normal, dir, ambient) -> 0..1 is the lighting of one surface, for a game that wants the number.
+-- lamp.shade(normal, dir, ambient) -> 0..1 is the lighting of one surface, for a game that wants the number.
 local M = {}
 local L = {}
 L.__index = L

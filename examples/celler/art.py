@@ -697,13 +697,13 @@ def main() -> None:
              "lever": lever(False), "lever_on": lever(True), "stairs": stairs(), "way_out": way_out()}
     for name, img in walls.items():
         img.save(ART / f"wall_{name}.png")
-        convert(f"wall_{name}.png", f"TEX_{name.upper()}", "--type", "background")
+        convert(f"wall_{name}.png", f"TEX_{name.upper()}", "--type", "background", "--plain")
     things = {"ghost": strip([ghost_cork(i) for i in range(4)]), "cork": cork_floor(), "cork_fly": cork_flying(),
               "key": key(), "candle": strip([candle(0), candle(1)]), "bottle": bottle(), "reserva": bottle(True),
               "barrel": barrel(), "demijohn": demijohn()}
     for name, img in things.items():
         img.save(ART / f"{name}.png")
-        convert(f"{name}.png", f"SPR_{name.upper()}", "--frames", str(img.width // S), "--anchor", "16,31")
+        convert(f"{name}.png", f"SPR_{name.upper()}", "--frames", str(img.width // S), "--anchor", "16,31", "--plain")
     strip([cork_gun(0), cork_gun(1)]).save(ART / "gun.png")
     convert("gun.png", "HUD_GUN", "--frames", "2", "--packed")
     strip([lantern(i) for i in range(4)]).save(ART / "lantern.png")
@@ -719,8 +719,8 @@ def main() -> None:
     hm, cm = dawn_maps()
     hm.save(ART / "dawn_height.png")
     cm.save(ART / "dawn_colour.png")
-    convert("dawn_height.png", "DAWN_H", "--type", "background")
-    convert("dawn_colour.png", "DAWN_C", "--type", "background")
+    convert("dawn_height.png", "DAWN_H", "--type", "background", "--plain")
+    convert("dawn_colour.png", "DAWN_C", "--type", "background", "--plain")
     sys.path.insert(0, str(ROOT / "tools"))
     import font2fnt
     font2fnt.make_pack("dos_vga", str(HERE))
