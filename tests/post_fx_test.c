@@ -24,6 +24,59 @@ static void stripes(void) { /* a picture whose every row is told apart by its co
         for (int x = 0; x < W; x++) px[y * W + x] = (uint16_t)(x + 1);
 }
 
+/* A zone on the screen (distort with screen = true): each column of the rectangle moves up or down, and the console's turned strips, both
+ * ways round and both byte orders, show the same pixels as one plain buffer. */
+enum { SW = 96, SH = 64 };
+static void screen_draw(uint16_t *out, bool turned, bool flip, bool swap) {
+    for (int y = 0; y < SH; y++)
+        for (int x = 0; x < SW; x++) {
+            const uint16_t c = (uint16_t)(y * 128 + x + 1);
+            if (!turned) out[y * SW + x] = c;
+        }
+    if (!turned) {
+        surface s = {.px = out, .w = SW, .h = SH};
+        post_screen(&s);
+        return;
+    }
+    for (int r0 = 0; r0 < SW; r0 += 32) {
+        surface t = gfx_turned(out + (size_t)r0 * SH, r0, 32, SW, SH, flip, swap);
+        for (int y = 0; y < SH; y++)
+            for (int x = t.x0; x < t.x0 + t.w; x++) gfx_fill(&t, x, y, 1, 1, (uint16_t)(y * 128 + x + 1));
+        post_screen(&t);
+    }
+}
+
+static void screen_zone(void) {
+    static uint16_t a[SW * SH], b[SW * SH], plain[SW * SH];
+    post_screen_reset();
+    post_screen_zone(20, 10, 70, 40, false, 4, 0.3f, 16);
+    screen_draw(plain, false, false, false);
+    int moved = 0, outside = 0;
+    for (int y = 0; y < SH; y++)
+        for (int x = 0; x < SW; x++) {
+            const uint16_t c = plain[y * SW + x], was = (uint16_t)(y * 128 + x + 1);
+            const bool in = x >= 20 && x <= 70 && y >= 10 && y <= 40;
+            if (!in) outside += c != was;
+            else if (c != was) {
+                moved++;
+                CHECK((c - 1) % 128 == x, "a pixel stays in its column, (%d,%d) got %04x", x, y, c);
+            }
+        }
+    CHECK(moved > 0 && outside == 0, "the zone moves pixels (%d) and nothing outside it (%d)", moved, outside);
+    for (int flip = 0; flip < 2; flip++)
+        for (int swap = 0; swap < 2; swap++) {
+            memset(a, 0, sizeof a);
+            screen_draw(a, true, flip, swap);
+            for (int r0 = 0; r0 < SW; r0 += 32) { /* the plain result put through the same strips, to compare */
+                surface t = gfx_turned(b + (size_t)r0 * SH, r0, 32, SW, SH, flip, swap);
+                for (int y = 0; y < SH; y++)
+                    for (int x = t.x0; x < t.x0 + t.w; x++) gfx_fill(&t, x, y, 1, 1, plain[y * SW + x]);
+            }
+            CHECK(!memcmp(a, b, sizeof a), "turned strips (flip %d swap %d) as the plain screen", flip, swap);
+        }
+    post_screen_reset();
+}
+
 int main(void) {
     post_free();
     stripes(), memcpy(ref, px, sizeof px);
@@ -82,6 +135,7 @@ int main(void) {
     post_apply(px, W, H);
     CHECK(px[5] == 0 && !post_any(), "crt off leaves the picture alone");
     post_free();
+    screen_zone();
     if (failures) return fprintf(stderr, "post_fx: %d failure(s)\n", failures), 1;
     puts("post_fx: ok");
     return 0;

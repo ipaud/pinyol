@@ -877,11 +877,12 @@ static int l_haze(lua_State *L) {
 
 /* distort(x, y, w, h [, {kind = "heat" | "water", amp, phase, period, speed}]): a rectangle of the world's picture that sways (heat: each row sideways
  * by amp * sin(y / period + phase)) or wobbles (water: also each column up and down), for this frame. `speed` makes it move by itself, in cycles a
- * second; or move `phase` yourself. Up to four a frame; do not overlap them. In the picture's own pixels (240 x 160). */
+ * second; or move `phase` yourself. Up to four a frame; do not overlap them. In the picture's own pixels (240 x 160). screen = true: on the
+ * whole screen instead (480 x 320, over img() and text), where each column moves up and down (the panel is drawn a column strip at a time). */
 static int l_distort(lua_State *L) {
     const int x = num(L, 1), y = num(L, 2), w = num(L, 3), h = num(L, 4);
     float amp = 2, phase = 0, period = 12, speed = 0;
-    bool water = false;
+    bool water = false, screen = false;
     if (lua_istable(L, 5)) {
         lua_getfield(L, 5, "kind");
         if (lua_isstring(L, -1)) {
@@ -894,9 +895,10 @@ static int l_distort(lua_State *L) {
         lua_getfield(L, 5, "phase"), phase = (float)luaL_optnumber(L, -1, 0), lua_pop(L, 1);
         lua_getfield(L, 5, "period"), period = (float)luaL_optnumber(L, -1, 12), lua_pop(L, 1);
         lua_getfield(L, 5, "speed"), speed = (float)luaL_optnumber(L, -1, 0), lua_pop(L, 1);
+        lua_getfield(L, 5, "screen"), screen = lua_toboolean(L, -1), lua_pop(L, 1);
     }
     amp = amp < -64 ? -64 : amp > 64 ? 64 : amp;
-    post_zone(x, y, x + w - 1, y + h - 1, water, amp, phase + 6.2831853f * speed * post_time(), period);
+    (screen ? post_screen_zone : post_zone)(x, y, x + w - 1, y + h - 1, water, amp, phase + 6.2831853f * speed * post_time(), period);
     return 0;
 }
 
@@ -1988,6 +1990,7 @@ void v2_tick(void) {
 void v2_draw_world(void) {
     meter_frame();
     draw_frame_begin();
+    post_screen_reset();
     uint32_t t = hal_micros();
     if (splash_own()) splash_frame_begin(), splash_call("draw", splash_ticks(), NULL); /* the game's careta */
     else {
@@ -2036,6 +2039,7 @@ void v2_draw(surface *s) {
     draw_profile(1u, meter.on); /* (the commands are timed only while the meter is up) */
     draw_overlay(s);
     if (meter.on) meter_draw(s);
+    post_screen(s); /* distort(..., {screen = true}) */
     if (post_scan() < 256) gfx_scanlines(s, post_scan()); /* crt(): over everything the game drew, under the console's own menu */
     sysmenu_draw(s); /* the console's menu, or the crash screen with the whole error, over everything */
 }

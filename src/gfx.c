@@ -943,6 +943,30 @@ void gfx_scanlines(surface *s, int k) {
     (void)ys;
 }
 
+/* Columns xa..xb of rows y0..y1 moved down by dy[x - xa] (up when negative), what shows through read from the same column of the window
+ * (from above or below the rows, so the rows' ends do not repeat), held to the window's ends. Along a turned strip a column is contiguous. */
+void gfx_lift(surface *s, int xa, int y0, int xb, int y1, const int8_t *dy) {
+    const int ya = y0 > s->y0 ? y0 : s->y0, yb = y1 < s->y0 + s->h - 1 ? y1 : s->y0 + s->h - 1, ys = step_y(s);
+    if (ya > yb) return;
+    uint16_t col[SCREEN_H + 256];
+    for (int x = xa < s->x0 ? s->x0 : xa; x <= xb && x < s->x0 + s->w; x++) {
+        const int d = dy[x - xa];
+        if (!d) continue;
+        int ra = ya - d, rb = yb - d; /* the rows read */
+        ra = ra < s->y0 ? s->y0 : ra, rb = rb > s->y0 + s->h - 1 ? s->y0 + s->h - 1 : rb;
+        const int lo = ra < ya ? ra : ya, hi = rb > yb ? rb : yb;
+        if (hi - lo + 1 > (int)(sizeof col / sizeof *col)) continue;
+        const uint16_t *p = at(s, x, lo);
+        for (int y = lo; y <= hi; y++, p += ys) col[y - lo] = *p;
+        uint16_t *q = at(s, x, ya);
+        for (int y = ya; y <= yb; y++, q += ys) {
+            int r = y - d;
+            r = r < s->y0 ? s->y0 : r > s->y0 + s->h - 1 ? s->y0 + s->h - 1 : r;
+            *q = col[r - lo];
+        }
+    }
+}
+
 void gfx_upscale2x(const surface *src, surface *dst) {
     if (step_x(dst) == 1 && !dst->x0 && !dst->y0) { /* the whole frame, row after row */
         for (int y = 0; y < src->h; y++) {

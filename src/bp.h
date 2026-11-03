@@ -225,6 +225,7 @@ void gfx_fill(surface *s, int x, int y, int w, int h, uint16_t c);
 void gfx_frame(surface *s, int x, int y, int w, int h, uint16_t c);
 void gfx_shade(surface *s, int x, int y, int w, int h); /* darken by half */
 void gfx_scanlines(surface *s, int k); /* every second row of the frame keeps k/256 of its brightness (a tube's scanlines) */
+void gfx_lift(surface *s, int xa, int y0, int xb, int y1, const int8_t *dy); /* columns moved up and down by dy (post_screen) */
 void gfx_upscale2x(const surface *src, surface *dst);
 void gfx_copy1x(const surface *src, surface *dst, int ox, int oy); /* src as it is, its top-left at (ox, oy) of the frame dst is a window of */
 /* The same, leaving dst as it is wherever src has the key colour: a world drawn over a full-resolution background */

@@ -18,6 +18,8 @@ static int nshocks;
 typedef struct { int x0, y0, x1, y1; float amp, phase, period; bool water; } zone_t;
 static zone_t zones[MAX_ZONES];
 static int nzones;
+static zone_t szones[MAX_ZONES]; /* on the screen (post_screen_zone) */
+static int nszones;
 static struct { float scan, persist; bool on; } crt;
 static uint16_t *phos; /* the last frame as the phosphor still glows it (persistence) */
 static int phos_n;
@@ -32,6 +34,7 @@ void post_reset(void) {
 
 void post_free(void) { /* a game ended */
     post_reset();
+    nszones = 0;
     free(copy), copy = NULL, copy_n = 0;
     free(phos), phos = NULL, phos_n = 0;
     crt.on = false, frames = 0;
@@ -56,6 +59,35 @@ void post_zone(int x0, int y0, int x1, int y1, bool water, float amp, float phas
     if (y1 < y0) { int t = y0; y0 = y1, y1 = t; }
     if (x1 < x0) { int t = x0; x0 = x1, x1 = t; }
     zones[nzones++] = (zone_t){x0, y0, x1, y1, amp, phase, period > 0.01f ? period : 0.01f, water};
+}
+
+void post_screen_zone(int x0, int y0, int x1, int y1, bool water, float amp, float phase, float period) {
+    if (nszones >= MAX_ZONES) return;
+    if (y1 < y0) { int t = y0; y0 = y1, y1 = t; }
+    if (x1 < x0) { int t = x0; x0 = x1, x1 = t; }
+    szones[nszones++] = (zone_t){x0, y0, x1, y1, amp, phase, period > 0.01f ? period : 0.01f, water};
+}
+
+static bool ticked; /* post_apply counted this frame */
+
+void post_screen_reset(void) { /* (a game with only screen zones counts its frames here, for their speed) */
+    if (nszones && !ticked) frames++;
+    nszones = 0, ticked = false;
+}
+
+void post_screen(surface *s) {
+    for (int k = 0; k < nszones; k++) {
+        const zone_t *z = &szones[k];
+        const int xa = z->x0 > s->x0 ? z->x0 : s->x0, xb = z->x1 < s->x0 + s->w - 1 ? z->x1 : s->x0 + s->w - 1;
+        if (xa > xb) continue;
+        int8_t dy[SCREEN_W]; /* each column's lift, worked out for the window's columns only (a strip: 32) */
+        for (int x = xa; x <= xb; x++) {
+            float d = z->amp * sinf((float)x / z->period * 6.2831853f + z->phase);
+            if (z->water) d = d * 0.5f + z->amp * 0.5f * sinf((float)x / (z->period * 0.37f) * 6.2831853f - z->phase * 1.7f);
+            dy[x - xa] = (int8_t)lroundf(d);
+        }
+        gfx_lift(s, xa, z->y0, xb, z->y1, dy);
+    }
 }
 
 void post_haze(int y0, int y1, float amp, float phase, float period) { post_zone(0, y0, 1 << 20, y1, false, amp, phase, period); }
@@ -162,7 +194,7 @@ static void apply_crt(uint16_t *world, int w, int h) {
 
 void post_apply(uint16_t *world, int w, int h) {
     if (!post_any()) return;
-    frames++;
+    frames++, ticked = true;
     if (nzones || nshocks) {
         if (!keep_copy(world, w, h)) { post_reset(); return; }
         for (int k = 0; k < nzones; k++) apply_zone(world, w, h, &zones[k]);
