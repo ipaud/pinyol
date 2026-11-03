@@ -6,6 +6,12 @@ expect_lua (function() local s = swarm(5, {0, 0, 10, 10}) s:add(5, 5, 4, 0) s:ad
 expect_lua (function() local s = swarm(5, {0, 0, 10, 10}) s:add(5, 5, 4, 0) s:step() s:step() return len(s) == 0 end)()
 expect_lua (function() local s = swarm(9) for i = 1, 9 do s:add(i * 10, 50) end return s:hit(15, 0, 30, 100) == 3 and len(s) == 6 and s:hit(0, 0, 999, 999, true) == 6 and len(s) == 6 end)()
 expect_lua (function() local s = swarm(4) s:add(1, 1) s:add(2, 2) s:set(2, 7, 8, 1, -1) s:step() local x, y = s:get(2) s:remove(1) return x == 8 and y == 7 and len(s) == 1 end)()
+# gravity and drag (each tick the speed gains ay and keeps 1 - drag of itself), near, drawing by age
+expect_lua (function() local s = swarm(2, nil, {ay = 1}) s:add(5, 5) s:step() local _, a = s:get(1) s:step() local _, b, _, vy = s:get(1) return a == 6 and b == 8 and vy == 2 end)()
+expect_lua (function() local s = swarm(2, nil, {drag = 0.5}) s:add(5, 5, 4, 0) s:step() return select(1, s:get(1)) == 7 end)()
+expect_lua (function() local s = swarm(4) s:add(0, 0) s:add(3, 4) s:add(10, 0) local n, i, dx, dy = s:near(1, 0, 6) return n == 2 and i == 1 and dx == -1 and dy == 0 and s:near(50, 50, 3) == 0 and select(2, s:near(50, 50, 3)) == nil end)()
+expect_lua (function() local s = swarm(8) for i = 1, 8 do s:add(i * 20, 40, 0, 0, i) end s:step() s:draw("DOT", {by_life = true}) return true end)()
+expect_lua_error swarm(2, nil, {drag = 2})
 expect_lua_error swarm(0)
 expect_lua_error swarm(5000)
 expect_lua_error swarm(2):get(1)

@@ -1417,13 +1417,14 @@ static int l_poly(lua_State *L) { /* poly({x0, y0, x1, y1, ...} [, colour [, fil
 
 /* A swarm's points (lua_swarm.c), each drawn as the picture centred on it: one command for all of them. Only those
  * on the screen (or the canvas) are kept, in the frame's corners (ov_pts); past their room, the rest are not drawn. */
-void draw_points(const asset *a, int frame, const float *x, const float *y, int n) {
+void draw_points(const asset *a, int frame, const float *x, const float *y, const uint16_t *only, int n) {
     ov_cmd *c = ov_add(OV_POINTS);
     if (!c) return;
     const int w = target ? target->w : SCREEN_W, h = target ? target->h : SCREEN_H;
     const int ox = cam_x + a->w / 2, oy = cam_y + a->h / 2;
     c->a = a, c->frame = (int16_t)frame, c->str = (uint16_t)npts;
-    for (int i = 0; i < n && npts + 2 <= OV_PTS; i++) {
+    for (int k = 0; k < n && npts + 2 <= OV_PTS; k++) {
+        const int i = only ? only[k] : k; /* (only: those of the swarm drawn with this frame) */
         int px = (int)floorf(x[i]) - ox, py = (int)floorf(y[i]) - oy;
         if (px + a->w <= 0 || px >= w || py + a->h <= 0 || py >= h) continue;
         ov_pts[npts++] = i16(px), ov_pts[npts++] = i16(py);

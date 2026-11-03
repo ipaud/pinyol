@@ -2,12 +2,15 @@
  * and drawn here in C. In Lua each one costs some microseconds to move and as many to draw, so a few hundred of them
  * take a console's whole frame; a swarm costs one call to step and one to draw them all (docs/lua.md, "Swarms").
  *
- *   local orbs = swarm(600 [, {x0, y0, x1, y1}])   -- room for 600; those that leave the area go (default: the
- *                                                  -- screen and 32 pixels around it)
+ *   local orbs = swarm(600 [, {x0, y0, x1, y1} [, {ax, ay, drag}]])   -- room for 600; those that leave the area go
+ *                                                  -- (default: the screen and 32 pixels around it); each tick their
+ *                                                  -- speed gains ax, ay (gravity) and loses `drag` of itself (air)
  *   orbs:add(x, y, vx, vy [, life])                -- false when full; life in ticks (0 or none: until it leaves)
  *   orbs:step()                                    -- each moves by its speed; those out of the area or of life go
- *   orbs:draw(picture [, frame])                   -- each drawn centred on its point
+ *   orbs:draw(picture [, frame | {by_life = true}])  -- each drawn centred on its point; by_life: the picture's frames
+ *                                                  -- from first to last as each one's life runs out (a spark cooling)
  *   orbs:hit(x, y, w, h [, keep])                  -- how many are in that box; they go, unless keep
+ *   orbs:near(x, y, r)                             -- how many within r, and the nearest: its index, dx, dy (or nil)
  *   orbs:get(i) / orbs:set(i, x, y [, vx, vy])     -- one of them, 1..#orbs; orbs:remove(i); orbs:clear(); #orbs
  */
 #include "lua_api.h"
@@ -17,15 +20,18 @@
 typedef struct {
     int n, cap;
     float x0, y0, x1, y1; /* the area: those that leave it go */
+    float ax, ay, keep;   /* added to the speed each tick, and what is kept of it (1 - drag) */
     float *x, *y, *vx, *vy;
     uint16_t *life;       /* ticks left; 0: no end */
+    uint16_t *life0;      /* the life it was given, for its age */
+    uint16_t *idx;        /* scratch: those drawn with one frame (draw by_life) */
 } swarm;
 
 static swarm *check(lua_State *L) { return luaL_checkudata(L, 1, "pinyol.swarm"); }
 
 static void drop(swarm *s, int i) { /* the last one takes its place: order is not kept, nothing moves */
     int k = --s->n;
-    s->x[i] = s->x[k], s->y[i] = s->y[k], s->vx[i] = s->vx[k], s->vy[i] = s->vy[k], s->life[i] = s->life[k];
+    s->x[i] = s->x[k], s->y[i] = s->y[k], s->vx[i] = s->vx[k], s->vy[i] = s->vy[k], s->life[i] = s->life[k], s->life0[i] = s->life0[k];
 }
 
 static int index_arg(lua_State *L, const swarm *s) {
@@ -34,16 +40,16 @@ static int index_arg(lua_State *L, const swarm *s) {
     return (int)i - 1;
 }
 
-static int l_swarm(lua_State *L) { /* swarm(cap [, {x0, y0, x1, y1}]) */
+static int l_swarm(lua_State *L) { /* swarm(cap [, {x0, y0, x1, y1} [, {ax, ay, drag}]]) */
     lua_Integer cap = luaL_checkinteger(L, 1);
     luaL_argcheck(L, cap >= 1 && cap <= SWARM_MAX, 1, "a swarm holds 1 to 4096");
-    size_t bytes = sizeof(swarm) + (size_t)cap * (4 * sizeof(float) + sizeof(uint16_t));
+    size_t bytes = sizeof(swarm) + (size_t)cap * (4 * sizeof(float) + 3 * sizeof(uint16_t));
     swarm *s = lua_newuserdatauv(L, bytes, 0);
     memset(s, 0, bytes);
     float *f = (float *)(s + 1);
     s->cap = (int)cap, s->x = f, s->y = f + cap, s->vx = f + 2 * cap, s->vy = f + 3 * cap;
-    s->life = (uint16_t *)(f + 4 * cap);
-    s->x0 = -32, s->y0 = -32, s->x1 = SCREEN_W + 32, s->y1 = SCREEN_H + 32;
+    s->life = (uint16_t *)(f + 4 * cap), s->life0 = s->life + cap, s->idx = s->life0 + cap;
+    s->x0 = -32, s->y0 = -32, s->x1 = SCREEN_W + 32, s->y1 = SCREEN_H + 32, s->keep = 1;
     if (lua_istable(L, 2)) {
         float a[4];
         for (int i = 0; i < 4; i++) {
@@ -52,6 +58,12 @@ static int l_swarm(lua_State *L) { /* swarm(cap [, {x0, y0, x1, y1}]) */
             lua_pop(L, 1);
         }
         s->x0 = a[0], s->y0 = a[1], s->x1 = a[2], s->y1 = a[3];
+    }
+    if (lua_istable(L, 3)) {
+        lua_getfield(L, 3, "ax"), s->ax = fin(luaL_optnumber(L, -1, 0)), lua_pop(L, 1);
+        lua_getfield(L, 3, "ay"), s->ay = fin(luaL_optnumber(L, -1, 0)), lua_pop(L, 1);
+        lua_getfield(L, 3, "drag"), s->keep = 1 - fin(luaL_optnumber(L, -1, 0)), lua_pop(L, 1);
+        luaL_argcheck(L, s->keep >= 0 && s->keep <= 1, 3, "drag is 0 to 1");
     }
     luaL_setmetatable(L, "pinyol.swarm");
     return 1;
@@ -64,14 +76,16 @@ static int l_add(lua_State *L) {
     s->x[i] = fin(luaL_checknumber(L, 2)), s->y[i] = fin(luaL_checknumber(L, 3));
     s->vx[i] = fin(luaL_optnumber(L, 4, 0)), s->vy[i] = fin(luaL_optnumber(L, 5, 0));
     lua_Integer life = luaL_optinteger(L, 6, 0);
-    s->life[i] = (uint16_t)(life < 0 ? 0 : life > 65535 ? 65535 : life);
+    s->life[i] = s->life0[i] = (uint16_t)(life < 0 ? 0 : life > 65535 ? 65535 : life);
     lua_pushboolean(L, 1);
     return 1;
 }
 
 static int l_step(lua_State *L) {
     swarm *s = check(L);
+    const bool pushed = s->ax != 0 || s->ay != 0 || s->keep != 1;
     for (int i = 0; i < s->n;) {
+        if (pushed) s->vx[i] = (s->vx[i] + s->ax) * s->keep, s->vy[i] = (s->vy[i] + s->ay) * s->keep;
         s->x[i] += s->vx[i], s->y[i] += s->vy[i];
         bool gone = s->x[i] < s->x0 || s->x[i] >= s->x1 || s->y[i] < s->y0 || s->y[i] >= s->y1;
         if (s->life[i] && --s->life[i] == 0) gone = true;
@@ -86,9 +100,44 @@ static int l_draw(lua_State *L) {
     const char *id = luaL_checkstring(L, 2);
     asset *a = safe_name(id) ? gfx_asset(id) : NULL;
     if (!a || a->missing) return 0;
+    if (lua_istable(L, 3)) {
+        lua_getfield(L, 3, "by_life");
+        const bool by_life = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+        if (by_life && a->frames > 1) { /* one command a frame: those of each age together (a frame with none: no command) */
+            for (int f = 0; f < a->frames; f++) {
+                int m = 0;
+                for (int i = 0; i < s->n; i++) {
+                    const int g = s->life0[i] ? (s->life0[i] - s->life[i]) * a->frames / s->life0[i] : 0;
+                    if ((g < a->frames ? g : a->frames - 1) == f) s->idx[m++] = (uint16_t)i;
+                }
+                if (m) draw_points(a, f, s->x, s->y, s->idx, m);
+            }
+            return 0;
+        }
+        draw_points(a, 0, s->x, s->y, NULL, s->n);
+        return 0;
+    }
     lua_Integer f = luaL_optinteger(L, 3, 0);
-    draw_points(a, (int)(f < 0 || f >= a->frames ? 0 : f), s->x, s->y, s->n);
+    draw_points(a, (int)(f < 0 || f >= a->frames ? 0 : f), s->x, s->y, NULL, s->n);
     return 0;
+}
+
+static int l_near(lua_State *L) { /* how many within r of x, y; the nearest's index, dx, dy (nil when none) */
+    swarm *s = check(L);
+    const float x = fin(luaL_checknumber(L, 2)), y = fin(luaL_checknumber(L, 3)), r = fin(luaL_checknumber(L, 4)), r2 = r * r;
+    int count = 0, best = -1;
+    float bd = 0;
+    for (int i = 0; i < s->n; i++) {
+        const float dx = s->x[i] - x, dy = s->y[i] - y, d = dx * dx + dy * dy;
+        if (d > r2) continue;
+        count++;
+        if (best < 0 || d < bd) best = i, bd = d;
+    }
+    lua_pushinteger(L, count);
+    if (best < 0) return 1;
+    lua_pushinteger(L, best + 1), lua_pushnumber(L, s->x[best] - x), lua_pushnumber(L, s->y[best] - y);
+    return 4;
 }
 
 static int l_hit(lua_State *L) {
@@ -145,7 +194,7 @@ static int l_len(lua_State *L) {
 }
 
 void swarm_register(lua_State *L) {
-    static const luaL_Reg M[] = {{"add", l_add}, {"step", l_step}, {"draw", l_draw}, {"hit", l_hit}, {"get", l_get},
+    static const luaL_Reg M[] = {{"add", l_add}, {"step", l_step}, {"draw", l_draw}, {"hit", l_hit}, {"near", l_near}, {"get", l_get},
                                  {"set", l_set}, {"remove", l_remove}, {"clear", l_clear}, {NULL, NULL}};
     luaL_newmetatable(L, "pinyol.swarm");
     lua_newtable(L);
