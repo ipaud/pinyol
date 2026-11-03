@@ -540,6 +540,8 @@ static void commit(ov_cmd *c, int text_bytes, int corners) {
         band(c);
         return;
     }
+    const ov_cmd was = *c; /* (forget takes back what the command held as it was asked for) */
+    if (c->op == OV_TEXT_OP && c->ext) as_picture(c); /* a styled text: the picture worked out once, as on the screen (a vertical game's every letter is on its canvas) */
     surface whole = {.px = target->pixels, .w = target->w, .h = target->h, .canvas = true};
     surface s = clipping ? gfx_clip(&whole, clip_r.x, clip_r.y, clip_r.w, clip_r.h) : whole;
     if (s.w > 0 && s.h > 0) {
@@ -552,7 +554,7 @@ static void commit(ov_cmd *c, int text_bytes, int corners) {
             touched(target, x0, y0, x1, y1);
         }
     }
-    forget(c, text_bytes, corners);
+    forget(&was, text_bytes, corners);
 }
 
 /* A colour argument: 0xRRGGBB, or CLEAR (see-through on a canvas). false: nothing to draw (CLEAR on the screen). */
