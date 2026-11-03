@@ -545,9 +545,12 @@ static void commit(ov_cmd *c, int text_bytes, int corners) {
     if (s.w > 0 && s.h > 0) {
         if (c->op == OV_SHADE) gfx_canvas_shade(&s, c->x, c->y, c->w, c->h); /* see-through stays so */
         else draw_one(&s, c);
-        int x0, y0, x1, y1;
-        bounds(c, &x0, &y0, &x1, &y1);
-        touched(target, x0, y0, x1, y1);
+        if (target->full && c->op == OV_FILL && c->color != CANVAS_KEY && !c->font) target->gen++; /* an opaque fill on a full canvas: its mask stays whole, not worked out again */
+        else {
+            int x0, y0, x1, y1;
+            bounds(c, &x0, &y0, &x1, &y1);
+            touched(target, x0, y0, x1, y1);
+        }
     }
     forget(c, text_bytes, corners);
 }

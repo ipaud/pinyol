@@ -17,6 +17,10 @@ expect_lua_error swarm(2, nil, {drag = 2})
 lua canvas("FA", 8, 8) canvas("FB", 8, 8) target("FA") rect(0, 0, 8, 8, 0xFF0000) target()
 tick 1
 expect_lua (function() target("FA") cls() target("FB") cls(0x00FF00) img("FA", 0, 0) target() return pget(3, 3, "FB") == 0x00FF00 end)()
+# on a full canvas an opaque rect keeps its mask whole (not worked out again); a clear one still opens it
+lua target("FA") cls(0xFF0000) target()
+tick 1
+expect_lua (function() target("FA") rect(0, 0, 4, 8, 0x0000FF) rect(0, 0, 2, 8, CLEAR) target("FB") cls(0x00FF00) img("FA", 0, 0) target() return pget(1, 1, "FB") == 0x00FF00 and pget(3, 1, "FB") == 0x0000FF and pget(6, 1, "FB") == 0xFF0000 end)()
 expect_lua_error require("gen.face")
 expect_lua_error swarm(0)
 expect_lua_error swarm(5000)

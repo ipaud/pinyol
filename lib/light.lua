@@ -47,19 +47,24 @@ end
 function M.new(opts)
   assert(opts and opts.base and opts.normals, "light.new: base colours and normals are needed")
   local l = setmetatable({bank = opts.bank or 0, obj = opts.obj ~= false, base = opts.base, normals = opts.normals,
-                          ambient = opts.ambient or 0.25, gain = opts.gain or 1, lit = {}}, L)
+                          ambient = opts.ambient or 0.25, gain = opts.gain or 1, lit = {}, units = {}}, L)
+  for i, n in pairs(l.normals) do l.units[i] = {unit(n[1], n[2], n[3])} end -- (each normal made unit once, not every set)
   l:set(nil)
   return l
 end
 
--- set(x, y, z): the lamp's direction from the thing (or nil: flat light); the palette's entries are written
+-- set(x, y, z): the lamp's direction from the thing (or nil: flat light); the palette's entries are written (a game may
+-- call it every frame: the direction is made unit once a call, the normals once, no table made)
 function L:set(x, y, z)
-  local o = self.bank * 16
+  local o, amb, gain, units = self.bank * 16, self.ambient, self.gain, self.units
+  local lx, ly, lz
+  if x then lx, ly, lz = unit(x, y, z) end
   for i, colour in pairs(self.base) do
     local k = 1
-    if x then
-      local n = self.normals[i]
-      k = n and M.shade(n, {x, y, z}, self.ambient) * self.gain or 1
+    local n = lx and units[i]
+    if n then
+      local d = n[1] * lx + n[2] * ly + n[3] * lz
+      k = (amb + (1 - amb) * (d < 0 and 0 or d)) * gain
     end
     local c = scaled(colour, k)
     self.lit[i] = c
