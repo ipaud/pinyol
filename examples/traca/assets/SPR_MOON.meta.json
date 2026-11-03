@@ -1,0 +1,31 @@
+{
+  "asset": "SPR_MOON",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 13,
+  "w": 64,
+  "h": 64,
+  "frames": 4,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 8218,
+    "as_rgb565": 32768
+  }
+}

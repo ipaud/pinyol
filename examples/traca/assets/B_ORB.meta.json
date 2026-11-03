@@ -1,0 +1,25 @@
+{
+  "asset": "B_ORB",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 3,
+  "w": 5,
+  "h": 5,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 87,
+    "as_rgb565": 50
+  }
+}
