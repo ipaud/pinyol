@@ -30,6 +30,9 @@ function _update() end    -- 60 times a second: input, movement, rules
 function _draw() end      -- before each frame: scroll, sprites, text
 ```
 
+`_draw` may run before the first `_update` (on the console a slow start brings a frame first, and `--validate` draws
+one to check the pictures it asks for): make in `_init` what `_draw` reads, never only in `_update`.
+
 The picture processor keeps its state between frames: a sprite stays where you put it until you move or remove
 it. Text and shapes (the overlay) are drawn again every frame: call them in `_draw()`.
 

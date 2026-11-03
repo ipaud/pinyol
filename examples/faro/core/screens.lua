@@ -18,6 +18,7 @@ local function rain(t, strength)
   rain_near:step()
 end
 local function rain_draw()
+  if not rain_far then rain_init() end -- (on the console a frame can be drawn before the first tick)
   rain_far:draw("FX_RAIN_FAR", {alpha = 0.55}) -- far drops half seen through, near ones add their light
   rain_near:draw("FX_RAIN_NEAR", {add = true, alpha = 0.8})
 end
