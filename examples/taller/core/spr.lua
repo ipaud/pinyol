@@ -55,6 +55,19 @@ function S.draw(name, frame, x, y, o)
   S.count = S.count + 1
 end
 
+-- the pictures of sheets (all their pieces, and their _b palettes), read from the card now: a stage's hero and automatons when it starts,
+-- so their first steps do not wait for the card
+function S.preload(names)
+  local ids = {}
+  for _, n in ipairs(names) do
+    for _, sh in ipairs({D.sheets[n], D.sheets[n .. "_b"]}) do
+      if sh.pieces then for p = 0, (sh.n - 1) // sh.per do ids[#ids + 1] = sh.id .. "_C" .. p end
+      else ids[#ids + 1] = sh.id end
+    end
+  end
+  return preload({images = ids})
+end
+
 -- a wide picture cut in columns (so only the ones on the screen are in memory); `flip` mirrors the whole picture
 function S.back(name, x, y, flip)
   local b = D.backs[name]

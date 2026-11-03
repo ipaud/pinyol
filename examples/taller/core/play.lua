@@ -51,6 +51,13 @@ function Play.start_stage(n, keep_hero)
   local h = Play.hero
   h.x, h.y, h.z, h.st, h.t, h.inv, h.held, h.win_t = 110, 272, 0, "idle", 0, C.INVULN, nil, 0
   Music.play(Play.stage().music, 300)
+  local names, seen = {h.id}, {[h.id] = true}
+  for _, e in ipairs(Play.stage().events) do
+    for _, f in ipairs(e.wave or {}) do
+      if not seen[f[1]] then seen[f[1]], names[#names + 1] = true, f[1] end
+    end
+  end
+  S.preload(names)
 end
 
 function Play.enter(hero_id)
