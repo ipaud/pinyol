@@ -1,0 +1,57 @@
+key,es,ca,en
+subtitle,UNA NOCHE DE FIESTAS,UNA NIT DE FESTES,A FIESTA NIGHT
+turn,PON LA CONSOLA DE PIE: SU DERECHA ARRIBA,POSA LA CONSOLA DRETA: LA DRETA AMUNT,STAND THE CONSOLE UP: ITS RIGHT EDGE UP
+press,PULSA A,PREM A,PRESS A
+high,RÉCORD,RÈCORD,BEST
+controls,A DISPARA · B DESPACIO · C TRACA,A DISPARA · B A POC A POC · C TRACA,A FIRE · B SLOW · C TRACA
+demo,DEMO · PULSA A,DEMO · PREM A,DEMO · PRESS A
+over,FIN,FI,GAME OVER
+won,¡QUÉ TRACA!,QUINA TRACA!,WHAT A BANG!
+won_sub,"La palmera ha cerrado la fiesta. Buenas noches, pueblo.","La palmera ha tancat la festa. Bona nit, poble.","The palmera has closed the fiesta. Good night, village."
+new_record,¡NUEVO RÉCORD!,NOU RÈCORD!,NEW BEST!
+extra,¡Un cohete más!,Un coet més!,One more rocket!
+how,Cómo funciona,Com funciona,How it works
+stage,TRAMO {n} DE 5,TRAM {n} DE 5,STAGE {n} OF 5
+stage_1,LOS TEJADOS,ELS TEULATS,THE ROOFTOPS
+stage_2,EL CAMPANARIO,EL CAMPANAR,THE BELL TOWER
+stage_3,LAS NUBES,ELS NÚVOLS,THE CLOUDS
+stage_4,LAS ESTRELLAS,LES ESTRELES,THE STARS
+stage_5,LA LUNA DE CARTÓN,LA LLUNA DE CARTÓ,THE CARDBOARD MOON
+clear,¡TRAMO SUPERADO!,TRAM SUPERAT!,STAGE CLEAR!
+perfect,SIN UN RASGUÑO: +5000,SENSE UNA ESGARRAPADA: +5000,NOT A SCRATCH: +5000
+silence,¡SILENCIO!,SILENCI!,HUSH!
+boss,¡LA LUNA DE CARTÓN!,LA LLUNA DE CARTÓ!,THE CARDBOARD MOON!
+how_title,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
+how_p1,1 · LA PANTALLA DE PIE,1 · LA PANTALLA DRETA,1 · THE SCREEN STOOD UP
+how_p2,2 · LAS FLECHAS GIRADAS,2 · LES FLETXES GIRADES,2 · THE ARROWS TURNED
+how_p3,3 · CIENTOS DE BALAS,3 · CENTENARS DE BALES,3 · HUNDREDS OF BULLETS
+how_p4,4 · LO QUE CUESTA GIRAR,4 · EL QUE COSTA GIRAR,4 · WHAT TURNING COSTS
+how_drawn,ASÍ LO DIBUJA: DE PIE,AIXÍ HO DIBUIXA: DRET,DRAWN LIKE THIS: STANDING
+how_sent,ASÍ LO RECIBE LA PANTALLA,AIXÍ HO REP LA PANTALLA,SENT LIKE THIS TO THE SCREEN
+how_1,"Hacia 1985 muchas recreativas ponían el monitor de pie: la pantalla era más alta que ancha, buena para subir y subir. Esta consola es apaisada, así que Traca se dibuja en un lienzo de pie de 160x240 y al mostrarlo se gira un cuarto de vuelta y se dobla: llena los 480x320.","Cap a 1985 moltes recreatives posaven el monitor dret: la pantalla era més alta que ampla, bona per a pujar i pujar. Aquesta consola és apaïsada, així que Traca es dibuixa en un llenç dret de 160x240 i en mostrar-lo es gira un quart de volta i es dobla: omple els 480x320.","Around 1985 many arcade cabinets stood the monitor on its end: the screen was taller than wide, good for climbing and climbing. This console is wide, so Traca is drawn on a standing 160x240 canvas, and showing it turns it a quarter round and doubles it: it fills the 480x320."
+how_2,"Con la consola de lado su cruceta gira con ella, así que el juego lee cada flecha girada: la DERECHA de la consola es tu ARRIBA y su ABAJO es tu DERECHA. Pulsa las flechas.","Amb la consola de costat la creueta gira amb ella, així que el joc llig cada fletxa girada: la DRETA de la consola és el teu AMUNT i el seu AVALL és la teua DRETA. Prem les fletxes.","With the console on its side its cross turns with it, so the game reads each arrow turned: the console's RIGHT is your UP and its DOWN is your RIGHT. Press the arrows."
+how_3,"Cada clase de bala es un enjambre (swarm): el motor las mueve, mira si tocan y las dibuja en C, todas en una sola orden. Desde Lua cada una costaría unos microsegundos y unos cientos llenarían un fotograma.","Cada classe de bala és un eixam (swarm): el motor les mou, mira si toquen i les dibuixa en C, totes en una sola ordre. Des de Lua cadascuna costaria uns microsegons i uns centenars omplirien un fotograma.","Each kind of bullet is a swarm: the engine moves them, tests them and draws them in C, all in one command. From Lua each would cost some microseconds and a few hundred would fill a frame."
+how_4,"El lienzo cambia en cada fotograma, así que no se guarda girado: se gira al pintar cada tira de la pantalla. Por eso es pequeño y se muestra al doble, como los píxeles gordos de entonces: borrar uno de 320x480 costaba 18 ms, más que un fotograma entero.","El llenç canvia a cada fotograma, així que no es guarda girat: es gira en pintar cada tira de la pantalla. Per això és menut i es mostra al doble, com els píxels grossos d'aleshores: esborrar-ne un de 320x480 costava 18 ms, més que un fotograma sencer.","The canvas changes every frame, so it is not kept turned: it is turned as each strip of the screen is painted. That is why it is small and shown twice as big, like the fat pixels of the time: clearing a 320x480 one took 18 ms, more than a whole frame."
+how_px,"38 400 píxeles, contra 153 600: la cuarta parte que borrar y que girar.","38 400 píxels, contra 153 600: la quarta part que esborrar i girar.","38,400 pixels against 153,600: a quarter to clear and to turn."
+how_up,ARRIBA,AMUNT,UP
+how_down,ABAJO,AVALL,DOWN
+how_left,IZQUIERDA,ESQUERRA,LEFT
+how_right,DERECHA,DRETA,RIGHT
+btn_up,ARRIBA,AMUNT,UP
+btn_down,ABAJO,AVALL,DOWN
+btn_left,IZQ.,ESQ.,LEFT
+btn_right,DER.,DRETA,RIGHT
+how_press,{b} de la consola: el cohete va {d},{b} de la consola: el coet va {d},Console {b}: the rocket goes {d}
+how_live,BALAS AHORA: {n},BALES ARA: {n},BULLETS NOW: {n}
+how_keys,A: PÁGINA {p}/{n} · B: VOLVER,A: PÀGINA {p}/{n} · B: TORNAR,A: PAGE {p}/{n} · B: BACK
+ach_farolillo,Farolillo apagado,Farolet apagat,Lantern out
+ach_traca,¡Traca!,Traca!,Traca!
+ach_campana,Silencio en el campanario,Silenci al campanar,Hush in the bell tower
+ach_colores,Pólvora de colores,Pólvora de colors,Coloured powder
+ach_roce,Por los pelos,Pels pèls,By a whisker
+ach_intacto,Sin un rasguño,Sense una esgarrapada,Not a scratch
+ach_palmera,La palmera final,La palmera final,The last palmera
+ach_curioso,Curioso,Curiós,Curious
+continue,¿CONTINUAR?,CONTINUAR?,CONTINUE?
+credits,CRÉDITOS: {n},CRÈDITS: {n},CREDITS: {n}
+continue_keys,"A: SIGUE DESDE AQUÍ, A CERO","A: SEGUEIX DES D'ACÍ, A ZERO","A: GO ON FROM HERE, FROM ZERO"
