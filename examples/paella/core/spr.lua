@@ -58,6 +58,19 @@ function S.point(name, key, frame, x, y, flip)
   return x + px, y + (t[2] - sh.ay)
 end
 
+-- the pictures of sheets (all their pieces), read from the card now: a cook's 50 frames behind the select screen, so its first steps do not wait
+function S.preload(names)
+  local ids = {}
+  for _, n in ipairs(names) do
+    local sh = D.sheets[n]
+    if sh then
+      if sh.pieces then for p = 0, (sh.n - 1) // sh.per do ids[#ids + 1] = sh.id .. "_C" .. p end
+      else ids[#ids + 1] = sh.id end
+    end
+  end
+  return preload({images = ids})
+end
+
 -- a picture cut in columns (so only the ones on the screen are in memory); `flip` mirrors the whole picture
 function S.back(name, x, y, flip)
   local b = D.backs[name]

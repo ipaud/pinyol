@@ -10,6 +10,7 @@ local Game = require("core.game")
 local In = require("core.input")
 local Bot = require("core.bot")
 local Chef = require("core.chef")
+local Spr = require("core.spr")
 local Boss = require("core.boss")
 local Hud = require("core.hud")
 local Scr = require("core.screens")
@@ -42,6 +43,7 @@ local function to_play(chef)
   In.bot = nil
   G.state = "play"
   G.chef_id = chef
+  Spr.preload({"chef_" .. chef})
   Play.enter(chef)
   set_menu()
 end
