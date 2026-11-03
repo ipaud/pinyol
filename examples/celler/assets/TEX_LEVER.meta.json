@@ -1,0 +1,28 @@
+{
+  "asset": "TEX_LEVER",
+  "type": "background",
+  "w": 64,
+  "h": 64,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    32,
+    63
+  ],
+  "tile": null,
+  "rgb565": {
+    "endian": "little",
+    "order": "rgb",
+    "alpha": "none"
+  },
+  "memory_bytes": {
+    "pixels": 8192,
+    "mask": 0,
+    "total": 8192
+  }
+}

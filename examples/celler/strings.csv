@@ -1,0 +1,73 @@
+key,es,ca,en
+title,EL CELLER,EL CELLER,EL CELLER
+subtitle,Una noche en las cavas del Penedès,Una nit a les caves del Penedès,A night in the Penedès cava cellars
+press,Pulsa A para bajar,Prem A per baixar,Press A to go down
+record,Récord {n},Rècord {n},Record {n}
+controls,Cruceta: andar y girar · A: tapón · B: abrir · C: alzar el farol · START: mapa,Creueta: caminar i girar · A: tap · B: obrir · C: alçar el fanal · START: mapa,D-pad: walk and turn · A: cork · B: open · C: raise the lantern · START: map
+how,Cómo funciona,Com funciona,How it works
+demo,DEMO · pulsa un botón,DEMO · prem un botó,DEMO · press a button
+gallery,Galería {n},Galeria {n},Gallery {n}
+g1,La rampa,La rampa,The ramp
+g2,Los botelleros,Els botellers,The bottle racks
+g3,La sala de las barricas,La sala de les bótes,The barrel hall
+g4,Los pupitres,Els pupitres,The riddling racks
+g5,El pozo viejo,El pou vell,The old well
+g1_hint,"Medianoche en Cal Rovelló. Los tapones de cava se han escapado de sus botellas y, de puro fantasmas, soplan las velas. Busca la llave de la reja y baja por la escalera. A dispara un tapón, B abre.","Mitjanit a Cal Rovelló. Els taps de cava s'han escapat de les ampolles i, de tan fantasmes, bufen les espelmes. Busca la clau de la reixa i baixa per l'escala. A dispara un tap, B obre.","Midnight at Cal Rovelló. The cava corks have escaped from their bottles and, being ghosts, they blow out candles. Find the gate's key and take the stairs down. A fires a cork, B opens."
+g2_hint,"Entre botelleros. La reja de la llave se abre con una palanca: tira de ella con B. Si la vela se acaba, enciendes una cerilla.","Entre botellers. La reixa de la clau s'obre amb una palanca: estira-la amb B. Si s'acaba l'espelma, encens un llumí.","Among the bottle racks. The gate to the key opens with a lever: pull it with B. If the candle burns out, you strike a match."
+g3_hint,"Las barricas de la casa. Dicen que el viejo bodeguero escondió aquí una Reserva del 92, detrás de un botellero al que le falta una botella.","Les bótes de la casa. Diuen que el vell cellerer va amagar aquí una Reserva del 92, darrere un boteller on falta una ampolla.","The house's barrels. They say the old cellarman hid a Reserva of '92 here, behind a bottle rack with one bottle missing."
+g4_hint,"Los pupitres, donde se giran las botellas a mano. Está muy oscuro: mantén C para alzar el farol. Ves más lejos y asustas a los tapones, pero gasta más vela. Hay dos palancas.","Els pupitres, on es giren les ampolles a mà. És molt fosc: mantén C per alçar el fanal. Hi veus més lluny i espantes els taps, però gasta més espelma. Hi ha dues palanques.","The riddling racks, where the bottles are turned by hand. It is very dark: hold C to raise the lantern. You see further and it scares the corks, but it burns more candle. There are two levers."
+g5_hint,"El pozo viejo, la última galería. Detrás de la reja está la puerta de la calle, y ya clarea. START enseña el mapa de lo que has visto.","El pou vell, l'última galeria. Darrere la reixa hi ha la porta del carrer, i ja clareja. START ensenya el mapa del que has vist.","The old well, the last gallery. Behind the gate is the door to the street, and dawn is breaking. START shows a map of what you have seen."
+press_go,A: seguir,A: continuar,A: go on
+press_retry,A: otra vez esta galería · B: al título,A: un altre cop aquesta galeria · B: al títol,A: this gallery again · B: to the title
+press_back,A: volver al título,A: tornar al títol,A: back to the title
+clear,"Galería {n}, cruzada","Galeria {n}, travessada","Gallery {n}, crossed"
+clear_wax,Vela que queda: {n} %,Espelma que queda: {n} %,Candle left: {n} %
+clear_ghosts,Tapones recuperados: {n} de {of},Taps recuperats: {n} de {of},Corks brought back: {n} of {of}
+clear_score,Puntos: {n},Punts: {n},Score: {n}
+dark,A oscuras,A les fosques,In the dark
+dark_1,"Sin vela y sin cerillas,","Sense espelma ni llumins,","No candle and no matches,"
+dark_2,el sereno espera al alba sentado.,el sereno espera l'alba assegut.,"the watchman waits for dawn, sitting."
+relight,Enciendes una cerilla · quedan {n},Encens un llumí · en queden {n},You strike a match · {n} left
+bar_wax,VELA,ESPELMA,CANDLE
+bar_gallery,GALERÍA,GALERIA,GALLERY
+bar_score,PUNTOS,PUNTS,SCORE
+map_title,Mapa de la galería {n},Mapa de la galeria {n},Map of gallery {n}
+map_seen,visto el {p} %,vist el {p} %,{p} % seen
+msg_locked,Reja con candado: falta la llave,Reixa amb cadenat: falta la clau,A padlocked gate: find the key
+msg_need_lever,Esta reja se abre con una palanca,Aquesta reixa s'obre amb una palanca,This gate opens with a lever
+msg_secret,¡El botellero se mueve!,El boteller es mou!,The bottle rack moves!
+msg_gates_open,Se oye una reja que se abre,Se sent una reixa que s'obre,A gate grinds open somewhere
+msg_levers,Palanca {n} de {of},Palanca {n} de {of},Lever {n} of {of}
+msg_lever_done,Ya está bajada,Ja està abaixada,It is already down
+msg_no_corks,Sin tapones: recoge los del suelo,Sense taps: recull els de terra,Out of corks: pick some up
+msg_got_key,¡La llave de la reja!,La clau de la reixa!,The gate's key!
+msg_got_candle,Una vela nueva,Una espelma nova,A fresh candle
+msg_got_bottle,Una botella perdida · +250,Una ampolla perduda · +250,A lost bottle · +250
+msg_got_reserva,¡La Reserva del 92! · +2000,La Reserva del 92! · +2000,The Reserva of '92! · +2000
+ach_primera_llave,Logro: Primera llave,Assoliment: Primera clau,Achievement: First key
+ach_taponazo,Logro: Taponazo,Assoliment: Tapada,Achievement: Pop!
+ach_espantar,Logro: Luz que espanta,Assoliment: Llum que espanta,Achievement: Scaring light
+ach_reserva,Logro: La Reserva del 92,Assoliment: La Reserva del 92,Achievement: The Reserva of '92
+ach_cartografo,Logro: Cartógrafo,Assoliment: Cartògraf,Achievement: Mapmaker
+ach_todos,Logro: Ni un tapón suelto,Assoliment: Ni un tap solt,Achievement: Not one loose cork
+ach_una_vela,Logro: Sin cerillas,Assoliment: Sense llumins,Achievement: No matches
+ach_amanecer,Logro: Ya amanece,Assoliment: Ja clareja,Achievement: Dawn
+ach_curioso,Logro: Curioso,Assoliment: Curiós,Achievement: Curious
+ex_title,CÓMO FUNCIONA,COM FUNCIONA,HOW IT WORKS
+ex_page,Página {n} de 3,Pàgina {n} de 3,Page {n} of 3
+ex_col,Columna {c} de {of},Columna {c} de {of},Column {c} of {of}
+ex_1,"Raycasting, como en 1992: la vista se pinta columna a columna. De los ojos del sereno sale un rayo por cada una de las 240 columnas y avanza por el mapa plano casilla a casilla, hasta dar con una pared. No hay 3D: solo un mapa y una cuenta por columna.","Raycasting, com el 1992: la vista es pinta columna a columna. Dels ulls del sereno surt un raig per cadascuna de les 240 columnes i avança pel mapa pla casella a casella, fins que topa amb una paret. No hi ha 3D: només un mapa i un compte per columna.","Raycasting, as in 1992: the view is painted a column at a time. For each of the 240 columns a ray leaves the watchman's eyes and walks the flat map square by square until it meets a wall. There is no 3D: only a map and one sum per column."
+ex_2,"La franja de pared mide la altura de la vista dividida por la distancia: el doble de lejos, la mitad de alta. De la textura de 64x64 se toma una sola columna, la del punto donde el rayo toca la pared, y se estira. Cuanto más lejos, más oscura: la vela es la niebla.","La franja de paret fa l'alçada de la vista dividida per la distància: el doble de lluny, la meitat d'alta. De la textura de 64x64 se'n pren una sola columna, la del punt on el raig toca la paret, i s'estira. Com més lluny, més fosca: l'espelma és la boira.","The strip of wall is the view's height divided by the distance: twice as far, half as tall. From the 64x64 texture one column is taken, the one where the ray touches the wall, and stretched. The further, the darker: the candle is the fog."
+ex_3,"Las puertas son una pared fina en medio de su casilla, que se desliza a un lado. Las figuras se pintan de la más lejana a la más cercana, y cada columna recuerda a qué distancia quedó su pared: lo que está detrás de ella no se pinta.","Les portes són una paret fina al mig de la seva casella, que llisca cap a un costat. Les figures es pinten de la més llunyana a la més propera, i cada columna recorda a quina distància li ha quedat la paret: el que hi ha darrere no es pinta.","Doors are a thin wall across the middle of their square, sliding aside. The things are painted from the farthest to the nearest, and each column remembers how far its wall was: whatever is behind it is not painted."
+ex_live,"Rayo {c}: {steps} casillas, pared a {d} = {h} px de alto · columna {u} de la textura · luz {fog} %","Raig {c}: {steps} caselles, paret a {d} = {h} px d'alt · columna {u} de la textura · llum {fog} %","Ray {c}: {steps} squares, wall at {d} = {h} px tall · texture column {u} · light {fog} %"
+ex_live_3,"Rayo {c}: pared a {d} casillas · {n} figuras, numeradas en el orden en que se pintan","Raig {c}: paret a {d} caselles · {n} figures, numerades en l'ordre en què es pinten","Ray {c}: wall at {d} squares · {n} things, numbered in the order they are painted"
+ex_live_door,"Rayo {c}: puerta a {d} casillas, abierta un {open} %","Raig {c}: porta a {d} caselles, oberta un {open} %","Ray {c}: a door at {d} squares, {open} % open"
+ex_keys,Izquierda y derecha: página · A: pausa · B: volver,Esquerra i dreta: pàgina · A: pausa · B: tornar,Left and right: page · A: pause · B: back
+ex_keys_paused,En pausa · A: seguir · B: volver,En pausa · A: continuar · B: tornar,Paused · A: go on · B: back
+dawn_title,YA AMANECE,JA CLAREJA,DAWN
+dawn_score,Puntos:,Punts:,Score:
+dawn_ghosts,Tapones recuperados:,Taps recuperats:,Corks brought back:
+dawn_bottles,Botellas encontradas:,Ampolles trobades:,Bottles found:
+dawn_matches,Cerillas gastadas:,Llumins gastats:,Matches struck:
+dawn_record,Récord:,Rècord:,Record:
+dawn_record_new,¡Récord nuevo!,Rècord nou!,New record!
