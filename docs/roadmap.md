@@ -53,7 +53,10 @@ Ya cubierto, no repetir: hit-stop (`juice.freeze`), buffer de salto (`btnb`), ma
   compás, cola y parada en la línea como los `.mod`; `tests/make_tracker.py` genera los tres módulos de prueba). En la
   placa, un XM de ocho canales cuesta el 7 % de un núcleo y nada de RAM interna (docs/measurements.md).
   `tools/famistudio2mod.py` convierte la exportación de texto de FamiStudio en un `.mod` de cuatro canales (duty, triángulo,
-  ruido; envolvente de volumen fila a fila; sin arpegios ni DPCM). **No hecho:** `.uge` (hUGETracker, binario y por versión).
+  ruido; envolvente de volumen fila a fila; sin arpegios ni DPCM). `tools/uge2mod.py` (3 nov) hace lo mismo con una canción de
+  hUGETracker (`.uge` v3-v6): dos pulsos, onda (una octava abajo, como en la Game Boy) y ruido de 15 o 7 bits; las seis octavas de
+  hUGE caben en las tres del módulo con muestras de dos largos; envolvente y largo de nota fila a fila; efectos 0-4, A-F. Sin
+  subpatrones, rutinas ni cambio de duty. Probado con dos canciones de ejemplo de hUGETracker y en `tests/tools_test.py` (tono medido).
 
 - **Fase 5, hecho:** `lib/lockstep` (juego en paso sobre `link`: solo botones, tramas de 3 ticks con repetición,
   retardo de 2 tramas), registro de la consola (`played.json`: partidas, tiempo, última vez, favoritos, logros),

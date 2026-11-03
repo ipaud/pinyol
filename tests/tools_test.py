@@ -151,6 +151,60 @@ r = subprocess.run([str(Path(sys.argv[1]) / "pinyol_headless"), "--game", str(fs
 assert "PASS" in r.stdout + r.stderr, (r.stdout + r.stderr)[-400:]
 print("famistudio2mod: ok")
 
+# a hUGETracker song (.uge v6, written here field by field as its manual gives it) as a module: a duty note C4 sounds 261 Hz, the same note
+# on the wave channel an octave down, as on the Game Boy
+def uge_song(notes: dict[int, int], wave_notes: dict[int, int]) -> bytes:
+    def short(t: str) -> bytes: return bytes([len(t)]) + t.encode().ljust(255, b"\0")
+    u32, u8 = (lambda v: struct.pack("<I", v)), (lambda v: bytes([v]))
+    sub = u8(0) + bytes(64 * 17)
+    b = u32(6) + short("Prueba") + short("pinyol") + short("")
+    for i in range(15):  # duty: 50 %, volume 15, no sweep
+        b += u32(0) + short(f"d{i}") + u32(0) + u8(0) + u8(15) + u32(1) + u8(0) + u32(0) + u32(0) + u32(0) + u8(2) + u32(0) + u32(0) + u32(0) + sub
+    for i in range(15):  # wave: full volume (1), wave 0
+        b += u32(1) + short(f"w{i}") + u32(0) + u8(0) + u8(0) + u32(0) + u8(0) + u32(0) + u32(0) + u32(0) + u8(0) + u32(1) + u32(0) + u32(0) + sub
+    for i in range(15):
+        b += u32(2) + short(f"n{i}") + u32(0) + u8(0) + u8(15) + u32(1) + u8(0) + u32(0) + u32(0) + u32(0) + u8(0) + u32(0) + u32(0) + u32(0) + sub
+    b += bytes(min(15, i) for i in range(32))  # wave 0: a ramp
+    b += bytes(32 * 15)
+    b += u32(6) + u8(0) + u32(0) + u32(3)
+    for idx, rows in ((0, notes), (1, wave_notes), (2, {})):
+        b += u32(idx)
+        for r in range(64):
+            b += u32(rows.get(r, 90)) + u32(1 if r in rows else 0) + u32(0) + u32(0) + u8(0)
+    for order in ([0], [2], [1], [2]):
+        b += u32(len(order) + 1) + b"".join(u32(o) for o in order) + u32(0)
+    return b + u32(0) * 16
+
+def pitch(mod: bytes) -> float:
+    game = out / "ugegame"
+    shutil.rmtree(game, ignore_errors=True)
+    (game / "audio").mkdir(parents=True)
+    shutil.copytree(ROOT / "tests/games/device/fonts", game / "fonts")
+    (game / "game.json").write_text(json.dumps({"id": "ugegame", "title": "uge", "engine": "pinyol@2", "main": "main.lua"}))
+    (game / "main.lua").write_text("function _init() music('UGE') end function _update() end function _draw() cls(0) end\n")
+    (game / "audio/UGE.mod").write_bytes(mod)
+    (out / "uge.script").write_text("tick 40\nexpect_ok\n")
+    pcm = out / "uge.pcm"
+    r = subprocess.run([str(Path(sys.argv[1]) / "pinyol_headless"), "--game", str(game), "--fresh", "--script", str(out / "uge.script"), "--audio", str(pcm)],
+                       capture_output=True, text=True)
+    assert "PASS" in r.stdout + r.stderr, (r.stdout + r.stderr)[-400:]
+    a = struct.unpack(f"<{pcm.stat().st_size // 2}h", pcm.read_bytes())[5000:13000]  # (after the start)
+    ups = sum(1 for x, y in zip(a, a[1:]) if x < 0 <= y)
+    return ups * 22050 / len(a)
+
+sys.path.insert(0, str(ROOT / "tools"))
+import uge2mod  # noqa: E402
+
+duty = pitch(uge2mod.convert(uge_song({0: 24}, {})))
+assert 250 < duty < 272, duty  # C4: 261.6 Hz
+wave = pitch(uge2mod.convert(uge_song({}, {0: 36})))  # C5 on the wave channel sounds C4
+assert 250 < wave < 272, wave
+low = pitch(uge2mod.convert(uge_song({0: 0}, {})))  # the lowest note, 65 Hz, from the long sample
+assert 60 < low < 70, low
+high = pitch(uge2mod.convert(uge_song({0: 60}, {})))  # C7, 2093 Hz, from the short one
+assert 2000 < high < 2190, high
+print("uge2mod: ok", round(duty), round(wave), round(low), round(high))
+
 
 # pk_split: a sheet of seven frames made by png2asset --packed, split into pieces of three: every piece's columns are the
 # original's, the pieces' metas are right, and the engine loads them (a game drawing a pixel of each, through the headless)
