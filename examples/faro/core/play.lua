@@ -317,8 +317,8 @@ function P.draw_world()
   img(lv.bg, 0, -cam, {dim = P.dim()})
   local f = P.flash / 10
   if settings().reduce_flashing then f = f * 0.35 end
-  for _, w in ipairs(lv.windows) do
-    light(w[1], w[2] - cam, 80, 0x5068C0, {intensity = 0.22 + 0.7 * f})
+  if f > 0 then -- the window lights up only while the lightning lasts (a light costs every pixel it reaches)
+    for _, w in ipairs(lv.windows) do light(w[1], w[2] - cam, 80, 0x5068C0, {intensity = 0.8 * f}) end
   end
   for i, l in ipairs(lv.lamps) do
     local fl = 1 + 0.08 * math.sin(P.t * 0.21 + i) + 0.05 * math.sin(P.t * 0.67 + i * 2)
@@ -348,8 +348,8 @@ function P.draw_world()
     distort(0, wy, 480, 320 - wy, {screen = true, kind = "water", amp = 2, period = 18, speed = 0.35})
   end
   if lv.outside then
-    rain_far:draw("FX_RAIN_FAR")
-    rain_near:draw("FX_RAIN_NEAR")
+    rain_far:draw("FX_RAIN_FAR", {alpha = 0.55}) -- far drops half seen through, near ones add their light
+    rain_near:draw("FX_RAIN_NEAR", {add = true, alpha = 0.8})
   end
 end
 

@@ -247,8 +247,8 @@ local function draw_beam()
   if B.state ~= "lit" then return end
   local k = math.min(1, B.state_t / 60)
   local ang = (B.lens_a * 1.0) % 360
-  light(LAMP_X, LAMP_Y, 420, 0xFFF0C0, {cone = {angle = ang, width = 22}, intensity = 0.9 * k})
-  light(LAMP_X, LAMP_Y, 420, 0xFFF0C0, {cone = {angle = ang + 180, width = 22}, intensity = 0.9 * k})
+  light(LAMP_X, LAMP_Y, 340, 0xFFF0C0, {cone = {angle = ang, width = 20}, intensity = 0.9 * k}) -- one beam: a cone costs a third of its circle
+  light(LAMP_X, LAMP_Y, 60, 0xFFF0C0, {intensity = 0.7 * k})
 end
 
 function B.draw_world()

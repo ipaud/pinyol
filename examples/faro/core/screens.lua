@@ -18,8 +18,8 @@ local function rain(t, strength)
   rain_near:step()
 end
 local function rain_draw()
-  rain_far:draw("FX_RAIN_FAR")
-  rain_near:draw("FX_RAIN_NEAR")
+  rain_far:draw("FX_RAIN_FAR", {alpha = 0.55}) -- far drops half seen through, near ones add their light
+  rain_near:draw("FX_RAIN_NEAR", {add = true, alpha = 0.8})
 end
 
 -- ------------------------------------------------------------------ title
@@ -65,7 +65,6 @@ function T.draw(best, crt_on)
   -- the lamp is out: only the faintest glow left in its glass
   light(428, 44, 16, 0x605040, {intensity = 0.4 + 0.2 * math.sin(T.t * 0.05)})
   rain_draw()
-  light(140, 70, 150, 0x302010, {sub = true, intensity = 0.5}) -- a darker sky under the title, for the letters
   text(lang.tr("title1"), 150, 26, {font = H.TITLE, align = "center", color = 0xFFF4D0, gradient = 0xE8A040, outline = 0x1A1020, shadow = 0x000000})
   text(lang.tr("title2"), 150, 64, {font = H.TITLE, align = "center", color = 0xFFF4D0, gradient = 0xE8A040, outline = 0x1A1020, shadow = 0x000000})
   if G.cover then return end -- the cover (tools/cover.py --from): the storm and the title only

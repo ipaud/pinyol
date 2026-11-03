@@ -175,7 +175,7 @@ local function hud_play()
   local lv = Play.lv
   local label = lv.quota > 0 and lang.tr("animas", {n = math.min(Play.freed, lv.quota), q = lv.quota}) or nil
   H.draw({oil = Play.oil, drained = Play.drained, t = Play.t, label = label})
-  if Play.card > 0 then H.card(lang.tr(lv.id), lang.tr(lv.hint), Play.card / 150) end
+  if Play.card > 0 and Play.state == "play" then H.card(lang.tr(lv.id), lang.tr(lv.hint), Play.card / 150) end
   if Play.state == "frozen" then
     H.panel(90, 130, 300, 56)
     textbox(lang.tr("frozen"), 100, 136, 280, 22, {font = H.BODY, align = "center", color = 0xC8E0FF})

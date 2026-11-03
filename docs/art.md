@@ -215,6 +215,13 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
   `sfx`): the whole soundtrack in one room is what makes those games sound like themselves.
 - Generated art. Style line: *late-1990s 32-bit console 2D sprite art, gothic action game: richly detailed
   hand-pixelled sprite with up to 256 colours, smooth careful shading, crisp pixel edges*.
+- **`examples/faro`** (El Faro de las Ánimas, a platformer by floors; to replace `gotico` once measured): painted rooms of 480x720 seen
+  through a camera, darkened through their palette (`dim`, free) and lit with `light()` where it moves (the lantern, the wall lamps, a
+  window when lightning strikes); ghosts at `alpha = 0.55`, calm ones adding a warm copy of themselves (`add`, `mul`); rain as two
+  swarms mixed as they are drawn (`s:draw(id, {add = true})`); gears and the lens as quads lit a colour a corner and dithered,
+  tentacles as four quads along a bending spine (`uv` bands of one 48x128 picture); the cistern's water over the whole screen
+  (`distort(..., {screen = true, kind = "water"})`) with the heroine's reflection flipped and half seen through. Its bot flies the
+  heroine's own jumps ahead of time (`core/route.lua`) and presses buttons as a person holds them (see docs/playtest.md).
 
 ### CPS2: `examples/taller`, `mazmorra`
 

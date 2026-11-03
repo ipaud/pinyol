@@ -51,10 +51,10 @@ end
 -- st: {oil, drained, freed, quota, t, label}
 function H.draw(st)
   H.panel(6, 6, 154, 40)
-  for i = 1, C.WARMTH do flame(20 + (i - 1) * 16, 20, i <= Run.warmth, st.t) end
+  for i = 1, C.WARMTH do flame(18 + (i - 1) * 14, 20, i <= Run.warmth, st.t) end
   -- matches
   for i = 1, Run.matches do
-    local x = 92 + (i - 1) * 8
+    local x = 96 + (i - 1) * 8
     line(x, 14, x, 26, 0xC8A070)
     circ(x, 13, 2, 0xD04030, true)
   end
