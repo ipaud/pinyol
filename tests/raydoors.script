@@ -1,0 +1,31 @@
+# raycast() doors: shut, slid half away (a ray through the gap goes on, one on the door stops), gone; both ways a door runs; the jamb
+tick 1
+# the east-west door at y = 2.5, seen from (3.5, 1.5) looking south: shut it is 1 away, gone the far wall is 2.5 away
+lua d, c = view(3.5, 1.5, 90, {{x = 3, y = 2, open = 0}})
+expect_lua near(d, 1) and c == "E"
+lua d, c = view(3.5, 1.5, 90, {{x = 3, y = 2, open = 1}})
+expect_lua near(d, 2.5) and c == "#"
+# the middle ray crosses the door at 0.5 of its width: slid 0.4 it still meets the door, slid 0.6 it goes through the gap
+lua d, c = view(3.5, 1.5, 90, {{x = 3, y = 2, open = 0.4}})
+expect_lua near(d, 1) and c == "E"
+lua d, c = view(3.5, 1.5, 90, {{x = 3, y = 2, open = 0.6}})
+expect_lua near(d, 2.5) and c == "#"
+# without doors the square is a plain wall, at its face (0.5 away)
+lua d, c = view(3.5, 1.5, 90, nil)
+expect_lua near(d, 0.5) and c == "E"
+# the north-south door at x = 3.5, seen from (1.5, 1.5) looking east
+lua d, c = view(1.5, 1.5, 0, {{x = 3, y = 1, open = 0}})
+expect_lua near(d, 2) and c == "D"
+lua d, c = view(1.5, 1.5, 0, {{x = 3, y = 1, open = 1}})
+expect_lua near(d, 4.5) and c == "#"
+# the jamb: with the door gone, the rays at the view's sides pass into the door's square and meet the walls beside it there
+lua view(3.5, 1.5, 90, {{x = 3, y = 2, open = 1}}, 0xFF0000)
+lua r1, g1, b1 = rgb(20, 68) r2, g2, b2 = rgb(220, 68) r3, g3, b3 = rgb(120, 68)
+expect_lua r1 > 0 and g1 == 0 and b1 == 0 and r2 > 0 and g2 == 0 and b2 == 0
+expect_lua r3 == 0 and b3 > 0
+# shut, the middle of the view is the door's colour, and a door's square out of the map is ignored
+lua view(3.5, 1.5, 90, {{x = 3, y = 2, open = 0}, {x = 99, y = 99}}, 0xFF0000)
+lua r3, g3, b3 = rgb(120, 68)
+expect_lua g3 > 0 and r3 == 0 and b3 == 0
+shot puerta
+expect_ok

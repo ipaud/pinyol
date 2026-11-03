@@ -13,6 +13,12 @@
  * same distance times scale, hidden by the walls in front. Returns the distance to the wall in the middle of the view
  * (in squares, along the view) and that wall's character.
  *
+ * doors = {{x = 7, y = 3, open = 0.4}, ...}: the wall square (x, y) (from 0, as the map's columns and rows) is a door, as
+ * Wolfenstein 3D's: a thin wall across the middle of its square, slid aside by open (0 shut, 1 gone), drawn with the
+ * picture of its character. It runs from wall to wall: across the square east to west when the squares west and east
+ * of it are walls, north to south otherwise. jamb = picture or colour: the sides of a door's square (the frame it
+ * slides into), where a ray inside that square meets the wall beside it.
+ *
  * A downloaded game's map and numbers are checked: rows and columns are bounded, a ray stops after RAY_STEPS
  * squares, positions are made finite. */
 #include <stdlib.h>
@@ -22,6 +28,7 @@
 #define MAX_ROWS 256
 #define MAX_COLS 256
 #define MAX_SPRITES 64
+#define MAX_DOORS 64
 #define RAY_STEPS 128
 #define MAX_W 480
 #define MAX_H 320 /* a view taller is drawn to this height */
@@ -37,6 +44,12 @@ typedef struct {
     int h, y0, k, u;
     const wall_look *look;
 } column;
+
+typedef struct {
+    int x, y;
+    float open;  /* 0 shut .. 1 gone */
+    bool across; /* runs east to west, at y + 0.5 (walls west and east of it); else north to south, at x + 0.5 */
+} door;
 
 typedef struct {
     float x, y, d, scale;
@@ -131,6 +144,42 @@ static int read_sprites(lua_State *L, int t, sprite *sp, float px, float py) {
     return n;
 }
 
+static bool wall_at(const char *const *rows, const int *lens, int nrows, const bool *is_wall, int x, int y) {
+    if (y < 0 || y >= nrows || x < 0 || x >= lens[y]) return true; /* off the map: a wall, as the rays take it */
+    unsigned ch = (unsigned char)rows[y][x];
+    return ch < 128 && is_wall[ch];
+}
+
+static int read_doors(lua_State *L, int t, door *dr, const char *const *rows, const int *lens, int nrows, const bool *is_wall) {
+    lua_getfield(L, t, "doors");
+    int n = 0;
+    if (lua_istable(L, -1)) {
+        int len = (int)lua_rawlen(L, -1);
+        for (int i = 1; i <= len && n < MAX_DOORS; i++) {
+            lua_rawgeti(L, -1, i);
+            if (lua_istable(L, -1)) {
+                int s = lua_gettop(L);
+                door *d = &dr[n];
+                d->x = (int)opt_int(L, s, "x", -1), d->y = (int)opt_int(L, s, "y", -1);
+                d->open = opt_float(L, s, "open", 0, 0, 1);
+                if (d->y >= 0 && d->y < nrows && d->x >= 0 && d->x < lens[d->y]) {
+                    d->across = wall_at(rows, lens, nrows, is_wall, d->x - 1, d->y) && wall_at(rows, lens, nrows, is_wall, d->x + 1, d->y);
+                    n++;
+                }
+            }
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
+    return n;
+}
+
+static const door *door_at(const door *dr, int n, int x, int y) {
+    for (int i = 0; i < n; i++)
+        if (dr[i].x == x && dr[i].y == y) return &dr[i];
+    return NULL;
+}
+
 static int l_raycast(lua_State *L) {
     const char *id = luaL_checkstring(L, 1);
     asset *cv = safe_name(id) ? gfx_asset_opt(id) : NULL;
@@ -143,9 +192,22 @@ static int l_raycast(lua_State *L) {
     static bool is_wall[128];
     static sprite sp[MAX_SPRITES];
     static float zbuf[MAX_W];
+    static door doors[MAX_DOORS];
+    static wall_look jamb;
     memset(is_wall, 0, sizeof is_wall);
     int nrows = read_map(L, 2, rows, lens);
     read_walls(L, 2, looks, is_wall);
+    int ndoors = read_doors(L, 2, doors, rows, lens, nrows, is_wall);
+    bool has_jamb = false;
+    lua_getfield(L, 2, "jamb");
+    if (lua_type(L, -1) == LUA_TSTRING) {
+        const char *jid = lua_tostring(L, -1);
+        asset *a = safe_name(jid) ? gfx_asset(jid) : NULL;
+        jamb.pic = a && !a->missing && gfx_pixels(a) ? a : NULL, jamb.colour = 0x8410, has_jamb = true;
+    } else if (lua_isinteger(L, -1)) {
+        jamb.pic = NULL, jamb.colour = to565(lua_tointeger(L, -1)), has_jamb = true;
+    }
+    lua_pop(L, 1);
     float px = opt_float(L, 2, "x", 1.5f, -MAX_COLS, 2 * MAX_COLS), py = opt_float(L, 2, "y", 1.5f, -MAX_ROWS, 2 * MAX_ROWS);
     float ang = opt_float(L, 2, "angle", 0, -NUM_MAX, NUM_MAX) * DEG;
     float fov = opt_float(L, 2, "fov", 66, 20, 150) * DEG;
@@ -171,28 +233,51 @@ static int l_raycast(lua_State *L) {
         float ty = ry < 0 ? (py - (float)my) * ddy : ((float)my + 1.0f - py) * ddy;
         int side = 0;
         unsigned c = 0;
+        float d = -1, door_w = 0; /* d >= 0: a door was met, that far, door_w along it */
+        const door *in_door = NULL; /* the door whose square the ray is crossing */
+        bool at_jamb = false;
         for (int step = 0; step < RAY_STEPS; step++) { /* square to square until a wall */
             if (tx < ty) tx += ddx, mx += sx, side = 0;
             else ty += ddy, my += sy, side = 1;
             if (my < 0 || my >= nrows || mx < 0 || mx >= lens[my]) { c = '#'; break; } /* off the map: a wall */
             unsigned ch = (unsigned char)rows[my][mx];
-            if (ch < 128 && is_wall[ch]) { c = ch; break; }
+            if (ch < 128 && is_wall[ch]) {
+                const door *dr = ndoors ? door_at(doors, ndoors, mx, my) : NULL;
+                if (!dr) { /* a wall; beside a door, seen from inside the door's square: its jamb */
+                    at_jamb = in_door && has_jamb && side == (in_door->across ? 0 : 1);
+                    c = ch;
+                    break;
+                }
+                in_door = dr;
+                if (dr->open >= 1) continue;
+                float e = side == 0 ? tx - ddx : ty - ddy, out_d = tx < ty ? tx : ty, t;
+                if (dr->across) t = ry == 0 ? -1 : ((float)my + 0.5f - py) / ry, door_w = px + t * rx - (float)mx;
+                else t = rx == 0 ? -1 : ((float)mx + 0.5f - px) / rx, door_w = py + t * ry - (float)my;
+                if (t >= e && t <= out_d && door_w >= dr->open && door_w <= 1) { /* the door's own wall, where it has not slid away */
+                    d = t, side = dr->across ? 1 : 0, c = ch;
+                    break;
+                }
+                continue; /* through the gap: on to the next square */
+            }
+            in_door = NULL;
         }
-        float d = side == 0 ? tx - ddx : ty - ddy;
+        bool hit_door = d >= 0;
+        if (!hit_door) d = side == 0 ? tx - ddx : ty - ddy;
         if (d < 0.01f) d = 0.01f;
         zbuf[x] = d;
         if (x == W / 2) centre_d = d, centre_c = (char)c;
         column *q = &cols[x];
         q->h = (int)((float)H / d), q->y0 = H / 2 - q->h / 2;
         q->k = fog_k(d, fog) * (side ? 3 : 4) / 4;
-        q->look = c < 128 && is_wall[c] ? &looks[c] : NULL;
+        q->look = at_jamb ? &jamb : c < 128 && is_wall[c] ? &looks[c] : NULL;
         q->u = 0;
         if (q->look && q->look->pic) {
             const asset *t = q->look->pic;
-            float wx = side == 0 ? py + d * ry : px + d * rx;
-            wx -= floorf(wx);
+            float wx;
+            if (hit_door) wx = door_w - in_door->open; /* the door's edge moves with it */
+            else wx = side == 0 ? py + d * ry : px + d * rx, wx -= floorf(wx);
             int u = (int)(wx * (float)t->w);
-            if ((side == 0 && rx > 0) || (side == 1 && ry < 0)) u = t->w - 1 - u; /* not mirrored, from either side */
+            if (!hit_door && ((side == 0 && rx > 0) || (side == 1 && ry < 0))) u = t->w - 1 - u; /* not mirrored, from either side */
             q->u = u < 0 ? 0 : u >= t->w ? t->w - 1 : u;
         }
     }

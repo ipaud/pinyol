@@ -403,6 +403,14 @@ character: what a shot straight ahead would hit, and how far. Walking, colliding
 game's, in Lua, on the same map. Wall and sprite pictures are plain ones (not `--packed`); a whole view of 240×160
 is about 38,000 pixels.
 
+Doors as Wolfenstein 3D's: `doors = {{x = 7, y = 3, open = 0.4}, ...}` makes those wall squares (counted from 0, as the
+map's columns and rows) doors: a thin wall across the middle of the square, drawn with its character's picture and slid
+aside by `open` (0 shut, 1 gone; move it from 0 to 1 over half a second and the door slides open). A door runs from wall
+to wall: east to west when the squares west and east of it are walls, north to south otherwise. `jamb = "TEX_FRAME"` (or
+a colour) draws the sides of a door's square, the frame it slides into, where a ray inside that square meets the wall
+beside it. A ray through the open part goes on, so what is behind shows and a shot can pass; the returned distance and
+character are the door's when the middle ray meets it. Walking through is the game's: the square is open once the door is.
+
 `voxels(canvas, {height, colour, x, y, angle, z, horizon, distance, fov, scale, sky, fog})` draws a landscape from a height
 map and a colour map the way Comanche (1992) did, a column at a time, nearest first: `height` a canvas or plain picture
 whose brightness is the ground's height (0..255), `colour` one with its colours (both wrap; `colour` left out: the
