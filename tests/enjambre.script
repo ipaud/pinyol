@@ -21,6 +21,10 @@ expect_lua (function() target("FA") cls() target("FB") cls(0x00FF00) img("FA", 0
 lua target("FA") cls(0xFF0000) target()
 tick 1
 expect_lua (function() target("FA") rect(0, 0, 4, 8, 0x0000FF) rect(0, 0, 2, 8, CLEAR) target("FB") cls(0x00FF00) img("FA", 0, 0) target() return pget(1, 1, "FB") == 0x00FF00 and pget(3, 1, "FB") == 0x0000FF and pget(6, 1, "FB") == 0xFF0000 end)()
+# on a full canvas letters and a swarm keep its mask whole (nothing of FB shows through) and are drawn
+lua target("FA") cls(0xFF0000) target()
+tick 1
+expect_lua (function() target("FA") text("A", 0, 0, {color = 0x0000FF, shadow = 0x00FFFF}) local s = swarm(2) s:add(6, 6) s:draw("SPR_DOT") target("FB") cls(0x00FF00) img("FA", 0, 0) target() local g, b = 0, 0 for y = 0, 7 do for x = 0, 7 do local c = pget(x, y, "FB") if c == 0x00FF00 then g = g + 1 elseif c == 0x0000FF then b = b + 1 end end end return g == 0 and b > 0 end)()
 expect_lua_error require("gen.face")
 expect_lua_error swarm(0)
 expect_lua_error swarm(5000)

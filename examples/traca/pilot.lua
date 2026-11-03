@@ -10,7 +10,8 @@ local A = {}
 
 A.every = 2 -- think every n ticks (the demo on the console); the playtest sets 1
 local FAST, SLOW = 1.6, 0.7
-local TS, WT = {2, 4, 7, 11, 16}, {8, 5, 3, 1.6, 1}
+local TS_FULL, WT_FULL = {2, 4, 7, 11, 16}, {8, 5, 3, 1.6, 1}
+local TS_DEMO, WT_DEMO = {2, 6, 14}, {8, 3.5, 1.2} -- the title's demo on the console: three looks ahead, not five (its tick fits the frame)
 local CANDS = {}
 for dy = -1, 1 do
   for dx = -1, 1 do
@@ -79,6 +80,8 @@ function A.think(P)
   local me = P.me
   local n = gather(P)
   local tx, ty, hold_fire = goal(P)
+  local TS, WT = TS_FULL, WT_FULL
+  if A.every > 1 then TS, WT = TS_DEMO, WT_DEMO end
   local best, bs, bdanger = nil, -1e18, 0
   for _, c in ipairs(CANDS) do
     local sp = c[3] and SLOW or FAST

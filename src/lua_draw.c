@@ -496,6 +496,25 @@ static void as_picture(ov_cmd *c) {
 
 /* The bands of BAND screen columns a command may draw on (the console draws the screen as strips of 32 columns, and
  * each strip looks only at the commands of its band); none (band0 > band1) when it is off the screen. */
+/* A command that cannot leave the see-through colour on a canvas: plain pictures and swarms (only their opaque pixels are
+ * copied; a picture's own pixel of exactly that colour would stay opaque, where before it became a hole), letters (their
+ * colours are kept off it), shapes in a colour, a shade. Drawn on a full canvas, its mask is not worked out again. */
+static bool keyless(const ov_cmd *c) {
+    switch (c->op) {
+    case OV_IMG: return !c->font;
+    case OV_POINTS: return c->w == BLEND_ALPHA && c->h == 255;
+    case OV_SHADE: return true;
+    case OV_TEXT_OP: {
+        if (c->color == CANVAS_KEY) return false;
+        if (!c->ext) return true;
+        const text_style *st = &ov_style[c->ext - 1]; /* (a colour of its style CLEAR: letters cut out of the canvas) */
+        return st->color != CANVAS_KEY && st->bottom != CANVAS_KEY && st->outline != CANVAS_KEY && st->shadow != CANVAS_KEY;
+    }
+    case OV_FILL: case OV_BOX: case OV_LINE: case OV_CIRC: case OV_POLY: return c->color != CANVAS_KEY && !c->font;
+    default: return false;
+    }
+}
+
 static void band(ov_cmd *c) {
     int x0, y0, x1, y1;
     bounds(c, &x0, &y0, &x1, &y1);
@@ -541,13 +560,13 @@ static void commit(ov_cmd *c, int text_bytes, int corners) {
         return;
     }
     const ov_cmd was = *c; /* (forget takes back what the command held as it was asked for) */
-    if (c->op == OV_TEXT_OP && c->ext) as_picture(c); /* a styled text: the picture worked out once, as on the screen (a vertical game's every letter is on its canvas) */
+    if (c->op == OV_TEXT_OP && c->ext && keyless(c)) as_picture(c); /* a styled text: the picture worked out once, as on the screen (a vertical game's every letter is on its canvas) */
     surface whole = {.px = target->pixels, .w = target->w, .h = target->h, .canvas = true};
     surface s = clipping ? gfx_clip(&whole, clip_r.x, clip_r.y, clip_r.w, clip_r.h) : whole;
     if (s.w > 0 && s.h > 0) {
         if (c->op == OV_SHADE) gfx_canvas_shade(&s, c->x, c->y, c->w, c->h); /* see-through stays so */
         else draw_one(&s, c);
-        if (target->full && c->op == OV_FILL && c->color != CANVAS_KEY && !c->font) target->gen++; /* an opaque fill on a full canvas: its mask stays whole, not worked out again */
+        if (target->full && keyless(c)) target->gen++; /* drawn on a full canvas without the see-through colour: its mask stays whole */
         else {
             int x0, y0, x1, y1;
             bounds(c, &x0, &y0, &x1, &y1);
