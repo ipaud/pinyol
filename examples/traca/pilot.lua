@@ -12,10 +12,11 @@ A.every = 2 -- think every n ticks (the demo on the console); the playtest sets 
 local FAST, SLOW = 1.6, 0.7
 local TS_FULL, WT_FULL = {2, 4, 7, 11, 16}, {8, 5, 3, 1.6, 1}
 local TS_DEMO, WT_DEMO = {2, 6, 14}, {8, 3.5, 1.2} -- the title's demo on the console: three looks ahead, not five (its tick fits the frame)
-local CANDS = {}
+local CANDS, CANDS_DEMO = {}, {} -- every way to hold the arrows; the demo's: fast or still only (half the thinking)
 for dy = -1, 1 do
   for dx = -1, 1 do
     CANDS[#CANDS + 1] = {dx, dy, false}
+    CANDS_DEMO[#CANDS_DEMO + 1] = CANDS[#CANDS]
     if dx ~= 0 or dy ~= 0 then CANDS[#CANDS + 1] = {dx, dy, true} end
   end
 end
@@ -26,7 +27,8 @@ local last, last_bomb = nil, -99
 local function gather(P)
   local me, n = P.me, 0
   for k, s in ipairs(P.BULLETS) do -- the bullets near enough to matter, in one call a swarm
-    local m = s:collect(me.x - 50, me.y - 70, 100, 110, near)
+    local m = A.every > 1 and s:collect(me.x - 35, me.y - 50, 70, 80, near) -- (the demo looks 14 ticks ahead: nearer is enough)
+      or s:collect(me.x - 50, me.y - 70, 100, 110, near)
     local r = P.BULLET_R[k] + 1.8
     for i = 0, m - 1 do
       n = n + 1
@@ -75,10 +77,10 @@ function A.think(P)
   local me = P.me
   local n = gather(P)
   local tx, ty, hold_fire = goal(P)
-  local TS, WT = TS_FULL, WT_FULL
-  if A.every > 1 then TS, WT = TS_DEMO, WT_DEMO end
+  local TS, WT, cands = TS_FULL, WT_FULL, CANDS
+  if A.every > 1 then TS, WT, cands = TS_DEMO, WT_DEMO, CANDS_DEMO end
   local best, bs, bdanger = nil, -1e18, 0
-  for _, c in ipairs(CANDS) do
+  for _, c in ipairs(cands) do
     local sp = c[3] and SLOW or FAST
     if c[1] ~= 0 and c[2] ~= 0 then sp = sp * 0.75 end
     local danger, early = 0, 0
