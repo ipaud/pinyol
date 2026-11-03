@@ -71,7 +71,7 @@ function Bot.floor(P)
   -- outside, in a gust: stay on the rung (walk against it), never jump into it
   local gusty = P.gust_soon(P.t, 60)
   if b.on == goal then
-    if at_window and math.abs(b.x - gx) < 6 and can_lift then return {lift = true} end
+    if at_window and math.abs(b.x - gx) < 14 and can_lift then return {lift = true} end
     local m = walk_to(b, gx)
     if gusty and P.wind_at(P.t) ~= 0 and m.dx == 0 then
       local p = lv.plat[b.on]
@@ -95,7 +95,7 @@ function Bot.boss(B)
   if B.state ~= "fight" then return {} end
   if not b.ground then return R.drive(b, B.bot_edge or {steer = 0, jump = false}) end
   local goal, gx = B.task()
-  local working = b.on == goal and math.abs(b.x - gx) < 6
+  local working = b.on == goal and math.abs(b.x - gx) < 26 -- the fire is taken (and given) anywhere this near
   local t = B.danger(b.x, false, working)
   if t then
     local p = B.lv.plat[b.on or 1]
@@ -111,7 +111,7 @@ function Bot.boss(B)
     return {dx = b.x < t.x and -1 or 1}
   end
   if b.on == goal then
-    if math.abs(b.x - gx) < 6 then return {lift = true} end
+    if working then return {lift = true} end
     local m = walk_to(b, gx)
     if m.dx ~= 0 and B.danger(b.x + m.dx * 10) then return {dx = 0} end
     return m
@@ -125,13 +125,19 @@ function Bot.boss(B)
   return R.drive(b, e)
 end
 
--- the same input as the buttons a player holds (A jumps, B raises the lantern)
-local was_a = false
+-- the same input as the buttons a player holds (A jumps, B raises the lantern). A jump's button is held a good while after it is pressed, as a
+-- person holds it: a player who presses late (the playtest's human-like bots) then still makes the whole jump, not a hop.
+local was_a, calls, hold_until = false, 0, 0
 function Bot.buttons(inp, grounded)
+  calls = calls + 1
   local out = {}
   if inp.dx == -1 then out.left = true elseif inp.dx == 1 then out.right = true end
-  local a = inp.jump or (inp.hold and not grounded)
-  if inp.jump and was_a then a = false end -- a press needs the button up the tick before
+  local a = inp.jump or calls < hold_until or (inp.hold and not grounded)
+  if inp.jump then
+    if calls < hold_until then a = true -- still the same press, held
+    elseif was_a then a = false -- a new press needs the button up the tick before
+    else hold_until = calls + 24 end
+  end
   out.a = a or nil
   out.b = inp.lift or nil
   was_a = a and true or false

@@ -51,6 +51,7 @@ function P.enter(n)
   P.cam = math.max(0, math.min(720 - 320, P.body.y - 200))
   P.flash, P.next_bolt, P.bolt = 0, 200, nil
   P.hurt_here = false
+  P.safe = nil
   P.edges = P.edges_of(n)
   P.card = 150
   rain_far = swarm(220, {-40, -40, 520, 360})
@@ -84,11 +85,18 @@ local function hurt(from_x, why)
 end
 P.hurt = hurt
 
+-- out of the water (or the sea): back on the last firm platform she stood on, where she stood
 local function respawn()
   local lv, b = P.lv, P.body
-  b.x, b.y, b.vx, b.vy = lv.start.x, lv.start.y, 0, 0
-  b.ground, b.on = true, nil
-  for i, p in ipairs(lv.plat) do if p[2] == lv.start.y and lv.start.x >= p[1] and lv.start.x <= p[1] + p[3] then b.on = i end end
+  local sp = P.safe
+  b.vx, b.vy, b.ground = 0, 0, true
+  if sp then
+    local p = lv.plat[sp.on]
+    b.x, b.y, b.on = math.max(p[1] + 12, math.min(p[1] + p[3] - 12, sp.x)), p[2], sp.on
+  else
+    b.x, b.y, b.on = lv.start.x, lv.start.y, nil
+    for i, p in ipairs(lv.plat) do if p[2] == lv.start.y and lv.start.x >= p[1] and lv.start.x <= p[1] + p[3] then b.on = i end end
+  end
 end
 
 local function gear_hit(g, b)
@@ -129,7 +137,11 @@ function P.update()
     P.state_t = P.state_t + 1
     if P.state_t > 170 then
       Run.matches = Run.matches - 1
-      if Run.matches > 0 then Run.warmth = C.WARMTH P.enter(P.n) P.hook("retry") else P.state = "over" end
+      if Run.matches > 0 then
+        Run.warmth, Run.freed = C.WARMTH, Run.freed - P.freed -- the floor again: its ánimas are back in it
+        P.enter(P.n)
+        P.hook("retry")
+      else P.state = "over" end
     end
     return
   end
@@ -158,6 +170,7 @@ function P.update()
   local ev = Body.step(b, {dx = inp.dx, jump = inp.jump, hold = inp.hold, lift = s.lift}, lv.plat, plat_y, P.wind_at(P.t))
   s.walked = s.walked + math.abs(b.x - x0)
   if ev == "jump" then S.at("JUMP", b.x) elseif ev == "land" then S.at("LAND", b.x) end
+  if b.ground and b.on and lv.plat[b.on][4] ~= "barrel" then P.safe = {on = b.on, x = b.x} end
   if b.ground and math.abs(b.vx) > 0.5 and math.floor(s.walked / 22) ~= math.floor((s.walked - math.abs(b.x - x0)) / 22) then S.at("STEP", b.x, {var = 3}) end
   -- water and sea
   if (lv.water and b.y > lv.water + 14) or (lv.sea and b.y > lv.sea) then
@@ -193,6 +206,7 @@ function P.update()
     if not c.got and math.abs(b.x - c.x) < 18 and math.abs(b.y - c.y) < 30 then
       c.got = true
       P.oil, P.drained = C.OIL_MAX, false
+      Run.warmth = math.min(C.WARMTH, Run.warmth + 1) -- a warm can in cold hands
       Run.score = Run.score + 50
       S.at("OIL", c.x)
     end

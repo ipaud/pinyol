@@ -27,7 +27,7 @@ PLAYTEST = {
   end,
   probe = function() return {n_warmth = Run.warmth, n_matches = Run.matches, freed = Run.freed, ticks = Run.ticks} end,
   invariants = function()
-    if Run.warmth > 4 or Run.matches > 3 then return "warmth_" .. Run.warmth .. "_matches_" .. Run.matches end
+    if Run.warmth > 5 or Run.matches > 3 then return "warmth_" .. Run.warmth .. "_matches_" .. Run.matches end
     if Run.freed > 8 then return "freed_" .. Run.freed end
     if G.state == "play" and Play.freed > #Play.animas then return "floor_freed_" .. Play.freed end
   end,

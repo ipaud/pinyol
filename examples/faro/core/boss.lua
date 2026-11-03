@@ -72,7 +72,7 @@ local function update_tents()
   if busy and B.next_tent < 30 then B.next_tent = 30 end -- a new wave only once the last has gone down: there is always a way out
   if B.next_tent <= 0 and B.pop.hit <= 0 then
     B.wave = B.wave + 1
-    B.next_tent = 110 - 20 * B.wicks
+    B.next_tent = 140 - 20 * B.wicks
     local off = ((B.wave * 37) % 50) - 25
     spawn_tent(b.x + off)
     if B.wicks >= 1 then spawn_tent(b.x + (B.wave % 2 == 0 and 110 or -110)) end
@@ -81,11 +81,11 @@ local function update_tents()
   local keep = {}
   for _, t in ipairs(B.tents) do
     t.t = t.t + 1
-    if t.st == "warn" and t.t > 60 then t.st, t.t = "rise", 0 S.at("SLAM", t.x) end
+    if t.st == "warn" and t.t > 72 then t.st, t.t = "rise", 0 S.at("SLAM", t.x) end
     if t.st == "rise" then t.h = math.min(176, t.h + 16) if t.h >= 176 then t.st, t.t = "hold", 0 end end
-    if t.st == "hold" and (t.t > 55 or B.pop.hit > 0) then t.st, t.t = "sink", 0 end
+    if t.st == "hold" and (t.t > 40 or B.pop.hit > 0) then t.st, t.t = "sink", 0 end
     if t.st == "sink" then t.h = t.h - 10 end
-    if (t.st == "rise" or t.st == "hold") and math.abs(b.x - t.x) < 18 + C.HW and b.y > FLOOR - t.h then hurt(t.x) end
+    if (t.st == "rise" or t.st == "hold") and math.abs(b.x - t.x) < 15 + C.HW and b.y > FLOOR - t.h then hurt(t.x) end
     if t.st ~= "sink" or t.h > 0 then keep[#keep + 1] = t end
   end
   B.tents = keep
@@ -177,6 +177,7 @@ function B.update()
       else
         B.charged = false
         B.wicks = B.wicks + 1
+        Run.warmth = C.WARMTH -- the lamp's fire warms her through
         Run.score = Run.score + 300
         S.play("BURNER")
         S.play("ROAR", {delay = 0.2})
@@ -210,7 +211,7 @@ local function draw_tent(t)
   local base = FLOOR + 6
   local h = t.h
   if t.st == "warn" then
-    local k = t.t / 60
+    local k = t.t / 72
     light(t.x, FLOOR - 4, 30 + 10 * k, 0x101020, {sub = true, intensity = 0.8 * k})
     if t.t % 12 == 0 then circ(t.x + ((t.t * 7) % 21) - 10, FLOOR - 4, 3, 0x8090C0, false) end
     return

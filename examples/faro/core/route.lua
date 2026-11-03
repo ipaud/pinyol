@@ -27,7 +27,7 @@ local function fly(lv, i, x, steer, jump)
   local p = lv.plat[i]
   local b = Body.new(x, p[2])
   b.on = i
-  if not jump then b.vx = steer * C.WALK end
+  b.vx = steer * C.WALK -- a running jump (or step) in the way it steers; straight up from standing
   for t = 1, 140 do
     local ev = Body.step(b, {dx = steer, jump = jump and t == 1, hold = true}, lv.plat, static_y, 0)
     if hits_hazard(lv, b) then return nil end
@@ -62,7 +62,11 @@ function R.build(lv)
         end
       end
       for x = math.max(C.HW, p[1] - 4), math.min(480 - C.HW, p[1] + p[3] + 4), 2 do
-        local to, ticks, land = fly(lv, i, x, steer, true)
+        local back = x - steer * 10 -- room to run up to it on the same platform, and nothing that hurts there
+        local to, ticks, land
+        if back >= p[1] - 4 and back <= p[1] + p[3] + 4 and not hits_hazard(lv, {x = x, y = p[2]}) and not hits_hazard(lv, {x = back, y = p[2]}) then
+          to, ticks, land = fly(lv, i, x, steer, true)
+        end
         if to and run and run.to == to then run.hi, run.lands[#run.lands + 1] = x, land
         else
           close()
@@ -81,6 +85,7 @@ function R.build(lv)
     end
     for to, e in pairs(best) do
       e.x = (e.lo + e.hi) / 2
+      e.plo, e.phi = p[1], p[1] + p[3]
       e.land = e.lands[math.max(1, math.floor(#e.lands / 2 + 0.5))] -- where the middle launch comes down
       e.lands = nil
       edges[i][#edges[i] + 1] = e
@@ -117,22 +122,33 @@ function R.reach(edges, a, b)
   return a == b or R.next_edge(edges, a, b) ~= nil
 end
 
--- the input that takes the body along edge e: walk to its launch place, stand still, jump, steer
+-- the input that takes the body along edge e: straight up from standing still in its window; to either side, a running jump through its window
 function R.drive(b, e)
-  if b.ground then
-    if e.jump then
-      local lo, hi = math.max(e.lo, e.x - 2), math.min(e.hi, e.x + 2)
-      if lo > hi - 1 then lo, hi = e.x - 0.6, e.x + 0.6 end
-      if b.x < lo - 6 then return {dx = 1} end
-      if b.x > hi + 6 then return {dx = -1} end
-      if math.abs(b.vx) > 0.01 then return {dx = 0} end
-      if b.x < lo then return {dx = 1} end
-      if b.x > hi then return {dx = -1} end
-      return {dx = e.steer, jump = true, hold = true}
-    end
-    return {dx = e.steer, hold = true} -- off the edge
+  if not b.ground then return {dx = e.steer, hold = true} end
+  if not e.jump then return {dx = e.steer, hold = true} end -- off the edge
+  local lo, hi = e.lo, e.hi
+  if e.steer == 0 then
+    lo, hi = e.lo + 2, e.hi - 2 -- every place of the window was flown and lands
+    if lo > hi - 1 then lo, hi = e.x - 0.8, e.x + 0.8 end
+    if b.x >= lo and b.x <= hi and math.abs(b.vx) <= 0.6 then return {dx = 0, jump = true, hold = true} end
+    local mid = (lo + hi) / 2
+    if b.x < lo - 6 or (b.x < lo and b.vx <= 0) then return {dx = 1} end
+    if b.x > hi + 6 or (b.x > hi and b.vx >= 0) then return {dx = -1} end
+    if math.abs(b.vx) > 0.3 then return {dx = 0} end
+    if b.x < lo then return {dx = 1} end
+    if b.x > hi then return {dx = -1} end
+    return {dx = 0, jump = true, hold = true}
   end
-  return {dx = e.steer, hold = true}
+  local s = e.steer
+  local fast = b.vx * s >= C.WALK - 0.05
+  local inwin = b.x >= lo and b.x <= hi
+  if inwin and fast then return {dx = s, jump = true, hold = true} end
+  local past = (s > 0 and b.x > hi) or (s < 0 and b.x < lo)
+  if b.vx * s > 0 and not past then return {dx = s} end -- running at it, or through it until fast enough
+  local start = math.max(e.plo + 2, math.min(e.phi - 2, s > 0 and lo - 9 or hi + 9))
+  if math.abs(b.x - start) <= 1.5 then return {dx = s} end
+  if b.x < start then return {dx = 1} end
+  return {dx = -1}
 end
 
 return R
