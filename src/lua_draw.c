@@ -224,13 +224,18 @@ static void draw_one(surface *s, const ov_cmd *c) {
         }
         break;
     }
-    case OV_POINTS: /* a swarm: its picture at each point (its top-left corner, already worked out) */
+    case OV_POINTS: { /* a swarm: its picture at each point (its top-left corner, already worked out); w: its BLEND_*, h: its alpha */
+        const bool mixed = c->a->pk && (c->w != BLEND_ALPHA || c->h < 255);
+        const unsigned al = (unsigned)c->h + ((unsigned)c->h >> 7);
         for (int i = 0; i < c->len; i++) {
             int x = ov_pts[c->str + 2 * i], y = ov_pts[c->str + 2 * i + 1];
-            if (x + c->a->w > s->x0 && x < s->x0 + s->w && y + c->a->h > s->y0 && y < s->y0 + s->h)
-                gfx_blit_flip(s, c->a, c->frame, x, y, false, NULL, -1);
+            if (x + c->a->w > s->x0 && x < s->x0 + s->w && y + c->a->h > s->y0 && y < s->y0 + s->h) {
+                if (mixed) gfx_blit_mixed(s, c->a, c->frame, x, y, false, -1, al, c->w);
+                else gfx_blit_flip(s, c->a, c->frame, x, y, false, NULL, -1);
+            }
         }
         break;
+    }
     case OV_IMG: {
         const bool see = c->font && (ov_look[c->font - 1].alpha < 255 || ov_look[c->font - 1].mode);
         if (see && c->a->pk && !c->ext && c->scale == 1 && !ov_look[c->font - 1].pal) { /* the quick way: mixed as drawn */
@@ -1416,10 +1421,12 @@ static int l_poly(lua_State *L) { /* poly({x0, y0, x1, y1, ...} [, colour [, fil
 }
 
 /* A swarm's points (lua_swarm.c), each drawn as the picture centred on it: one command for all of them. Only those
- * on the screen (or the canvas) are kept, in the frame's corners (ov_pts); past their room, the rest are not drawn. */
-void draw_points(const asset *a, int frame, const float *x, const float *y, int n) {
+ * on the screen (or the canvas) are kept, in the frame's corners (ov_pts); past their room, the rest are not drawn. mode and alpha (0..255)
+ * as img's: a packed picture is mixed with what is under it (rain that adds its light, sparks, a see-through crowd); any other is drawn as it is. */
+void draw_points(const asset *a, int frame, const float *x, const float *y, int n, int mode, int alpha) {
     ov_cmd *c = ov_add(OV_POINTS);
     if (!c) return;
+    c->w = (int16_t)mode, c->h = (int16_t)(alpha < 0 ? 0 : alpha > 255 ? 255 : alpha); /* how each meets what is under it (a packed picture) */
     const int w = target ? target->w : SCREEN_W, h = target ? target->h : SCREEN_H;
     const int ox = cam_x + a->w / 2, oy = cam_y + a->h / 2;
     c->a = a, c->frame = (int16_t)frame, c->str = (uint16_t)npts;

@@ -422,7 +422,7 @@ moves, culls, tests and draws them in C: 300 orbs and more at 60 frames a second
 | `s = swarm(cap [, {x0, y0, x1, y1}])` | room for `cap` (up to 4096); those that leave the area go (default: the screen and 32 pixels around it) |
 | `s:add(x, y [, vx, vy [, life]])` | one more, moving by vx, vy a tick, for `life` ticks (none: until it leaves); `false` when full |
 | `s:step()` | each moves; those out of the area or out of life go |
-| `s:draw(picture [, frame])` | each drawn centred on its point: one command for them all (the camera applies) |
+| `s:draw(picture [, frame] [, {frame, alpha, add, sub, quarter}])` | each drawn centred on its point: one command for them all (the camera applies). With `alpha`, `add`, `sub` or `quarter` (as `img`'s) a packed picture meets what is under it: rain that adds its light, sparks, a crowd half seen through; each mixed pixel costs about three plain ones. A picture that is not packed (a canvas) is drawn as it is |
 | `s:hit(x, y, w, h [, keep])` | how many are in that box; they go, unless `keep` |
 | `#s`, `s:get(i)`, `s:set(i, x, y [, vx, vy])`, `s:remove(i)`, `s:clear()` | how many; one of them, 1 to `#s` (x, y, vx, vy, life); move one; take one out; all out |
 

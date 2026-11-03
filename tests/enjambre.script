@@ -11,6 +11,13 @@ expect_lua_error swarm(5000)
 expect_lua_error swarm(2):get(1)
 expect_lua_error (function() local s = swarm(2) s:add(0, 0) s:get(2) end)()
 expect_lua_error swarm(2).add(nil, 1, 1)
+# a packed picture mixed as it is drawn: added (0x204020 + 0x406080), half seen through, taken away; a canvas's own picture is drawn plain
+lua function mixed(o) canvas("MIX", 16, 16) target("MIX") cls(0x204020) local s = swarm(2) s:add(8, 8) s:draw("SPR_DOT", o) target() return pget(8, 8, "MIX") end
+expect_lua (function() local c = mixed() return c >> 16 >= 0x3C and c >> 16 <= 0x44 and (c & 255) >= 0x7C and (c & 255) <= 0x86 end)()
+expect_lua (function() local c = mixed({add = true}) return c >> 16 >= 0x5C and c >> 16 <= 0x64 and (c >> 8 & 255) >= 0x9C and (c >> 8 & 255) <= 0xA4 and (c & 255) >= 0x9C end)()
+expect_lua (function() local c = mixed({alpha = 0.5}) return c >> 16 >= 0x2C and c >> 16 <= 0x34 and (c >> 8 & 255) >= 0x4C and (c >> 8 & 255) <= 0x54 end)()
+expect_lua (function() local c = mixed({sub = true}) return c >> 16 <= 0x04 and (c >> 8 & 255) <= 0x04 end)()
+expect_lua (function() local c = mixed({frame = 0, quarter = true}) return c >> 16 >= 0x2C and c >> 16 <= 0x34 end)()
 tick 60
 shot lluvia
 tick 60
