@@ -28,7 +28,8 @@ import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SILENT = "\n-- board_perf.py: silent\ndo local __update = _update function _update(...) volume(0) return __update(...) end end\n"
+# once, and the game can't turn it up again: volume(0) every tick cost _update a millisecond or more with music playing
+SILENT = "\n-- board_perf.py: silent\ndo local __update, __volume, __silent = _update, volume volume = function() end function _update(...) if not __silent then __silent = true __volume(0) end return __update(...) end end\n"
 SKIP = shutil.ignore_patterns("art", "raw", "saves", "tests", "gen", "docs", ".git", "__pycache__", "*.script", "preview_*")
 
 
@@ -46,7 +47,6 @@ TOUR_DRIVER = """
 do
   local __tour, __i, __left, __upd = require("tour"), 0, 0, _update
   function _update(...)
-    volume(0)
     if __left <= 0 and __tour[__i + 1] then
       __i = __i + 1
       __left = __tour[__i][1] * 60

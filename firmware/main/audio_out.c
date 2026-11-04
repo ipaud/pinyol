@@ -22,6 +22,10 @@
 #define PIN_AMP 1   /* amplifier shutdown, active high: low plays */
 #define ADDR_CODEC 0x18
 #define BLOCK 256 /* samples per mix, 11.6 ms */
+#define PRIO_MIX 6     /* under the strips (part1, 7) on this core */
+#define PRIO_LATE 8    /* over them: what is left of the 70 ms queued is running out, and a lost frame is heard less than a gap */
+#define WAITED_US 1000 /* a write that took this long found the queue full */
+#define LATE_WRITES 2  /* this many writes in a row found room: two blocks of the queue gone */
 #define I2C_MS 10
 /* ponytail: calibration knobs, measured on the board 2026-10-13: the microphone's analog gain, 0..7 = 0..42 dB in
  * 6 dB steps (REG16), and the PGA (REG14 low bits, its most). At 42 dB the speaker's 880 Hz square right next to the
@@ -98,6 +102,7 @@ static bool IRAM_ATTR on_underrun(i2s_chan_handle_t h, i2s_event_data_t *e, void
 static void mix_task(void *arg) {
     (void)arg;
     static int16_t stereo[2 * BLOCK];
+    int room = 0; /* writes in a row that found room in the queue */
     for (;;) {
         int64_t t = esp_timer_get_time();
         hal_audio_lock();
@@ -110,7 +115,14 @@ static void mix_task(void *arg) {
         audio_out_blocks++;
         if (audio_out_blocks == 8) audio_out_underruns = 0; /* (the DMA ran dry before the first block: not a late mixer) */
         size_t sent;
+        int64_t sending = esp_timer_get_time();
         i2s_channel_write(tx, stereo, sizeof stereo, &sent, portMAX_DELAY); /* blocks: this paces the mixer */
+        bool waited = esp_timer_get_time() - sending >= WAITED_US;
+        if (!waited && ++room == LATE_WRITES) vTaskPrioritySet(NULL, PRIO_LATE);
+        if (waited) {
+            if (room >= LATE_WRITES) vTaskPrioritySet(NULL, PRIO_MIX);
+            room = 0;
+        }
         for (int k = 0; k < 3; k++) { /* what came in meanwhile, as one block goes out one comes in */
             size_t got = 0;
             i2s_channel_read(rx, stereo, sizeof stereo, &got, 0); /* (drained even unheard: no stale backlog) */
@@ -158,7 +170,7 @@ bool audio_out_init(i2c_master_bus_handle_t bus) {
 #endif
     gpio_hold_dis(PIN_AMP);     /* held off through deep sleep */
     vTaskDelay(pdMS_TO_TICKS(100));
-    xTaskCreatePinnedToCore(mix_task, "audio", 4096, NULL, 6, NULL, 1); /* 1.2 KB seen used (MAQUETA's title, 2026-10-20) */
+    xTaskCreatePinnedToCore(mix_task, "audio", 4096, NULL, PRIO_MIX, NULL, 1); /* 1.2 KB seen used (MAQUETA's title, 2026-10-20) */
 #ifdef BP_QUIET
     hal_log("audio: ES8311 at %d Hz, amplifier off (test build)", AUDIO_HZ);
 #else

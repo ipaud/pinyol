@@ -573,7 +573,8 @@ void app_main(void) {
     display_backlight(100);
     display_start_task();
     /* hal_parallel: half a game's frame. Above the audio mixer (6) on this core: a strip has the panel's scan to meet,
-     * the mixer 70 ms of sound queued (audio_out.c), and a busy song held the strips back a few ms a frame */
+     * the mixer 70 ms of sound queued, and a busy song held the strips back a few ms a frame (audio_out.c goes over
+     * the strips only when that queue runs low) */
     xTaskCreatePinnedToCore(part1_loop, "part1", 6144, NULL, 7, &part1_task, 1);
     ota_from_card(frames[1]); /* a card with only firmware.bin on it still updates the console */
     if (!n) {
