@@ -512,6 +512,7 @@ bool audio_music_time(double *seconds); /* how far into the song the player hear
 double audio_music_bar(void);           /* the playing song's bar in seconds (given to music(), or the WAV's own cues); 0 none */
 void audio_free(void);                  /* the player ends (after audio_reset): the mixer's scratch let go */
 void audio_module_ready(void);          /* before a module plays: the mixer's chunk buffer for it (the game's thread) */
+void ray_draw(surface *s, int x, int y); /* lua_ray.c: this frame's view onto the screen, as its window shows it */
 void ray_free(void);                    /* lua_ray.c: the voxel renderer's buffers let go */
 void ppu_free(void);                    /* ppu.c: the frames' slow-memory scratch let go */
 void audio_reset(void);

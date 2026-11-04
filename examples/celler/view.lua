@@ -72,7 +72,8 @@ function V.setup(px, py, pa, fog)
   return view
 end
 
-function V.cast() return raycast("VIEW", view) end
+local SCREEN = {x = 0, y = 0, w = V.VW, h = V.VH, scale = 2}
+function V.cast(onto) return raycast(onto or SCREEN, view) end -- (the screen, straight: a canvas is written and read again in slow memory)
 
 local function hands()
   local k = math.max(0, W.wax) / 100
@@ -90,7 +91,6 @@ local function hands()
 end
 
 function V.draw_view(with_hands)
-  img("VIEW", 0, 0, {scale = 2})
   if with_hands then hands() end
 end
 
@@ -108,7 +108,7 @@ function V.face_update(frame_override)
     end
   end
   spr(0, face_sheet, frame_override or frame, 108, 136, prio(0))
-  if ticks() % 2 == 0 then
+  if ticks() % 4 == 0 then -- (15 times a second: each is 3 ms of Lua on the console)
     local k = math.max(0, W.wax) / 100
     local sway = noise(ticks() * 0.05) * 0.4
     lamp.gain = 0.55 + 0.6 * math.min(1, k * 1.4) + noise(ticks() * 0.11, 3) * 0.08

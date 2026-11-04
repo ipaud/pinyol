@@ -24,6 +24,7 @@
  * squares, positions are made finite. */
 #include <stdlib.h>
 
+#include "gfx_px.h"
 #include "lua_api.h"
 
 #define MAX_ROWS 256
@@ -193,68 +194,117 @@ static const door *door_at(const door *dr, int n, int x, int y) {
 
 typedef struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; } view_sprite;
 typedef struct {
-    asset *cv;
+    asset *cv; /* NULL: straight onto the screen, in the strips */
     const column *cols;
     const view_sprite *sv;
     const float *zbuf;
     const uint16_t *floor_c;
-    int W, H, nsv;
+    int W, H, nsv, shift; /* shift: a view's pixel is 1 << shift of the screen's across and down */
     uint16_t ceil_s;
 } view_job;
+static view_job on_screen;
 
-/* Drawn a band of BAND columns at a time into internal memory, then copied a row at a time: the canvas (in PSRAM
- * on the console) written in runs instead of a pixel per row, which made a whole view cost twice as much. */
-static void view_bands(int part, void *ctx) {
-    const view_job *j = ctx;
-    static uint16_t bands[2][MAX_H * BAND];
-    uint16_t *band = bands[part], *out = j->cv->pixels;
+/* One band of a view, bw columns from bx, into band (BAND columns a row, in fast memory): its walls, then its sprites */
+static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
     const column *cols = j->cols;
     const view_sprite *sv = j->sv;
     const float *zbuf = j->zbuf;
     const uint16_t *floor_c = j->floor_c, ceil_s = j->ceil_s;
-    const int W = j->W, H = j->H, nsv = j->nsv;
-    for (int bx = part * BAND; bx < W; bx += 2 * BAND) {
-        int bw = W - bx < BAND ? W - bx : BAND;
-        for (int i = 0; i < bw; i++) {
-            const column *q = &cols[bx + i];
-            int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
-            for (int y = 0; y < a; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
-            for (int y = b; y < H; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
-            if (q->look && q->look->pic) {
-                const asset *t = q->look->pic;
-                const uint16_t *col = t->pixels + q->u;
-                int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
-                for (int y = a; y < b; y++, v += step) {
-                    int vv = v >> 16;
-                    band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
-                }
-            } else {
-                uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
-                for (int y = a; y < b; y++) band[y * BAND + i] = c;
+    const int H = j->H, nsv = j->nsv;
+    for (int i = 0; i < bw; i++) {
+        const column *q = &cols[bx + i];
+        int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
+        for (int y = 0; y < a; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
+        for (int y = b; y < H; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
+        if (q->look && q->look->pic) {
+            const asset *t = q->look->pic;
+            const uint16_t *col = t->pixels + q->u;
+            int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
+            for (int y = a; y < b; y++, v += step) {
+                int vv = v >> 16;
+                band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+            }
+        } else {
+            uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
+            for (int y = a; y < b; y++) band[y * BAND + i] = c;
+        }
+    }
+    for (int i = 0; i < nsv; i++) { /* the sprites' columns in this band, hidden where a wall is nearer */
+        const asset *t = sv[i].t;
+        int x0 = sv[i].xl > bx ? sv[i].xl : bx, x1 = sv[i].xl + sv[i].w < bx + bw ? sv[i].xl + sv[i].w : bx + bw;
+        for (int x = x0; x < x1; x++) {
+            if (sv[i].depth >= zbuf[x]) continue;
+            int u = (x - sv[i].xl) * t->w / sv[i].w;
+            for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
+                int v = (y - sv[i].ytop) * t->h / sv[i].h;
+                if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
             }
         }
-        for (int i = 0; i < nsv; i++) { /* the sprites' columns in this band, hidden where a wall is nearer */
-            const asset *t = sv[i].t;
-            int x0 = sv[i].xl > bx ? sv[i].xl : bx, x1 = sv[i].xl + sv[i].w < bx + bw ? sv[i].xl + sv[i].w : bx + bw;
-            for (int x = x0; x < x1; x++) {
-                if (sv[i].depth >= zbuf[x]) continue;
-                int u = (x - sv[i].xl) * t->w / sv[i].w;
-                for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
-                    int v = (y - sv[i].ytop) * t->h / sv[i].h;
-                    if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
+    }
+}
+
+static uint16_t bands[2][MAX_H * BAND];
+
+/* Onto a canvas: a band at a time, copied a row at a time: the canvas (in PSRAM on the console) written in runs instead
+ * of a pixel per row, which made a whole view cost twice as much. Every other band on each core. */
+static void view_bands(int part, void *ctx) {
+    const view_job *j = ctx;
+    uint16_t *out = j->cv->pixels;
+    for (int bx = part * BAND; bx < j->W; bx += 2 * BAND) {
+        const int bw = j->W - bx < BAND ? j->W - bx : BAND;
+        view_band(j, bx, bw, bands[part]);
+        for (int y = 0; y < j->H; y++) memcpy(out + y * j->cv->w + bx, bands[part] + y * BAND, (size_t)bw * sizeof *bands[part]);
+    }
+}
+
+/* Onto the screen: what this window of it shows, straight into it. A view on a canvas goes through the slow memory twice
+ * a frame, written and read again, and that was most of its cost (lua_draw.c calls this as it draws the list). */
+void ray_draw(surface *s, int x0, int y0) {
+    const view_job *j = &on_screen;
+    const int sh = j->shift, x1 = x0 + (j->W << sh), y1 = y0 + (j->H << sh);
+    const int xa = s->x0 > x0 ? s->x0 : x0, xb = s->x0 + s->w < x1 ? s->x0 + s->w : x1;
+    const int ya = s->y0 > y0 ? s->y0 : y0, yb = s->y0 + s->h < y1 ? s->y0 + s->h : y1;
+    if (ya >= yb) return;
+    uint16_t *band = bands[s->part];
+    const int xs = step_x(s), ys = step_y(s);
+    for (int x = xa; x < xb;) {
+        const int bx = (x - x0) >> sh, bw = j->W - bx < BAND ? j->W - bx : BAND;
+        view_band(j, bx, bw, band);
+        const int xe = x0 + ((bx + bw) << sh) < xb ? x0 + ((bx + bw) << sh) : xb;
+        while (x < xe) {
+            const uint16_t *col = band + ((x - x0) >> sh) - bx + ((ya - y0) >> sh) * BAND;
+            uint16_t *d = at(s, x, ya);
+            if (sh && !(((x - x0) | (ya - y0) | (yb - y0)) & 1) && x + 1 < xe) { /* whole pixels of the view: one read, four writes (130000 pixels a frame) */
+                for (int y = ya; y < yb; y += 2, col += BAND, d += 2 * ys) {
+                    const uint16_t v = stored(s, *col);
+                    d[0] = v, d[ys] = v, d[xs] = v, d[xs + ys] = v;
                 }
+                x += 2;
+                continue;
             }
+            for (int y = ya; y < yb; y++, d += ys) *d = stored(s, col[(((y - y0) >> sh) - ((ya - y0) >> sh)) * BAND]);
+            x++;
         }
-        for (int y = 0; y < H; y++) memcpy(out + y * j->cv->w + bx, band + y * BAND, (size_t)bw * sizeof *band);
     }
 }
 
 static int l_raycast(lua_State *L) {
-    const char *id = luaL_checkstring(L, 1);
-    asset *cv = safe_name(id) ? gfx_asset_opt(id) : NULL;
-    if (!cv || !cv->canvas) return luaL_error(L, "raycast \"%s\": not a canvas (make one with canvas())", id);
+    asset *cv = NULL;
+    int W, H, sx = 0, sy = 0, shift = 0;
+    if (draw_ray_listed()) return luaL_error(L, "raycast: one view on the screen a frame, and nothing else cast after it");
+    if (lua_istable(L, 1)) { /* a place on the screen */
+        sx = opt_int(L, 1, "x", 0), sy = opt_int(L, 1, "y", 0);
+        W = opt_int(L, 1, "w", 240), H = opt_int(L, 1, "h", 136);
+        const int scale = opt_int(L, 1, "scale", 1);
+        if (W < 1 || H < 1 || W > MAX_W || H > MAX_H || (scale != 1 && scale != 2)) return luaL_error(L, "raycast: w 1..480, h 1..320, scale 1 or 2");
+        shift = scale - 1;
+    } else {
+        const char *id = luaL_checkstring(L, 1);
+        cv = safe_name(id) ? gfx_asset_opt(id) : NULL;
+        if (!cv || !cv->canvas) return luaL_error(L, "raycast \"%s\": not a canvas (make one with canvas())", id);
+        W = cv->w > MAX_W ? MAX_W : cv->w, H = cv->h > MAX_H ? MAX_H : cv->h;
+    }
     luaL_checktype(L, 2, LUA_TTABLE);
-    const int W = cv->w > MAX_W ? MAX_W : cv->w, H = cv->h > MAX_H ? MAX_H : cv->h;
     static const char *rows[MAX_ROWS];
     static int lens[MAX_ROWS];
     static wall_look looks[128];
@@ -374,11 +424,16 @@ static int l_raycast(lua_State *L) {
         sv[nsv].px = t->pixels + (size_t)q->frame * t->w * t->h;
         nsv++;
     }
-    view_job job = {cv, cols, sv, zbuf, floor_c, W, H, nsv, ceil_s};
-    hal_parallel(view_bands, &job); /* every other band on each core: all a view's walls and sprites, half the time */
-    if (!cv->full) memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
-    cv->full = true;
-    cv->gen++;
+    const view_job job = {cv, cols, sv, zbuf, floor_c, W, H, nsv, shift, ceil_s};
+    if (cv) {
+        hal_parallel(view_bands, (void *)&job);
+        if (!cv->full) memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
+        cv->full = true;
+        cv->gen++;
+    } else {
+        on_screen = job;
+        draw_ray(L, sx, sy, W << shift, H << shift);
+    }
     lua_pushnumber(L, centre_d);
     char s[2] = {centre_c, 0};
     lua_pushstring(L, s);

@@ -112,7 +112,7 @@ end
 function E.draw()
   local P = W.P
   V.setup(P.x, P.y, P.a, W.fog())
-  V.cast()
+  V.cast("VIEW")
   cls(0x100A06)
   text(lang.tr("ex_title"), 240, 8, {font = "dos_vga_title", align = "center", color = 0xFFD880})
   text(lang.tr("ex_page", {n = page}), 472, 180, {font = "dos_vga_small", align = "right", color = 0xB89868})

@@ -15,4 +15,11 @@ function near(a, b) return math.abs(a - b) < 0.02 end
 function rgb(x, y) local c = pget(x, y, "VIEW") or 0 return c >> 16 & 255, c >> 8 & 255, c & 255 end
 function _init() canvas("VIEW", 240, 136) end
 function _update() end
-function _draw() cls(0) img("VIEW", 0, 0, {scale = 2}) end
+-- ON_SCREEN: the same view straight onto the screen instead of through its canvas (tests/games/raydoors/tests/screen.script)
+function _draw()
+  cls(0)
+  if not ON_SCREEN then img("VIEW", 0, 0, {scale = 2}) return end
+  local look = {map = MAP, walls = WALLS, x = 3.5, y = 3.5, angle = 200, fov = 66, fog = 6, doors = {{x = 3, y = 2, open = 0.3}}}
+  raycast({w = 240, h = 136, scale = 2}, look)
+  if TWICE then raycast({w = 240, h = 136, scale = 2}, look) end
+end

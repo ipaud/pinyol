@@ -1,0 +1,13 @@
+# raycast onto the screen draws the pixels the same view draws on a canvas shown twice as big (CMake compares the two shots); two in a frame are refused
+tick 1
+lua raycast("VIEW", {map = MAP, walls = WALLS, x = 3.5, y = 3.5, angle = 200, fov = 66, fog = 6, doors = {{x = 3, y = 2, open = 0.3}}})
+tick 1
+shot ray_canvas
+lua ON_SCREEN = true
+tick 1
+shot ray_screen
+expect_ok
+lua TWICE = true
+tick 1
+shot ray_twice
+expect_crashed

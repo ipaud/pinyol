@@ -264,6 +264,9 @@ foreach(dir ${EXAMPLES})
     add_test(NAME validate_${n} COMMAND pinyol_headless --game ${dir} --validate)
   endif()
 endforeach()
+add_test(NAME raycast_screen COMMAND sh -c "rm -rf ${CMAKE_BINARY_DIR}/saves_rayscreen && $<TARGET_FILE:pinyol_headless> --game ${CMAKE_CURRENT_SOURCE_DIR}/tests/games/raydoors \
+  --saves ${CMAKE_BINARY_DIR}/saves_rayscreen --fresh --script ${CMAKE_CURRENT_SOURCE_DIR}/tests/games/raydoors/tests/screen.script --check-strips && \
+  cmp ${CMAKE_BINARY_DIR}/saves_rayscreen/ray_canvas.ppm ${CMAKE_BINARY_DIR}/saves_rayscreen/ray_screen.ppm")
 # Games made by the tools, when Python 3 has Pillow: tests/template_lua.script plays one just made by
 # tools/new_game.py --lua, tests/tiled.script one with levels from Tiled (tests/make_tiled_game.py).
 find_package(Python3 COMPONENTS Interpreter QUIET)

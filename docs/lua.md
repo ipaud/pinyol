@@ -419,6 +419,8 @@ a colour) draws the sides of a door's square, the frame it slides into, where a 
 beside it. A ray through the open part goes on, so what is behind shows and a shot can pass; the returned distance and
 character are the door's when the middle ray meets it. Walking through is the game's: the square is open once the door is.
 
+`raycast({x, y, w, h, scale}, view)` draws the same view straight onto the screen at that place in the frame, `scale` 1 or 2, `w` and `h` in the view's own pixels (240x136 by default), with no canvas: in the order of your other drawing, so what you draw after it goes over it. On the console a canvas is written to the slow memory and read back every frame, and this is the view's quickest way (El Celler: 28-39 fps on a canvas, 33-56 like this). One view a frame; for a second view, or to read it with `pget`, use a canvas.
+
 `voxels(canvas, {height, colour, x, y, angle, z, horizon, distance, fov, scale, sky, fog})` draws a landscape from a height
 map and a colour map the way Comanche (1992) did, a column at a time, nearest first: `height` a canvas or plain picture
 whose brightness is the ground's height (0..255), `colour` one with its colours (both wrap; `colour` left out: the

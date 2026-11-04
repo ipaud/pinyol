@@ -22,8 +22,8 @@
 
 /* ------------------------------------------------------------------ the overlay: text and shapes at 480x320 */
 
-enum { OV_TEXT_OP, OV_FILL, OV_SHADE, OV_PANEL, OV_PLATE, OV_BOX, OV_IMG, OV_NINE, OV_LINE, OV_CIRC, OV_POLY, OV_POINTS, OV_QUAD, OV_GRAD, OV_LIGHT, OV_WARP, OV_LINES, OV_MESH, OV_OPS };
-static const char *const OP_NAME[OV_OPS] = {"text", "rect", "shade", "panel", "plate", "box", "img", "frame", "line", "circ", "poly", "points", "quad", "grad", "light", "warp", "linetint", "mesh"};
+enum { OV_TEXT_OP, OV_FILL, OV_SHADE, OV_PANEL, OV_PLATE, OV_BOX, OV_IMG, OV_NINE, OV_LINE, OV_CIRC, OV_POLY, OV_POINTS, OV_QUAD, OV_GRAD, OV_LIGHT, OV_WARP, OV_LINES, OV_MESH, OV_RAY, OV_OPS };
+static const char *const OP_NAME[OV_OPS] = {"text", "rect", "shade", "panel", "plate", "box", "img", "frame", "line", "circ", "poly", "points", "quad", "grad", "light", "warp", "linetint", "mesh", "raycast"};
 
 /* Where a frame goes (the meter, perf("ops")): each kind of command counted when it is recorded and timed as the strips draw it, in the
  * frame's own numbers (prof_last: the frame before the one being recorded). Timing each command costs, so only while asked for. */
@@ -169,6 +169,7 @@ static void draw_one(surface *s, const ov_cmd *c) {
         break;
     case OV_FILL: gfx_fill(s, c->x, c->y, c->w, c->h, c->color); break;
     case OV_SHADE: gfx_shade(s, c->x, c->y, c->w, c->h); break;
+    case OV_RAY: ray_draw(s, c->x, c->y); break;
     case OV_PANEL: gfx_panel(s, c->x, c->y, c->w, c->h); break;
     case OV_PLATE: gfx_plate(s, c->x, c->y, c->w, c->h, c->color); break;
     case OV_BOX: gfx_frame(s, c->x, c->y, c->w, c->h, c->color); break;
@@ -869,6 +870,21 @@ static int shape(lua_State *L, int op, bool colour) {
     if (colour && !colour_at(L, 5, 0xFFFFFF, &c->color)) return nov--, 0;
     commit(c, 0, 0);
     return 0;
+}
+
+/* raycast() onto the screen: its view is drawn as the strips come to this place in the list */
+void draw_ray(lua_State *L, int x, int y, int w, int h) {
+    if (target) luaL_error(L, "raycast onto the screen while drawing on a canvas (target())");
+    ov_cmd *c = ov_add(OV_RAY);
+    if (!c) return;
+    c->x = i16(x), c->y = i16(y), c->w = i16(w), c->h = i16(h);
+    commit(c, 0, 0);
+}
+
+bool draw_ray_listed(void) {
+    for (int i = 0; i < nov; i++)
+        if (ov[i].op == OV_RAY) return true;
+    return false;
 }
 
 static int l_rect(lua_State *L) { return shape(L, OV_FILL, true); }

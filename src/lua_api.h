@@ -80,6 +80,8 @@ int draw_profile_pics(draw_pic_row *rows, int max);
 void draw_profile(unsigned who, bool on);
 int draw_profile_rows(draw_prof_row *rows, int max);
 void draw_profile_slots(int *cmds, int *cmds_max, int *slots, int *slots_max);
+void draw_ray(lua_State *L, int x, int y, int w, int h); /* raycast() onto the screen: its place in the list */
+bool draw_ray_listed(void);
 void draw_flush(void);            /* after each call into the game: the masks of the canvases it drew on */
 
 /* lua_game.c: a game's values as JSON and back (store, link) */
