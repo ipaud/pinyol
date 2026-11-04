@@ -7,7 +7,7 @@ local L = require("core.levels")
 local Body = require("core.body")
 local A = require("core.animas")
 local E = require("core.estel")
-local R = require("core.route")
+local Edges = require("core.edges")
 local S = require("core.sound")
 local Run = require("core.run")
 local P = {}
@@ -52,19 +52,13 @@ function P.enter(n)
   P.flash, P.next_bolt, P.bolt = 0, 200, nil
   P.hurt_here = false
   P.safe = nil
-  P.edges = P.edges_of(n)
+  P.edges = Edges[n]
   P.card = 150
   rain_far = swarm(220, {-40, -40, 520, 360})
   rain_near = swarm(90, {-40, -40, 520, 360})
   S.music(lv.music)
   S.room(lv.outside and "outside" or "hall")
   S.ambient(lv.outside and "RAIN" or "SEA")
-end
-
-local edge_cache = {}
-function P.edges_of(n)
-  if not edge_cache[n] then edge_cache[n] = R.build(L[n]) end
-  return edge_cache[n]
 end
 
 local function hurt(from_x, why)

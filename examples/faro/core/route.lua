@@ -1,7 +1,8 @@
 -- The routes of a floor, worked out by flying Estel's own body (core/body.lua) ahead of time: from every platform, a jump (or a step off its edge) from
 -- each place along it, steering left, straight or right, and where it lands. What lands somewhere else without touching a gear, the water or the sea is
 -- an edge of a graph; the bot (and the title's demo, and tests/playtest/faro.lua) walk it with a breadth-first search. Nothing here is a shortcut: the
--- bot presses the same buttons a player would.
+-- bot presses the same buttons a player would. Flying a floor takes the console seconds, so it is done here and kept in core/edges.lua (tests/faro.script
+-- checks that file against the floors and the body, and prints it anew when they have changed).
 local C = require("core.const")
 local Body = require("core.body")
 local R = {}
@@ -93,6 +94,27 @@ function R.build(lv)
     table.sort(edges[i], function(a, b) return a.to < b.to end) -- the same order on every machine
   end
   return edges
+end
+
+-- the source of core/edges.lua: every floor's edges, and the boss's
+function R.text(floors)
+  local out = {"-- Made by core/route.lua: the routes of every floor, flown ahead of time. If tests/faro.script says they are stale, paste what it prints.", "return {"}
+  local function floor(key, edges)
+    out[#out + 1] = "  [" .. key .. "] = {"
+    for _, list in ipairs(edges) do
+      local row = {}
+      for _, e in ipairs(list) do
+        row[#row + 1] = string.format("{to = %d, x = %.17g, lo = %.17g, hi = %.17g, plo = %.17g, phi = %.17g, land = %.17g, steer = %d, jump = %s, ticks = %d}",
+                                      e.to, e.x, e.lo, e.hi, e.plo, e.phi, e.land, e.steer, tostring(e.jump), e.ticks)
+      end
+      out[#out + 1] = "    {" .. table.concat(row, ",\n     ") .. "},"
+    end
+    out[#out + 1] = "  },"
+  end
+  for i, edges in ipairs(floors) do floor(i, edges) end
+  floor('"boss"', floors.boss)
+  out[#out + 1] = "}\n"
+  return table.concat(out, "\n")
 end
 
 -- the first edge of the shortest way from platform a to platform b (nil if none, or a == b)

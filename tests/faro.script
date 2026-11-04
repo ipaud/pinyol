@@ -2,6 +2,10 @@
 # the story, then the whole climb played by the game's own bot (dbg_bot: the same buttons a player presses, along the routes core/route.lua flew):
 # four floors, the lantern room and the dawn. CMake runs it with --check-strips --check-text in es, ca and en.
 tick 40
+# core/edges.lua is what flying the floors gives today; if not, this prints the file anew (--script tests/faro.script | sed -n 's/^lua: //p')
+lua R, L = require("core.route"), require("core.levels") Built = {boss = R.build(require("core.boss").lv)} for i = 1, rawlen(L) do Built[i] = R.build(L[i]) end
+lua Same = R.text(Built) == R.text(require("core.edges")) if not Same then for line in R.text(Built):gmatch("[^\n]+") do print(line) end end
+expect_lua Same
 shot faro_title
 expect_lua G.state == "title"
 # "Cómo funciona" from the title

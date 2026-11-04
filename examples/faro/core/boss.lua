@@ -5,7 +5,7 @@
 local C = require("core.const")
 local Body = require("core.body")
 local E = require("core.estel")
-local R = require("core.route")
+local Edges = require("core.edges")
 local S = require("core.sound")
 local Run = require("core.run")
 local B = {}
@@ -32,7 +32,7 @@ function B.enter()
   B.pop = {rise = 0, face = 0, hit = 0}
   B.oil, B.drained = C.OIL_MAX, false
   B.lens_a, B.beam = 0, 0
-  B.edges = B.edges or R.build(B.lv)
+  B.edges = Edges.boss
   B.flash = 0
   B.hurt_here = false
   S.music("pop")
