@@ -75,7 +75,7 @@
       "avoid": ["four full layers (the first Botín ran at 30 fps)", "more than 15 colours in a bank"]
     },
     {
-      "id": "16bits", "name": "Super Nintendo · Mega Drive", "example": "veloz", "method": "code", "font_pack": "snes",
+      "id": "16bits", "name": "Super Nintendo · Mega Drive", "example": "poncho", "method": "generated", "font_pack": "snes",
       "era": "1991 · speed and per-line scroll", "fps": 60,
       "world": "240x160",
       "aliases": ["snes", "super nintendo", "super famicom", "mega drive", "megadrive", "genesis", "sega genesis", "16 bits", "16-bit", "16 bit", "amiga", "atari st", "sonic"],
@@ -86,7 +86,7 @@
       "avoid": ["anti-aliased edges"]
     },
     {
-      "id": "32bits", "name": "PlayStation · Saturn 2D", "example": "gotico", "method": "generated", "font_pack": "playstation",
+      "id": "32bits", "name": "PlayStation · Saturn 2D", "example": "faro", "method": "generated", "font_pack": "playstation",
       "era": "1997 · 256 colours, translucent light", "fps": 60,
       "world": "480x320 pictures",
       "aliases": ["playstation", "ps1", "psx", "ps one", "saturn", "sega saturn", "32 bits", "32-bit", "32 bit", "nintendo 64", "n64", "dreamcast", "castlevania symphony"],
@@ -121,7 +121,7 @@
       "avoid": ["more than 15 colours in a character", "zooming sprites"]
     },
     {
-      "id": "vertical", "name": "Vertical arcade", "example": "tormenta", "method": "code", "font_pack": "arcade_80s",
+      "id": "vertical", "name": "Vertical arcade", "example": "traca", "method": "code", "font_pack": "arcade_80s",
       "era": "1985 · the screen stood up", "fps": 60,
       "world": "160x240 canvas shown turned 90 degrees and twice as big",
       "aliases": ["vertical", "arcade vertical", "recreativa vertical", "shmup", "shoot em up", "matamarcianos", "1942", "raiden", "tate", "scroll vertical"],
@@ -131,7 +131,7 @@
       "avoid": ["forgetting that the player holds the console on its side"]
     },
     {
-      "id": "firstperson", "name": "First person", "example": "laberinto", "method": "code", "font_pack": "dos_vga",
+      "id": "firstperson", "name": "First person", "example": "celler", "method": "code", "font_pack": "dos_vga",
       "era": "1992 · Wolfenstein 3D", "fps": 60,
       "world": "240x160 raycast canvas shown twice as big under a status bar",
       "aliases": ["primera persona", "first person", "first-person", "wolfenstein", "doom", "raycast", "raycaster", "laberinto 3d", "dungeon crawler"],

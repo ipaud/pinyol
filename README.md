@@ -25,18 +25,18 @@ takes them again).
 |---|---|
 | ![A Game Boy platformer in four tones of green, on the whole screen](docs/looks/gameboy.png) | ![A ZX Spectrum room: blocks of two colours, a miner and a guardian](docs/looks/spectrum.png) |
 | **Game Boy**: [cerezo](examples/cerezo), a Zelda-style adventure | **ZX Spectrum**: [socavon](examples/socavon), a mine, from the tape loading |
-| ![A Game Boy Advance treasure-hunting platformer: a jungle in four layers, a ruin, a mushroom and a signpost](docs/looks/gba.png) | ![A 16-bit speed platformer: checkered earth, a sea moved line by line](docs/looks/16bits.png) |
-| **Game Boy Advance**: [botin](examples/botin), a treasure-hunting platformer | **SNES / Mega Drive**: [veloz](examples/veloz), all its art drawn by code |
+| ![A Game Boy Advance treasure-hunting platformer: a jungle in four layers, a ruin, a mushroom and a signpost](docs/looks/gba.png) | ![A 16-bit platformer: a boy in a cap jumps among toys and coins in a giant playroom](docs/looks/16bits.png) |
+| **Game Boy Advance**: [botin](examples/botin), a treasure-hunting platformer | **SNES / Mega Drive**: [poncho](examples/poncho), a giant playroom |
 | ![A Neo Geo run and gun: a cook on a tractor in a village street, shooting at mechanical seagulls](docs/looks/neogeo.png) | ![A CPS2 fighting game: fighters in 15 colours on a floor in perspective](docs/looks/cps2.png) |
 | **Neo Geo**: [paella](examples/paella), a run and gun | **CPS2**: [taller](examples/taller) |
 | ![A PICO-8 tomb puzzle: 128x128 in sixteen colours](docs/looks/pico8.png) | ![A pocket LCD game: a juggling clown in a circus, figures on or off](docs/looks/lcd.png) |
 | **PICO-8**: [tumba](examples/tumba), a sliding puzzle | **Pocket LCD**: [malabar](examples/malabar), a Game & Watch |
-| ![A vector arcade game: glowing lines on black](docs/looks/vector.png) | ![A vertical shoot-'em-up, shown turned: hold the console on its side](docs/looks/vertical.png) |
-| **Vector arcade**: [pozo](examples/pozo), no pictures | **Vertical screen**: [tormenta](examples/tormenta), the console on its side |
-| ![A first-person maze: stone corridors and a ghost, Wolfenstein-style](docs/looks/firstperson.png) | ![A ZX Spectrum loading screen: a miner in a crystal cave, two colours a block](docs/looks/loading.png) |
-| **First person**: [laberinto](examples/laberinto), `raycast()` | **ZX Spectrum**: [socavon](examples/socavon)'s tape loading |
-| ![A gothic castle hall: candle glows, a half-seen ghost and a huntress with a whip](docs/looks/32bits.png) | ![The skull boss turning and swelling, its fireballs glowing](docs/looks/32bits_boss.png) |
-| **PlayStation / Saturn 2D**: [gotico](examples/gotico) | **PlayStation / Saturn 2D**: its boss |
+| ![A vector arcade game: glowing lines on black](docs/looks/vector.png) | ![A vertical shoot-'em-up, shown turned: a rocket among lanterns and bullets, the console on its side](docs/looks/vertical.png) |
+| **Vector arcade**: [pozo](examples/pozo), no pictures | **Vertical screen**: [traca](examples/traca), the console on its side |
+| ![Cava cellars in first person: a wooden door, the watchman's lantern and his cork gun](docs/looks/firstperson.png) | ![A ZX Spectrum loading screen: a miner in a crystal cave, two colours a block](docs/looks/loading.png) |
+| **First person**: [celler](examples/celler), `raycast()` | **ZX Spectrum**: [socavon](examples/socavon)'s tape loading |
+| ![Inside a lighthouse on a stormy night: the keeper's daughter with her lantern and a see-through green ánima](docs/looks/32bits.png) | ![The lamp room: a great lens, oil burners and the Octopus of the Storm behind the glass](docs/looks/32bits_boss.png) |
+| **PlayStation / Saturn 2D**: [faro](examples/faro) | **PlayStation / Saturn 2D**: its boss |
 
 ## Quick start
 
@@ -143,13 +143,12 @@ You get a small game to change: a room bigger than the screen, a character to wa
 | [mazmorra](examples/mazmorra) | a beat-em-up in a dungeon as a CPS2's: goblins and skeletons in groups, torches that flicker, pillars that pass in front of everyone |
 | [cerezo](examples/cerezo) | a top-down adventure as the last Game Boy ones: a world of screens that slide, a dungeon, a boss, dialogue, four tones that C changes into the Color's palettes; art and music made by code |
 | [socavon](examples/socavon) | a one-screen mine platformer as a ZX Spectrum's, from the tape loading (striped border, the screen in its own order): eight rooms, blocks of two colours, sprites that clash, flashing keys, belts, crumbling floors, a beeper voice, and a menu that shows the attributes |
-| [veloz](examples/veloz) | a speed platformer as the 16-bit consoles': a sea moved line by line, a sky in a gradient, pools seen through, a Mode 7 title; a pangolin that rolls into a ball |
+| [poncho](examples/poncho) | a side-scrolling platformer as the 16-bit consoles made them: a three-year-old hero runs, jumps and scoots across a giant playroom, with costumes that give him powers |
 | [tumba](examples/tumba) | a sliding puzzle as a PICO-8 cartridge: sixteen tomb levels on a 128x128 screen in its sixteen colours, each with a par (the fewest moves, found by a solver); mud, cracking walls, teleporters, keys, one-way gates; four chiptune channels; and a menu that shows what a cartridge is made of |
 | [malabar](examples/malabar) | a pocket LCD game as a Game & Watch: a juggler throws balls from hand to hand and you catch them in time; every figure is a fixed polygon either on or a faint ghost over a printed circus, the score in seven-segment digits, a step and a beep at a time, games A and B, a clock when nobody plays, and a menu that shows what a segment screen is |
 | [pozo](examples/pozo) | a vector arcade shooter down a geometric well: bright lines with a glow, even the letters, no pictures; its menu replays a frame line by line, as the beam drew it |
-| [tormenta](examples/tormenta) | a vertical shoot-'em-up played with the console on its side: a standing canvas shown turned, hundreds of bullets |
-| [laberinto](examples/laberinto) | first person as Wolfenstein 3D drew it: raycast() draws the maze from inside, textured and fogged, ghosts and gems standing in it |
-| [gotico](examples/gotico) | a castle hall at night as the 32-bit consoles drew it: candle light added, a ghost and a dash's afterimages half seen through, a skull boss that turns and swells |
+| [traca](examples/traca) | a vertical shoot-'em-up at a village festival: a fireworks rocket climbs among lanterns and bullets, played with the console on its side, a standing canvas shown turned |
+| [celler](examples/celler) | first person as 1992 drew it: a night watchman with a candle that burns down crosses cava cellars, sliding doors and secret passages, drawn by raycast() straight onto the screen |
 | [faro](examples/faro) | a platformer up a dark lighthouse on a stormy night as the 32-bit consoles made them: the keeper's daughter calms the ánimas of drowned fishermen with her lantern held high and leads them to the windows, floor by floor, to relight the lamp against the Octopus of the Storm; every picture painted with an image model at 480x320 in 256 colours, light added and ghosts half seen through, gears, tentacles and the lens as quads, water rippling over the whole screen, ADPCM sounds and MIDI habaneras in one reverb room, and a menu that explains the PlayStation's tricks (it will replace gotico once it is measured on the console) |
 | [psx_views](examples/psx_views) | one actor and three staged PS1-style cameras: lateral, fixed with foreground occlusion, and a corridor seen from behind; the same position and state survive every cut |
 | [sonidos](examples/sonidos) | sounds made from numbers (a factory of coins, lasers, explosions), a theremin, an engine that follows the speed, music in layers, a keyboard that plays one recording as any note |

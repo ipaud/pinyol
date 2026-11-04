@@ -23,7 +23,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
+ROOT = HERE.parents[2]
 ART, ASSETS = HERE / "art", HERE / "assets"
 T = 8
 

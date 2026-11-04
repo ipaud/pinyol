@@ -83,7 +83,7 @@ text, made with `uv run tools/font2fnt.py --pack <look> games/<id>`: the 37 pack
 Not every look needs an image model. The small ones (Game Boy, Spectrum, 16-bit, PICO-8, LCD, vector, first person)
 are best **drawn by code** in the game's `art.py`, from pictures written as text and simple shapes, as their examples
 do: no quota, and pixels exactly where they should be. A game can even draw everything while it runs, with no
-pictures at all (`examples/inventos`, `pozo`, `tormenta`).
+pictures at all (`examples/inventos`, `pozo`).
 Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and CPS2.
 
 ### Game Boy: `examples/cerezo`
@@ -159,7 +159,7 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
   - A level is a grid of characters drawn with strokes (`gen/levels_design.py`), checked by `gen/reach.py` (every jewel, the
     frog and the way back must be reachable with the hero's jump and a dash), and compiled by `gen/levelkit.py` into maps.
 
-### SNES and Mega Drive: `examples/veloz`
+### SNES and Mega Drive: `examples/poncho`
 
 - The world, 240×160. Sprites up to 32×32 (bigger in a few), 15 colours each or fewer.
 - Mega Drive: far layers moved at a different speed on each line (`line_scroll`: a sea, clouds), strong saturated
@@ -192,13 +192,13 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
     dropping rows and columns, 15 colours a palette and 256 palettes.
   - **Sound**: songs as MIDI on a bank of samples (rumba, flamenco-rock, pasodoble brass), `gen/songs.py`.
 
-### PlayStation and Saturn 2D: `examples/gotico`
+### PlayStation and Saturn 2D: `examples/faro`
 
 - Pictures at 480×320. Characters about 90 pixels tall in **up to 256 colours** (8 bits packed), many frames.
 - **Light and transparency**: candle glows and fire added to what is under them (`img(..., {add = true})`), ghosts,
   the afterimages of a dash half seen through (`{alpha = 0.5}`); glows drawn by code. On the console a mixed
   pixel costs about three drawn plainly: keep them to what moves (light that moves with a background goes into the
-  background, as `gotico`'s moonbeams).
+  background, as the moonbeams of `tests/games/gotico`).
 - Sprites that **turn and swell** (`angle`, `scale`): a boss that sways and breathes.
 - **Quads, shading and the chip's own tricks** (`examples/psx_demo` shows each): `quad()` lays a picture on four corners (a
   floor going away, a sign that swings, a boss that bends), lit by a colour a corner (`lights`) the way the PlayStation
@@ -215,7 +215,7 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
   `sfx`): the whole soundtrack in one room is what makes those games sound like themselves.
 - Generated art. Style line: *late-1990s 32-bit console 2D sprite art, gothic action game: richly detailed
   hand-pixelled sprite with up to 256 colours, smooth careful shading, crisp pixel edges*.
-- **`examples/faro`** (El Faro de las Ánimas, a platformer by floors; to replace `gotico` once measured): painted rooms of 480x720 seen
+- **`examples/faro`** (El Faro de las Ánimas, a platformer by floors): painted rooms of 480x720 seen
   through a camera, darkened through their palette (`dim`, free) and lit with `light()` where it moves (the lantern, the wall lamps, a
   window when lightning strikes); ghosts at `alpha = 0.55`, calm ones adding a warm copy of themselves (`add`, `mul`); rain as two
   swarms mixed as they are drawn (`s:draw(id, {add = true})`); gears and the lens as quads lit a colour a corner and dithered,
@@ -281,13 +281,13 @@ Generate images (sections 2 to 4 below) for the big, detailed looks: Neo Geo and
   line, as the beam drew it, and show what happens past the beam's budget (the lines that flicker).
 - No pictures at all.
 
-### First person: `examples/laberinto`
+### First person: `examples/celler`
 
-- `raycast()` (docs/lua.md, "First person") draws the maze seen from inside onto a 240×160 canvas, shown twice as
-  big under a status bar; walls are 32×32 textures, sprites 32×32 pictures standing in the maze.
+- `raycast()` (docs/lua.md, "First person") draws the maze seen from inside at 240×136, straight onto the screen twice as
+  big, over a status bar; walls are 32×32 textures, sprites 32×32 pictures standing in the maze.
 - Art by code (stone, brick, wood, a door; a ghost, a gem, a lamp) or generated at 32 or 64 pixels.
 
-### A vertical screen: `examples/tormenta`
+### A vertical screen: `examples/traca`
 
 - The game drawn on a **160×240 canvas standing up**, shown turned a quarter round and twice as big
   (`img("V", 80, -80, {angle = 90, scale = 2})`): the console is held on its side, its left edge down. Read the arrows

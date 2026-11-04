@@ -13,12 +13,10 @@ dos_pantallas
 duelo
 estilos
 futbol
-gotico
 horizonte
 inventos
 isla
 juntos
-laberinto
 mazmorra
 microjuegos
 moto
@@ -41,5 +39,3 @@ sonidos
 stylus
 tablero
 taller
-tormenta
-veloz

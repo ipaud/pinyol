@@ -594,5 +594,21 @@
  "En la carpeta de RetroBat, en PowerShell:": "In RetroBat's folder, in PowerShell:",
  "irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex": "irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex",
  "roms\\pinyol": "roms\\pinyol",
- "¿RetroBat, en Windows?": "RetroBat, on Windows?"
+ "¿RetroBat, en Windows?": "RetroBat, on Windows?",
+ "Un héroe de tres años corre, salta y patina por una sala de juegos gigante.": "A three-year-old hero runs, jumps and scoots across a giant playroom.",
+ "Un plataformas de 16 bits: un niño con gorra salta entre juguetes y monedas en una sala de juegos gigante": "A 16-bit platformer: a boy in a cap jumps among toys and coins in a giant playroom",
+ "Un faro en una noche de temporal: luz translúcida, ánimas y un pulpo gigante.": "A lighthouse on a stormy night: translucent light, ánimas and a giant octopus.",
+ "Un faro por dentro en una noche de tormenta: la hija del farero con su farol y un ánima verde medio transparente": "Inside a lighthouse on a stormy night: the keeper's daughter with her lantern and a see-through green ánima",
+ "Un cohete de feria sube al cielo entre farolillos y balas, con la consola de lado.": "A fireworks rocket climbs the sky among lanterns and bullets, with the console on its side.",
+ "Un matamarcianos vertical de fiestas: un cohete entre farolillos rojos y hileras de balas, visto de lado": "A vertical shoot-'em-up at a village festival: a rocket among red lanterns and rows of bullets, shown on its side",
+ "Un sereno con una vela cruza de noche unas cavas llenas de tapones fantasma.": "A night watchman with a candle crosses cava cellars full of ghost corks.",
+ "Unas cavas en primera persona: una puerta de madera, el farol del sereno y su escopeta de tapones": "Cava cellars in first person: a wooden door, the watchman's lantern and his cork gun",
+ "Un plataformas de scroll lateral con un héroe de tres años: corre, salta y patina por la gigantesca sala de juegos entre cubos, estanterías y juguetes de cuerda. Un teclado de juguete es su amigo y guarda su sitio.": "A side-scrolling platformer with a three-year-old hero: he runs, jumps and scoots across the giant playroom among blocks, shelves and wind-up toys. A toy keyboard is his friend and keeps his place.",
+ "Noche de temporal en un cabo de la costa: la lámpara del faro se ha apagado. Estel, la hija del farero, sube planta a planta con el farol de su abuelo, calma a las ánimas de los marineros y las guía hasta el mar, y arriba se las ve con el Pop de la Tempesta. Luz translúcida, cuadriláteros que giran y se doblan, sonido ADPCM en una sala de reverberación: los 32 bits.": "A stormy night on a cape of the coast: the lighthouse lamp has gone out. Estel, the keeper's daughter, climbs floor by floor with her grandfather's lantern, calms the ánimas of the sailors and guides them out to sea, and at the top she faces the Octopus of the Storm. Translucent light, quads that turn and bend, ADPCM sound in one reverb room: the 32 bits.",
+ "Un cohete de fuegos artificiales sube por el cielo de una noche de fiestas para estallar en la palmera final, entre farolillos, murciélagos, globos de feria y cohetes borrachos que escupen chispas. Una recreativa de pantalla vertical: se juega con la consola de pie.": "A fireworks rocket climbs the sky on a festival night to burst in the final palm, among lanterns, bats, fair balloons and drunken rockets spitting sparks. A vertical-screen arcade game: played with the console on its end.",
+ "Primera persona a la manera de 1992: un sereno con una vela que se gasta y una escopeta de tapones cruza de noche las cinco galerías de unas cavas del Penedès, donde los tapones de cava se han vuelto fantasmas. Puertas que se deslizan, rejas con llave, palancas, un botellero que esconde un pasadizo, un mapa que se dibuja con la luz y la salida al amanecer sobre las viñas. Y un menú que enseña el raycasting columna a columna.": "First person the 1992 way: a night watchman with a candle that burns down and a cork gun crosses the five galleries of cava cellars in the Penedès, where the corks have turned into ghosts. Sliding doors, locked gates, levers, a bottle rack that hides a passage, a map drawn by the light, and the way out at dawn over the vineyards. And a menu that teaches raycasting column by column.",
+ "poncho": "poncho",
+ "faro": "faro",
+ "traca": "traca",
+ "celler": "celler"
 }

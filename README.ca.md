@@ -25,18 +25,18 @@ Un joc s'assembla a la consola per a la qual està fet, i el motor els mou tots:
 |---|---|
 | ![Un joc de plataformes de Game Boy en quatre tons de verd, a pantalla completa](docs/looks/gameboy.png) | ![Una sala de ZX Spectrum: blocs de dos colors, un miner i un guardià](docs/looks/spectrum.png) |
 | **Game Boy**: [cerezo](examples/cerezo), una aventura a l'estil Zelda | **ZX Spectrum**: [socavon](examples/socavon), una mina, des de la càrrega de cinta |
-| ![Un joc de plataformes de tresors de Game Boy Advance: una selva en quatre capes, unes ruïnes, un bolet i un cartell](docs/looks/gba.png) | ![Un joc de plataformes de velocitat de 16 bits: terra a quadres i un mar mogut línia a línia](docs/looks/16bits.png) |
-| **Game Boy Advance**: [botin](examples/botin), un joc de plataformes de tresors | **SNES / Mega Drive**: [veloz](examples/veloz), tot el seu art dibuixat amb codi |
+| ![Un joc de plataformes de tresors de Game Boy Advance: una selva en quatre capes, unes ruïnes, un bolet i un cartell](docs/looks/gba.png) | ![Un joc de plataformes de 16 bits: un nen amb gorra salta entre joguines i monedes en una sala de jocs gegant](docs/looks/16bits.png) |
+| **Game Boy Advance**: [botin](examples/botin), un joc de plataformes de tresors | **SNES / Mega Drive**: [poncho](examples/poncho), una sala de jocs gegant |
 | ![Un run and gun de Neo Geo: un cuiner en un tractor per un carrer de poble, disparant a gavines mecàniques](docs/looks/neogeo.png) | ![Un joc de lluita de CPS2: lluitadors de 15 colors sobre un terra en perspectiva](docs/looks/cps2.png) |
 | **Neo Geo**: [paella](examples/paella), un run and gun | **CPS2**: [taller](examples/taller) |
 | ![Un trencaclosques de tombes de PICO-8: 128x128 en setze colors](docs/looks/pico8.png) | ![Una maquineta LCD: un malabarista en un circ, figures enceses o apagades](docs/looks/lcd.png) |
 | **PICO-8**: [tumba](examples/tumba), un trencaclosques de lliscament | **Maquineta LCD**: [malabar](examples/malabar), una Game & Watch |
-| ![Un joc vectorial: línies brillants sobre negre](docs/looks/vector.png) | ![Un matamarcians vertical, girat: es juga amb la consola de costat](docs/looks/vertical.png) |
-| **Recreativa vectorial**: [pozo](examples/pozo), sense imatges | **Pantalla vertical**: [tormenta](examples/tormenta), amb la consola de costat |
-| ![Un laberint en primera persona: passadissos de pedra i un fantasma, a l'estil de Wolfenstein](docs/looks/firstperson.png) | ![Una pantalla de càrrega de ZX Spectrum: un miner en una cova de cristall, dos colors per bloc](docs/looks/loading.png) |
-| **Primera persona**: [laberinto](examples/laberinto), `raycast()` | **ZX Spectrum**: la càrrega de cinta de [socavon](examples/socavon) |
-| ![La sala d'un castell gòtic: llums d'espelma, un fantasma mig vist i una caçadora amb fuet](docs/looks/32bits.png) | ![El cap calavera girant i creixent, les seves boles de foc brillant](docs/looks/32bits_boss.png) |
-| **PlayStation / Saturn 2D**: [gotico](examples/gotico) | **PlayStation / Saturn 2D**: el seu cap final |
+| ![Un joc vectorial: línies brillants sobre negre](docs/looks/vector.png) | ![Un matamarcians vertical, girat: un coet entre farolets i bales, amb la consola de costat](docs/looks/vertical.png) |
+| **Recreativa vectorial**: [pozo](examples/pozo), sense imatges | **Pantalla vertical**: [traca](examples/traca), amb la consola de costat |
+| ![Unes caves en primera persona: una porta de fusta, el fanal del sereno i la seva escopeta de taps](docs/looks/firstperson.png) | ![Una pantalla de càrrega de ZX Spectrum: un miner en una cova de cristall, dos colors per bloc](docs/looks/loading.png) |
+| **Primera persona**: [celler](examples/celler), `raycast()` | **ZX Spectrum**: la càrrega de cinta de [socavon](examples/socavon) |
+| ![L'interior d'un far en una nit de tempesta: la filla del faroner amb el seu fanal i una ànima verda mig transparent](docs/looks/32bits.png) | ![La sala de la làmpada: una gran lent, els cremadors i el Pop de la Tempesta darrere el vidre](docs/looks/32bits_boss.png) |
+| **PlayStation / Saturn 2D**: [faro](examples/faro) | **PlayStation / Saturn 2D**: el seu cap final |
 
 ## Per començar
 
@@ -142,13 +142,13 @@ Et queda un joc petit per canviar: una sala més gran que la pantalla, un person
 | [mazmorra](examples/mazmorra) | un beat-em-up en una masmorra com els de CPS2: follets i esquelets en grups, torxes que fan pampallugues, columnes que passen per davant de tothom |
 | [cerezo](examples/cerezo) | una aventura vista des de dalt com les últimes de Game Boy: un món de pantalles que llisquen, una masmorra, un cap, diàlegs, quatre tons que C canvia per les paletes de la Color; art i música fets amb codi |
 | [socavon](examples/socavon) | una mina de plataformes d'una pantalla com les del ZX Spectrum, des de la càrrega de cinta (vora a ratlles, la pantalla en el seu propi ordre): vuit sales, blocs de dos colors, sprites que es trepitgen el color, claus que parpellegen, cintes, sòls que s'ensorren, una veu de pitit i un menú que ensenya els atributs |
-| [veloz](examples/veloz) | un joc de plataformes de velocitat com els de les consoles de 16 bits: un mar mogut línia a línia, un cel en degradat, tolls transparents, un títol en Mode 7; un pangolí que es fa una bola |
+| [poncho](examples/poncho) | un joc de plataformes de desplaçament lateral com els de les consoles de 16 bits: un heroi de tres anys corre, salta i patina per una sala de jocs gegant, amb disfresses que li donen poders |
 | [tumba](examples/tumba) | un trencaclosques de lliscament com un cartutx de PICO-8: setze nivells de tomba en una pantalla de 128x128 en els seus setze colors, cadascun amb el seu par (el mínim de moviments, trobat per un solucionador); arenes movedisses, murs que es trenquen, portals, claus, sentits únics; quatre canals de chiptune; i un menú que ensenya de què està fet un cartutx |
 | [malabar](examples/malabar) | una maquineta LCD com una Game & Watch: un malabarista llança boles de mà en mà i les atrapes a temps; cada figura és un polígon fix, encès o un fantasma tènue sobre un circ imprès, la puntuació en set segments, un pas i un xiulet cada cop, jocs A i B, un rellotge quan ningú juga, i un menú que ensenya què és una pantalla de segments |
 | [pozo](examples/pozo) | un tirador vectorial de recreativa en un pou geomètric: línies brillants amb resplendor, fins i tot les lletres, sense imatges; el seu menú repeteix un fotograma línia a línia, com el dibuixava el feix |
-| [tormenta](examples/tormenta) | un matamarcians vertical per jugar amb la consola de costat: un llenç dret que es veu girat, centenars de bales |
-| [laberinto](examples/laberinto) | primera persona com la dibuixava Wolfenstein 3D: raycast() dibuixa el laberint des de dins, amb textures i boira, fantasmes i gemmes drets a dins |
-| [gotico](examples/gotico) | la sala d'un castell de nit com la dibuixaven les consoles de 32 bits: llum d'espelmes sumada, un fantasma i els rastres d'un dash mig vistos, un cap calavera que gira i creix |
+| [traca](examples/traca) | un matamarcians vertical de festa major: un coet puja entre farolets i bales, jugat amb la consola de costat, un llenç dret que es veu girat |
+| [celler](examples/celler) | primera persona com la dibuixava el 1992: un sereno amb una espelma que es gasta travessa unes caves, amb portes que llisquen i passadissos secrets, dibuixades per raycast() directament a la pantalla |
+| [faro](examples/faro) | un joc de plataformes per un far a les fosques en una nit de temporal com els de les consoles de 32 bits: la filla del faroner calma les ànimes dels mariners amb el fanal enlaire i les guia fins al mar, planta a planta |
 | [sonidos](examples/sonidos) | sons fets de números (una fàbrica de monedes, làsers, explosions), un theremin, un motor que segueix la velocitat, música en capes, un teclat que toca una mostra com qualsevol nota |
 | [control](examples/control) | dirigir un informatiu de 1994 des de la sala de control: talls, cinta i rètols al ritme de la sintonia, les frases de la realitzadora escrites com una història en català i castellà, el LED de la consola com a pilot de càmera, un clip de vídeo en un monitor; després una càmera que no existeix et mira, et sent i sap quanta bateria et queda |
 | [raton_de_biblioteca](examples/raton_de_biblioteca) | fet per Codex amb una frase en un clon nou: un ratolí amb aspecte de Game Boy en una biblioteca, formatge i gats (després posat a pantalla completa a mà) |

@@ -392,7 +392,7 @@ console's flash.
 `raycast(canvas, view)` draws a map of walls seen from inside it onto a canvas, a column at a time, as Wolfenstein 3D
 did: walls textured and darker far away, the floor darker towards the horizon, sprites standing in the maze hidden by
 the walls in front. The game shows the canvas as it likes: `img("VIEW", 0, 0, {scale = 2})` fills the screen from a
-240×160 view. `examples/laberinto` is a whole game.
+240×160 view. `examples/celler` is a whole game.
 
 ```lua
 canvas("VIEW", 240, 160)                                   -- in _init

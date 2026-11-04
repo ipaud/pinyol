@@ -25,18 +25,18 @@ Un juego se parece a la consola para la que está hecho, y el motor los mueve to
 |---|---|
 | ![Un plataformas de Game Boy en cuatro tonos de verde, a pantalla completa](docs/looks/gameboy.png) | ![Una sala de ZX Spectrum: bloques de dos colores, un minero y un guardián](docs/looks/spectrum.png) |
 | **Game Boy**: [cerezo](examples/cerezo), una aventura al estilo Zelda | **ZX Spectrum**: [socavon](examples/socavon), una mina, desde la carga de cinta |
-| ![Un plataformas de tesoros de Game Boy Advance: una selva en cuatro capas, unas ruinas, una seta y un cartel](docs/looks/gba.png) | ![Un plataformas de velocidad de 16 bits: tierra a cuadros y un mar movido línea a línea](docs/looks/16bits.png) |
-| **Game Boy Advance**: [botin](examples/botin), un plataformas de tesoros | **SNES / Mega Drive**: [veloz](examples/veloz), todo su arte dibujado con código |
+| ![Un plataformas de tesoros de Game Boy Advance: una selva en cuatro capas, unas ruinas, una seta y un cartel](docs/looks/gba.png) | ![Un plataformas de 16 bits: un niño con gorra salta entre juguetes y monedas en una sala de juegos gigante](docs/looks/16bits.png) |
+| **Game Boy Advance**: [botin](examples/botin), un plataformas de tesoros | **SNES / Mega Drive**: [poncho](examples/poncho), una sala de juegos gigante |
 | ![Un run and gun de Neo Geo: un cocinero en un tractor por una calle de pueblo, disparando a gaviotas mecánicas](docs/looks/neogeo.png) | ![Un juego de lucha de CPS2: luchadores de 15 colores sobre un suelo en perspectiva](docs/looks/cps2.png) |
 | **Neo Geo**: [paella](examples/paella), un run and gun | **CPS2**: [taller](examples/taller) |
 | ![Un puzle de tumbas de PICO-8: 128x128 en dieciséis colores](docs/looks/pico8.png) | ![Una maquinita LCD: un malabarista en un circo, figuras encendidas o apagadas](docs/looks/lcd.png) |
 | **PICO-8**: [tumba](examples/tumba), un puzle de deslizamiento | **Maquinita LCD**: [malabar](examples/malabar), una Game & Watch |
-| ![Un juego vectorial: líneas brillantes sobre negro](docs/looks/vector.png) | ![Un matamarcianos vertical, girado: se juega con la consola de lado](docs/looks/vertical.png) |
-| **Recreativa vectorial**: [pozo](examples/pozo), sin imágenes | **Pantalla vertical**: [tormenta](examples/tormenta), con la consola de lado |
-| ![Un laberinto en primera persona: pasillos de piedra y un fantasma, a lo Wolfenstein](docs/looks/firstperson.png) | ![Una pantalla de carga de ZX Spectrum: un minero en una cueva de cristal, dos colores por bloque](docs/looks/loading.png) |
-| **Primera persona**: [laberinto](examples/laberinto), `raycast()` | **ZX Spectrum**: la carga de cinta de [socavon](examples/socavon) |
-| ![La sala de un castillo gótico: brillos de vela, un fantasma a medias y una cazadora con látigo](docs/looks/32bits.png) | ![El jefe calavera girando y creciendo, sus bolas de fuego brillando](docs/looks/32bits_boss.png) |
-| **PlayStation / Saturn 2D**: [gotico](examples/gotico) | **PlayStation / Saturn 2D**: su jefe |
+| ![Un juego vectorial: líneas brillantes sobre negro](docs/looks/vector.png) | ![Un matamarcianos vertical, girado: un cohete entre farolillos y balas, con la consola de lado](docs/looks/vertical.png) |
+| **Recreativa vectorial**: [pozo](examples/pozo), sin imágenes | **Pantalla vertical**: [traca](examples/traca), con la consola de lado |
+| ![Unas cavas en primera persona: una puerta de madera, el farol del sereno y su escopeta de tapones](docs/looks/firstperson.png) | ![Una pantalla de carga de ZX Spectrum: un minero en una cueva de cristal, dos colores por bloque](docs/looks/loading.png) |
+| **Primera persona**: [celler](examples/celler), `raycast()` | **ZX Spectrum**: la carga de cinta de [socavon](examples/socavon) |
+| ![Un faro por dentro en una noche de tormenta: la hija del farero con su farol y un ánima verde medio transparente](docs/looks/32bits.png) | ![La sala de la lámpara: una gran lente, los quemadores y el Pop de la Tempesta tras el cristal](docs/looks/32bits_boss.png) |
+| **PlayStation / Saturn 2D**: [faro](examples/faro) | **PlayStation / Saturn 2D**: su jefe |
 
 ## Para empezar
 
@@ -141,13 +141,13 @@ Te queda un juego pequeño para cambiar: una sala más grande que la pantalla, u
 | [mazmorra](examples/mazmorra) | un beat-em-up en una mazmorra como los de CPS2: goblins y esqueletos en grupos, antorchas que parpadean, columnas que pasan por delante de todos |
 | [cerezo](examples/cerezo) | una aventura vista desde arriba como las últimas de Game Boy: un mundo de pantallas que se deslizan, una mazmorra, un jefe, diálogos, cuatro tonos que C cambia por las paletas de la Color; arte y música hechos con código |
 | [socavon](examples/socavon) | una mina de plataformas de una pantalla como las del ZX Spectrum, desde la carga de cinta (borde a rayas, la pantalla en su propio orden): ocho salas, bloques de dos colores, sprites que se pisan el color, llaves que parpadean, cintas, suelos que se derrumban, una voz de pitido y un menú que enseña los atributos |
-| [veloz](examples/veloz) | un plataformas de velocidad como los de las consolas de 16 bits: un mar movido línea a línea, un cielo en degradado, charcos transparentes, un título en Mode 7; un pangolín que se hace bola |
+| [poncho](examples/poncho) | un plataformas de scroll lateral como los de las consolas de 16 bits: un héroe de tres años corre, salta y patina por una sala de juegos gigante, con disfraces que le dan poderes |
 | [tumba](examples/tumba) | un puzle de deslizamiento como un cartucho de PICO-8: dieciséis niveles de tumba en una pantalla de 128x128 en sus dieciséis colores, cada uno con su par (el mínimo de movimientos, hallado por un solucionador); arenas movedizas, muros que se rompen, portales, llaves, sentidos únicos; cuatro canales de chiptune; y un menú que enseña de qué está hecho un cartucho |
 | [malabar](examples/malabar) | una maquinita LCD como una Game & Watch: un malabarista lanza bolas de mano en mano y las atrapas a tiempo; cada figura es un polígono fijo, encendido o un fantasma tenue sobre un circo impreso, la puntuación en siete segmentos, un paso y un pitido cada vez, juegos A y B, un reloj cuando nadie juega, y un menú que enseña qué es una pantalla de segmentos |
 | [pozo](examples/pozo) | un tirador vectorial de recreativa en un pozo geométrico: líneas brillantes con resplandor, hasta las letras, sin imágenes; su menú repite un fotograma línea a línea, como lo dibujaba el haz |
-| [tormenta](examples/tormenta) | un matamarcianos vertical para jugar con la consola de lado: un lienzo de pie que se ve girado, cientos de balas |
-| [laberinto](examples/laberinto) | primera persona como la dibujaba Wolfenstein 3D: raycast() dibuja el laberinto desde dentro, con texturas y niebla, fantasmas y gemas de pie en él |
-| [gotico](examples/gotico) | la sala de un castillo de noche como la dibujaban las consolas de 32 bits: luz de velas sumada, un fantasma y las estelas de un dash vistos a medias, un jefe calavera que gira y crece |
+| [traca](examples/traca) | un matamarcianos vertical de fiestas: un cohete de feria sube entre farolillos y balas, jugado con la consola de lado, un lienzo de pie que se ve girado |
+| [celler](examples/celler) | primera persona como la dibujaba 1992: un sereno con una vela que se gasta cruza unas cavas, con puertas que se deslizan y pasadizos secretos, dibujadas por raycast() directamente en la pantalla |
+| [faro](examples/faro) | un plataformas por un faro a oscuras en una noche de temporal como los de las consolas de 32 bits: la hija del farero calma a las ánimas de los marineros con el farol en alto y las guía hasta el mar, planta a planta |
 | [sonidos](examples/sonidos) | sonidos hechos de números (una fábrica de monedas, láseres, explosiones), un theremin, un motor que sigue la velocidad, música en capas, un teclado que toca una muestra como cualquier nota |
 | [control](examples/control) | dirigir un informativo de 1994 desde la sala de control: cortes, cinta y rótulos al ritmo de la sintonía, las frases de la realizadora escritas como una historia en catalán y castellano, el LED de la consola como piloto de cámara, un clip de vídeo en un monitor; luego una cámara que no existe te mira, te oye y sabe cuánta batería te queda |
 | [raton_de_biblioteca](examples/raton_de_biblioteca) | hecho por Codex con una frase en un clon nuevo: un ratón con aspecto de Game Boy en una biblioteca, queso y gatos (luego puesto a pantalla completa a mano) |
