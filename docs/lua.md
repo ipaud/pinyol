@@ -419,7 +419,7 @@ a colour) draws the sides of a door's square, the frame it slides into, where a 
 beside it. A ray through the open part goes on, so what is behind shows and a shot can pass; the returned distance and
 character are the door's when the middle ray meets it. Walking through is the game's: the square is open once the door is.
 
-`raycast({x, y, w, h, scale}, view)` draws the same view straight onto the screen at that place in the frame, `scale` 1 or 2, `w` and `h` in the view's own pixels (240x136 by default), with no canvas: in the order of your other drawing, so what you draw after it goes over it. On the console a canvas is written to the slow memory and read back every frame, and this is the view's quickest way (El Celler: 28-39 fps on a canvas, 33-56 like this). One view a frame; for a second view, or to read it with `pget`, use a canvas.
+`raycast({x, y, w, h, scale}, view)` draws the same view straight onto the screen at that place in the frame, `scale` 1 or 2, `w` and `h` in the view's own pixels (240x136 by default), with no canvas: in the order of your other drawing, so what you draw after it goes over it. On the console a canvas is written to the slow memory and read back every frame, and this is the view's quickest way (El Celler: 28-39 fps on a canvas, 42-58 like this). One view a frame; for a second view, or to read it with `pget`, use a canvas.
 
 `voxels(canvas, {height, colour, x, y, angle, z, horizon, distance, fov, scale, sky, fog})` draws a landscape from a height
 map and a colour map the way Comanche (1992) did, a column at a time, nearest first: `height` a canvas or plain picture
@@ -771,7 +771,7 @@ that the cat's console is running out, a story that knows the player is charging
 | `console_favourite(id [, bool])` | whether that game is a favourite; with a value, sets it |
 | `achieve(id)` | an achievement of the game earned: `true` the first time. The game lists them in `game.json`, `"achievements": [{"id": "first", "name": "Primer paso", "description": "..."}, ...]`; they are kept by the console with the game's record, whatever happens to the game's saves, and the menu counts them |
 | `achievements()` | the list, each `{id, name, description, done}`: a shelf screen, a toast with `hud.toast` when `achieve` says true |
-| game.json `"picture_budget_kb"` | optional (512 to 6144, default 4096): how much picture memory the game may keep. A game with several worlds sets it below its total art so the oldest pictures are let go when a new world loads (they come back from the card when drawn again) |
+| game.json `"picture_budget_kb"` | optional (512 to 6144, default 4096): how much picture memory the game may keep. A game with several worlds sets it below its total art so the oldest pictures are let go when a new world loads (they come back from the card when drawn again). About 4 MB of memory are free when a game starts, shared with the cached text and turned pictures and the sounds (up to 1.5 MB each): a game with much of both needs less than the default (Taller and Poncho 2400, Paella 1800) |
 
 ### The console's menu, over every game
 

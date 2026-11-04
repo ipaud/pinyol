@@ -1102,3 +1102,34 @@ fixed; docs/lua.md says `_draw` may come first) and Celler required `gen/face.lu
 `data/`; `require` now refuses gen/, raw/, docs/ and art/ everywhere). A game that has stopped on its error screen showed 30 fps,
 render 32 ms and its audio at 98-99 % of a core with hundreds of underruns: the error screen is costly to draw and the sound is not
 stopped (not looked into).
+
+### The same games again, 2026-11-04
+
+**The table above is pessimistic for any game with music, and so is every number taken with `tools/board_perf.py` before this date.** Its
+silent copy called `volume(0)` every tick, which added 1 to 2 ms to `_update` with music playing (Faro's title: 34-40 fps with it, 59.8 without).
+Why that call costs so much is not known: an early return that skips the audio lock did not help. It now silences a game once.
+
+That call was also hiding a bug. Without it, Faro's title ran at 59.8 fps with 180 underruns a minute: the strips, above the mixer on core 1,
+left it too little of the core. `audio_out.c` now raises the mixer over the strips after two writes in a row that find room in its queue, until
+the queue is full again: 0 underruns in every run below, at the price of a few frames (Faro's title 54-57 instead of 59.8).
+
+"audio N % of a core" is wall time, and the strips preempt the mixer, so it reads high whenever the picture is busy. The perf line now adds its
+quickest block, nearer what mixing costs: Faro's "44 %" with nothing playing is 9 % in its quickest block, and about 25 % with the music, the
+ambience and the reverb all on.
+
+| Game | fps min / mean / max | what changed |
+|---|---|---|
+| Traca (title and its demo) | 46.6 / 54.9 / 59.8 | opaque drawing on a full canvas skips its mask, styled text cached, the demo's pilot thinks less. Without the pilot it is the same, 48.3 / 56.8 / 59.8, so what is left is the drawing |
+| El Celler (title and its demo) | 42.2 / 50.5 / 58.0 | `raycast` straight in the strips, no canvas: world 13 to 5 ms; playing 44-57 |
+| El Faro (title and its demo) | 29.6 / 47.3 / 57.0 | routes in a file, not flown at each floor's start (4 s at 11 fps, in real play too). Title 54-57; floors 30: strips 13-17 ms, of which the backdrop is 150 KB read from PSRAM every frame, its bandwidth and not `dim` |
+| Poncho (first 50 s) | 35.5 / 56.3 / 59.4 | nothing of its own: the measurement |
+| Taller (tour) | 33.3 / 55.6 / 60.0 | `picture_budget_kb` 2400: PSRAM never under 242 KB, boss 50.9 / 56.9 |
+| Paella (tour, six cooks and the boss) | 35.9 / 48.7 / 59.2 | `picture_budget_kb` 1800: PSRAM never under 582 KB, where 2400 went down to 18 KB, at the same frame rate. Its frames sit at the edge, tick 2.5 + world 3.3 + strips 10 ms: memory was not what held it back |
+
+The view on a canvas cost twice in slow memory, written and read back. Timed inside `raycast` on that canvas: reading the tables 0.5 ms, the
+rays 1 ms, the bands 5-7 ms. Moved into the strips, the first version gave nothing back (world -7 ms, strips +7 ms): its copy to the screen
+read each pixel once for each of the four it became. One read for four writes, and a texel's fog worked out once where a wall up close spreads it over
+many pixels, are what made the gain.
+
+A game's PSRAM is more than its pictures: about 4 MB are free once a game starts, and the pictures' budget shares them with 1.5 MB for cached
+text and turned pictures (`gfx_cache.c`) and 1.5 MB for sounds, so the default budget of 4 MB can use it all up.
