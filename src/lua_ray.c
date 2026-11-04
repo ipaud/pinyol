@@ -191,6 +191,64 @@ static const door *door_at(const door *dr, int n, int x, int y) {
     return NULL;
 }
 
+typedef struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; } view_sprite;
+typedef struct {
+    asset *cv;
+    const column *cols;
+    const view_sprite *sv;
+    const float *zbuf;
+    const uint16_t *floor_c;
+    int W, H, nsv;
+    uint16_t ceil_s;
+} view_job;
+
+/* Drawn a band of BAND columns at a time into internal memory, then copied a row at a time: the canvas (in PSRAM
+ * on the console) written in runs instead of a pixel per row, which made a whole view cost twice as much. */
+static void view_bands(int part, void *ctx) {
+    const view_job *j = ctx;
+    static uint16_t bands[2][MAX_H * BAND];
+    uint16_t *band = bands[part], *out = j->cv->pixels;
+    const column *cols = j->cols;
+    const view_sprite *sv = j->sv;
+    const float *zbuf = j->zbuf;
+    const uint16_t *floor_c = j->floor_c, ceil_s = j->ceil_s;
+    const int W = j->W, H = j->H, nsv = j->nsv;
+    for (int bx = part * BAND; bx < W; bx += 2 * BAND) {
+        int bw = W - bx < BAND ? W - bx : BAND;
+        for (int i = 0; i < bw; i++) {
+            const column *q = &cols[bx + i];
+            int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
+            for (int y = 0; y < a; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
+            for (int y = b; y < H; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
+            if (q->look && q->look->pic) {
+                const asset *t = q->look->pic;
+                const uint16_t *col = t->pixels + q->u;
+                int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
+                for (int y = a; y < b; y++, v += step) {
+                    int vv = v >> 16;
+                    band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+                }
+            } else {
+                uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
+                for (int y = a; y < b; y++) band[y * BAND + i] = c;
+            }
+        }
+        for (int i = 0; i < nsv; i++) { /* the sprites' columns in this band, hidden where a wall is nearer */
+            const asset *t = sv[i].t;
+            int x0 = sv[i].xl > bx ? sv[i].xl : bx, x1 = sv[i].xl + sv[i].w < bx + bw ? sv[i].xl + sv[i].w : bx + bw;
+            for (int x = x0; x < x1; x++) {
+                if (sv[i].depth >= zbuf[x]) continue;
+                int u = (x - sv[i].xl) * t->w / sv[i].w;
+                for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
+                    int v = (y - sv[i].ytop) * t->h / sv[i].h;
+                    if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
+                }
+            }
+        }
+        for (int y = 0; y < H; y++) memcpy(out + y * j->cv->w + bx, band + y * BAND, (size_t)bw * sizeof *band);
+    }
+}
+
 static int l_raycast(lua_State *L) {
     const char *id = luaL_checkstring(L, 1);
     asset *cv = safe_name(id) ? gfx_asset_opt(id) : NULL;
@@ -233,7 +291,6 @@ static int l_raycast(lua_State *L) {
     uint16_t ceil_c = to565(ceil_rgb), floor_c0 = to565(floor_rgb);
     int nsp = read_sprites(L, 2, sp, px, py);
 
-    uint16_t *out = cv->pixels;
     float dx = cosf(ang), dy = sinf(ang), k = tanf(fov / 2);
     float plx = -dy * k, ply = dx * k; /* the camera plane, across the view */
     static column cols[MAX_W];
@@ -301,7 +358,7 @@ static int l_raycast(lua_State *L) {
     uint16_t ceil_s = shaded(ceil_c, 256);
     for (int y = H / 2; y < H; y++) floor_c[y] = fogged(floor_c0, fog_k((float)H / (2.0f * (float)y - (float)H + 1.0f), fog));
     float inv = 1.0f / (plx * dy - dx * ply);
-    static struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; } sv[MAX_SPRITES];
+    static view_sprite sv[MAX_SPRITES];
     int nsv = 0;
     for (int i = 0; i < nsp; i++) { /* the sprites on the view: where and how big (farthest first, as sorted) */
         const sprite *q = &sp[i];
@@ -317,44 +374,9 @@ static int l_raycast(lua_State *L) {
         sv[nsv].px = t->pixels + (size_t)q->frame * t->w * t->h;
         nsv++;
     }
-    /* Drawn a band of BAND columns at a time into internal memory, then copied a row at a time: the canvas (in PSRAM
-     * on the console) written in runs instead of a pixel per row, which made a whole view cost twice as much. */
-    static uint16_t band[MAX_H * BAND];
-    for (int bx = 0; bx < W; bx += BAND) {
-        int bw = W - bx < BAND ? W - bx : BAND;
-        for (int i = 0; i < bw; i++) {
-            const column *q = &cols[bx + i];
-            int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
-            for (int y = 0; y < a; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
-            for (int y = b; y < H; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
-            if (q->look && q->look->pic) {
-                const asset *t = q->look->pic;
-                const uint16_t *col = t->pixels + q->u;
-                int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
-                for (int y = a; y < b; y++, v += step) {
-                    int vv = v >> 16;
-                    band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
-                }
-            } else {
-                uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
-                for (int y = a; y < b; y++) band[y * BAND + i] = c;
-            }
-        }
-        for (int i = 0; i < nsv; i++) { /* the sprites' columns in this band, hidden where a wall is nearer */
-            const asset *t = sv[i].t;
-            int x0 = sv[i].xl > bx ? sv[i].xl : bx, x1 = sv[i].xl + sv[i].w < bx + bw ? sv[i].xl + sv[i].w : bx + bw;
-            for (int x = x0; x < x1; x++) {
-                if (sv[i].depth >= zbuf[x]) continue;
-                int u = (x - sv[i].xl) * t->w / sv[i].w;
-                for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
-                    int v = (y - sv[i].ytop) * t->h / sv[i].h;
-                    if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
-                }
-            }
-        }
-        for (int y = 0; y < H; y++) memcpy(out + y * cv->w + bx, band + y * BAND, (size_t)bw * sizeof *band);
-    }
-    memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
+    view_job job = {cv, cols, sv, zbuf, floor_c, W, H, nsv, ceil_s};
+    hal_parallel(view_bands, &job); /* every other band on each core: all a view's walls and sprites, half the time */
+    if (!cv->full) memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
     cv->full = true;
     cv->gen++;
     lua_pushnumber(L, centre_d);
