@@ -198,11 +198,12 @@ static void perf_report(void) {
     if (now - perf.since < PERF_WINDOW_US || !perf.ticks || !perf.frames) return;
     multi_heap_info_t psram;
     heap_caps_get_info(&psram, MALLOC_CAP_SPIRAM);
-    hal_log("perf: tick %.2f ms, render %.2f ms, present %.2f ms, %.1f fps | audio %.0f%% of a core, %d underruns |"
+    hal_log("perf: tick %.2f ms, render %.2f ms, present %.2f ms, %.1f fps | audio %.0f%% of a core (quickest block %.0f%%), %d underruns |"
             " battery %.2f V%s | free internal %u KB, PSRAM %u KB (largest block %u KB; %u blocks used, %u free), core 1 stack %u B unused",
             perf.tick / 1000.0 / perf.ticks, perf.render / 1000.0 / perf.frames,
             display_present_us / 1000.0 / perf.frames, perf.frames * 1e6 / (now - perf.since),
-            audio_out_blocks ? 100.0 * audio_out_mix_us / (now - perf.since) : 0.0, audio_out_underruns,
+            audio_out_blocks ? 100.0 * audio_out_mix_us / (now - perf.since) : 0.0,
+            audio_out_blocks ? 100.0 * audio_out_mix_min_us * AUDIO_HZ / (256 * 1e6) : 0.0, audio_out_underruns,
             power_volts(), power_usb() ? " (USB)" : "",
             (unsigned)(heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024),
             (unsigned)(heap_caps_get_free_size(MALLOC_CAP_SPIRAM) / 1024),
@@ -233,6 +234,7 @@ static void perf_report(void) {
     perf = (typeof(perf)){.since = now};
     display_present_us = 0;
     audio_out_mix_us = 0;
+    audio_out_mix_min_us = INT32_MAX;
 }
 
 /* A panel strip drawn straight from the game: the frame's columns p0..p0+31, turned and byte-swapped for the bus, in
