@@ -20,5 +20,6 @@
     {"id": "sin_continuar", "name": "Sin continuar", "description": "Termina el juego sin usar un continue."},
     {"id": "trio", "name": "El gremio al completo", "description": "Termina el juego con los tres relojeros."},
     {"id": "curioso", "name": "Curioso", "description": "Mira cómo funciona la máquina en el menú."}
-  ]
+  ],
+  "picture_budget_kb": 2400
 }

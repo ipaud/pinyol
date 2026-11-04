@@ -214,15 +214,23 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
     for (int i = 0; i < bw; i++) {
         const column *q = &cols[bx + i];
         int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
-        for (int y = 0; y < a; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
-        for (int y = b; y < H; y++) band[y * BAND + i] = y < H / 2 ? ceil_s : floor_c[y];
+        const int ce = a < H / 2 ? a : H / 2; /* (a wall seen from far can end before the middle: the ceiling goes on to it) */
+        uint16_t *p = band + i;
+        for (int y = 0; y < ce; y++, p += BAND) *p = ceil_s;
+        for (int y = ce; y < a; y++, p += BAND) *p = floor_c[y];
+        p = band + i + b * BAND;
+        for (int y = b; y < H; y++, p += BAND) *p = y < H / 2 ? ceil_s : floor_c[y];
         if (q->look && q->look->pic) {
             const asset *t = q->look->pic;
             const uint16_t *col = t->pixels + q->u;
             int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
-            for (int y = a; y < b; y++, v += step) {
+            int last = -1; /* a wall up close: one texel over many pixels, its fog worked out once */
+            uint16_t c = 0;
+            p = band + i + a * BAND;
+            for (int y = a; y < b; y++, v += step, p += BAND) {
                 int vv = v >> 16;
-                band[y * BAND + i] = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+                if (vv != last) last = vv, c = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+                *p = c;
             }
         } else {
             uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
