@@ -206,7 +206,7 @@ static void panel(surface *s, int x, int y, int w, int h) {
 }
 
 static void row_text(surface *s, int x, int y, int w, const char *left, const char *right, bool sel) {
-    const font *f = &G.font;
+    const font *f = font_system(false);
     if (sel) gfx_fill(s, x, y - 1, w, f->h - 4, C_PAPER_SEL);
     font_draw(s, f, x + 8, y, left, -1, -1, C_INK);
     if (!right) return;
@@ -216,7 +216,7 @@ static void row_text(surface *s, int x, int y, int w, const char *left, const ch
 }
 
 static void draw_menu(surface *s) {
-    const font *f = &G.font;
+    const font *f = font_system(false);
     const int lh = f->h - 4, pw = 360;
     gfx_shade(s, 0, 0, SCREEN_W, SCREEN_H);
     char value[64];
@@ -259,11 +259,11 @@ static void draw_menu(surface *s) {
 }
 
 static void draw_crash(surface *s) {
-    const font *f = &G.font;
+    const font *f = font_system(false);
     const int lh = f->h - 4;
     gfx_fill(s, 0, 0, SCREEN_W, SCREEN_H, C_BLACK);
     gfx_fill(s, 0, 0, SCREEN_W, lh + 8, RGB(160, 32, 32));
-    font_draw(s, &G.bold, 8, 4, T_CRASH[L], -1, -1, C_WHITE);
+    font_draw(s, font_system(true), 8, 4, T_CRASH[L], -1, -1, C_WHITE);
     int qr_w = 0;
     if (S.qr_size) { /* the QR at the right, two pixels a module, in its white quiet zone; the text wraps beside it */
         const int m = 2, quiet = 4 * m, box = S.qr_size * m + 2 * quiet, qx = SCREEN_W - 8 - box, qy = lh + 12;

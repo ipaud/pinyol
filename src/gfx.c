@@ -1185,30 +1185,16 @@ uint16_t hex565(const char *h, uint16_t dflt) {
 }
 
 /* ------------------------------------------------------------------ fonts */
-bool font_load(font *f, const char *path) {
-    long len = 0;
-    uint8_t *d = (uint8_t *)read_file(path, &len);
-    if (!d || len < 264 || memcmp(d, "FNT1", 4)) {
-        free(d);
-        return false;
-    }
+static bool font_header(font *f, const uint8_t *d, long len) { /* a .fnt's size and advances, if it is one */
+    if (!d || len < 264 || memcmp(d, "FNT1", 4)) return false;
     f->w = d[4];
     f->h = d[5];
     f->stride = (f->w + 7) / 8;
     memcpy(f->adv, d + 8, 256);
-    long need = 264 + 256L * f->h * f->stride;
-    if (len != need) {
-        free(d);
-        return false;
-    }
-    f->bits = malloc(need - 264 + 4 * 256); /* the boxes ride in the same block: freeing bits frees them */
-    if (!f->bits) {
-        free(d);
-        return false;
-    }
-    memcpy(f->bits, d + 264, need - 264);
-    free(d);
-    f->box = f->bits + (need - 264);
+    return len == 264 + 256L * f->h * f->stride;
+}
+
+static void font_boxes(font *f) {
     for (int c = 0; c < 256; c++) { /* a cell is ~28x23 bits for ~10x14 of ink: draw_font walks only the ink */
         const uint8_t *g = f->bits + (size_t)c * f->h * f->stride;
         int x0 = f->w, x1 = 0, y0 = f->h, y1 = 0;
@@ -1223,7 +1209,42 @@ bool font_load(font *f, const char *path) {
         uint8_t *b = f->box + 4 * c;
         b[0] = (uint8_t)(x1 ? x0 : 0), b[1] = (uint8_t)x1, b[2] = (uint8_t)(y1 ? y0 : 0), b[3] = (uint8_t)y1;
     }
+}
+
+bool font_load(font *f, const char *path) {
+    long len = 0;
+    uint8_t *d = (uint8_t *)read_file(path, &len);
+    if (!font_header(f, d, len)) {
+        free(d);
+        return false;
+    }
+    const long bytes = len - 264;
+    f->bits = malloc(bytes + 4 * 256); /* the boxes ride in the same block: freeing bits frees them */
+    if (!f->bits) {
+        free(d);
+        return false;
+    }
+    memcpy(f->bits, d + 264, bytes);
+    free(d);
+    f->box = f->bits + bytes;
+    font_boxes(f);
     return true;
+}
+
+/* The console's own letters (Jersey 15, splash/SYS_*.fnt built into the engine): its menu, messages and error screen
+ * look the same over every game, whatever fonts the game brought. Read in place, so only their boxes take memory. */
+const font *font_system(bool bold) {
+    static font fonts[2];
+    static uint8_t boxes[2][4 * 256];
+    font *f = &fonts[bold];
+    if (!f->bits) {
+        const uint8_t *d = bold ? pinyol_font_bold : pinyol_font_text;
+        font_header(f, d, bold ? pinyol_font_bold_len : pinyol_font_text_len);
+        f->bits = (uint8_t *)(d + 264);
+        f->box = boxes[bold];
+        font_boxes(f);
+    }
+    return f;
 }
 
 static int cp1252_from_unicode(uint32_t cp) {

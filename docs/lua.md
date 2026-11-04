@@ -16,6 +16,8 @@ games/mygame/
                  and any of the game's own: fonts/<name>.fnt, used as text(..., {font = "<name>"})
 ```
 
+pinyol's own letters are Jersey 15. A new game's four fonts are made from it (`tools/new_game.py`), and the console's menu over a game, its error screen and its messages (a game arriving, an update) use a copy built into the engine, so they look the same over any game whatever fonts it brought.
+
 The examples are the best way in: `examples/plataformas` (a platformer), `naves` (a shoot-'em-up), `carreras`
 (Mode 7 racing), `puzle` (a touch puzzle with synthesised music), `aldea` (a top-down adventure made in Tiled,
 with dialogue), `estilos` (a game's own look: fonts, text styles, frames, turned pictures) and `inventos` (toys of

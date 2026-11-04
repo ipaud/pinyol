@@ -139,7 +139,7 @@ def art(game: Path, title: str) -> None:
     for x, y in ((150, 30), (200, 70), (170, 100), (20, 140)):
         dr.ellipse((x, y, x + 20, y + 16), fill=(0x3E, 0x6B, 0x3A, 255))
     png2asset.export(a, "BG_TITLE", [img], 0, (0, 0), "background")
-    ttf = str(ROOT / "third_party" / "pixelify" / "PixelifySans.ttf")
+    ttf = str(ROOT / "third_party" / "fonts" / "jersey15" / "Jersey15-Regular.ttf")
     for aid, (w, h, px) in {"LOGO": (224, 128, 33), "LOGO_SMALL": (120, 64, 22)}.items():  # SMALL: the pause screen
         img, dr = canvas(w, h)
         font = ImageFont.truetype(ttf, px)
@@ -164,10 +164,10 @@ def art(game: Path, title: str) -> None:
 
 
 def fonts(game: Path) -> None:
-    """Pixelify Sans (SIL OFL): 22 px for text, 24 px for the large-text option."""
-    ttf = str(ROOT / "third_party" / "pixelify" / "PixelifySans.ttf")
-    for name, px, weight in (("FONT_MAIN", 22, 400), ("FONT_BOLD", 22, 600), ("FONT_MAIN_L", 24, 500), ("FONT_BOLD_L", 24, 600)):
-        ttf2fnt.build(ttf, str(game / "fonts" / f"{name}.fnt"), px, 1, weight, 0)
+    """Jersey 15 (SIL OFL), pinyol's own letters: 24 px for text, 30 px for the large-text option."""
+    ttf = str(ROOT / "third_party" / "fonts" / "jersey15" / "Jersey15-Regular.ttf")
+    for name, px in (("FONT_MAIN", 24), ("FONT_BOLD", 24), ("FONT_MAIN_L", 30), ("FONT_BOLD_L", 30)):
+        ttf2fnt.build(ttf, str(game / "fonts" / f"{name}.fnt"), px, 1, None, 0)
 
 
 def music(game: Path) -> None:

@@ -49,7 +49,6 @@ static void logo(uint16_t *px, const uint8_t *src, int w, int h, int x, int y) {
     for (int r = 0; r < h; r++) memcpy(px + (y + r) * SCREEN_W + x, src + r * w * 2, w * 2);
 }
 
-static font bold, regular;
 static int last; /* the row chosen last time: back from a game, its own row is the one marked */
 static char menu_dir[96]; /* the console's menu, a pinyol game (CONSOLE_MENU_ID): not in the list, run before it */
 
@@ -140,13 +139,6 @@ int launcher_scan(launcher_game *g, int max) {
     menu_dir[0] = 0; /* the menu found again too: one sent over the cable to the card replaces the flash's */
     add_games("/sdcard", false, g, &n, max);
     add_games("/flash", true, g, &n, max);
-    char path[160];
-    for (int i = 0; i < n && (!bold.bits || !regular.bits); i++) { /* every game ships the engine's fonts */
-        snprintf(path, sizeof path, "%s/fonts/FONT_BOLD_L.fnt", g[i].dir);
-        if (!bold.bits && !font_load(&bold, path)) bold = (font){0};
-        snprintf(path, sizeof path, "%s/fonts/FONT_MAIN.fnt", g[i].dir);
-        if (!regular.bits && !font_load(&regular, path)) regular = (font){0};
-    }
     for (int i = 0; i < n; i++) hal_log("launcher: %s \"%s\" in %s", g[i].id, g[i].title, g[i].dir);
     return n;
 }
@@ -172,7 +164,7 @@ static void render(uint16_t *px, const launcher_game *g, int n, int sel, int fir
     gfx_fill(&s, LEFT, 48, SCREEN_W - 2 * LEFT, 2, L_CHERRY);
     logo(px, logo_small_start, LOGO_S_W, LOGO_S_H, LEFT - 4, 4);
     const char *brand = "Cirera";
-    font_draw(&s, &bold, SCREEN_W - LEFT - font_width(&bold, brand, -1), 14, brand, -1, -1, L_TEXT);
+    font_draw(&s, font_system(true), SCREEN_W - LEFT - font_width(font_system(true), brand, -1), 14, brand, -1, -1, L_TEXT);
     int h = row_h(n);
     if (first > 0) gfx_tri(&s, SCREEN_W / 2 - 8, 36, 8, false, L_DIM); /* more above (drawn pointing down: a cue) */
     if (first + shown(n) < n) gfx_tri(&s, SCREEN_W / 2 - 8, OFF_Y - 12, 8, false, L_GOLD); /* more below */
@@ -186,19 +178,19 @@ static void render(uint16_t *px, const launcher_game *g, int n, int sel, int fir
             for (int r = 0; r < TH; r++) memcpy(px + (y0 + r) * SCREEN_W + x0, g[i].thumb + r * TW, TW * 2);
             tx = x0 + TW + 16;
         }
-        bool sub = g[i].subtitle[0] && ph >= bold.h + regular.h + 8; /* three or four games: the title alone */
-        int ty = y + (ph - bold.h - (sub ? regular.h + 2 : 0)) / 2;
+        bool sub = g[i].subtitle[0] && ph >= font_system(true)->h + font_system(false)->h + 8; /* three or four games: the title alone */
+        int ty = y + (ph - font_system(true)->h - (sub ? font_system(false)->h + 2 : 0)) / 2;
         if (ty < y + 2) ty = y + 2;
-        font_draw(&s, &bold, tx, ty, g[i].title, -1, -1, L_TEXT);
-        if (sub) font_draw(&s, &regular, tx, ty + bold.h + 2, g[i].subtitle, -1, -1, L_DIM);
+        font_draw(&s, font_system(true), tx, ty, g[i].title, -1, -1, L_TEXT);
+        if (sub) font_draw(&s, font_system(false), tx, ty + font_system(true)->h + 2, g[i].subtitle, -1, -1, L_DIM);
         if (g[i].no_music) { /* on the title's line, against the plate's right edge */
             const char *m = "sin música";
-            font_draw(&s, &regular, SCREEN_W - LEFT - 14 - font_width(&regular, m, -1), ty + 2, m, -1, -1, L_GOLD);
+            font_draw(&s, font_system(false), SCREEN_W - LEFT - 14 - font_width(font_system(false), m, -1), ty + 2, m, -1, -1, L_GOLD);
         }
     }
     gfx_plate(&s, OFF_X, OFF_Y, OFF_W, OFF_H, sel == n ? L_PLATE_SEL : L_PLATE);
     if (sel == n) gfx_tri(&s, OFF_X + 12, OFF_Y + OFF_H / 2 - 6, 6, true, L_CHERRY);
-    font_draw(&s, &bold, OFF_X + 30, OFF_Y + (OFF_H - bold.h) / 2, "Apagar", -1, -1, L_TEXT);
+    font_draw(&s, font_system(true), OFF_X + 30, OFF_Y + (OFF_H - font_system(true)->h) / 2, "Apagar", -1, -1, L_TEXT);
 }
 
 int launcher_choose(uint16_t *frames[2], const launcher_game *g, int n) {
@@ -239,7 +231,7 @@ void launcher_message(uint16_t *frame, const char *text, int percent) {
     surface s = {.px = frame, .w = SCREEN_W, .h = SCREEN_H};
     theme();
     gfx_fill(&s, 0, 0, SCREEN_W, SCREEN_H, L_BG);
-    font_draw(&s, &bold, (SCREEN_W - font_width(&bold, text, -1)) / 2, 120, text, -1, -1, L_TEXT);
+    font_draw(&s, font_system(true), (SCREEN_W - font_width(font_system(true), text, -1)) / 2, 120, text, -1, -1, L_TEXT);
     if (percent >= 0) {
         gfx_fill(&s, 80, 170, SCREEN_W - 160, 14, L_PLATE);
         gfx_fill(&s, 82, 172, (SCREEN_W - 164) * (percent > 100 ? 100 : percent) / 100, 10, L_CHERRY);

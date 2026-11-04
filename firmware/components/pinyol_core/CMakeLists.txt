@@ -6,8 +6,9 @@ include(${ROOT}/cmake/embed_lib.cmake)
 pinyol_embed_lib(${CMAKE_CURRENT_BINARY_DIR}/pinyol_lib.c ${ROOT}/lib)
 pinyol_splash_pics(SPLASH_PICS ${ROOT})
 pinyol_embed_pics(${CMAKE_CURRENT_BINARY_DIR}/pinyol_splash.c ${SPLASH_PICS})
+pinyol_embed_fonts(${CMAKE_CURRENT_BINARY_DIR}/pinyol_fonts.c ${ROOT}/splash)
 idf_component_register(SRCS ${CORE_SRC} ${ROOT}/third_party/cjson/cJSON.c ${ROOT}/third_party/qrcodegen/qrcodegen.c ${ROOT}/third_party/ibxm/ibxm.c ${LUA_SRC} ${CMAKE_CURRENT_BINARY_DIR}/pinyol_lib.c
-                            ${CMAKE_CURRENT_BINARY_DIR}/pinyol_splash.c
+                            ${CMAKE_CURRENT_BINARY_DIR}/pinyol_splash.c ${CMAKE_CURRENT_BINARY_DIR}/pinyol_fonts.c
                        INCLUDE_DIRS ${ROOT}/src ${ROOT}/third_party/cjson ${ROOT}/third_party/lua
                        PRIV_INCLUDE_DIRS ${ROOT}/third_party/pocketmod ${ROOT}/third_party/ibxm ${ROOT}/third_party/qrcodegen
                        LDFRAGMENTS linker.lf)

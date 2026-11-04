@@ -69,6 +69,8 @@ extern const pinyol_lib_entry pinyol_lib[]; /* ends with a NULL name */
 /* The careta's pictures (packed, with their meta), built into the engine the same way (pinyol_splash.c) */
 typedef struct { const char *name; const uint8_t *pk; size_t len; const char *meta; } pinyol_pic_entry;
 extern const pinyol_pic_entry pinyol_splash[]; /* ends with a NULL name */
+extern const uint8_t pinyol_font_text[], pinyol_font_bold[]; /* the console's letters (cmake/embed_lib.cmake) */
+extern const long pinyol_font_text_len, pinyol_font_bold_len;
 
 /* ------------------------------------------------------------------ link.c: consoles playing together */
 #define LINK_PAYLOAD 220 /* bytes of JSON a message carries */
@@ -243,6 +245,7 @@ void gfx_disc(surface *s, int cx, int cy, int r, uint16_t c);
 void gfx_tri(surface *s, int x, int y, int size, bool right, uint16_t c); /* down or right pointing */
 uint16_t hex565(const char *hex, uint16_t dflt);
 bool font_load(font *f, const char *path);
+const font *font_system(bool bold); /* the console's own letters, for what is the console's and not the game's */
 int utf8_cp1252(const char **p, const char *end); /* next char as cp1252, -1 if unencodable */
 int font_width(const font *f, const char *s, int nbytes);
 bool font_ink_rows(const font *f, const char *s, int nbytes, int *top, int *bottom); /* where the ink of a text is, in the font's rows */
