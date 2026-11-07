@@ -1,5 +1,15 @@
 [
  {
+  "id": "trece",
+  "title": "TRECE",
+  "description": "Petanca en primera persona. Verano de 1983 y de hoy: Remei, 78 años, y su nieta Tina juegan seis capítulos de historia, de la plaza a la revetlla, en español, catalán e inglés.",
+  "author": "ipaud",
+  "license": "CC BY 4.0",
+  "issue": 18,
+  "date": "2026-11-07",
+  "cover": true
+ },
+ {
   "id": "cromota",
   "title": "Cromota",
   "description": "Combina gotas de pigmento, mezcla colores y devuelve el color a tres obras maestras: La noche estrellada, La gran ola y Nenúfares. Táctil.",
