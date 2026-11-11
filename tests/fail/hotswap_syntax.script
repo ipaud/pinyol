@@ -1,0 +1,4 @@
+# a module saved with a syntax error: the hotswap fails (and the game starts over), the engine does not abort (CMakeLists.txt)
+new
+tick 3
+hotswap syntax.lua mod

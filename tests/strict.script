@@ -1,0 +1,5 @@
+# A game with a "strict" _G and no _draw: the engine's lookups of its callbacks find nothing, without an error (tests/games/strict).
+new
+tick 5
+expect_ok
+expect_lua ticks >= 5

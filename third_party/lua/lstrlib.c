@@ -567,9 +567,17 @@ static const char *match_capture (MatchState *ms, const char *s, int l) {
 }
 
 
+#if defined(LUA_PINYOL_BUDGET)
+extern long pinyol_budget;  /* lvm.c: a pattern that backtracks for ever spends it too */
+#endif
+
 static const char *match (MatchState *ms, const char *s, const char *p) {
   if (l_unlikely(ms->matchdepth-- == 0))
     luaL_error(ms->L, "pattern too complex");
+#if defined(LUA_PINYOL_BUDGET)
+  if (l_unlikely(--pinyol_budget < 0))  /* raised here: the VM's hook would only come once the match returns */
+    luaL_error(ms->L, "the script ran too long without returning (a pattern that backtracks for ever?)");
+#endif
   init: /* using goto to optimize tail recursion */
   if (p != ms->p_end) {  /* end of pattern? */
     switch (*p) {

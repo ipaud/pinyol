@@ -277,6 +277,23 @@ static int msgh(lua_State *L) { /* the error with where it happened */
     return 1;
 }
 
+static int get_field(lua_State *L) { lua_gettable(L, 1); return 1; }
+
+/* The table on top replaced by t[k], looked up under a pcall: a game's __index (a "strict" _G that raises on any name it does
+ * not know) can run there and fail. False with the error in its place. */
+static bool get_protected(lua_State *L, const char *k) {
+    lua_pushcfunction(L, get_field);
+    lua_insert(L, -2);
+    lua_pushstring(L, k);
+    return lua_pcall(L, 2, 1, 0) == LUA_OK;
+}
+
+static int panic(lua_State *L) { /* an error outside every pcall: Lua aborts after this; at least the log says why */
+    const char *m = lua_tostring(L, -1);
+    hal_log("lua panic (an error outside any protected call): %s", m ? m : "?");
+    return 0;
+}
+
 static void fail(const char *what, const char *msg) {
     snprintf(error, sizeof error, "%s: %s", what, msg ? msg : "error");
     hal_log("lua %s", error);
@@ -298,8 +315,9 @@ static bool call(const char *fn, int nargs) { /* args are on the stack; true if 
         lua_pop(Ls, nargs);
         return false;
     }
-    lua_getglobal(Ls, fn);
-    if (!lua_isfunction(Ls, -1)) {
+    arm_as(fn); /* (the lookup's own budget: an __index of the game's may run) */
+    lua_pushglobaltable(Ls);
+    if (!get_protected(Ls, fn) || !lua_isfunction(Ls, -1)) { /* (a "strict" _G raises for a name it has not got: none either) */
         lua_pop(Ls, 1 + nargs);
         return true;
     }
@@ -344,8 +362,12 @@ static int l_require(lua_State *L) {
         if (!strncmp(mod, off[i], n) && mod[n] == '.')
             return luaL_error(L, "require '%s': %s/ stays on the computer (the console never gets it); put what the game reads in data/", mod, off[i]);
     }
+    static const char loading = 0; /* in pinyol.loaded while its file runs */
     lua_getfield(L, LUA_REGISTRYINDEX, "pinyol.loaded");
-    lua_getfield(L, -1, mod);
+    const int loaded = lua_gettop(L);
+    lua_getfield(L, loaded, mod);
+    if (lua_touserdata(L, -1) == &loading)
+        return luaL_error(L, "require '%s': it is still loading (modules that require each other round a circle), or it failed before", mod);
     if (!lua_isnil(L, -1)) return 1;
     lua_pop(L, 1);
     char rel[128];
@@ -365,11 +387,19 @@ static int l_require(lua_State *L) {
     } else {
         load_chunk(L, rel);
     }
+    lua_pushlightuserdata(L, (void *)&loading), lua_setfield(L, loaded, mod);
     lua_pushstring(L, mod);
     lua_call(L, 1, 1);
     if (lua_isnil(L, -1)) lua_pop(L, 1), lua_pushboolean(L, 1);
     lua_pushvalue(L, -1);
-    lua_setfield(L, -3, mod);
+    lua_setfield(L, loaded, mod);
+    return 1;
+}
+
+static int hot_run(lua_State *L) { /* (rel, mod): the file compiled and run, under v2_hotswap's pcall (a mistake in it raises) */
+    load_chunk(L, lua_tostring(L, 1));
+    lua_pushvalue(L, 2);
+    lua_call(L, 1, 1);
     return 1;
 }
 
@@ -385,10 +415,9 @@ bool v2_hotswap(const char *rel, const char *mod) {
     const int old = lua_gettop(Ls);
     lua_pushcfunction(Ls, msgh);
     const int base = lua_gettop(Ls);
-    load_chunk(Ls, rel);
-    lua_pushstring(Ls, mod);
+    lua_pushcfunction(Ls, hot_run), lua_pushstring(Ls, rel), lua_pushstring(Ls, mod);
     arm_as("hotswap");
-    if (lua_pcall(Ls, 1, 1, base) != LUA_OK) {
+    if (lua_pcall(Ls, 2, 1, base) != LUA_OK) {
         hal_log("hotswap %s: %s", rel, lua_tostring(Ls, -1));
         lua_settop(Ls, old - 2);
         return false;
@@ -1748,8 +1777,14 @@ static void own_splash_failed(const char *why) { /* the engine's careta instead,
 static bool splash_call(const char *fn, int t, bool *done) {
     lua_pushcfunction(Ls, msgh);
     lua_rawgeti(Ls, LUA_REGISTRYINDEX, splash_ref);
-    lua_getfield(Ls, -1, fn);
-    lua_remove(Ls, -2);
+    arm();
+    if (!get_protected(Ls, fn)) {
+        char why[256];
+        snprintf(why, sizeof why, "%s: %s", fn, lua_tostring(Ls, -1));
+        lua_pop(Ls, 2);
+        own_splash_failed(why);
+        return false;
+    }
     if (!lua_isfunction(Ls, -1)) { /* none: it draws nothing, or it is done as soon as it may be */
         lua_pop(Ls, 2);
         if (done) *done = true;
@@ -1917,6 +1952,7 @@ bool v2_load(void) {
      * the incremental default let it pile up into cycles whose steps cost a whole scan on the console (examples/isla: 96 frames of
      * 32 ms a minute, 58 fps; generational, 7 in 40 s, 59.8 fps, the same memory). Out of memory, Lua still collects in full first. */
     lua_gc(Ls, LUA_GCGEN, 0, 0);
+    lua_atpanic(Ls, panic);
     pinyol_budget_over = over;
     static const luaL_Reg libs[] = {{LUA_GNAME, luaopen_base}, {LUA_COLIBNAME, luaopen_coroutine},
                                     {LUA_TABLIBNAME, luaopen_table}, {LUA_STRLIBNAME, luaopen_string},

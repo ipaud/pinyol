@@ -3,3 +3,5 @@ no lua.c, luac.c, linit.c, liolib.c, loslib.c, loadlib.c or ldblib.c (the sandbo
 table, string, math and utf8). Two changes: luaconf.h lets the build set LUA_32BITS; and lvm.c counts a budget
 (luai_budget, with LUA_PINYOL_BUDGET defined) on every jump, numeric and generic for turn, call and tail call, for the
 engine's limit on a call that never returns (src/lua_game.c), which a count hook made the VM pay for on every instruction.
+And lstrlib.c's match() spends that budget too, once a step, and raises the error itself: a pattern that backtracks without
+end runs in C, where the VM never looks.
