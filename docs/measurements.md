@@ -1133,3 +1133,13 @@ many pixels, are what made the gain.
 
 A game's PSRAM is more than its pictures: about 4 MB are free once a game starts, and the pictures' budget shares them with 1.5 MB for cached
 text and turned pictures (`gfx_cache.c`) and 1.5 MB for sounds, so the default budget of 4 MB can use it all up.
+
+## 2026-11-11: partial cover and raycast lights (branch `pendientes`)
+
+Same board, same silent `board_perf.py` (fps min / mean / max). v0.9.1 is 790718c; the rest are this branch's commits.
+
+| Game | v0.9.1 | `pendientes` | what changed |
+|---|---|---|---|
+| El Celler (60 s of its demo) | 42.0 / 49.8 / 57.9 (40 s) | 42.2 / 52.7 / 58.5 | the world is not doubled under the view, only the bar's 48 rows: render 18.1 to 17.2 ms |
+| El Celler, two `lights` over the whole view | | 32.2 / 40.7 / 56.2 | about 5 ms more a frame lit (first version 38.1, and 46.0 with no lights: the light check was read again in the texel loop) |
+| Traca (40 s) | 48.2 / 56.7 / 59.7 | 48.3 / 56.6 / 59.8 | the same: the partial cover does not change its frames |
