@@ -76,7 +76,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' # (run by hand on a branch: built, no release moved)
     needs: [build, build-windows]
     runs-on: ubuntu-latest
     permissions:
