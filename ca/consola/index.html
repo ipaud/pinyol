@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/consola/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=abc9c027">
+<link rel="stylesheet" href="../../styles.css?v=6f5cb5fa">
 <script src="../../site.js?v=b718360e" defer></script>
 <script src="../../games.js?v=d276c3b9" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script><script type="module" src="../../vendor/esp-web-tools/install-button.js"></script>
@@ -81,6 +81,18 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </ol>
 <div class="aside-note"><b>RetroBat, a Windows?</b> A la carpeta de RetroBat, en PowerShell: <code>irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex</code>Posa el nucli i afegeix Pinyol a EmulationStation; els jocs van a <code>roms\pinyol</code>Encara sense provar en un RetroBat de debò.</div>
 <div class="aside-note"><b>Un altre RetroArch?</b> En un ordinador amb Linux, Batocera o Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">el nucli ja compilat<span class="sr"> (s'obre en una pestanya nova)</span></a> va a la carpeta de nuclis de RetroArch; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">la guia<span class="sr"> (s'obre en una pestanya nova)</span></a> ho explica. Provat a RetroArch i amb el sistema de RetroPie emulat, encara no en una Raspberry Pi de debò: si el proves, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">explica'ns com va<span class="sr"> (s'obre en una pestanya nova)</span></a>.</div>
+</div></section>
+<section id="arkos" aria-labelledby="arkos-t"><div class="wrap">
+<h2 id="arkos-t">A la teva portàtil amb ArkOS</h2>
+<p class="intro">Les portàtils barates com la R36S porten ArkOS, que juga amb RetroArch. Un .zip ho posa tot a la targeta: el nucli, els jocs d'aquesta web amb la seva portada i Pinyol com una consola més del menú, amb el seu art als temes que porten.</p>
+<div class="dl-row solo"><a class="btn btn-primary btn-dl" href="https://github.com/ipaud/pinyol/releases/download/libretro/pinyol-arkos.zip" data-goatcounter-click="cirera-handheld" target="_blank" rel="noopener"><svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 013 3v14a3 3 0 01-3 3H6a3 3 0 01-3-3V5a3 3 0 013-3zm1 3v7h10V5zM7.5 15.25h1.25V14h1.5v1.25h1.25v1.5h-1.25V18h-1.5v-1.25H7.5zM16 14.5a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2zm-1.8 2.3a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2z"/></svg><span class="dl-text"><span>Descarrega per a ArkOS</span><small>R36S, RG351 i altres</small></span><span class="sr"> (s'obre en una pestanya nova)</span></a></div>
+<p class="meta">Provat en una R36S amb ArkOS. Porta els jocs d'aquesta web.</p>
+<ol class="steps">
+<li><h3>Copia'l a la targeta</h3><p>Treu la microSD i obre-la a l'ordinador. Descomprimeix el .zip a la seva partició EASYROMS, la que té una carpeta per a cada consola.</p></li>
+<li><h3>Instal·la'l</h3><p>Torna a posar la targeta, engega la consola i obre Ports → Instalar Pinyol. En pocs segons el menú es reinicia i hi apareix Pinyol amb els seus jocs.</p></li>
+<li><h3>Juga</h3><p>Al comandament, X o Y fan de C, i SELECT de MENU; SELECT i START alhora tornen a la llista. Per afegir jocs, copia'n el .zip a la carpeta pinyol de la targeta.</p></li>
+</ol>
+<div class="aside-note"><b>Alguna cosa no va?</b> L'instal·lador apunta el que fa a <code>ports/pinyol/install-log.txt</code> i, si falla, deixa el menú com estava. <a href="https://github.com/ipaud/pinyol/blob/main/docs/arkos.md" target="_blank" rel="noopener">La guia<span class="sr"> (s'obre en una pestanya nova)</span></a> explica què toca; si la teva consola no l'accepta, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">explica-ho<span class="sr"> (s'obre en una pestanya nova)</span></a> amb aquest fitxer.</div>
 </div></section>
 </main>
 <footer><div class="wrap foot">

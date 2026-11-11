@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/consola/">
 <link rel="icon" href="../img/icon.png">
 <link rel="preload" href="../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../styles.css?v=abc9c027">
+<link rel="stylesheet" href="../styles.css?v=6f5cb5fa">
 <script src="../site.js?v=b718360e" defer></script>
 <script src="../games.js?v=d276c3b9" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../vendor/goatcounter/count.js"></script><script type="module" src="../vendor/esp-web-tools/install-button.js"></script>
@@ -81,6 +81,18 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </ol>
 <div class="aside-note"><b>¿RetroBat, en Windows?</b> En la carpeta de RetroBat, en PowerShell: <code>irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex</code>. Pone el núcleo y añade Pinyol a EmulationStation; los juegos van a <code>roms\pinyol</code>. Aún sin probar en un RetroBat de verdad.</div>
 <div class="aside-note"><b>¿Otro RetroArch?</b> En un ordenador con Linux, Batocera o Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">el núcleo ya compilado<span class="sr"> (se abre en una pestaña nueva)</span></a> va a la carpeta de núcleos de RetroArch; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">la guía<span class="sr"> (se abre en una pestaña nueva)</span></a> lo explica. Probado en RetroArch y con el sistema de RetroPie emulado, aún no en una Raspberry Pi de verdad: si lo pruebas, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">cuéntanos cómo va<span class="sr"> (se abre en una pestaña nueva)</span></a>.</div>
+</div></section>
+<section id="arkos" aria-labelledby="arkos-t"><div class="wrap">
+<h2 id="arkos-t">En tu portátil con ArkOS</h2>
+<p class="intro">Las portátiles baratas como la R36S llevan ArkOS, que juega con RetroArch. Un .zip lo pone todo en la tarjeta: el núcleo, los juegos de esta web con su portada y Pinyol como una consola más del menú, con su arte en los temas que traen.</p>
+<div class="dl-row solo"><a class="btn btn-primary btn-dl" href="https://github.com/ipaud/pinyol/releases/download/libretro/pinyol-arkos.zip" data-goatcounter-click="cirera-handheld" target="_blank" rel="noopener"><svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 013 3v14a3 3 0 01-3 3H6a3 3 0 01-3-3V5a3 3 0 013-3zm1 3v7h10V5zM7.5 15.25h1.25V14h1.5v1.25h1.25v1.5h-1.25V18h-1.5v-1.25H7.5zM16 14.5a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2zm-1.8 2.3a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2z"/></svg><span class="dl-text"><span>Descargar para ArkOS</span><small>R36S, RG351 y otras</small></span><span class="sr"> (se abre en una pestaña nueva)</span></a></div>
+<p class="meta">Probado en una R36S con ArkOS. Lleva los juegos de esta web.</p>
+<ol class="steps">
+<li><h3>Cópialo a la tarjeta</h3><p>Saca la microSD y ábrela en el ordenador. Descomprime el .zip en su partición EASYROMS, la que tiene una carpeta para cada consola.</p></li>
+<li><h3>Instálalo</h3><p>Vuelve a poner la tarjeta, enciende la consola y abre Ports → Instalar Pinyol. En unos segundos el menú se reinicia y aparece Pinyol con sus juegos.</p></li>
+<li><h3>Juega</h3><p>En el mando, X o Y hacen de C, y SELECT de MENU; SELECT y START a la vez vuelven a la lista. Para añadir juegos, copia su .zip a la carpeta pinyol de la tarjeta.</p></li>
+</ol>
+<div class="aside-note"><b>¿Algo no va?</b> El instalador apunta lo que hace en <code>ports/pinyol/install-log.txt</code> y, si falla, deja el menú como estaba. <a href="https://github.com/ipaud/pinyol/blob/main/docs/arkos.md" target="_blank" rel="noopener">La guía<span class="sr"> (se abre en una pestaña nueva)</span></a> explica qué toca; si tu consola no lo acepta, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">cuéntanoslo<span class="sr"> (se abre en una pestaña nueva)</span></a> con ese archivo.</div>
 </div></section>
 </main>
 <footer><div class="wrap foot">

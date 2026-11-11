@@ -18,7 +18,7 @@
 <link rel="alternate" hreflang="x-default" href="https://pinyol.ipaud.dev/consola/">
 <link rel="icon" href="../../img/icon.png">
 <link rel="preload" href="../../fonts/jersey15.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../styles.css?v=abc9c027">
+<link rel="stylesheet" href="../../styles.css?v=6f5cb5fa">
 <script src="../../site.js?v=b718360e" defer></script>
 <script src="../../games.js?v=d276c3b9" defer></script>
 <script data-goatcounter="https://pinyol.goatcounter.com/count" async src="../../vendor/goatcounter/count.js"></script><script type="module" src="../../vendor/esp-web-tools/install-button.js"></script>
@@ -81,6 +81,18 @@ sudo ./retropie_packages.sh lr-pinyol</code></pre><button class="copy" type="but
 </ol>
 <div class="aside-note"><b>RetroBat, on Windows?</b> In RetroBat's folder, in PowerShell: <code>irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex</code>It puts the core in place and adds Pinyol to EmulationStation; the games go in <code>roms\pinyol</code>Not yet tried on a real RetroBat.</div>
 <div class="aside-note"><b>Another RetroArch?</b> On a computer with Linux, Batocera or Lakka, <a href="https://github.com/ipaud/pinyol/releases/tag/libretro" target="_blank" rel="noopener">the core already built<span class="sr"> (opens in a new tab)</span></a> goes in RetroArch's cores folder; <a href="https://github.com/ipaud/pinyol/blob/main/docs/libretro.md" target="_blank" rel="noopener">the guide<span class="sr"> (opens in a new tab)</span></a> explains it. Tested in RetroArch and on an emulated RetroPie system, not yet on a real Raspberry Pi: if you try it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us how it goes<span class="sr"> (opens in a new tab)</span></a>.</div>
+</div></section>
+<section id="arkos" aria-labelledby="arkos-t"><div class="wrap">
+<h2 id="arkos-t">On your ArkOS handheld</h2>
+<p class="intro">Cheap handhelds like the R36S run ArkOS, which plays games with RetroArch. One .zip puts it all on the card: the core, this site's games with their covers, and Pinyol as one more console in the menu, with its art in the themes they come with.</p>
+<div class="dl-row solo"><a class="btn btn-primary btn-dl" href="https://github.com/ipaud/pinyol/releases/download/libretro/pinyol-arkos.zip" data-goatcounter-click="cirera-handheld" target="_blank" rel="noopener"><svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 013 3v14a3 3 0 01-3 3H6a3 3 0 01-3-3V5a3 3 0 013-3zm1 3v7h10V5zM7.5 15.25h1.25V14h1.5v1.25h1.25v1.5h-1.25V18h-1.5v-1.25H7.5zM16 14.5a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2zm-1.8 2.3a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2z"/></svg><span class="dl-text"><span>Download for ArkOS</span><small>R36S, RG351 and others</small></span><span class="sr"> (opens in a new tab)</span></a></div>
+<p class="meta">Tested on an R36S with ArkOS. It carries this site's games.</p>
+<ol class="steps">
+<li><h3>Copy it to the card</h3><p>Take the microSD out and open it on the computer. Unzip the .zip into its EASYROMS partition, the one with a folder for each console.</p></li>
+<li><h3>Install it</h3><p>Put the card back, switch the console on and open Ports → Instalar Pinyol. In a few seconds the menu restarts and Pinyol is there with its games.</p></li>
+<li><h3>Play</h3><p>On the pad, X or Y are C, and SELECT is MENU; SELECT and START together go back to the list. To add games, copy their .zip into the card's pinyol folder.</p></li>
+</ol>
+<div class="aside-note"><b>Something wrong?</b> The installer writes down what it does in <code>ports/pinyol/install-log.txt</code> and, if it fails, leaves the menu as it was. <a href="https://github.com/ipaud/pinyol/blob/main/docs/arkos.md" target="_blank" rel="noopener">The guide<span class="sr"> (opens in a new tab)</span></a> explains what it changes; if your console does not take it, <a href="https://github.com/ipaud/pinyol/issues" target="_blank" rel="noopener">tell us<span class="sr"> (opens in a new tab)</span></a> with that file.</div>
 </div></section>
 </main>
 <footer><div class="wrap foot">
