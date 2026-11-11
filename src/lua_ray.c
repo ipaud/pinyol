@@ -82,11 +82,20 @@ static inline uint16_t fogged(uint16_t c, int k) { /* c with 256 - k of the fog'
     return v == CANVAS_KEY ? v ^ 1 : v;
 }
 
-/* c fogged, plus c lit by l (lights(): red, green, blue, 256 = its own colour again), each channel at most full */
-static inline uint16_t lit(uint16_t c, int k, const uint16_t *l) {
-    const uint16_t v = fogged(c, k);
-    const int r = (v >> 11) + (((c >> 11) * l[0]) >> 8), g = ((v >> 5) & 63) + ((((c >> 5) & 63) * l[1]) >> 8), b = (v & 31) + (((c & 31) * l[2]) >> 8);
-    const uint16_t o = (uint16_t)((r > 31 ? 31 : r) << 11 | (g > 63 ? 63 : g) << 5 | (b > 31 ? 31 : b));
+/* What a lit column or sprite does to a colour, worked out once for it: each channel times m/256 plus f/256, m the fog's
+ * k and the lights together, f the fog's colour (lights(): l red, green, blue, 256 = its own colour again) */
+typedef struct { int m[3], f[3]; } glow;
+
+static glow glow_of(int k, const uint16_t *l) {
+    const int m = (k + 4) >> 3 > 32 ? 32 : (k + 4) >> 3, fm = (32 - m) * 8;
+    const glow g = {{m * 8 + l[0], m * 8 + l[1], m * 8 + l[2]},
+                    {(int)(fog_spread >> 11 & 31) * fm, (int)(fog_spread >> 21 & 63) * fm, (int)(fog_spread & 31) * fm}};
+    return g;
+}
+
+static inline uint16_t lit(uint16_t c, const glow *g) { /* c fogged and lit, each channel at most full */
+    const int r = ((c >> 11) * g->m[0] + g->f[0]) >> 8, gr = (((c >> 5) & 63) * g->m[1] + g->f[1]) >> 8, b = ((c & 31) * g->m[2] + g->f[2]) >> 8;
+    const uint16_t o = (uint16_t)((r > 31 ? 31 : r) << 11 | (gr > 63 ? 63 : gr) << 5 | (b > 31 ? 31 : b));
     return o == CANVAS_KEY ? o ^ 1 : o;
 }
 
@@ -262,6 +271,22 @@ typedef struct {
 static view_job on_screen;
 
 /* One band of a view, bw columns from bx, into band (BAND columns a row, in fast memory): its walls, then its sprites */
+/* A wall's texels down a band column, rows [a, b): g NULL is the unlit loop (inlined twice, so it costs nothing extra) */
+static inline __attribute__((always_inline)) void wall_texels(uint16_t *p, const uint16_t *col, int tw, int th, int a, int b,
+                                                              int32_t v, int32_t step, int k, const glow *g) {
+    int last = -1; /* a wall up close: one texel over many pixels, its fog worked out once */
+    uint16_t c = 0;
+    for (int y = a; y < b; y++, v += step, p += BAND) {
+        int vv = v >> 16;
+        if (vv != last) {
+            last = vv;
+            const uint16_t tx = col[(vv < th ? vv : th - 1) * tw];
+            c = g ? lit(tx, g) : fogged(tx, k);
+        }
+        *p = c;
+    }
+}
+
 static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
     const column *cols = j->cols;
     const view_sprite *sv = j->sv;
@@ -270,6 +295,8 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
     const int H = j->H, nsv = j->nsv;
     for (int i = 0; i < bw; i++) {
         const column *q = &cols[bx + i];
+        const bool lt = q->l[0] | q->l[1] | q->l[2];
+        const glow g = lt ? glow_of(q->k, q->l) : (glow){{0}, {0}};
         int a = q->y0 < 0 ? 0 : q->y0, b = q->y0 + q->h > H ? H : q->y0 + q->h;
         const int ce = a < H / 2 ? a : H / 2; /* (a wall seen from far can end before the middle: the ceiling goes on to it) */
         uint16_t *p = band + i;
@@ -281,25 +308,18 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
             const asset *t = q->look->pic;
             const uint16_t *col = t->pixels + q->u;
             int32_t step = (int32_t)((int64_t)t->h * 65536 / (q->h ? q->h : 1)), v = (a - q->y0) * step;
-            int last = -1; /* a wall up close: one texel over many pixels, its fog worked out once */
-            uint16_t c = 0;
             p = band + i + a * BAND;
-            for (int y = a; y < b; y++, v += step, p += BAND) {
-                int vv = v >> 16;
-                if (vv != last) {
-                    last = vv;
-                    const uint16_t tx = col[(vv < t->h ? vv : t->h - 1) * t->w];
-                    c = q->l[0] | q->l[1] | q->l[2] ? lit(tx, q->k, q->l) : fogged(tx, q->k);
-                }
-                *p = c;
-            }
+            if (lt) wall_texels(p, col, t->w, t->h, a, b, v, step, q->k, &g);
+            else wall_texels(p, col, t->w, t->h, a, b, v, step, q->k, NULL); /* ponytail: two copies, so the unlit one is the old loop */
         } else {
-            const uint16_t w = q->look ? q->look->colour : 0x8410, c = q->l[0] | q->l[1] | q->l[2] ? lit(w, q->k, q->l) : fogged(w, q->k);
+            const uint16_t w = q->look ? q->look->colour : 0x8410, c = lt ? lit(w, &g) : fogged(w, q->k);
             for (int y = a; y < b; y++) band[y * BAND + i] = c;
         }
     }
     for (int i = 0; i < nsv; i++) { /* the sprites' columns in this band, hidden where a wall is nearer */
         const asset *t = sv[i].t;
+        const bool lt = sv[i].l[0] | sv[i].l[1] | sv[i].l[2];
+        const glow g = lt ? glow_of(sv[i].k, sv[i].l) : (glow){{0}, {0}};
         int x0 = sv[i].xl > bx ? sv[i].xl : bx, x1 = sv[i].xl + sv[i].w < bx + bw ? sv[i].xl + sv[i].w : bx + bw;
         for (int x = x0; x < x1; x++) {
             if (sv[i].depth >= zbuf[x]) continue;
@@ -308,7 +328,7 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
                 int v = (y - sv[i].ytop) * t->h / sv[i].h;
                 if (gfx_opaque(t, sv[i].frame, u, v)) {
                     const uint16_t c = sv[i].px[v * t->w + u];
-                    band[y * BAND + x - bx] = sv[i].l[0] | sv[i].l[1] | sv[i].l[2] ? lit(c, sv[i].k, sv[i].l) : fogged(c, sv[i].k);
+                    band[y * BAND + x - bx] = lt ? lit(c, &g) : fogged(c, sv[i].k);
                 }
             }
         }

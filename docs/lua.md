@@ -417,7 +417,9 @@ warm edge of a candle's light (beside `fog`; the walls facing north or south sti
 sprites near them, in the light's colour times their own, fading to nothing at `radius` squares (colour white and
 intensity 1 by default; up to 4). A torch on a wall, a candle on the floor, the lantern the player carries (a light at
 the player). In the dark (fog to black) a light shows however far it is; in a mist (`fog_colour`) the mist hides it as it
-hides the wall. They go through walls (no shadows) and do not light the floor or the ceiling, which are plain colours.
+hides the wall. They go through walls (no shadows) and do not light the floor or the ceiling, which are plain colours. On
+the console only the lit columns cost: a 240x136 view (scale 2) lit across by two lights takes about 5 ms more a frame
+(Celler 53 fps to 41), a few lamps along a gallery a fraction of that; with no `lights` it costs nothing.
 
 Doors as Wolfenstein 3D's: `doors = {{x = 7, y = 3, open = 0.4}, ...}` makes those wall squares (counted from 0, as the
 map's columns and rows) doors: a thin wall across the middle of the square, drawn with its character's picture and slid
