@@ -100,6 +100,10 @@ static ov_cmd *ov_add(int op) {
     return c;
 }
 
+/* Room for one more of light, grad, warp, linetint or quad with pts corners, asked again just before ov_add: reading their
+ * options or rows can run the game's Lua (an __index, a function for each row), which can draw and fill the lists first. */
+static bool quad_room(int pts) { return nquad < OV_EXT && npts + pts <= OV_PTS; }
+
 static const font *font_named(int k) {
     switch (k) {
     case 0: return &G.font;
@@ -1048,6 +1052,7 @@ static int l_light(lua_State *L) {
         }
         lua_pop(L, 1);
     }
+    if (!quad_room(0)) return 0;
     ov_cmd *c = ov_add(OV_LIGHT);
     if (!c) return 0;
     c->x = i16(x), c->y = i16(y), c->w = i16(r);
@@ -1080,6 +1085,7 @@ static int l_grad(lua_State *L) {
         lua_getfield(L, 7, "across"), across = lua_toboolean(L, -1), lua_pop(L, 1);
         lua_getfield(L, 7, "dither"), dither = lua_toboolean(L, -1), lua_pop(L, 1);
     }
+    if (!quad_room(0)) return 0;
     ov_cmd *c = ov_add(OV_GRAD);
     if (!c) return 0;
     c->x = i16(x), c->y = i16(y), c->w = i16(w), c->h = i16(h);
@@ -1144,7 +1150,7 @@ static int l_warp(lua_State *L) {
     lua_getfield(L, 4, "rows"), have_rows = H <= 1024 && numbers_arg(L, lua_gettop(L), H, rows, -2000, 2000), lua_pop(L, 1);
     lua_getfield(L, 4, "cols"), have_cols = W <= 1024 && numbers_arg(L, lua_gettop(L), W, cols, -2000, 2000), lua_pop(L, 1);
     const int n16 = ((have_rows ? H : 0) + (have_cols ? W : 0) + 1) & ~1;
-    if (npts + n16 > OV_PTS) return 0;
+    if (!quad_room(n16) || !gfx_pixels(a)) return 0;
     ov_cmd *c = ov_add(OV_WARP);
     if (!c) return 0;
     int rmin = 0, rmax = 0, cmin = 0, cmax = 0;
@@ -1197,9 +1203,10 @@ static int l_linetint(lua_State *L) {
         if (!lua_isnil(L, -1)) alpha = clampf(fin(luaL_checknumber(L, -1)), 0, 1), mode = mode == BLEND_ADD ? 3 : mode;
         lua_pop(L, 1);
     }
+    const int n16 = (h + 1) & ~1;
+    if (!quad_room(n16)) return 0;
     ov_cmd *c = ov_add(OV_LINES);
     if (!c) return 0;
-    const int n16 = (h + 1) & ~1;
     c->x = i16(x), c->y = i16(y), c->w = i16(w), c->h = i16(h), c->str = (uint16_t)npts, c->len = (uint16_t)h;
     memset(&ov_pts[npts], 0, (size_t)n16 * sizeof(int16_t));
     memcpy(&ov_pts[npts], col, (size_t)h * sizeof(uint16_t));
@@ -1265,7 +1272,7 @@ static int l_quad(lua_State *L) {
         }
         lua_pop(L, 1);
     }
-    if (has_uv && npts + 8 > OV_PTS) return 0;
+    if (!quad_room(has_uv ? 8 : 0) || !gfx_pixels(a)) return 0;
     ov_cmd *c = ov_add(OV_QUAD);
     if (!c) return 0;
     c->a = a, c->frame = (int16_t)(o.frame < 0 || o.frame >= a->frames ? 0 : o.frame);
