@@ -121,6 +121,12 @@ def firmware(src: Path) -> dict | None:
                 "new_install_improv_wait_time": 0,  # the console speaks no Improv (Wi-Fi set-up): don't wait for it
                 "builds": [{"chipFamily": "ESP32-S3", "parts": [{"path": n, "offset": o} for n, o in FIRMWARE_PARTS]}]}
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
+    # a console that has pinyol: the system alone (the app and which slot boots), so the games in its flash, their saves
+    # and what the cable sent stay (the full manifest writes game.bin over them)
+    update = {**manifest, "new_install_prompt_erase": False,
+              "builds": [{"chipFamily": "ESP32-S3", "parts": [{"path": n, "offset": o} for n, o in FIRMWARE_PARTS
+                                                               if n in ("ota_data_initial.bin", "pinyol_console.bin")]}]}
+    (out / "update.json").write_text(json.dumps(update, indent=1))
     shutil.copytree(HERE / "vendor/esp-web-tools", DIST / "vendor/esp-web-tools")
     mb = sum((out / n).stat().st_size for n, _ in FIRMWARE_PARTS) / 1e6
     return {**meta, "mb": f"{mb:.1f}".replace(".", ",")}
