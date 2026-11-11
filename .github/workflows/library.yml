@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - uses: dawidd6/action-send-mail@v6
+      - uses: dawidd6/action-send-mail@6d98ae34d733f9a723a9e04e94f2f24ba05e1402 # v6, by commit: a moved tag cannot read the mail password
         with:
           server_address: smtp.gmail.com
           server_port: 465
@@ -48,10 +48,12 @@ jobs:
           sudo apt-get install -y cmake libsdl2-dev
           python3 -m pip install --user pillow
       - name: Build the headless player
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --target pinyol_headless -j4
+        # Debug: with ASan and UBSan, a game that corrupts memory is a refused check, not a check that ran on anyway
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build --target pinyol_headless -j4
       - name: Fetch and check the game
         env:
           BODY: ${{ github.event.issue.body }} # read by the script, never pasted into a shell line
+          ASAN_OPTIONS: detect_leaks=0 # (a leak in ten seconds of play harms nobody; a refusal for one would)
         run: python3 tools/library.py check-issue --out checked --headless build/pinyol_headless
       - uses: actions/upload-artifact@v4
         with:
@@ -64,6 +66,9 @@ jobs:
     permissions:
       contents: write
       issues: write
+    concurrency:
+      group: library-answer # one publish at a time: two at once would both put their entry at the top of library.json
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -73,21 +78,31 @@ jobs:
       - name: Answer, and publish when approved
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number }}
           AUTHOR: ${{ github.event.issue.user.login }}
           APPROVED: ${{ github.event.action == 'labeled' && github.event.label.name == 'aprobado' }}
         run: |
-          ok=$(python3 -c "import json; print(json.load(open('checked/result.json'))['ok'])")
-          if [ "$APPROVED" = true ] && [ "$ok" = True ]; then
-            id=$(python3 tools/library.py publish checked --issue "$ISSUE" --author "$AUTHOR" | tail -1)
+          python3 tools/library.py comment checked > answer.md
+          if [ "$APPROVED" != true ]; then
+            gh issue comment "$ISSUE" --body-file answer.md
+            exit 0
+          fi
+          # approved: only the zip the robot's last comment found fine (what the maintainer looked at) is published;
+          # anything else takes the label away, so that a label on an issue always means its game is out
+          gh api "repos/$GH_REPO/issues/$ISSUE/comments?per_page=100" --paginate --slurp > comments.json
+          if id=$(python3 tools/library.py publish checked --issue "$ISSUE" --author "$AUTHOR" --comments comments.json 2>why.txt); then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add library
             git commit -m "library: $id (#$ISSUE)"
-            git push
+            git pull --rebase origin main # (main may have moved since this run began)
+            git push origin HEAD:main
             gh issue comment "$ISSUE" --body "Publicado en la Biblioteca: https://pinyol.ipaud.dev/#biblioteca ¡Gracias!"
             gh issue close "$ISSUE"
           else
-            python3 tools/library.py comment checked > answer.md
-            gh issue comment "$ISSUE" --body-file answer.md
+            cat why.txt
+            gh issue edit "$ISSUE" --remove-label aprobado
+            { echo "No se ha publicado ($(tail -1 why.txt)): la etiqueta «aprobado» se ha quitado. La comprobación de ahora dice:"; echo; cat answer.md; } > refused.md
+            gh issue comment "$ISSUE" --body-file refused.md
           fi
