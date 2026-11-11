@@ -86,6 +86,7 @@ static bool safe_id(const char *s) { /* a game's folder: what the editor makes o
 static bool safe_path(const char *p) { /* inside the game: up to 4 parts of letters, digits, _ - . (none starts with .) */
     int parts = 0;
     if (strlen(p) > 100) return false;
+    if (!strncmp(p, "saves", 5) && (p[5] == 0 || p[5] == '/')) return false; /* the saves are the console's: a copy's go with it */
     for (const char *s = p; *s;) {
         const char *e = strchr(s, '/');
         size_t n = e ? (size_t)(e - s) : strlen(s);
@@ -236,6 +237,20 @@ bool cable_receive(uint16_t *frame, char *id, size_t id_size) {
     snprintf(dst, sizeof dst, "%s/games/%s", root(), want_id);
     snprintf(path, sizeof path, "%s/games", root());
     mkdir(path, 0755);
+    { /* a copy moved aside by a transfer that lost power: back in place, or its saves into the new copy */
+        char old[64], a[96], b[96];
+        struct stat so;
+        snprintf(old, sizeof old, "%s/games/.old-%s", root(), want_id);
+        if (!stat(old, &so)) {
+            if (stat(dst, &so)) rename(old, dst);
+            else {
+                snprintf(a, sizeof a, "%s/saves", old), snprintf(b, sizeof b, "%s/saves", dst);
+                if (stat(b, &so)) rename(a, b);
+                remove_tree(old);
+            }
+            hal_log("cable: %s had a copy moved aside, put back", want_id);
+        }
+    }
     remove_tree(tmp);
     /* a whole game needs room for itself while the old copy is still there; a patch replaces file by file, so it
      * needs only its own size and a little for the file system */
@@ -315,17 +330,24 @@ bool cable_receive(uint16_t *frame, char *id, size_t id_size) {
                 say("ok");
                 return true;
             }
-            if (!stat(dst, &st)) { /* the old copy goes; its saves stay with the game */
-                char a[96], b[96];
-                snprintf(a, sizeof a, "%s/saves", dst);
-                snprintf(b, sizeof b, "%s/saves", tmp);
-                rename(a, b);
-                remove_tree(dst);
+            char old[64], a[96], b[96];
+            snprintf(old, sizeof old, "%s/games/.old-%s", root(), want_id);
+            snprintf(a, sizeof a, "%s/saves", old), snprintf(b, sizeof b, "%s/saves", dst);
+            const bool had = !stat(dst, &st);
+            if (had) { /* the old copy aside (whole, with its saves) until the new one is in place: a failure or a power cut
+                        * on the way leaves one copy to go back to (above) */
+                remove_tree(old);
+                if (rename(dst, old)) {
+                    why = "cannot move the old copy aside";
+                    break;
+                }
             }
             if (rename(tmp, dst)) {
+                if (had) rename(old, dst);
                 why = "cannot put it in place";
                 break;
             }
+            if (had) rename(a, b), remove_tree(old); /* the saves stay with the game */
             snprintf(id, id_size, "%s", want_id);
             hal_log("cable: %s received, %ld bytes, in %s", want_id, got, dst);
             say("ok");

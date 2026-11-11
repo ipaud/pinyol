@@ -59,6 +59,7 @@ uint32_t hal_micros(void) { return (uint32_t)esp_timer_get_time(); }
 static SemaphoreHandle_t save_mx, save_write_mx;
 static TaskHandle_t saver;
 static char *save_txt, save_path[400];
+static long save_gen; /* the generation save_txt takes (save_next_gen when it was stored: a later write keeps it) */
 #define SAVE_QUIET_MS 1000
 #define SAVE_RETRIES 3    /* a failed write is tried again, this many times, this far apart */
 #define SAVE_RETRY_MS 3000
@@ -72,17 +73,18 @@ static bool save_now(void) {
     xSemaphoreTake(save_write_mx, portMAX_DELAY);
     xSemaphoreTake(save_mx, portMAX_DELAY);
     char *t = save_txt, p[400];
+    const long g = save_gen;
     snprintf(p, sizeof p, "%s", save_path);
     save_txt = NULL;
     xSemaphoreGive(save_mx);
     bool ok = true;
     if (t) {
         int64_t a = esp_timer_get_time();
-        ok = save_file_atomic(p, t);
+        ok = save_file_atomic_gen(p, t, g);
         if (!ok) {
             hal_log("saves: %s could not be written", p);
             xSemaphoreTake(save_mx, portMAX_DELAY);
-            if (!save_txt) save_txt = t, t = NULL, snprintf(save_path, sizeof save_path, "%s", p);
+            if (!save_txt) save_txt = t, t = NULL, save_gen = g, snprintf(save_path, sizeof save_path, "%s", p);
             xSemaphoreGive(save_mx);
         } else hal_log("saves: %u bytes in %.0f ms", (unsigned)strlen(t), (esp_timer_get_time() - a) / 1000.0);
         free(t);
@@ -100,20 +102,29 @@ static void saver_task(void *arg) {
     }
 }
 
+static bool save_here(const char *path, const char *txt, long gen) { /* on the game's own task, never beside the saver */
+    if (save_write_mx) xSemaphoreTake(save_write_mx, portMAX_DELAY);
+    const bool ok = save_file_atomic_gen(path, txt, gen);
+    if (save_write_mx) xSemaphoreGive(save_write_mx);
+    return ok;
+}
+
 bool hal_save(const char *path, const char *txt) {
+    const long gen = save_next_gen(); /* now: by the time the saver writes, another game may have read its own saves */
     if (!saver) {
         save_mx = xSemaphoreCreateMutex();
         save_write_mx = xSemaphoreCreateMutex();
         if (!save_mx || !save_write_mx || xTaskCreatePinnedToCore(saver_task, "saves", 6144, NULL, SAVER_PRIO, &saver, 1) != pdPASS) {
             saver = NULL;
-            return save_file_atomic(path, txt);
+            return save_here(path, txt, gen);
         }
     }
     char *t = strdup(txt);
-    if (!t) return save_file_atomic(path, txt);
+    if (!t) return save_here(path, txt, gen);
     xSemaphoreTake(save_mx, portMAX_DELAY);
     free(save_txt);
     save_txt = t;
+    save_gen = gen;
     snprintf(save_path, sizeof save_path, "%s", path);
     xSemaphoreGive(save_mx);
     xTaskNotifyGive(saver);

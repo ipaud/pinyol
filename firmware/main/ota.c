@@ -4,6 +4,7 @@
 #include "ota.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "bp.h"
 #include "esp_app_desc.h"
@@ -65,6 +66,12 @@ void ota_from_card(uint16_t *frame) {
     }
     if (f) fclose(f);
     if (h) err = err == ESP_OK ? esp_ota_end(h) : (esp_ota_abort(h), err); /* end validates the image */
+    esp_app_desc_t desc = {0};
+    if (err == ESP_OK && esp_ota_get_partition_description(to, &desc) != ESP_OK) err = ESP_ERR_INVALID_ARG;
+    if (err == ESP_OK && strcmp(desc.project_name, "pinyol_console")) { /* a good image of some other project (a stray firmware.bin on the card) */
+        hal_log("ota: %s is \"%s\" %s, not pinyol_console: not installed", CARD_FILE, desc.project_name, desc.version);
+        err = ESP_ERR_INVALID_ARG;
+    }
     if (err == ESP_OK) err = esp_ota_set_boot_partition(to);
     finish(err == ESP_OK ? "instalado" : "fallido");
     if (err != ESP_OK) {

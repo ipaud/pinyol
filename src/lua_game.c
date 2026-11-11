@@ -1550,9 +1550,10 @@ static cJSON *store_get(void) {
 /* The saves into the older of the two files (see store_read), in place when it is already the right size. The generation
  * moves on only once the file is down: a save that fails is tried again on the same file, never on the last good one. */
 #define SAVE_SECTOR 4096
-bool save_file_atomic(const char *p, const char *txt) {
+long save_next_gen(void) { return __atomic_load_n(&store_gen, __ATOMIC_SEQ_CST) + 1; }
+
+bool save_file_atomic_gen(const char *p, const char *txt, long gen) {
     char path[400], tail[48];
-    long gen = __atomic_load_n(&store_gen, __ATOMIC_SEQ_CST) + 1;
     snprintf(path, sizeof path, gen % 2 ? "%s.b" : "%s", p);
     size_t n = strlen(txt);
     int nt = snprintf(tail, sizeof tail, "\n#gen %ld crc %08x\n", gen, (unsigned)crc32_buf((const uint8_t *)txt, n));
@@ -1563,9 +1564,14 @@ bool save_file_atomic(const char *p, const char *txt) {
     bool ok = fwrite(txt, 1, n, f) == n && fwrite(tail, 1, (size_t)nt, f) == (size_t)nt;
     for (size_t k = n + (size_t)nt; ok && k < size; k++) ok = fputc(' ', f) != EOF; /* the rest of the sector */
     ok = (fclose(f) == 0) && ok;
-    if (ok) __atomic_store_n(&store_gen, gen, __ATOMIC_SEQ_CST);
+    if (ok) { /* the generation moves on, unless another game's saves were read meanwhile (a write tried again, late) */
+        long prev = gen - 1;
+        __atomic_compare_exchange_n(&store_gen, &prev, gen, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+    }
     return ok;
 }
+
+bool save_file_atomic(const char *p, const char *txt) { return save_file_atomic_gen(p, txt, save_next_gen()); }
 
 /* The C library's clock: the offset is worked out from the local and the UTC breakdowns of the same moment, with no
  * extension (tm_gmtoff is not everywhere). A year before 2020 is taken as a clock that was never set. */

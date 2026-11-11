@@ -24,8 +24,8 @@ static link_msg queue[LINK_QUEUE];
 static int qhead, qlen;
 static char sent[8][LINK_PAYLOAD + 1]; /* the last ones this console sent, for tests */
 static uint32_t recent[32]; /* from and sequence of the last packets heard: copies are dropped */
-static int nrecent;
-static int nsent;
+static unsigned nrecent; /* (unsigned: a count that wrapped negative would index before its array) */
+static unsigned nsent;
 
 static uint32_t hash(const char *s) { /* FNV-1a */
     uint32_t h = 2166136261u;
@@ -141,7 +141,7 @@ void link_inject(uint32_t from, const char *json) { /* tests: as if console `fro
 }
 
 bool link_sent_lately(const char *text) { /* tests: one of the last 8 messages sent contains it */
-    for (int i = 0; i < 8 && i < nsent; i++)
+    for (unsigned i = 0; i < 8 && i < nsent; i++)
         if (strstr(sent[(nsent - 1 - i) % 8], text)) return true;
     return false;
 }
