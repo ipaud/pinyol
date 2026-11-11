@@ -2034,13 +2034,16 @@ void v2_timing(v2_times *t) {
 
 void v2_draw(surface *s) {
     surface world = {.px = G.world, .w = WORLD_W, .h = WORLD_H};
+    int cy0, cy1;
     if (screens == 2) { /* the two pictures side by side, 1:1, in the middle rows; the text and shapes are cut to each */
         surface bottom = {.px = world2, .w = WORLD_W, .h = WORLD_H};
         gfx_fill(s, 0, 0, SCREEN_W, SCREEN_H, 0);
         gfx_copy1x(&world, s, DUAL_X(0), DUAL_Y);
         gfx_copy1x(&bottom, s, DUAL_X(1), DUAL_Y);
-    } else if (draw_covers_screen()) {} /* a full-screen opaque picture comes first: no world */
-    else if (blank) gfx_fill(s, 0, 0, SCREEN_W, SCREEN_H, backdrop); /* (the same pixels as the world doubled) */
+    } else if (draw_covers_rows(&cy0, &cy1)) { /* an opaque picture or raycast() comes first: the world only where it is not */
+        if (blank) gfx_fill(s, 0, 0, SCREEN_W, cy0, backdrop), gfx_fill(s, 0, cy1, SCREEN_W, SCREEN_H - cy1, backdrop);
+        else gfx_upscale2x_rows(&world, s, 0, cy0), gfx_upscale2x_rows(&world, s, cy1, SCREEN_H);
+    } else if (blank) gfx_fill(s, 0, 0, SCREEN_W, SCREEN_H, backdrop); /* (the same pixels as the world doubled) */
     else gfx_upscale2x(&world, s);
     draw_profile(1u, meter.on); /* (the commands are timed only while the meter is up) */
     draw_overlay(s);

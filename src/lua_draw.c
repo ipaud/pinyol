@@ -1649,12 +1649,21 @@ void draw_free(void) {
     nmodels = 0;
 }
 
-bool draw_covers_screen(void) {
+bool draw_covers_rows(int *y0, int *y1) {
     const ov_cmd *c = nov ? &ov[0] : NULL;
-    int k = c && c->op == OV_IMG ? c->scale : 0;
-    bool opaque = c && c->a && (c->a->pk && !c->a->pixels ? c->a->pk_opaque : !c->a->mask || c->a->full); /* (a canvas with no see-through pixel too) */
-    return k && !c->ext && !c->flip && opaque && c->x <= 0 && c->y <= 0 && c->x + k * c->a->w >= SCREEN_W &&
-           c->y + k * c->a->h >= SCREEN_H;
+    if (!c || c->clip) return false;
+    int w, h;
+    if (c->op == OV_RAY) w = c->w, h = c->h; /* (its ceiling and floor fill what the walls leave) */
+    else if (c->op == OV_IMG && c->scale && c->a && !c->ext && !c->flip &&
+             (c->a->pk && !c->a->pixels ? c->a->pk_opaque : !c->a->mask || c->a->full)) /* (a canvas with no see-through pixel too) */
+        w = c->scale * c->a->w, h = c->scale * c->a->h;
+    else return false;
+    if (c->x > 0 || c->x + w < SCREEN_W) return false;
+    int a = c->y < 0 ? 0 : c->y, b = c->y + h > SCREEN_H ? SCREEN_H : c->y + h;
+    a = (a + 1) & ~1, b &= ~1; /* whole rows of the world: a half one at an edge is drawn under it anyway */
+    if (b <= a) return false;
+    *y0 = a, *y1 = b;
+    return true;
 }
 
 void draw_register(lua_State *L) {

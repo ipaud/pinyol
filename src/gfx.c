@@ -1005,6 +1005,15 @@ void gfx_upscale2x(const surface *src, surface *dst) {
     }
 }
 
+void gfx_upscale2x_rows(const surface *src, surface *dst, int y0, int y1) {
+    if (y0 < dst->y0) y0 = dst->y0;
+    if (y1 > dst->y0 + dst->h) y1 = dst->y0 + dst->h;
+    if (y0 >= y1) return;
+    surface rows = *dst; /* the same window, cut to those rows */
+    rows.px = at(dst, dst->x0, y0), rows.y0 = y0, rows.h = y1 - y0;
+    gfx_upscale2x(src, &rows);
+}
+
 void gfx_copy1x(const surface *src, surface *dst, int ox, int oy) {
     int xa = dst->x0 > ox ? dst->x0 : ox, xb = dst->x0 + dst->w < ox + src->w ? dst->x0 + dst->w : ox + src->w;
     int ya = dst->y0 > oy ? dst->y0 : oy, yb = dst->y0 + dst->h < oy + src->h ? dst->y0 + dst->h : oy + src->h;
