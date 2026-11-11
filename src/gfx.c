@@ -1200,7 +1200,7 @@ static bool font_header(font *f, const uint8_t *d, long len) { /* a .fnt's size 
     f->h = d[5];
     f->stride = (f->w + 7) / 8;
     memcpy(f->adv, d + 8, 256);
-    return len == 264 + 256L * f->h * f->stride;
+    return f->w && f->h && len == 264 + 256L * f->h * f->stride; /* (a font 0 high: text boxes divide by its line) */
 }
 
 static void font_boxes(font *f) {

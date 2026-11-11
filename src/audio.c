@@ -195,6 +195,7 @@ bool wav_parse_marks(FILE *f, long *data_start, long *data_len, int *chans, wav_
     bool fmt_ok = false, data_ok = false;
     int ch = 0;
     while (fread(c, 1, 8, f) == 8) {
+        if (rd32(c + 4) > (1u << 30)) break; /* no sound is that big; and past 2 GB a 32-bit long (the console, wasm) went negative: a seek back, for ever */
         long size = (long)rd32(c + 4);
         if (m && !memcmp(c, "smpl", 4) && size >= 36 + 24) { /* the first loop's start */
             if (fread(b, 1, 36 + 24, f) != 36 + 24) break;

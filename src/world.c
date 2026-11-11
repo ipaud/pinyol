@@ -499,13 +499,14 @@ int world_path(int gx, int gy, int *dirs, int max) {
 static void draw_tiles(surface *s, const uint8_t *layer) {
     if (!layer) return;
     asset *ts = gfx_asset("TS_ATLAS");
+    const uint16_t *px = ts->missing ? NULL : gfx_pixels(ts); /* (a packed atlas has none until asked; NULL: no memory) */
     int cols = ts->w / TILE, rows = ts->h / TILE;
     for (int ty = cam_y > 0 ? (int)cam_y / TILE : 0; ty <= ((int)cam_y + WORLD_H) / TILE && ty < Z->th; ty++)
         for (int tx = cam_x > 0 ? (int)cam_x / TILE : 0; tx <= ((int)cam_x + WORLD_W) / TILE && tx < Z->tw; tx++) {
             uint8_t t = layer[ty * Z->tw + tx];
             if (t == 0xFF) continue;
             int ox = tx * TILE - (int)cam_x, oy = ty * TILE - (int)cam_y;
-            if (ts->missing || t >= cols * rows) {
+            if (!px || t >= cols * rows) {
                 gfx_fill(s, ox, oy, TILE, TILE, (uint16_t)(t * 2731));
                 continue;
             }
@@ -514,7 +515,7 @@ static void draw_tiles(surface *s, const uint8_t *layer) {
                 for (int u = 0; u < TILE; u++) {
                     int dx = ox + u, dy = oy + v;
                     if (dx < 0 || dy < 0 || dx >= s->w || dy >= s->h || !gfx_opaque(ts, 0, u0 + u, v0 + v)) continue;
-                    s->px[dy * s->w + dx] = ts->pixels[(v0 + v) * ts->w + u0 + u];
+                    s->px[dy * s->w + dx] = px[(v0 + v) * ts->w + u0 + u];
                 }
         }
 }
@@ -701,7 +702,8 @@ void world_render(surface *s) {
         else if (list[i].kind == 1) draw_npc(s, list[i].o);
         else draw_prop(s, list[i].o, prop_frame(list[i].o));
     }
-    if (bg && !bg->missing) { /* painted things Klaus can walk behind: redraw them over him */
+    const uint16_t *bgpx = bg && !bg->missing && !hd.bg ? gfx_pixels(bg) : NULL; /* (packed: none until asked; HD needs none) */
+    if (hd.bg || bgpx) { /* painted things Klaus can walk behind: redraw them over him */
         cJSON_ArrayForEach(o, jget(Z->def, "occluders")) {
             int ox = jai(o, 0, 0), oy = jai(o, 1, 0), ow = jai(o, 2, 0), oh = jai(o, 3, 0);
             if (G.klaus.y >= oy + oh || G.klaus.x + 12 < ox || G.klaus.x - 12 > ox + ow || G.klaus.y - 32 > oy + oh) continue;
@@ -709,7 +711,7 @@ void world_render(surface *s) {
             for (int v = oy < 0 ? 0 : oy; v < oy + oh && v < bg->h; v++)
                 for (int u = ox < 0 ? 0 : ox; u < ox + ow && u < bg->w; u++) {
                     int dx = u - (int)cam_x, dy = v - (int)cam_y;
-                    if (dx >= 0 && dy >= 0 && dx < s->w && dy < s->h) s->px[dy * s->w + dx] = hd.bg ? WORLD_KEY : bg->pixels[v * bg->w + u];
+                    if (dx >= 0 && dy >= 0 && dx < s->w && dy < s->h) s->px[dy * s->w + dx] = hd.bg ? WORLD_KEY : bgpx[v * bg->w + u];
                 }
         }
     }

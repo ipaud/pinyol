@@ -720,12 +720,13 @@ static void draw_player(surface *s) {
 }
 
 /* Put the background back over a box in a 4x4 ordered dither: level 0..16 of it. */
-static void dissolve(surface *s, const asset *bg, int x0, int y0, int w, int h, int level) {
+static void dissolve(surface *s, asset *bg, int x0, int y0, int w, int h, int level) {
     static const uint8_t bayer[16] = {0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5};
+    const uint16_t *px = bg->missing ? NULL : gfx_pixels(bg); /* (a packed picture has none until asked) */
     for (int y = y0 < 0 ? 0 : y0; y < y0 + h && y < s->h; y++)
         for (int x = x0 < 0 ? 0 : x0; x < x0 + w && x < s->w; x++)
             if (bayer[(y & 3) * 4 + (x & 3)] < level)
-                s->px[y * s->w + x] = bg->missing || x >= bg->w || y >= bg->h ? C_INK : bg->pixels[y * bg->w + x];
+                s->px[y * s->w + x] = !px || x >= bg->w || y >= bg->h ? C_INK : px[y * bg->w + x];
 }
 
 static void draw_spit(surface *s) {
