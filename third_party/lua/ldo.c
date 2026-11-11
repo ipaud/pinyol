@@ -211,7 +211,7 @@ l_noret luaD_errerr (lua_State *L) {
 ** available CallInfos, and two "slots" in the C stack.
 */
 int luaD_checkminstack (lua_State *L) {
-  if (getCcalls(L) >= LUAI_MAXCCALLS - 2)
+  if (getCcalls(L) >= LUAI_MAXCCALLS - 2 * LUAI_CSTACKUNITS)
     return 0;  /* not enough C-stack slots */
   if (L->ci->next == NULL && luaE_extendCI(L, 0) == NULL)
     return 0;  /* unable to allocate first ci */
@@ -670,7 +670,7 @@ l_sinline void ccall (lua_State *L, StkId func, int nResults, l_uint32 inc) {
 ** External interface for 'ccall'
 */
 void luaD_call (lua_State *L, StkId func, int nResults) {
-  ccall(L, func, nResults, 1);
+  ccall(L, func, nResults, LUAI_CSTACKUNITS);
 }
 
 
@@ -873,7 +873,7 @@ LUA_API int lua_resume (lua_State *L, lua_State *from, int nargs,
   L->nCcalls = (from) ? getCcalls(from) : 0;
   if (getCcalls(L) >= LUAI_MAXCCALLS)
     return resume_error(L, "C stack overflow", nargs);
-  L->nCcalls++;
+  L->nCcalls += LUAI_CSTACKUNITS;  /* (a resume runs the VM again, as a call through C does) */
   luai_userstateresume(L, nargs);
   api_checknelems(L, (L->status == LUA_OK) ? nargs + 1 : nargs);
   status = luaD_rawrunprotected(L, resume, &nargs);

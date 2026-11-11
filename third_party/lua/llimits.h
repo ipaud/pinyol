@@ -255,6 +255,12 @@ typedef l_uint32 Instruction;
 #define LUAI_MAXCCALLS		200
 #endif
 
+/* pinyol: what a call through C (pcall, a metamethod, a C function calling back) counts for in that depth, against a
+** level of syntax, which counts 1: a call takes about four times the C stack (README.pinyol) */
+#if !defined(LUAI_CSTACKUNITS)
+#define LUAI_CSTACKUNITS	1
+#endif
+
 
 /*
 ** macros that are executed whenever program enters the Lua core

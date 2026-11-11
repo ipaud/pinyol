@@ -959,6 +959,9 @@ A game downloaded from the community cannot harm the console:
   to sort, a vector) are collected young and cheaply, not left to pile up into a pause that costs a frame.
 - A call (`_init`, `_update`, `_draw`) that makes 20 million jumps, loop turns or calls without returning is stopped: an
   endless loop becomes an error, not a frozen console.
+- Calls through C nest twelve deep at most (a `pcall` inside a `pcall`..., a metamethod, a `table.sort` comparator calling
+  back, a coroutine resumed inside another), and a source text 48 levels of syntax: past that, "C stack overflow".
+  The console's script runs on 16 KB of stack; the simulator keeps the same limits, so a game fails here as it would there.
 - No `io`, `os`, `debug` or `package`; `load` takes source text only, never bytecode; `require` only reads `.lua`
   files inside the game folder.
 - `math.random` starts from the same seed every run, so a game and its tests repeat exactly; `math.randomseed(n)` sets another. A game that wants

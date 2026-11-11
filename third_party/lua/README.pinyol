@@ -5,3 +5,9 @@ table, string, math and utf8). Two changes: luaconf.h lets the build set LUA_32B
 engine's limit on a call that never returns (src/lua_game.c), which a count hook made the VM pay for on every instruction.
 And lstrlib.c's match() spends that budget too, once a step, and raises the error itself: a pattern that backtracks without
 end runs in C, where the VM never looks.
+A third: the depth of nested calls (nCcalls, LUAI_MAXCCALLS) counts a call through C (pcall, a metamethod, a C function
+calling back into Lua, a coroutine resumed) as LUAI_CSTACKUNITS and a level of syntax as 1 (llimits.h, lstate.h, ldo.c,
+lstate.c; luaE_checkcstack takes a window past the limit instead of one value). Measured on the console: a nested pcall
+takes about 470 bytes of the main task's 16 KB stack, a level of syntax about 120, so the engine builds with
+LUAI_MAXCCALLS=48 and LUAI_CSTACKUNITS=4 (twelve calls through C, or 48 levels of syntax: about 6 KB), and MAXCCALLS=48
+for lstrlib's nested matches. The desktop builds the same, so a game fails there as it would on the console.

@@ -114,7 +114,7 @@ typedef struct CallInfo CallInfo;
 #define decnny(L)	((L)->nCcalls -= 0x10000)
 
 /* Non-yieldable call increment */
-#define nyci	(0x10000 | 1)
+#define nyci	(0x10000 | LUAI_CSTACKUNITS)
 
 
 

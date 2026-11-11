@@ -167,10 +167,15 @@ void luaE_shrinkCI (lua_State *L) {
 ** not much larger, does not report an error (to allow overflow
 ** handling to work).
 */
+/* pinyol: the count moves in steps of LUAI_CSTACKUNITS, so "just past the limit" is a window, not one value, and the
+** error handler keeps four calls of room (or the stock tenth) before "error in error handling" */
+#define LUAI_ERRERRCALLS  (LUAI_MAXCCALLS / 10 * 11 > LUAI_MAXCCALLS + 4 * LUAI_CSTACKUNITS \
+                           ? LUAI_MAXCCALLS / 10 * 11 : LUAI_MAXCCALLS + 4 * LUAI_CSTACKUNITS)
+
 void luaE_checkcstack (lua_State *L) {
-  if (getCcalls(L) == LUAI_MAXCCALLS)
+  if (getCcalls(L) < LUAI_MAXCCALLS + LUAI_CSTACKUNITS)
     luaG_runerror(L, "C stack overflow");
-  else if (getCcalls(L) >= (LUAI_MAXCCALLS / 10 * 11))
+  else if (getCcalls(L) >= LUAI_ERRERRCALLS)
     luaD_errerr(L);  /* error while handling stack error */
 }
 

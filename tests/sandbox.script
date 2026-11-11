@@ -31,6 +31,12 @@ expect_lua_error string.find(string.rep("a", 60), string.rep("a-", 25) .. "b")
 expect_lua_error require("lib.circle_a")
 # a font 0 pixels high is not a font (a text box divided by its line height)
 expect_lua_error textbox("hola", 0, 0, 40, 20, {font = "zero"})
+# calls through C (pcall in pcall...) nest twelve deep at most and a source text 48 levels: the console's main task has 16 KB of stack
+lua function nest(n) if n == 0 then return 0 end local ok, v = pcall(nest, n - 1) if not ok then error(v, 0) end return v + 1 end
+expect_lua nest(8) == 8
+expect_lua_error nest(40)
+expect_lua load("return " .. ("("):rep(30) .. "1" .. (")"):rep(30))() == 1
+expect_lua load("return " .. ("("):rep(60) .. "1" .. (")"):rep(60)) == nil
 expect_lua helper_value() == 42
 lua store("best", 1234)
 expect_lua stored("best") == 1234

@@ -24,6 +24,9 @@ endif()
 option(PINYOL_APP "pinyol_sim as the Cirera desktop app: named Cirera, and on Windows with no console window" OFF)
 
 add_library(cjson STATIC third_party/cjson/cJSON.c)
+# 32 levels at most (the default is 1000): the parser takes a frame of C stack per level, and a packet from another
+# console or a file on the card is parsed on the console's 16 KB main task (saves stop at STORE_MAX_DEPTH, 16)
+target_compile_definitions(cjson PRIVATE CJSON_NESTING_LIMIT=32)
 target_include_directories(cjson PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/third_party/cjson)
 target_compile_options(cjson PRIVATE -Wno-deprecated-declarations ${SAN})
 
@@ -35,7 +38,8 @@ target_compile_definitions(lua PUBLIC LUA_32BITS=1)
 # The same string hashes every run and on every platform, so pairs() walks a table in the same order: tests repeat,
 # and consoles playing together over link compute the same thing
 target_compile_definitions(lua PRIVATE "luai_makeseed=0x6e703264u+0*sizeof") # used as luai_makeseed(L)
-target_compile_definitions(lua PRIVATE LUA_PINYOL_BUDGET) # lvm.c counts the engine's budget (third_party/lua/README.pinyol)
+# lvm.c counts the engine's budget; nested calls through C stop at twelve (the console's 16 KB stack, README.pinyol)
+target_compile_definitions(lua PRIVATE LUA_PINYOL_BUDGET LUAI_MAXCCALLS=48 LUAI_CSTACKUNITS=4 MAXCCALLS=48)
 target_compile_options(lua PRIVATE ${SAN})
 
 # Portable engine core: no SDL/ESP headers allowed in src/.
@@ -203,6 +207,11 @@ add_executable(conf_test tests/conf_test.c platform/null/hal_null.c platform/lin
 target_compile_options(conf_test PRIVATE -Wall -Wextra -Werror ${SAN})
 target_link_libraries(conf_test pinyol_core)
 add_test(NAME conf COMMAND conf_test) # the console's settings: parsing, and the colour filter's table
+add_executable(json_depth_test tests/json_depth_test.c)
+target_compile_options(json_depth_test PRIVATE -Wall -Wextra -Werror ${SAN})
+target_include_directories(json_depth_test PRIVATE third_party/cjson)
+target_link_libraries(json_depth_test pinyol_core) # (cJSON_GetErrorPtr lives in src)
+add_test(NAME json_depth COMMAND json_depth_test) # cJSON refuses a value nested past 32 levels (a frame of C stack each)
 add_executable(qr_test tests/qr_test.c third_party/qrcodegen/qrcodegen.c)
 target_include_directories(qr_test PRIVATE third_party/qrcodegen)
 target_compile_options(qr_test PRIVATE -Wall -Wextra -Werror ${SAN})
