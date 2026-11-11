@@ -2,8 +2,8 @@
 # plus Windows x86-64 with MinGW. Published as the release "libretro", which always holds the core of the last
 # commit on main that changed the engine: RetroPie's lr-pinyol.sh installs it from there (docs/libretro.md).
 # The firmware's release stays the latest.
-# A commit that changes a workflow file cannot move the tag (the job's token has no "workflows" permission: HTTP 403 at
-# the publish step, as on 2026-10-25 and 2026-11-11); the next commit on main that touches the engine moves it past.
+# Twice (2026-10-25, 2026-11-11) the publish step got HTTP 403 moving the tag, both on commits that changed workflow
+# files, and a rerun failed too; a commit soon after moved it. The cause is not pinned down: if it happens, wait for the next.
 name: libretro
 on:
   push:
