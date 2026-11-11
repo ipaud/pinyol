@@ -21,7 +21,7 @@ env:
   SDL: "2.32.10"
 jobs:
   mac:
-    runs-on: macos-14
+    runs-on: macos-15 # (GitHub no longer runs macos-14: "not supported", 2026-11-11)
     permissions:
       contents: read
     steps:
