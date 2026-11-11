@@ -413,6 +413,12 @@ game's, in Lua, on the same map. Wall and sprite pictures are plain ones (not `-
 is about 38,000 pixels. `fog_colour = 0xRRGGBB` makes the fog fade to that colour instead of black: a mist, smoke, the
 warm edge of a candle's light (beside `fog`; the walls facing north or south still a little darker).
 
+`lights = {{x = 5.5, y = 2.5, radius = 3, colour = 0xFF9040, intensity = 1.5}, ...}` (up to 8) light the walls, doors and
+sprites near them, in the light's colour times their own, fading to nothing at `radius` squares (colour white and
+intensity 1 by default; up to 4). A torch on a wall, a candle on the floor, the lantern the player carries (a light at
+the player). In the dark (fog to black) a light shows however far it is; in a mist (`fog_colour`) the mist hides it as it
+hides the wall. They go through walls (no shadows) and do not light the floor or the ceiling, which are plain colours.
+
 Doors as Wolfenstein 3D's: `doors = {{x = 7, y = 3, open = 0.4}, ...}` makes those wall squares (counted from 0, as the
 map's columns and rows) doors: a thin wall across the middle of the square, drawn with its character's picture and slid
 aside by `open` (0 shut, 1 gone; move it from 0 to 1 over half a second and the door slides open). A door runs from wall

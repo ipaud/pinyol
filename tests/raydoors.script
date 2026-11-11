@@ -37,5 +37,19 @@ expect_lua r3 == 0 and g3 == 0 and b3 == 0
 lua raycast("VIEW", {map = MAP, walls = WALLS, x = 3.5, y = 1.5, angle = 90, doors = {{x = 3, y = 2, open = 1}}, fog = 5, fog_colour = 0xFF0000})
 lua r3, g3, b3 = rgb(120, 68)
 expect_lua r3 > 60 and r3 < 200 and b3 > 60 and b3 < 200
+# lights: in the dark (fog 2 to black, the far blue wall 2.5 away) a light near the wall shows it, in its own colour times the wall's
+lua L = {map = MAP, walls = WALLS, x = 3.5, y = 1.5, angle = 90, doors = {{x = 3, y = 2, open = 1}}, fog = 2}
+lua L.lights = {{x = 3.5, y = 3.5, radius = 2}} raycast("VIEW", L) r3, g3, b3 = rgb(120, 68)
+expect_lua b3 > 60 and r3 == 0 and g3 == 0
+lua L.lights = {{x = 3.5, y = 3.5, radius = 2, colour = 0xFF0000}} raycast("VIEW", L) r3, g3, b3 = rgb(120, 68)
+expect_lua r3 == 0 and g3 == 0 and b3 == 0
+lua L.lights = {{x = 3.5, y = 3.5, radius = 0.3}} raycast("VIEW", L) r3, g3, b3 = rgb(120, 68)
+expect_lua r3 == 0 and g3 == 0 and b3 == 0
+# a light brighter nearer: the far wall in the middle of the view (nearest the light) brighter than further along it
+lua L.lights = {{x = 3.5, y = 3.6, radius = 1.5}} raycast("VIEW", L) _, _, bm = rgb(120, 68) _, _, be = rgb(70, 68)
+expect_lua bm > be
+# in a mist the mist hides a light as it hides the wall: past its reach, the mist's colour only
+lua L.fog_colour = 0xFF0000 L.lights = {{x = 3.5, y = 3.5, radius = 2}} raycast("VIEW", L) r3, g3, b3 = rgb(120, 68)
+expect_lua r3 > 200 and g3 == 0 and b3 == 0
 shot puerta
 expect_ok

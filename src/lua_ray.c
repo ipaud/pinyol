@@ -14,6 +14,10 @@
  * same distance times scale, hidden by the walls in front. Returns the distance to the wall in the middle of the view
  * (in squares, along the view) and that wall's character.
  *
+ * lights = {{x = 5.5, y = 2.5, radius = 3, colour = 0xFF9040, intensity = 1.5}, ...} (up to MAX_LIGHTS): walls, doors and
+ * sprites near them lit in the light's colour times their own, fading to nothing at radius; a light is a glow worked
+ * out once a column (and once a sprite), through walls, and leaves the floor and ceiling as they are.
+ *
  * doors = {{x = 7, y = 3, open = 0.4}, ...}: the wall square (x, y) (from 0, as the map's columns and rows) is a door, as
  * Wolfenstein 3D's: a thin wall across the middle of its square, slid aside by open (0 shut, 1 gone), drawn with the
  * picture of its character. It runs from wall to wall: across the square east to west when the squares west and east
@@ -31,6 +35,7 @@
 #define MAX_COLS 256
 #define MAX_SPRITES 64
 #define MAX_DOORS 64
+#define MAX_LIGHTS 8
 #define RAY_STEPS 128
 #define MAX_W 480
 #define MAX_H 320 /* a view taller is drawn to this height */
@@ -45,6 +50,7 @@ typedef struct {
 typedef struct {
     int h, y0, k, u;
     const wall_look *look;
+    uint16_t l[3]; /* the point lights on it: red, green, blue, 256 = its own colour again (all 0: none) */
 } column;
 
 typedef struct {
@@ -74,6 +80,57 @@ static inline uint16_t fogged(uint16_t c, int k) { /* c with 256 - k of the fog'
     uint32_t x = (((c | (uint32_t)c << 16) & 0x07E0F81Fu) * m + fog_spread * (32 - m)) >> 5 & 0x07E0F81Fu;
     uint16_t v = (uint16_t)(x | x >> 16);
     return v == CANVAS_KEY ? v ^ 1 : v;
+}
+
+/* c fogged, plus c lit by l (lights(): red, green, blue, 256 = its own colour again), each channel at most full */
+static inline uint16_t lit(uint16_t c, int k, const uint16_t *l) {
+    const uint16_t v = fogged(c, k);
+    const int r = (v >> 11) + (((c >> 11) * l[0]) >> 8), g = ((v >> 5) & 63) + ((((c >> 5) & 63) * l[1]) >> 8), b = (v & 31) + (((c & 31) * l[2]) >> 8);
+    const uint16_t o = (uint16_t)((r > 31 ? 31 : r) << 11 | (g > 63 ? 63 : g) << 5 | (b > 31 ? 31 : b));
+    return o == CANVAS_KEY ? o ^ 1 : o;
+}
+
+typedef struct { float x, y, r; int cr, cg, cb; } point_light; /* cr, cg, cb: its colour times its intensity, 256 = full */
+static point_light lights[MAX_LIGHTS];
+static int nlights;
+
+static void read_lights(lua_State *L, int t) {
+    nlights = 0;
+    lua_getfield(L, t, "lights");
+    if (lua_istable(L, -1)) {
+        int len = (int)lua_rawlen(L, -1);
+        for (int i = 1; i <= len && nlights < MAX_LIGHTS; i++) {
+            lua_rawgeti(L, -1, i);
+            if (lua_istable(L, -1)) {
+                int s = lua_gettop(L);
+                point_light *q = &lights[nlights];
+                q->x = opt_float(L, s, "x", 0, -NUM_MAX, NUM_MAX), q->y = opt_float(L, s, "y", 0, -NUM_MAX, NUM_MAX);
+                q->r = opt_float(L, s, "radius", 3, 0.1f, 64);
+                const float in = opt_float(L, s, "intensity", 1, 0, 4) * 256.0f / 255.0f;
+                const lua_Integer rgb = opt_int(L, s, "colour", 0xFFFFFF);
+                q->cr = (int)((float)(rgb >> 16 & 255) * in), q->cg = (int)((float)(rgb >> 8 & 255) * in), q->cb = (int)((float)(rgb & 255) * in);
+                nlights++;
+            }
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
+}
+
+/* The lights at (x, y) of the map into l, scaled by k/256: each fades to nothing at its radius (squared, so it is soft).
+ * They go through walls: a light is a glow, not a shadow caster. */
+static void light_at(float x, float y, int k, uint16_t *l) {
+    int r = 0, g = 0, b = 0;
+    for (int i = 0; i < nlights; i++) {
+        const point_light *q = &lights[i];
+        const float dx = x - q->x, dy = y - q->y, d2 = dx * dx + dy * dy;
+        if (d2 >= q->r * q->r) continue;
+        float f = 1.0f - sqrtf(d2) / q->r;
+        f *= f;
+        r += (int)((float)q->cr * f), g += (int)((float)q->cg * f), b += (int)((float)q->cb * f);
+    }
+    r = r * k >> 8, g = g * k >> 8, b = b * k >> 8;
+    l[0] = (uint16_t)(r > 1024 ? 1024 : r), l[1] = (uint16_t)(g > 1024 ? 1024 : g), l[2] = (uint16_t)(b > 1024 ? 1024 : b);
 }
 
 static int fog_k(float d, float fog) { /* 256 near, 0 at fog squares */
@@ -192,7 +249,7 @@ static const door *door_at(const door *dr, int n, int x, int y) {
     return NULL;
 }
 
-typedef struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; } view_sprite;
+typedef struct { int xl, w, ytop, h, k; const asset *t; const uint16_t *px; int frame; float depth; uint16_t l[3]; } view_sprite;
 typedef struct {
     asset *cv; /* NULL: straight onto the screen, in the strips */
     const column *cols;
@@ -229,11 +286,15 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
             p = band + i + a * BAND;
             for (int y = a; y < b; y++, v += step, p += BAND) {
                 int vv = v >> 16;
-                if (vv != last) last = vv, c = fogged(col[(vv < t->h ? vv : t->h - 1) * t->w], q->k);
+                if (vv != last) {
+                    last = vv;
+                    const uint16_t tx = col[(vv < t->h ? vv : t->h - 1) * t->w];
+                    c = q->l[0] | q->l[1] | q->l[2] ? lit(tx, q->k, q->l) : fogged(tx, q->k);
+                }
                 *p = c;
             }
         } else {
-            uint16_t c = fogged(q->look ? q->look->colour : 0x8410, q->k);
+            const uint16_t w = q->look ? q->look->colour : 0x8410, c = q->l[0] | q->l[1] | q->l[2] ? lit(w, q->k, q->l) : fogged(w, q->k);
             for (int y = a; y < b; y++) band[y * BAND + i] = c;
         }
     }
@@ -245,7 +306,10 @@ static void view_band(const view_job *j, int bx, int bw, uint16_t *band) {
             int u = (x - sv[i].xl) * t->w / sv[i].w;
             for (int y = sv[i].ytop < 0 ? 0 : sv[i].ytop; y < sv[i].ytop + sv[i].h && y < H; y++) {
                 int v = (y - sv[i].ytop) * t->h / sv[i].h;
-                if (gfx_opaque(t, sv[i].frame, u, v)) band[y * BAND + x - bx] = fogged(sv[i].px[v * t->w + u], sv[i].k);
+                if (gfx_opaque(t, sv[i].frame, u, v)) {
+                    const uint16_t c = sv[i].px[v * t->w + u];
+                    band[y * BAND + x - bx] = sv[i].l[0] | sv[i].l[1] | sv[i].l[2] ? lit(c, sv[i].k, sv[i].l) : fogged(c, sv[i].k);
+                }
             }
         }
     }
@@ -348,6 +412,7 @@ static int l_raycast(lua_State *L) {
     lua_Integer ceil_rgb = opt_int(L, 2, "ceiling", 0x303040), floor_rgb = opt_int(L, 2, "floor", 0x505050);
     uint16_t ceil_c = to565(ceil_rgb), floor_c0 = to565(floor_rgb);
     int nsp = read_sprites(L, 2, sp, px, py);
+    read_lights(L, 2);
 
     float dx = cosf(ang), dy = sinf(ang), k = tanf(fov / 2);
     float plx = -dy * k, ply = dx * k; /* the camera plane, across the view */
@@ -403,6 +468,9 @@ static int l_raycast(lua_State *L) {
         q->k = fog_k(d, fog) * (side ? 3 : 4) / 4;
         q->look = at_jamb ? &jamb : c < 128 && is_wall[c] ? &looks[c] : NULL;
         q->u = 0;
+        q->l[0] = q->l[1] = q->l[2] = 0;
+        if (nlights) /* in the dark (fog to black) a light shows however far; in a mist the mist hides it too */
+            light_at(px + d * rx, py + d * ry, fog_spread ? q->k : side ? 192 : 256, q->l);
         if (q->look && q->look->pic) {
             const asset *t = q->look->pic;
             float wx;
@@ -430,6 +498,8 @@ static int l_raycast(lua_State *L) {
         sv[nsv].xl = cx - w / 2, sv[nsv].w = w, sv[nsv].h = h, sv[nsv].ytop = H / 2 + (int)((float)H / depth / 2) - h;
         sv[nsv].k = fog_k(depth, fog), sv[nsv].t = t, sv[nsv].frame = q->frame, sv[nsv].depth = depth;
         sv[nsv].px = t->pixels + (size_t)q->frame * t->w * t->h;
+        sv[nsv].l[0] = sv[nsv].l[1] = sv[nsv].l[2] = 0;
+        if (nlights) light_at(q->x, q->y, fog_spread ? sv[nsv].k : 256, sv[nsv].l);
         nsv++;
     }
     const view_job job = {cv, cols, sv, zbuf, floor_c, W, H, nsv, shift, ceil_s};
