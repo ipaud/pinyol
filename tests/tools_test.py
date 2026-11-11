@@ -331,12 +331,16 @@ pl = out / "playgame"
 r = subprocess.run([sys.executable, str(ROOT / "tools/new_game.py"), str(pl), "--lua", "--look", "game boy"], capture_output=True, text=True)
 assert r.returncode == 0, r.stderr
 headless = Path(sys.argv[1]) / "pinyol_headless"
-errs, seen = look_check.play(pl, looks.get("gameboy"), headless, None)
-assert errs == [] and "sprites" in seen, (errs, seen)
+errs, warns, seen = look_check.play(pl, looks.get("gameboy"), headless, None)
+assert errs == [] and warns == [] and "sprites" in seen and "canvas pixels a frame 0 on average" in seen, (errs, warns, seen)
 (pl / "main.lua").write_text((pl / "main.lua").read_text() + '\nlocal base_draw = _draw\nfunction _draw()\n  base_draw()\n  local h = sheet("HERO")\n'
                              '  for i = 60, 105 do spr(i, h, 0, 10 + (i % 3), 20) end\nend\n')
-errs, seen = look_check.play(pl, looks.get("gameboy"), headless, None)
+errs, warns, seen = look_check.play(pl, looks.get("gameboy"), headless, None)
 assert any("sprites on the screen" in e for e in errs) and any("on one line" in e for e in errs), (errs, seen)
+(pl / "main.lua").write_text((pl / "main.lua").read_text() + '\nlocal sprites_draw = _draw\nfunction _draw()\n  sprites_draw()\n'
+                             '  canvas("GLASS", 480, 320) target("GLASS") cls(0x102030) target()\nend\n')
+errs, warns, seen = look_check.play(pl, looks.get("gameboy"), headless, None)
+assert any("153600 canvas pixels written in a frame on average" in w for w in warns), (warns, seen)  # (a 480x320 cls each frame: 18 ms)
 print("look_check --play: ok")
 
 # sprite_kit + sprite_check: a sheet of three poses of one body, drawn at different sizes and places, comes out at one size, soles on the anchor's row, feet on its column

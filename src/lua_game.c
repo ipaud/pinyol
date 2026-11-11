@@ -1126,8 +1126,9 @@ static int l_show(lua_State *L) { /* show(layers): which of BG0..BG3 and OBJ are
     return 0;
 }
 
-/* ppu_usage() -> {layers, sprites, line_sprites, blend, window}: what the picture processor is doing now, for checks against a console's limits
- * (tools/look_check.py --play): background layers drawn, sprites on the screen, the most sprites on one line, and whether a blend or a window is on. */
+/* ppu_usage() -> {layers, sprites, line_sprites, blend, window, canvas}: what the picture processor is doing now, for checks against a console's limits
+ * (tools/look_check.py --play): background layers drawn, sprites on the screen, the most sprites on one line, whether a blend or a window is on,
+ * and the pixels the last frame wrote to canvases (each command's box, cut to the canvas: in slow memory on the console, what a canvas game costs). */
 static int l_ppu_usage(lua_State *L) {
     int layers = 0, sprites = 0, busiest = 0, per_line[PPU_H] = {0};
     for (int i = 0; i < PPU_BGS; i++) layers += PPU.bg[i].mode != BG_OFF && (PPU.layers >> i & 1);
@@ -1139,8 +1140,9 @@ static int l_ppu_usage(lua_State *L) {
             sprites++;
             for (int y = o->y < 0 ? 0 : o->y; y < o->y + h && y < PPU_H; y++) busiest = ++per_line[y] > busiest ? per_line[y] : busiest;
         }
-    lua_createtable(L, 0, 5);
+    lua_createtable(L, 0, 6);
     lua_pushinteger(L, layers), lua_setfield(L, -2, "layers");
+    lua_pushinteger(L, draw_canvas_px()), lua_setfield(L, -2, "canvas");
     lua_pushinteger(L, sprites), lua_setfield(L, -2, "sprites");
     lua_pushinteger(L, busiest), lua_setfield(L, -2, "line_sprites");
     lua_pushboolean(L, PPU.fx.mode != FX_NONE), lua_setfield(L, -2, "blend");

@@ -85,6 +85,10 @@ static bool view_on;
 typedef struct { asset *a; int x0, y0, x1, y1; } dirty_box;
 static dirty_box dirty[MAX_DIRTY]; /* canvases drawn on: where, for their masks */
 static int ndirty;
+static long canvas_px, canvas_px_last; /* pixels written to canvases this frame and the one before (ppu_usage) */
+
+void draw_canvas_written(long px) { canvas_px += px; }
+long draw_canvas_px(void) { return canvas_px_last; }
 
 static ov_cmd *ov_add(int op) {
     if (nov == OV_MAX) return NULL;
@@ -391,6 +395,20 @@ static void bounds(const ov_cmd *c, int *x0, int *y0, int *x1, int *y1) { /* wha
     }
 }
 
+/* The pixels a command on a canvas may have written, for ppu_usage().canvas: its box (cut to the canvas), but for the
+ * shapes that touch far fewer pixels than their box, an outline or a swarm's points */
+static long written(const ov_cmd *c, long box) {
+    long n = box;
+    switch (c->op) {
+    case OV_LINE: n = 1 + (abs(c->w - c->x) > abs(c->h - c->y) ? abs(c->w - c->x) : abs(c->h - c->y)); break;
+    case OV_CIRC: if (!c->h) n = 8L * c->w + 8; break;
+    case OV_BOX: n = 4L * (abs(c->w) + abs(c->h)) + 16; break; /* its 2-pixel edges */
+    case OV_POINTS: n = (long)c->len * c->a->w * c->a->h; break;
+    default: break;
+    }
+    return n < box ? n : box;
+}
+
 static void forget(const ov_cmd *c, int text_bytes, int corners) { /* the last command, off the list with its data */
     nov--, ntext -= text_bytes, npts -= 2 * corners;
     if (c->op == OV_MESH) nmf -= c->len;
@@ -567,12 +585,12 @@ static void commit(ov_cmd *c, int text_bytes, int corners) {
     if (s.w > 0 && s.h > 0) {
         if (c->op == OV_SHADE) gfx_canvas_shade(&s, c->x, c->y, c->w, c->h); /* see-through stays so */
         else draw_one(&s, c);
+        int x0, y0, x1, y1;
+        bounds(c, &x0, &y0, &x1, &y1);
         if (target->full && keyless(c)) target->gen++; /* drawn on a full canvas without the see-through colour: its mask stays whole */
-        else {
-            int x0, y0, x1, y1;
-            bounds(c, &x0, &y0, &x1, &y1);
-            touched(target, x0, y0, x1, y1);
-        }
+        else touched(target, x0, y0, x1, y1);
+        x0 = x0 > s.x0 ? x0 : s.x0, y0 = y0 > s.y0 ? y0 : s.y0, x1 = x1 < s.x0 + s.w ? x1 : s.x0 + s.w, y1 = y1 < s.y0 + s.h ? y1 : s.y0 + s.h;
+        if (x1 > x0 && y1 > y0) canvas_px += written(c, (long)(x1 - x0) * (y1 - y0));
     }
     forget(&was, text_bytes, corners);
 }
@@ -1501,6 +1519,7 @@ static int l_cls(lua_State *L) { /* cls([colour]): the canvas see-through (or th
     for (size_t i = 0; i < npx / 2; i++) p[i] = two;                       /* the canvas is in PSRAM, writes are dear */
     if (npx & 1) target->pixels[npx - 1] = col;
     target->gen++;
+    canvas_px += (long)npx;
     memset(target->mask, col == CANVAS_KEY ? 0 : 0xFF, (size_t)((target->w + 7) / 8) * target->h);
     target->full = col != CANVAS_KEY;
     return 0;
@@ -1625,6 +1644,7 @@ void draw_frame_begin(void) { /* each _draw starts on the screen, with no camera
     prof_cur.cmds = nov, prof_cur.slots = nquad; /* the frame before: all its strips are drawn */
     prof_last = prof_cur;
     memset(&prof_cur, 0, sizeof prof_cur);
+    canvas_px_last = canvas_px, canvas_px = 0;
     memcpy(pic_last, pic_cur, sizeof pic_last), npic_last = npic_cur; /* (the name stays valid: a picture's record is never freed) */
     memset(pic_cur, 0, sizeof pic_cur), npic_cur = 0;
     nov = ntext = nstyle = nxf = npts = nclip = nlook = nquad = nmf = 0;

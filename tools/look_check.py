@@ -3,7 +3,8 @@
 # ///
 """Checks a game against the look it is made for (tools/looks.json "limits"): colours in each palette bank, colours and bits of packed
 sprite sheets, the biggest sprite frame, pictures in a look that has none, forbidden code, and the font pack. With --play, the game's test script is played (sampled every 15 ticks) and
-the layers, the sprites on the screen, the most sprites on one line and the blend and window use are checked against the look's "play" limits.
+the layers, the sprites on the screen, the most sprites on one line and the blend and window use are checked against the look's "play" limits;
+the pixels written to canvases in a frame (on average and the most) are told too (a canvas game's real cost, which the picture processor's numbers do not show).
 
     uv run tools/look_check.py examples/cerezo                 # the look is read from game.json ("look")
     uv run tools/look_check.py games/mygame --look gameboy     # or named
@@ -81,11 +82,15 @@ def check(game: Path, look: dict) -> tuple[list[str], list[str]]:
     return errs, warns
 
 
-PRELUDE = ("lua __M = {l = 0, s = 0, n = 0, b = false, w = false} function __u() local u = ppu_usage() "
+PRELUDE = ("lua __M = {l = 0, s = 0, n = 0, b = false, w = false, c = 0, cs = 0, cn = 0} function __u() local u = ppu_usage() "
            "if u.layers > __M.l then __M.l = u.layers end if u.sprites > __M.s then __M.s = u.sprites end "
-           "if u.line_sprites > __M.n then __M.n = u.line_sprites end __M.b = __M.b or u.blend __M.w = __M.w or u.window end")
-PRELUDE_AGAIN = PRELUDE.replace("lua __M = {l = 0, s = 0, n = 0, b = false, w = false} function", "lua __M = __M or {l = 0, s = 0, n = 0, b = false, w = false} function")
+           "if u.line_sprites > __M.n then __M.n = u.line_sprites end __M.b = __M.b or u.blend __M.w = __M.w or u.window "
+           "if u.canvas > __M.c then __M.c = u.canvas end __M.cs = __M.cs + u.canvas __M.cn = __M.cn + 1 end")
+PRELUDE_AGAIN = PRELUDE.replace("lua __M = {l = 0, s = 0, n = 0, b = false, w = false, c = 0, cs = 0, cn = 0} function",
+                                "lua __M = __M or {l = 0, s = 0, n = 0, b = false, w = false, c = 0, cs = 0, cn = 0} function")
 SAMPLE = 15  # ticks between samples
+CANVAS_PX_MS = 153600 / 18  # canvas pixels the console writes in a millisecond: a 320x480 cls() took 18 ms (canvases are in PSRAM); a rough guide, from boxes
+CANVAS_WARN_MS = 8  # half a frame at 60 fps, on average
 
 
 def instrument(script: str) -> str:
@@ -105,17 +110,17 @@ def instrument(script: str) -> str:
             out.append(line)
             if words and words[0] in ("hold", "press", "release", "wait"):
                 out.append("lua __u()")
-    out.append('lua print("LOOKUSE", __M.l, __M.s, __M.n, tostring(__M.b), tostring(__M.w))')
+    out.append('lua print("LOOKUSE", __M.l, __M.s, __M.n, tostring(__M.b), tostring(__M.w), __M.c, __M.cs // math.max(1, __M.cn))')
     return "\n".join(out) + "\n"
 
 
-def play(game: Path, look: dict, headless: Path, script: Path | None) -> tuple[list[str], str]:
-    """Plays the test script and checks look["play"]; returns (errors, a line with the maxima seen)."""
+def play(game: Path, look: dict, headless: Path, script: Path | None) -> tuple[list[str], list[str], str]:
+    """Plays the test script and checks look["play"]; returns (errors, warnings, a line with the maxima seen)."""
     if not script:
         mine, engines = game / "tests" / f"{game.name}.script", Path(__file__).resolve().parents[1] / "tests" / f"{game.name}.script"
         script = mine if mine.exists() else engines  # (the engine's examples keep theirs in its tests/)
     if not script.exists():
-        return [f"--play: no script {script}"], ""
+        return [f"--play: no script {script}"], [], ""
     lim = look.get("play", {})
     with tempfile.TemporaryDirectory() as tmp:
         sc = Path(tmp) / "play.script"
@@ -123,10 +128,12 @@ def play(game: Path, look: dict, headless: Path, script: Path | None) -> tuple[l
         r = subprocess.run([str(headless), "--game", str(game), "--saves", str(Path(tmp) / "saves"), "--fresh", "--script", str(sc), "--check-strips"],
                            capture_output=True, text=True)
     text = r.stdout + r.stderr
-    m = re.search(r"LOOKUSE (\d+) (\d+) (\d+) (\w+) (\w+)", text)
+    m = re.search(r"LOOKUSE (\d+) (\d+) (\d+) (\w+) (\w+) (\d+) (\d+)", text)
     if not m:
-        return [f"--play: the script did not finish ({text.strip().splitlines()[-1:] or ['no output']})"], ""
-    layers, sprites, line, blend, window = int(m[1]), int(m[2]), int(m[3]), m[4] == "true", m[5] == "true"
+        return [f"--play: the script did not finish ({text.strip().splitlines()[-1:] or ['no output']})"], [], ""
+    layers, sprites, line, blend, window, canvas = int(m[1]), int(m[2]), int(m[3]), m[4] == "true", m[5] == "true", int(m[6])
+    mean = int(m[7])  # (the most is often a passing screen, a card or a fade; the mean is what play costs)
+    canvas_ms, mean_ms = canvas / CANVAS_PX_MS, mean / CANVAS_PX_MS
     errs = []
     for key, got, what in (("layers", layers, "background layers"), ("sprites", sprites, "sprites on the screen"), ("line_sprites", line, "sprites on one line")):
         if key in lim and got > lim[key]:
@@ -135,7 +142,10 @@ def play(game: Path, look: dict, headless: Path, script: Path | None) -> tuple[l
         errs.append(f"play: a blend is used, {look['name']} has none")
     if lim.get("window") is False and window:
         errs.append(f"play: a window is used, {look['name']} has none")
-    return errs, f"play: up to {layers} layers, {sprites} sprites ({line} on one line), blend {'yes' if blend else 'no'}, window {'yes' if window else 'no'}"
+    warns = [f"play: {mean} canvas pixels written in a frame on average, about {mean_ms:.1f} ms on the console (canvases are in slow memory)"] \
+        if mean_ms > CANVAS_WARN_MS else []
+    return errs, warns, (f"play: up to {layers} layers, {sprites} sprites ({line} on one line), blend {'yes' if blend else 'no'}, "
+                         f"window {'yes' if window else 'no'}, canvas pixels a frame {mean} on average (~{mean_ms:.1f} ms), up to {canvas} (~{canvas_ms:.1f} ms)")
 
 
 def main() -> None:
@@ -156,8 +166,9 @@ def main() -> None:
     look = looks.get(ids[0])
     errs, warns = check(a.game, look)
     if a.play is not None:
-        e, seen = play(a.game, look, a.headless, Path(a.play) if a.play else None)
+        e, w, seen = play(a.game, look, a.headless, Path(a.play) if a.play else None)
         errs += e
+        warns += w
         print(seen) if seen else None
     for w in warns:
         print("WARN", w)

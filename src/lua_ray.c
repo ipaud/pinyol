@@ -438,6 +438,7 @@ static int l_raycast(lua_State *L) {
         if (!cv->full) memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
         cv->full = true;
         cv->gen++;
+        draw_canvas_written(W * H);
     } else {
         on_screen = job;
         draw_ray(L, sx, sy, W << shift, H << shift);
@@ -570,6 +571,7 @@ static int l_voxels(lua_State *L) {
     memset(cv->mask, 0xFF, (size_t)((cv->w + 7) / 8) * cv->h); /* the view covers its canvas */
     cv->full = true;
     cv->gen++;
+    draw_canvas_written(W * H);
     return 0;
 }
 
