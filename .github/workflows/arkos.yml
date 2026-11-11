@@ -1,0 +1,36 @@
+# pinyol for ArkOS handhelds (R36S, RG351...): pinyol-arkos.zip, the release "libretro"'s arm64 core with its installer,
+# the site's games and their art (platform/libretro/arkos/make_kit.py, docs/arkos.md). Made again when the libretro
+# workflow has published a new core, and when the kit or the games change; uploaded beside the cores.
+name: arkos
+on:
+  workflow_run:
+    workflows: [libretro]
+    types: [completed]
+    branches: [main]
+  push:
+    branches: [main]
+    paths: ["platform/libretro/arkos/**", "examples/**", "site/page.py", "tools/pack_game.py", ".github/workflows/arkos.yml"]
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: arkos
+  cancel-in-progress: true # (the last one's kit is the one wanted)
+jobs:
+  kit:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: The kit, with the release's arm64 core
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 -m pip install --quiet "pillow>=10"
+          gh release download libretro -p pinyol_libretro-linux-arm64.zip -D core
+          python3 platform/libretro/arkos/make_kit.py core/pinyol_libretro-linux-arm64.zip -o dist/pinyol-arkos.zip
+          gh release upload libretro dist/pinyol-arkos.zip --clobber

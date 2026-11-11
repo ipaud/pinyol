@@ -1,0 +1,25 @@
+<theme>
+<formatVersion>7</formatVersion>
+<include>./../theme.xml</include>
+
+<view name="basic, detailed, video, grid">
+  <text name="nameLabel" extra="true">
+    <text>Pinyol</text>
+  </text>
+</view>
+
+<view name="system">
+  <text name="sys_line1" extra="true">
+    <text>Pinyol</text>
+  </text>
+  <text name="sys_line2" extra="true">
+    <text>Cirera</text>
+  </text>
+  <text name="shortdescription" extra="true">
+   <text>2026  ·  Consola de bolsillo</text>
+  </text>
+  <text name="longdescription" extra="true">
+   <text>Un motor libre para juegos 2D en Lua, hecho para la Cirera, una portatil con ESP32-S3. Una consola virtual a imagen de la Game Boy Advance: capas, sprites, paletas y Mode 7.</text>
+  </text>
+ </view>
+</theme>
