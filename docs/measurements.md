@@ -1142,4 +1142,5 @@ Same board, same silent `board_perf.py` (fps min / mean / max). v0.9.1 is 790718
 |---|---|---|---|
 | El Celler (60 s of its demo) | 42.0 / 49.8 / 57.9 (40 s) | 42.2 / 52.7 / 58.5 | the world is not doubled under the view, only the bar's 48 rows: render 18.1 to 17.2 ms |
 | El Celler, two `lights` over the whole view | | 32.2 / 40.7 / 56.2 | about 5 ms more a frame lit (first version 38.1, and 46.0 with no lights: the light check was read again in the texel loop) |
+| El Celler, its candles lit (one or two a gallery) | | 42.2 / 51.7 / 58.3 | a candle on the floor lights the walls round it |
 | Traca (40 s) | 48.2 / 56.7 / 59.7 | 48.3 / 56.6 / 59.8 | the same: the partial cover does not change its frames |

@@ -16,7 +16,7 @@ V.WALLS = WALLS
 local PIC = {key = "SPR_KEY", candle = "SPR_CANDLE", bottle = "SPR_BOTTLE", reserva = "SPR_RESERVA", cork = "SPR_CORK",
              barrel = "SPR_BARREL", demijohn = "SPR_DEMIJOHN"}
 V.CEIL, V.FLOOR = 0x2E241C, 0x4C3C2C
-local view = {walls = WALLS, fov = 66, jamb = "TEX_JAMB", ceiling = V.CEIL, floor = V.FLOOR, sprites = {}, doors = {}}
+local view = {walls = WALLS, fov = 66, jamb = "TEX_JAMB", ceiling = V.CEIL, floor = V.FLOOR, sprites = {}, doors = {}, lights = {}}
 V.view = view
 
 local face_sheet, lamp
@@ -57,11 +57,19 @@ function V.setup(px, py, pa, fog)
   end
   for i = nd + 1, #doors do doors[i] = nil end
   local sp, n = view.sprites, 0
+  local lights, nl = view.lights, 0
   local t = ticks()
   for _, it in ipairs(W.things) do
     local f = it.kind == "candle" and (t // 8) % 2 or 0
     n = put(sp, n, it.x, it.y, PIC[it.kind], f, 1)
+    if it.kind == "candle" then -- a candle on the floor lights the walls round it, flickering: seen from the dark
+      nl = nl + 1
+      local l = lights[nl] or {radius = 2.5, colour = 0xFFA050}
+      lights[nl] = l
+      l.x, l.y, l.intensity = it.x, it.y, 1.1 + 0.25 * noise(t * 0.07 + nl * 13)
+    end
   end
+  for i = nl + 1, #lights do lights[i] = nil end
   for _, g in ipairs(W.ghosts) do
     local f
     if g.state == "pop" then f = 3 elseif g.state == "flee" then f = 2 else f = ((t + g.phase) // 20) % 2 end
