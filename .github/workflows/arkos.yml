@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true # (the last one's kit is the one wanted)
 jobs:
   kit:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') # (run by hand on a branch: nothing uploaded)
     runs-on: ubuntu-latest
     permissions:
       contents: write
