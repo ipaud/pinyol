@@ -79,17 +79,19 @@ if(EMSCRIPTEN)
   target_link_libraries(pinyol_player pinyol_core)
   target_link_options(pinyol_player PRIVATE -sUSE_SDL=2 -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=64MB -sINVOKE_RUN=0
                       -sFORCE_FILESYSTEM=1 -sEXPORTED_RUNTIME_METHODS=FS,callMain,UTF8ToString -lidbfs.js
-                      --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/player.html)
+                      -sDYNAMIC_EXECUTION=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/player.html)
   set_property(TARGET pinyol_player APPEND PROPERTY LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/player.html)
+  add_custom_command(TARGET pinyol_player POST_BUILD COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/csp.py $<TARGET_FILE:pinyol_player>)
 
   add_executable(pinyol_web platform/sdl/main.c)
   set_target_properties(pinyol_web PROPERTIES OUTPUT_NAME index SUFFIX .html)
   target_compile_options(pinyol_web PRIVATE -Wall -Wextra -sUSE_SDL=2)
   target_link_libraries(pinyol_web pinyol_core)
   target_link_options(pinyol_web PRIVATE -sUSE_SDL=2 -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=64MB
-                      --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/shell.html
+                      -sDYNAMIC_EXECUTION=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/shell.html
                       --preload-file ${GAME_DIR}@/game --exclude-file ${GAME_DIR}/saves)
   set_property(TARGET pinyol_web APPEND PROPERTY LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/platform/web/shell.html)
+  add_custom_command(TARGET pinyol_web POST_BUILD COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/csp.py $<TARGET_FILE:pinyol_web>)
   return()
 endif()
 

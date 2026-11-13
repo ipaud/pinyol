@@ -411,7 +411,7 @@ function initBlockly() {
                        insertionMarkerColour: '#ffffff', insertionMarkerOpacity: 0.3, cursorColour: '#d0d0d0' },
     fontStyle: { family: 'system-ui, sans-serif', size: 12 },
   });
-  ws = Blockly.inject('blockly', { toolbox: TOOLBOX, theme, trashcan: true, renderer: 'zelos',
+  ws = Blockly.inject('blockly', { toolbox: TOOLBOX, theme, trashcan: true, renderer: 'zelos', media: 'vendor/blockly/media/',
                                    zoom: { controls: true, wheel: true, startScale: 0.8 }, grid: { spacing: 24, length: 2, colour: '#2b2539' } });
   ws.addChangeListener(Blockly.Events.disableOrphans); // a block outside an event does nothing: it looks off
   document.querySelector('.blocklyComputeCanvas')?.setAttribute('aria-hidden', 'true'); // Blockly's, to measure text

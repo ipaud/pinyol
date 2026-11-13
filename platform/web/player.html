@@ -261,7 +261,7 @@ html.pad-mode body { padding: 6px; }
       <g class="key" data-b="7"><g transform="rotate(-22 156 65.5)"><rect x="151.5" y="63.25" width="9" height="4.5" rx="2.25" fill="#777b83" transform="translate(.2 .5)"/><rect x="151.5" y="63.25" width="9" height="4.5" rx="2.25" fill="url(#cs-pill)"/></g></g>
     </svg>
   <div class="screen" id="screen">
-    <canvas id="canvas" tabindex="0" oncontextmenu="event.preventDefault()" aria-label="Pantalla del juego"></canvas>
+    <canvas id="canvas" tabindex="0" aria-label="Pantalla del juego"></canvas>
     <div class="gate" id="gate">
       <p id="gate-title">Elige un juego</p>
       <button id="play" hidden>Jugar</button>
@@ -310,6 +310,7 @@ html.pad-mode body { padding: 6px; }
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
+$('canvas').addEventListener('contextmenu', e => e.preventDefault());
 
 /* The player's words in Spanish, Catalan or English (?lang=ca|en, from the site's page in that language) */
 const LANG = new URLSearchParams(location.search).get('lang');
