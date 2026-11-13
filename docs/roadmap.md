@@ -1,4 +1,4 @@
-# Hoja de ruta: qué falta en pinyol (21 octubre 2026)
+# Hoja de ruta: qué falta en pinyol (21 octubre 2026; repasada el 13 de noviembre: lo hecho desde entonces, marcado)
 
 Investigación web en siete frentes (rendimiento del ESP32-S3, plataformas tipo Playdate/PICO-8, sensación de juego,
 gráficos retro, audio, red y patentes, herramientas y accesibilidad), cruzada con lo que el motor ya tiene. Solo lo que
@@ -13,8 +13,8 @@ Ya cubierto, no repetir: hit-stop (`juice.freeze`), buffer de salto (`btnb`), ma
 
 - **Fase 0, hecho:** código del sistema y driver de flash fuera de IRAM (+19,8 KB; `firmware/sdkconfig.defaults`),
   `perf("lua")` y `--profile` (profiler por muestreo), `span_mix_const` con PIE para cajas de un color mezcladas
-  (comprobado en QEMU, `tests/pie/run.sh`). **Pendiente de placa:** medir fps con las tiras y PIE, probar
-  `CONFIG_ESP32S3_DATA_CACHE_32KB` (+32 KB) y `CONFIG_SPIRAM_XIP_FROM_PSRAM`; saltar tiras sin cambios no compensa
+  (comprobado en QEMU, `tests/pie/run.sh`). **Hecho en placa** (c60a48a: `CONFIG_ESP32S3_DATA_CACHE_32KB` y
+  `CONFIG_SPIRAM_XIP_FROM_PSRAM` activos en sdkconfig.defaults); queda medir fps con las tiras y PIE; saltar tiras sin cambios no compensa
   mientras el DMA ya solapa el dibujo (ganaría batería, no fps).
 - **Fase 1, hecho:** menú del sistema (`sysmenu.c`), ajustes de consola (`conf.c`: volumen, destellos, filtro de
   color, velocidad, idioma, A/B), pantalla de crash y `crash.txt`, `--record` y el comando `in`, `--check-flashes`
@@ -40,7 +40,7 @@ Ya cubierto, no repetir: hit-stop (`juice.freeze`), buffer de salto (`btnb`), ma
   32×32 por void-and-cluster, en el disolvente de `shade`/`img`), Voxel Space (`voxels()`, terreno de Comanche sobre un
   canvas) y luz por paleta (`lib/light`: entradas que son superficies, iluminadas desde la dirección de la lámpara).
   **No hecho:** cleanEdge (un escalado de 240→480 por píxel con pendientes: en la ESP32 no cabe en el frame; la
-  consola escala ×2 por DMA), mallas 3D.
+  consola escala ×2 por DMA), mallas 3D (hecho: `mesh()`, src/mesh.c).
 
 - **Fase 4, hecho:** música adaptativa (`music(id, fade, {bar, beats, loop_at, layers, at = "bar"})`: la canción nueva
   espera aparcada y el mezclador la cambia en la línea de compás; `music_beat()`, `music_queued()`), `lib/brain` (IA de
@@ -221,7 +221,7 @@ de for de solo lectura). `esp_new_jpeg` (480×320 con giro a ~31-36 fps, 10 KB i
 - **`move`**: actores y sólidos de Celeste/TowerFall, coyote, media gravedad en el ápice, corrección de esquinas,
   plataformas de un sentido y móviles ([Celeste & TowerFall physics](https://maddymakesgames.com/articles/celeste_and_towerfall_physics),
   [forgiveness](https://maddymakesgames.com/articles/celeste_and_forgiveness/), [Player.cs](https://github.com/NoelFB/Celeste/blob/master/Source/Player.cs)).
-  `kit` y `plataformas` hoy escriben cada uno el suyo.
+  `kit` y `plataformas` (hoy en tests/games) escriben cada uno el suyo.
 - **juice**: temblor `trauma²` con ruido ([Eiserloh GDC 2016](https://www.gdcvault.com/play/1023557/)), muelles de
   segundo orden ([t3ssel8r](https://www.youtube.com/watch?v=KPoeNZZ6H4s)), squash & stretch.
 - **`autotile`**: blob 47 ([Boris the Brave](https://www.boristhebrave.com/permanent/24/06/cr31/stagecast/wang/blob.html))
@@ -234,7 +234,7 @@ de for de solo lectura). `esp_new_jpeg` (480×320 con giro a ~31-36 fps, 10 KB i
 ## Fase 3 · Looks nuevos
 
 - `palcycle` con BlendShift ([Mark Ferrari GDC 2016](https://www.youtube.com/watch?v=aMcJ1Jvtef0),
-  [canvascycle](https://github.com/jhuckaby/canvascycle), MIT). `pal()` hoy solo escribe.
+  [canvascycle](https://github.com/jhuckaby/canvascycle), MIT). `pal()` hoy solo escribe (`palcycle` ya existe).
 - Exponer las tablas por línea del PPU: `line_affine`, `line_scroll_ramp`, `col_scroll` (`ppu_line_affine` ya existe).
 - Onda de choque y calima sobre el frame del PPU ([iq deform](https://iquilezles.org/articles/deform/)).
 - Sprite stacking con caché por ángulo; dither de ruido azul ([texturas CC0](https://momentsingraphics.de/BlueNoise.html));

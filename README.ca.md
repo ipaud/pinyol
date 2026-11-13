@@ -120,7 +120,7 @@ uv run tools/new_game.py games/elmeujoc --lua --title "El meu joc"
 ./build/pinyol_sim --game games/elmeujoc
 ```
 
-Et queda un joc petit per canviar: una sala més gran que la pantalla, un personatge que s'hi passeja, gemmes per recollir, sons i un millor temps desat. `main.lua` és el joc, `room.lua` la sala com a text, i `art.py` dibuixa l'art i el converteix (canvia els seus PNG pels teus i torna'l a executar). **[docs/tutorial.md](docs/tutorial.md) continua des d'aquí pas a pas** (en anglès), fins a un joc a la consola i al navegador. Els nivells es poden dibuixar a [Tiled](https://www.mapeditor.org) i importar amb `tools/tiled2asset.py`. Art fet amb un model d'imatge (fons trets, fotogrames tallats, escala i peus ajustats): [docs/art.md](docs/art.md). Tota la resta és a [docs/lua.md](docs/lua.md), i els exemples n'ensenyen més:
+Et queda un joc petit per canviar: una sala més gran que la pantalla, un personatge que s'hi passeja, gemmes per recollir, sons i un millor temps desat. `main.lua` és el joc, `room.lua` la sala com a text, i `art.py` dibuixa l'art i el converteix (canvia els seus PNG pels teus i torna'l a executar). **[docs/tutorial.md](docs/tutorial.md) continua des d'aquí pas a pas** (en anglès), fins a un joc a la consola i al navegador. Els nivells es poden dibuixar a [Tiled](https://www.mapeditor.org) i importar amb `tools/tiled2asset.py`, o a [LDtk](https://ldtk.io) (la seva exportació simplificada, `tools/ldtk2asset.py`); un personatge dibuixat a Aseprite entra directament des del seu `.aseprite`, amb fotogrames, etiquetes i slices, amb `tools/ase2asset.py`; `tools/pack_game.py --budget` diu què pesa un joc. Art fet amb un model d'imatge (fons trets, fotogrames tallats, escala i peus ajustats): [docs/art.md](docs/art.md). Tota la resta és a [docs/lua.md](docs/lua.md), i els exemples n'ensenyen més:
 
 | Exemple | El que ensenya |
 |---|---|
@@ -128,6 +128,10 @@ Et queda un joc petit per canviar: una sala més gran que la pantalla, un person
 | [naves](examples/naves) | un matamarcians: un camp d'estrelles amb una velocitat per línia, un planeta que gira, explosions barrejades, un flaix |
 | [carreras](examples/carreras) | una cursa de karts en Mode 7: un terra en perspectiva, rivals com a sprites escalats, voltes i posicions |
 | [puzle](examples/puzle) | un trencaclosques lliscant per a la pantalla tàctil: una pista fantasma per barreja, una revelació en mosaic, música feta de notes |
+| [stylus](examples/stylus) | la pantalla tàctil com la feia servir la DS (`lib/pointer.lua`): formes dibuixades i reconegudes, una caixa arrossegada, la direcció d'un gest ràpid |
+| [dedos](examples/dedos) | cada dit a la pantalla, el pessic que en fan dos, quant tremola un dit quiet: per provar un panell tàctil |
+| [dos_pantallas](examples/dos_pantallas) | dues pantalles al simulador (`"screens": 2`): una vista propera a dalt, un mapa tàctil a sota; un toc tria, un gest ràpid envia |
+| [psx_views](examples/psx_views) | un actor i tres càmeres a l'estil PS1: lateral, fixa amb oclusió en primer pla, i un passadís vist des del darrere; la mateixa posició i el mateix estat sobreviuen a cada tall |
 | [aldea](examples/aldea) | una aventura vista des de dalt: un poble dibuixat a Tiled, gent amb diàlegs que s'escriuen lletra a lletra, capçades d'arbre per darrere de les quals passes |
 | [estilos](examples/estilos) | l'aspecte propi d'un joc: fonts de la biblioteca, text amb contorn i ondulat, marcs tallats d'una imatge, imatges girades |
 | [inventos](examples/inventos) | joguines sense gènere, només amb codi: pintar, terra que es trenca, estels generatius, triangles 3D, una pantalla partida |
@@ -184,6 +188,7 @@ uv run tools/new_game.py games/elmeujoc --title "El meu joc"
   ```
 - **So**: WAV, PCM de 16 bits mono a 22.050 Hz.
 - **Fonts**: `tools/font2fnt.py` converteix un TTF, OTF, BDF o un full PNG al format FNT del motor; en venen dotze de
+- **La careta**: tots els jocs obren amb POWERED BY PINYOL. Un joc en Lua pot tenir la seva, amb el seu estil i el segell a sobre ([docs/lua.md](docs/lua.md#the-careta-powered-by-pinyol), `examples/careta`); `pinyol_sim --no-splash` la salta mentre fas el joc.
   píxel lliures (`third_party/fonts`), així que cada joc pot tenir les seves pròpies lletres.
 - **Proves**: un guió juga el joc amb entrades reals i comprova flags, zones i pantalles. Mira [tests/hola.script](tests/hola.script); s'executa amb `./build/pinyol_headless --game DIR --fresh --script FILE`, i `tools/record.sh DIR FILE out.mp4` grava la partida en vídeo.
 
@@ -201,6 +206,9 @@ add_test(NAME validate COMMAND pinyol_headless --game ${GAME_DIR} --validate)
 ```
 
 Les aventures de dades amb què va començar pinyol es compilen així.
+
+Els scripts d'un joc troben el checkout del motor per `PINYOL_ENGINE` (una ruta; `ENGINE` en alguns) i, si no, en una carpeta
+germana: `export PINYOL_ENGINE=/ruta/a/pinyol` val sigui on sigui el repositori del joc.
 
 ## Comparteix un joc, juga-hi al navegador
 
@@ -279,12 +287,14 @@ cmake --build build-app --target pinyol_sim             # -> build-app/Cirera (C
 python3 tools/make_app.py build-app/Cirera -o dist/     # -> dist/Cirera-mac.zip (Cirera-linux-*.tar.gz a Linux)
 ```
 
+L'app pregunta a GitHub un cop en arrencar (un fil, `curl`, no s'envia res més que la petició) si hi ha una release més nova que la seva `VERSION` i, si n'hi ha, ho diu un cop per a aquesta versió, amb un botó a la seva pàgina (la consola només canvia de firmware amb un `firmware.bin` copiat a la targeta).
+
 La de Windows es compila des d'un Mac o un Linux amb MinGW-w64 (`cmake/mingw-w64-x86_64.cmake`).
 [.github/workflows/desktop.yml](.github/workflows/desktop.yml) les compila totes amb SDL a dins, així que no necessiten
 res instal·lat, i obre cadascuna al seu sistema abans de publicar-la. El simulador també juga a la consola:
 `pinyol_sim --console examples --menu firmware/cirera`.
 
-## Juga-hi a RetroArch: RetroPie, Batocera, Lakka
+## Juga-hi a RetroArch: RetroPie, RetroBat, Batocera, Lakka
 
 El motor també és un core [libretro](https://www.libretro.com), que juga el zip d'un joc a RetroArch i a tot el
 que s'hi basa, entre ells una Raspberry Pi amb RetroPie:
@@ -309,7 +319,7 @@ platform/libretro/ el core libretro, per a RetroArch i RetroPie
 platform/web/    les pàgines web al voltant dels reproductors
 site/            el web (https://pinyol.ipaud.dev/), fet per site/build.py en castellà, català i anglès
 firmware/        la consola: projecte d'ESP-IDF, compila src/ sense canvis; cirera/ és el seu menú, un joc de pinyol
-examples/        jocs tal com van a la microSD: trenta-dos en Lua, hola com a dades
+examples/        jocs tal com van a la microSD: cinquanta en Lua, hola com a dades
 templates/lua/   el joc des del qual comença new_game.py --lua
 tests/           guions de prova dels exemples, i les proves pròpies de la PPU
 tools/           new_game.py, png2asset.py, tiled2asset.py, pack_game.py, make_gallery.py, font2fnt.py, clip2npv.py, ...

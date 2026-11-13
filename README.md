@@ -206,7 +206,7 @@ add_test(NAME validate COMMAND pinyol_headless --game ${GAME_DIR} --validate)
 The data adventures pinyol started with are built this way.
 
 The engine's checkout is found by the game's scripts through `PINYOL_ENGINE` (a path; `ENGINE` in some) and, failing that, a
-sibling folder: `export PINYOL_ENGINE=~/Desktop/DEV/pinyol/pinyol-engine/pinyol` works wherever the game's repo lives.
+sibling folder: `export PINYOL_ENGINE=/path/to/pinyol` works wherever the game's repo lives.
 
 ## Share a game, play it in the browser
 
@@ -315,7 +315,7 @@ platform/libretro/ the libretro core, for RetroArch and RetroPie
 platform/web/    the web pages around the players
 site/            the site (https://pinyol.ipaud.dev/), built by site/build.py in Spanish, Catalan and English
 firmware/        the console: ESP-IDF project, builds src/ unchanged; cirera/ is its menu, a pinyol game
-examples/        games as they go on the microSD: thirty-two in Lua, hola as data
+examples/        games as they go on the microSD: fifty in Lua, hola as data
 templates/lua/   the game new_game.py --lua starts from
 tests/           test scripts for the examples, and the PPU's own tests
 tools/           new_game.py, png2asset.py, tiled2asset.py, pack_game.py, make_gallery.py, font2fnt.py, clip2npv.py, ...

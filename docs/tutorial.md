@@ -176,5 +176,5 @@ python3 tools/pack_game.py games/micueva -o dist/      # -> dist/micueva.zip
 
 - [lua.md](lua.md): everything the engine does: four background layers that scroll, turn and zoom (Mode 7),
   128 sprites, transparency, windows, mosaic, effects per line, text, sound, saved games.
-- The examples, each a different genre: `plataformas` (platformer), `naves` (shoot-'em-up), `carreras` (Mode 7
+- The examples, each a different genre: `botin` (platformer), `naves` (shoot-'em-up), `carreras` (Mode 7
   racing), `puzle` (touch puzzle), `aldea` (adventure with dialogue). Their `main.lua` is short and commented.
