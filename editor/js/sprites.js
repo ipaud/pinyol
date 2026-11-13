@@ -1,7 +1,7 @@
 // The Drawings tab: pixel by pixel in the console's colours (a palette at hand, or any other), with frames for
 // animation; pictures brought in from files; and what each drawing is for (a tile of the map, solid or not, an
 // object that moves in some way, or a picture behind the map).
-import { PALETTE, COLOUR_NAMES, BEHAVIOURS, SHOT_DIRS, DRIFTS, DRAWING, SIZES, MAX_SIDE, MAX_BYTES, MAX_FRAMES, ANIMS, blankFrame, safeName, uniqueName, rgb565, hex565, rgbOf, hexOf, lookOf, lookColour, checkAnims, checkPivot, framesFrom, fpsOf, } from './project.js';
+import { PALETTE, COLOUR_NAMES, BEHAVIOURS, SHOT_DIRS, DRIFTS, DRAWING, SIZES, MAX_SIDE, MAX_BYTES, MAX_FRAMES, ANIMS, blankFrame, safeName, uniqueName, rgb565, hex565, rgbOf, hexOf, lookOf, lookColour, checkAnims, checkPivot, framesFrom, fpsOf, MAX_DRAWINGS } from './project.js';
 import { sizeOf, bytesOf } from './build.js';
 import { t } from './i18n.js';
 
@@ -241,6 +241,7 @@ function renderAnims(d) {
     fps.setAttribute('aria-label', `${label}: ${t('fotogramas por segundo')}`);
     fps.addEventListener('change', () => set(k, { fps: fpsOf(fps.value) }));
     const loop = Object.assign(document.createElement('input'), { type: 'checkbox', checked: a.loop });
+    loop.setAttribute('aria-label', `${label}: ${t('se repite')}`); // (each row's, not all the same)
     loop.addEventListener('change', () => set(k, { loop: loop.checked }));
     const more = Object.assign(document.createElement('div'), { className: 'anim-more' }), check = document.createElement('label');
     check.className = 'check';
@@ -403,6 +404,7 @@ async function openImport(file) {
   $('import-w').value = Math.round(tw / cols);
   $('import-smooth').checked = w > tw && !fewColours(incoming.bmp);
   importPreview();
+  $('import').returnValue = ''; // (Escape keeps the last one: "ok" would add the picture)
   $('import').showModal();
 }
 
@@ -423,6 +425,7 @@ function finishImport() {
   if ($('import').returnValue !== 'ok' || !incoming) { incoming = null; return; }
   const pic = importPixels(), names = new Set(app.project.drawings.map(d => d.name));
   const use = useOf(pic);
+  if (app.project.drawings.length >= MAX_DRAWINGS) { incoming = null; app.toast(t('Ya hay {n} dibujos: el máximo.', { n: MAX_DRAWINGS })); return; }
   if (!fits({ ...pic, use })) { incoming = null; app.toast(TOO_BIG); return; }
   app.project.drawings.push({ ...DRAWING, name: uniqueName(safeName(incoming.name, 'imagen'), names), ...pic, use,
                               parallax: 0 }); // a picture is rarely made to repeat: still, until asked to move
@@ -521,6 +524,7 @@ export function initDrawings(ctx) {
   });
   $('drawing-add').addEventListener('click', () => {
     const names = new Set(app.project.drawings.map(d => d.name));
+    if (app.project.drawings.length >= MAX_DRAWINGS) { app.toast(t('Ya hay {n} dibujos: el máximo.', { n: MAX_DRAWINGS })); return; }
     const t = app.project.tile || 16; // a tile, unless told otherwise: the map's size
     if (!fits({ ...DRAWING, w: t, h: t, frames: [blankFrame(t, t)] })) { app.toast(TOO_BIG); return; }
     app.project.drawings.push({ ...DRAWING, name: uniqueName('dibujo', names), w: t, h: t, frames: [blankFrame(t, t)] });
@@ -533,6 +537,7 @@ export function initDrawings(ctx) {
         !confirm(t('¿Quitar «{name}»? También se quitará de todos los niveles y de la portada, y los bloques que lo usan dejarán de funcionar.',
                    { name: d.name }))) return;
     app.remove(d.name);
+    undo.delete(d.name), redo.delete(d.name); // (a new drawing with that name starts afresh)
     cur = Math.max(0, cur - 1);
     changed();
   });

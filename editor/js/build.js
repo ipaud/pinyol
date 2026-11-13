@@ -118,11 +118,14 @@ function picture(d) { // -> {rgb565, mask|null, meta} or {pk, meta}
 
 // ------------------------------------------------------------------ Lua
 
+const LUA_WORDS = new Set('and break do else elseif end false for function goto if in local nil not or repeat return then true until while'.split(' '));
+
 export function lua(v, indent = '') { // a value as a Lua literal
   if (v === null || v === undefined) return 'nil';
   if (typeof v === 'boolean') return v ? 'true' : 'false';
   if (typeof v === 'number') return Number.isFinite(v) ? String(Math.round(v * 10000) / 10000) : '0';
-  if (typeof v === 'string') return '"' + v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+  if (typeof v === 'string') return '"' + v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')
+    .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, c => '\\' + String(c.charCodeAt(0)).padStart(3, '0')) + '"';
   if (Array.isArray(v)) {
     const flat = v.every(x => typeof x !== 'object' || x === null);
     if (flat) { // numbers in lines of 32: a map stays readable
@@ -135,7 +138,7 @@ export function lua(v, indent = '') { // a value as a Lua literal
   }
   const keys = Object.keys(v).filter(k => v[k] !== undefined);
   if (!keys.length) return '{}';
-  return '{\n' + keys.map(k => indent + '  ' + (/^[A-Za-z_][A-Za-z0-9_]*$/.test(k) ? k : '[' + lua(k) + ']') + ' = ' +
+  return '{\n' + keys.map(k => indent + '  ' + (/^[A-Za-z_][A-Za-z0-9_]*$/.test(k) && !LUA_WORDS.has(k) ? k : '[' + lua(k) + ']') + ' = ' +
     lua(v[k], indent + '  ')).join(',\n') + '\n' + indent + '}';
 }
 
@@ -185,11 +188,11 @@ function dataLua(p, crops, start) {
                                  tiled: pic ? pic.use === 'backdrop' : null } : null,
                  levels: p.levels.map(l => levelData(p, l, crops)),
                  start: start || null }; // Play from a level, skipping the cover (never in the card's zip)
-  return '-- Made by pinyol\'s editor from the project "' + p.title.replace(/"/g, '') + '": change it there.\nreturn ' + lua(data) + '\n';
+  return '-- Made by pinyol\'s editor from the project "' + p.title.replace(/["\r\n]/g, '') + '": change it there.\nreturn ' + lua(data) + '\n';
 }
 
 export function mainLua(p, blocksCode) {
-  return `-- ${p.title.replace(/\n/g, ' ')}: made with pinyol's editor. The blocks' code is below; kit.lua (a copy of pinyol's
+  return `-- ${p.title.replace(/[\r\n]/g, ' ')}: made with pinyol's editor. The blocks' code is below; kit.lua (a copy of pinyol's
 -- lib/kit.lua) does the rest: the levels, the map, the objects that move by themselves, the events.
 kit = require("kit")
 kit.setup(require("data"))

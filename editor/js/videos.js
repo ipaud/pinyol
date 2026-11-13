@@ -1,6 +1,6 @@
 // The videos of a game (in the Sounds tab): brought in from a video file or an animated GIF, made into a clip for
 // pinyol's video() here in the browser (npv.js), shown looping, renamed, taken away. The blocks of Vídeo play them.
-import { safeName, uniqueName } from './project.js';
+import { safeName, uniqueName, MAX_VIDEOS } from './project.js';
 import { toBase64 } from './audio.js';
 import { encode, decode } from './npv.js';
 import { t } from './i18n.js';
@@ -59,6 +59,7 @@ async function framesOfGif(file) { // its frames held for their time, taken ever
 
 async function bringIn(file) {
   if (!file) return;
+  if (app.project.videos.length >= MAX_VIDEOS) return app.toast(t('Ya hay {n} vídeos: el máximo.', { n: MAX_VIDEOS }));
   const note = text => { $('video-note').textContent = text; };
   try {
     note(t('Leyendo el vídeo…'));

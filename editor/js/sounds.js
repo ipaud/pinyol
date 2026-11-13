@@ -1,6 +1,6 @@
 // The Sounds tab: a recipe and a seed (as sound() makes them), or the numbers moved by hand, heard at once; or a sound
 // brought in from a file (an effect, or the music of a level), cut and made louder or softer.
-import { safeName, uniqueName } from './project.js';
+import { safeName, uniqueName, MAX_SOUNDS } from './project.js';
 import { RECIPES, WAVES, recipe, render as renderSound, play } from './synth.js';
 import { HZ, MAX_S, toBase64, samples, play as playClip, stop as stopClip } from './audio.js';
 import { newSong } from './song.js';
@@ -151,7 +151,10 @@ function renderMod() { // the editor cannot play a tracker's module; the engine 
 }
 
 // A tracker's module (a ProTracker .mod, from MilkyTracker, OpenMPT...): music kept as it is, for the engine to play
+const full = () => app.project.sounds.length >= MAX_SOUNDS && (app.toast(t('Ya hay {n} sonidos: el máximo.', { n: MAX_SOUNDS })), true);
+
 async function bringInMod(file) {
+  if (full()) return;
   if (file.size > 4 << 20) return app.oops(t('Ese .mod es demasiado grande: hasta 4 MB.'));
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes.length < 1084) return app.oops(t('«{file}» no parece un .mod de ProTracker.', { file: file.name })); // its header alone: 1084 bytes
@@ -167,6 +170,7 @@ async function bringInMod(file) {
 async function bringIn(file) {
   if (!file) return;
   if (/\.mod$/i.test(file.name)) return bringInMod(file);
+  if (full()) return;
   if (!(/^audio\//.test(file.type) || /\.(wav|mp3|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name)))
     return app.oops(t('«{file}» no es un sonido. Usa un archivo WAV, MP3, OGG o M4A.', { file: file.name }));
   if (file.size > 16 << 20) return app.oops(t('Ese sonido es demasiado grande: hasta 16 MB.'));
@@ -201,12 +205,13 @@ export function initSounds(ctx) {
     $('recipes').append(b);
   }
   const add = (r = 'blip') => {
+    if (full()) return;
     const names = new Set(app.project.sounds.map(s => s.name));
     app.project.sounds.push({ name: uniqueName(RECIPE_NAMES[r] || 'sonido', names), recipe: r, seed: 1 + Math.floor(Math.random() * 99999), params: null });
     cur = app.project.sounds.length - 1;
     app.changed();
   };
-  $('sound-add').addEventListener('click', () => { add(); render(); play(paramsOf(sound())); });
+  $('sound-add').addEventListener('click', () => { if (full()) return; add(); render(); play(paramsOf(sound())); });
   $('sound-file').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; bringIn(f); });
   const tab = $('tab-sound');
   tab.addEventListener('dragover', e => { e.preventDefault(); tab.classList.add('dropping'); });
@@ -215,6 +220,7 @@ export function initSounds(ctx) {
   $('s-play').addEventListener('click', () => hear(sound()));
   $('s-stop').addEventListener('click', () => { stopClip(); composerPlays(); });
   $('song-add').addEventListener('click', () => {
+    if (full()) return;
     const names = new Set(app.project.sounds.map(x => x.name));
     stopClip();
     app.project.sounds.push({ name: uniqueName('musica', names), song: newSong(), use: 'music' });

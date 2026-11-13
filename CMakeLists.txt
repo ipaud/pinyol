@@ -377,6 +377,7 @@ if(NODE)
   add_test(NAME editor_packed COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/packed_test.mjs)
   add_test(NAME editor_i18n COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/i18n_test.mjs) # Catalan, English
   add_test(NAME editor_anims COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/anims_test.mjs) # speed, loop, pivot, sheets
+  add_test(NAME editor_limits COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/limits_test.mjs) # Lua keywords as names, line breaks, the caps
 endif()
 file(GLOB SCRIPTS CONFIGURE_DEPENDS tests/*.script)
 # the flagship demos must show no text cut by the screen or outside its box (--check-text); tools/demo_check.py names the same list
