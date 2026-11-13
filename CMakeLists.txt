@@ -307,6 +307,9 @@ set(NO_PIL 1)
 if(Python3_FOUND)
   execute_process(COMMAND ${Python3_EXECUTABLE} -c "import PIL" RESULT_VARIABLE NO_PIL OUTPUT_QUIET ERROR_QUIET)
 endif()
+if(NO_PIL)
+  message(WARNING "Python's Pillow is not installed: the tests of the importers, the packers, the Library and the looks are left out (pip install pillow)")
+endif()
 if(NOT NO_PIL) # the importers (ase2asset, ldtk2asset), strings_check and pack_game --budget, on files made by the test
   add_test(NAME tools COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/tools_test.py ${CMAKE_BINARY_DIR})
 endif()
@@ -353,10 +356,14 @@ if(NOT NO_PIL)
            $<TARGET_FILE:pinyol_headless>) # what tools/library.py takes and refuses from the Library's form
 endif()
 # The libretro core as a frontend sees it: a game from its folder, its game.json and its zip plays the same, and a
+if(Python3_FOUND)
   add_test(NAME kit_pivot_flip COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/kitflip_test.py
            $<TARGET_FILE:pinyol_headless>) # a kind turns round its pivot, one without round its box's middle
   add_test(NAME store_atomic COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/store_test.py
            $<TARGET_FILE:pinyol_headless>) # the saves: two files in turn, a checksum, a failed save leaves the last good one
+  add_test(NAME playtest_bots COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/playtest_test.py) # tools/playtest.py: bots play malabar, the report is written
+  set_tests_properties(playtest_bots PROPERTIES TIMEOUT 600)
+endif()
 # damaged zip or one reaching outside its folder is refused (tests/libretro_test.c is the frontend)
 add_executable(libretro_test tests/libretro_test.c)
 target_include_directories(libretro_test PRIVATE third_party/libretro)
@@ -369,6 +376,9 @@ if(Python3_FOUND)
            ${CMAKE_BINARY_DIR}/libretro)
 endif()
 find_program(NODE node) # the web editor's templates, built as the browser builds them, for script_editor_*
+if(NOT NODE)
+  message(WARNING "node is not installed: the web editor's tests are left out")
+endif()
 if(NODE)
   add_test(NAME make_editor_game COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/build_game.mjs
            ${CMAKE_BINARY_DIR}/editor)
@@ -380,7 +390,7 @@ if(NODE)
   add_test(NAME editor_limits COMMAND ${NODE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/test/limits_test.mjs) # Lua keywords as names, line breaks, the caps
 endif()
 file(GLOB SCRIPTS CONFIGURE_DEPENDS tests/*.script)
-# the flagship demos must show no text cut by the screen or outside its box (--check-text); tools/demo_check.py names the same list
+# the flagship demos must show no text cut by the screen or outside its box (--check-text)
 set(TEXT_CHECKED cerezo socavon tumba malabar pozo botin veloz gotico tormenta laberinto taller paella cromota poncho traca celler faro)
 foreach(s ${SCRIPTS})
   get_filename_component(n ${s} NAME_WE)

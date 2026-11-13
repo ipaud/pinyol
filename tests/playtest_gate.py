@@ -14,11 +14,12 @@ bad, ran = [], 0
 
 
 def adapters():
-    """(game folder, adapter) of every adapter: tests/playtest/<id>.lua for the engine's examples, <game>/tests/playtest.lua in a game."""
+    """(game folder, adapter) of every adapter: tests/playtest/<id>.lua for the engine's examples, <game>/tests/playtest.lua in a game
+    (examples/, tests/games/ and games/: a game made here keeps the gate its template came with)."""
     for adapter in sorted((ROOT / "tests" / "playtest").glob("*.lua")):
         game = next((g for g in (ROOT / "examples" / adapter.stem, ROOT / "tests" / "games" / adapter.stem) if (g / "main.lua").exists()), None)
         yield game, adapter
-    for adapter in sorted(ROOT.glob("examples/*/tests/playtest.lua")) + sorted(ROOT.glob("tests/games/*/tests/playtest.lua")):
+    for adapter in sorted(ROOT.glob("examples/*/tests/playtest.lua")) + sorted(ROOT.glob("tests/games/*/tests/playtest.lua")) + sorted(ROOT.glob("games/*/tests/playtest.lua")):
         yield adapter.parent.parent, adapter
 
 
