@@ -286,7 +286,7 @@ def ranking(catalog: str, top: int = 10) -> str:
         ("Lo más votado", f'<p class="more-link"><a class="btn btn-ghost" href="{HOME}biblioteca/#ranking">Ver el ranking completo</a></p>')
     return f"""<section id="ranking" aria-labelledby="ranking-t"><div class="wrap">
 <h2 id="ranking-t">{title}</h2>
-<p class="intro">Los juegos más votados. Se vota con una reacción en la ficha de cada juego; las cifras se actualizan cada hora.</p>
+<p class="intro">Los juegos más votados. Se vota con una reacción en la ficha de cada juego; las cifras se actualizan varias veces al día.</p>
 <div class="rank" id="rank" data-src="{STATS}" data-top="{top}"><p class="lib-state">El ranking necesita JavaScript para cargarse.</p></div>
 {more}
 <script type="application/json" id="catalog">{catalog}</script>
