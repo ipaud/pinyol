@@ -44,9 +44,9 @@ LIBRARY = ROOT / "library"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pack_game  # noqa: E402
 
-# ponytail: published games live in git (library/ on main), so a zip stays under GitHub's 50 MB push warning; once
+# ponytail: published games live in git (library/ on main), so a zip stays under GitHub's 100 MB refusal (the 50 MB warning is accepted); once
 # library/ nears ~1 GB, move the zips out (gh-pages pushed as an orphan, or a repo of their own)
-MAX_ZIP = 48 << 20        # bytes, as sent
+MAX_ZIP = 64 << 20        # bytes, as sent (past GitHub's 50 MB warning on a push, under its 100 MB refusal)
 MAX_UNPACKED = 96 << 20   # bytes, all files once opened (a zip bomb stops here); the web player's own limit
 MAX_FILES = 4000          # the web player's own limit too (platform/web/player.html, LIMITS)
 PLAY_TICKS = 600          # ten seconds of play
