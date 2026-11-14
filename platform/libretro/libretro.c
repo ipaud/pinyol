@@ -11,12 +11,16 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <unistd.h>
 
+#include "compat.h" /* (unistd.h; on Windows mkdir without a mode) */
 #include "bp.h"
 #include "libretro.h"
 #include "puff.h"
 #include "../link_udp.h"
+
+#ifdef _WIN32
+#define O_NOFOLLOW O_BINARY /* (no links to follow here; binary, or the CRs would be added to the game's files) */
+#endif
 
 #ifndef PINYOL_VERSION
 #define PINYOL_VERSION "dev"
@@ -92,15 +96,21 @@ bool hal_battery(float *level, bool *charging) { return (void)level, (void)charg
 static uint32_t le16(const uint8_t *p) { return p[0] | p[1] << 8; }
 static uint32_t le32(const uint8_t *p) { return p[0] | p[1] << 8 | p[2] << 16 | (uint32_t)p[3] << 24; }
 
+static bool made_dir(const char *path) { /* made now, or already there (a Windows drive, "C:", cannot be made) */
+    struct stat st;
+    return mkdir(path, 0755) == 0 || errno == EEXIST || (!stat(path, &st) && S_ISDIR(st.st_mode));
+}
+
 static bool mkdirs(char *path) { /* every folder of path, as mkdir -p */
     for (char *s = path + 1; *s; s++) {
-        if (*s != '/') continue;
+        if (*s != '/' && *s != '\\') continue;
+        char sep = *s;
         *s = 0;
-        bool ok = pinyol_mkdir(path) == 0 || errno == EEXIST;
-        *s = '/';
+        bool ok = made_dir(path);
+        *s = sep;
         if (!ok) return false;
     }
-    return pinyol_mkdir(path) == 0 || errno == EEXIST;
+    return made_dir(path);
 }
 
 /* A name from the zip that stays inside the folder it is unpacked into: relative, no "..", no backslash or colon */

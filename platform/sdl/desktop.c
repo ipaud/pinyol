@@ -8,20 +8,19 @@
 
 #include <SDL.h>
 #include <dirent.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "compat.h"
 #include "hal.h"
+#include "puff.h"
 
 #ifdef _WIN32
-#include <process.h>
 #include <windows.h>
 #else
-#include <spawn.h>
-#include <sys/wait.h>
-extern char **environ;
+#include <unistd.h>
 #endif
 
 static bool is_dir(const char *p) {
@@ -61,6 +60,7 @@ static bool plain(const char *dir) {
 }
 
 static bool copy_file(const char *from, const char *to) {
+    if (is_link(to) || is_dir(to)) return false;
     FILE *a = fopen(from, "rb"), *b = a ? fopen(to, "wb") : NULL;
     char buf[65536];
     size_t n;
@@ -84,18 +84,18 @@ static bool same_file(const char *a, const char *b) {
     return same;
 }
 
-static bool copy_tree(const char *from, const char *to) {
+static bool copy_tree(const char *from, const char *to, bool hidden) {
     DIR *d = opendir(from);
     if (!d) return false;
-    if (mkdir(to, 0755) && !is_dir(to)) return closedir(d), false;
+    if (is_link(to) || (mkdir(to, 0755) && (!is_dir(to) || is_link(to)))) return closedir(d), false;
     struct dirent *e;
     bool ok = true;
     while (ok && (e = readdir(d))) {
-        if (e->d_name[0] == '.') continue;
+        if (!strcmp(e->d_name, ".") || !strcmp(e->d_name, "..") || (!hidden && e->d_name[0] == '.')) continue;
         char a[1024], b[1024];
         snprintf(a, sizeof a, "%s/%s", from, e->d_name);
         snprintf(b, sizeof b, "%s/%s", to, e->d_name);
-        ok = !is_link(a) && (is_dir(a) ? copy_tree(a, b) : copy_file(a, b));
+        ok = !is_link(a) && (is_dir(a) ? copy_tree(a, b, hidden) : copy_file(a, b));
     }
     closedir(d);
     return ok;
@@ -136,7 +136,7 @@ bool desktop_paths(char *menu, char *games, size_t n) {
             snprintf(from, sizeof from, "%s/%s", bundled, e->d_name);
             snprintf(to, sizeof to, "%s/%s", games, e->d_name);
             if (e->d_name[0] == '.' || !is_dir(from)) continue;
-            if (!copy_tree(from, to)) hal_log("app: could not copy %s", e->d_name), copied = false;
+            if (!copy_tree(from, to, false)) hal_log("app: could not copy %s", e->d_name), copied = false;
         }
         if (d) closedir(d);
         if (copied) copy_file(stamp, mine);
@@ -147,47 +147,237 @@ bool desktop_paths(char *menu, char *games, size_t n) {
     return ok;
 }
 
-#ifndef _WIN32
-static bool run(char **argv) { /* a program, waited for: true if it ran and said all went well */
-    pid_t pid;
-    int st;
-    return posix_spawnp(&pid, argv[0], NULL, NULL, argv, environ) == 0 && waitpid(pid, &st, 0) == pid && WIFEXITED(st) &&
-           WEXITSTATUS(st) == 0;
-}
-#endif
+#define ZIP_MAX_FILES 4000
+#define ZIP_MAX_BYTES (96u << 20)
+#define ZIP_MAX_ARCHIVE (128u << 20)
 
-/* tar -xf ZIP -C DIR: macOS's and Windows 10's tar (bsdtar) both read zips, and both refuse a name with ".." or an
- * absolute path, so nothing lands outside DIR (Linux: unzip) */
-static bool untar(const char *zip, const char *dir) {
-#ifdef _WIN32
-    char tar[MAX_PATH + 16], qz[1100], qd[1100]; /* Windows' own tar, not one on the PATH (Git's GNU tar reads no zip) */
-    UINT n = GetSystemDirectoryA(tar, MAX_PATH);
-    if (!n || n >= MAX_PATH) return false;
-    strcat(tar, "\\tar.exe");
-    snprintf(qz, sizeof qz, "\"%s\"", zip); /* _spawnv joins its arguments with spaces: quote the paths */
-    snprintf(qd, sizeof qd, "\"%s\"", dir);
-    const char *argv[] = {"tar", "-xf", qz, "-C", qd, NULL};
-    return _spawnv(_P_WAIT, tar, argv) == 0;
-#elif defined __linux__
-    /* Linux's tar (GNU) reads no zip: unzip, or else bsdtar. A name with ".." or from the root makes either warn and
-     * fail (unzip's warnings are its exit 1), so it is refused as on the other systems */
-    char *uz[] = {"unzip", "-qq", "-o", (char *)zip, "-d", (char *)dir, NULL};
-    char *bt[] = {"bsdtar", "-xf", (char *)zip, "-C", (char *)dir, NULL};
-    return run(uz) || run(bt);
-#else
-    char *argv[] = {"tar", "-xf", (char *)zip, "-C", (char *)dir, NULL};
-    return run(argv);
-#endif
+typedef struct {
+    const uint8_t *name;
+    char path_name[1024];
+    uint16_t name_n, flags, method, host;
+    uint32_t crc, csize, usize, local, attrs;
+} zip_entry;
+
+static uint16_t zip_u16(const uint8_t *p) { return (uint16_t)p[0] | (uint16_t)p[1] << 8; }
+static uint32_t zip_u32(const uint8_t *p) {
+    return (uint32_t)p[0] | (uint32_t)p[1] << 8 | (uint32_t)p[2] << 16 | (uint32_t)p[3] << 24;
+}
+static uint32_t zip_crc32(const uint8_t *p, size_t n) {
+    uint32_t c = 0xffffffffu;
+    while (n--) {
+        c ^= *p++;
+        for (int k = 0; k < 8; k++) c = (c >> 1) ^ (0xedb88320u & (0u - (c & 1)));
+    }
+    return ~c;
+}
+
+static bool zip_name_decode(const uint8_t *s, size_t n, bool utf8, char *out, size_t cap) {
+    static const uint16_t cp437[128] = {
+        0x00c7,0x00fc,0x00e9,0x00e2,0x00e4,0x00e0,0x00e5,0x00e7,0x00ea,0x00eb,0x00e8,0x00ef,0x00ee,0x00ec,0x00c4,0x00c5,
+        0x00c9,0x00e6,0x00c6,0x00f4,0x00f6,0x00f2,0x00fb,0x00f9,0x00ff,0x00d6,0x00dc,0x00a2,0x00a3,0x00a5,0x20a7,0x0192,
+        0x00e1,0x00ed,0x00f3,0x00fa,0x00f1,0x00d1,0x00aa,0x00ba,0x00bf,0x2310,0x00ac,0x00bd,0x00bc,0x00a1,0x00ab,0x00bb,
+        0x2591,0x2592,0x2593,0x2502,0x2524,0x2561,0x2562,0x2556,0x2555,0x2563,0x2551,0x2557,0x255d,0x255c,0x255b,0x2510,
+        0x2514,0x2534,0x252c,0x251c,0x2500,0x253c,0x255e,0x255f,0x255a,0x2554,0x2569,0x2566,0x2560,0x2550,0x256c,0x2567,
+        0x2568,0x2564,0x2565,0x2559,0x2558,0x2552,0x2553,0x256b,0x256a,0x2518,0x250c,0x2588,0x2584,0x258c,0x2590,0x2580,
+        0x03b1,0x00df,0x0393,0x03c0,0x03a3,0x03c3,0x00b5,0x03c4,0x03a6,0x0398,0x03a9,0x03b4,0x221e,0x03c6,0x03b5,0x2229,
+        0x2261,0x00b1,0x2265,0x2264,0x2320,0x2321,0x00f7,0x2248,0x00b0,0x2219,0x00b7,0x221a,0x207f,0x00b2,0x25a0,0x00a0
+    };
+    size_t at = 0;
+    if (utf8) {
+        if (n >= cap) return false;
+        memcpy(out, s, n);
+        out[n] = 0;
+        return true;
+    }
+    for (size_t i = 0; i < n; i++) {
+        uint32_t c = s[i] < 0x80 ? s[i] : cp437[s[i] - 0x80];
+        size_t need = c < 0x80 ? 1 : c < 0x800 ? 2 : 3;
+        if (need >= cap - at) return false;
+        if (need == 1) out[at++] = (char)c;
+        else if (need == 2) out[at++] = (char)(0xc0 | (c >> 6)), out[at++] = (char)(0x80 | (c & 0x3f));
+        else out[at++] = (char)(0xe0 | (c >> 12)), out[at++] = (char)(0x80 | ((c >> 6) & 0x3f)),
+             out[at++] = (char)(0x80 | (c & 0x3f));
+    }
+    out[at] = 0;
+    return true;
+}
+
+static uint8_t *zip_read(const char *path, size_t *n) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    uint8_t *data = NULL;
+    long len = fseek(f, 0, SEEK_END) ? -1 : ftell(f);
+    if (len > 0 && (unsigned long)len <= ZIP_MAX_ARCHIVE && !fseek(f, 0, SEEK_SET) && (data = malloc((size_t)len)) &&
+        fread(data, 1, (size_t)len, f) != (size_t)len)
+        free(data), data = NULL;
+    fclose(f);
+    *n = data ? (size_t)len : 0;
+    return data;
+}
+
+static bool zip_device_name(const uint8_t *s, size_t n) {
+    size_t stem = 0;
+    while (stem < n && s[stem] != '.') stem++;
+    while (stem && s[stem - 1] == ' ') stem--;
+    static const char *const names[] = {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"};
+    for (size_t i = 0; i < sizeof names / sizeof *names; i++) {
+        size_t len = strlen(names[i]);
+        if (stem == len && !SDL_strncasecmp((const char *)s, names[i], len)) return true;
+    }
+    bool port = stem >= 4 &&
+                (!SDL_strncasecmp((const char *)s, "COM", 3) || !SDL_strncasecmp((const char *)s, "LPT", 3));
+    if (!port) return false;
+    if (stem == 4) return s[3] >= '1' && s[3] <= '9';
+    return stem == 5 && s[3] == 0xc2 && (s[4] == 0xb9 || s[4] == 0xb2 || s[4] == 0xb3);
+}
+
+static bool zip_name_ok(const uint8_t *s, size_t n) {
+    if (!n || s[0] == '/' || s[0] == '\\' || memchr(s, 0, n)) return false;
+    size_t start = 0, depth = 0;
+    for (size_t i = 0; i <= n; i++) {
+        if (i < n && s[i] != '/') {
+            if (s[i] == '\\' || s[i] == ':' || s[i] == '<' || s[i] == '>' || s[i] == '"' ||
+                s[i] == '|' || s[i] == '?' || s[i] == '*') return false;
+            continue;
+        }
+        size_t len = i - start;
+        if (!len && i != n) return false;
+        if (len) {
+            if (++depth > 64 || (s[i - 1] == '.' || s[i - 1] == ' ') ||
+                (len == 1 && s[start] == '.') || (len == 2 && s[start] == '.' && s[start + 1] == '.') ||
+                zip_device_name(s + start, len)) return false;
+        }
+        start = i + 1;
+    }
+    return true;
+}
+
+static bool zip_entry_at(const uint8_t *z, size_t cd_end, size_t *at, zip_entry *e) {
+    size_t p = *at;
+    if (p > cd_end || cd_end - p < 46 || zip_u32(z + p) != 0x02014b50) return false;
+    e->host = zip_u16(z + p + 4) >> 8;
+    e->flags = zip_u16(z + p + 8), e->method = zip_u16(z + p + 10);
+    e->crc = zip_u32(z + p + 16), e->csize = zip_u32(z + p + 20), e->usize = zip_u32(z + p + 24);
+    e->name_n = zip_u16(z + p + 28);
+    uint16_t extra_n = zip_u16(z + p + 30), comment_n = zip_u16(z + p + 32);
+    e->attrs = zip_u32(z + p + 38), e->local = zip_u32(z + p + 42);
+    uint64_t next = (uint64_t)p + 46 + e->name_n + extra_n + comment_n;
+    if (next > cd_end || e->csize == 0xffffffff || e->usize == 0xffffffff || e->local == 0xffffffff ||
+        (e->flags & (1 | 0x40 | 0x2000)) || (e->method != 0 && e->method != 8)) return false;
+    e->name = z + p + 46;
+    if (memchr(e->name, 0, e->name_n) ||
+        !zip_name_decode(e->name, e->name_n, (e->flags & 0x800) != 0, e->path_name, sizeof e->path_name) ||
+        !zip_name_ok((const uint8_t *)e->path_name, strlen(e->path_name))) return false;
+    size_t x = p + 46 + e->name_n, xend = x + extra_n;
+    while (x < xend) {
+        if (xend - x < 4) return false;
+        uint16_t id = zip_u16(z + x), size = zip_u16(z + x + 2);
+        if ((size_t)size > xend - x - 4 || id == 1) return false; /* ZIP64 is unsupported */
+        x += 4 + size;
+    }
+    *at = (size_t)next;
+    return true;
+}
+
+static bool zip_dirs(const char *root, const char *path) {
+    char part[2048];
+    size_t root_n = strlen(root), path_n = strlen(path);
+    if (path_n < root_n || path_n >= sizeof part || memcmp(root, path, root_n) ||
+        (path_n > root_n && path[root_n] != '/') || !is_dir(root) || is_link(root)) return false;
+    if (path_n == root_n) return true;
+    for (const char *s = path + root_n + 1; *s; s++) if (*s == '/') {
+        size_t n = (size_t)(s - path);
+        memcpy(part, path, n);
+        part[n] = 0;
+        if (mkdir(part, 0755) && (!is_dir(part) || is_link(part))) return false;
+    }
+    return mkdir(path, 0755) == 0 || (is_dir(path) && !is_link(path));
+}
+
+static bool zip_extract(const uint8_t *z, size_t n, size_t cd_off, const zip_entry *e,
+                        const char *dir, size_t *total) {
+    unsigned kind = e->host == 3 ? (e->attrs >> 16) & 0170000 : 0;
+    if (kind && kind != 0100000 && kind != 0040000) return false; /* no links or special files */
+    size_t path_name_n = strlen(e->path_name);
+    bool folder = e->path_name[path_name_n - 1] == '/' || kind == 0040000 || (e->attrs & 0x10);
+    char path[1024];
+    size_t name_n = path_name_n - (e->path_name[path_name_n - 1] == '/');
+    if (snprintf(path, sizeof path, "%s/%.*s", dir, (int)name_n, e->path_name) >= (int)sizeof path) return false;
+    if (folder) {
+        if (e->usize || e->csize) return false;
+        return zip_dirs(dir, path);
+    }
+    if (e->usize > ZIP_MAX_BYTES - *total) return false;
+    size_t p = e->local;
+    if (p > n || n - p < 30 || zip_u32(z + p) != 0x04034b50) return false;
+    uint16_t flags = zip_u16(z + p + 6), method = zip_u16(z + p + 8);
+    uint16_t local_name_n = zip_u16(z + p + 26), local_extra_n = zip_u16(z + p + 28);
+    if (flags != e->flags || method != e->method || local_name_n != e->name_n ||
+        p + 30u + local_name_n + local_extra_n > n ||
+        memcmp(z + p + 30, e->name, e->name_n) ||
+        (!(flags & 8) && (zip_u32(z + p + 14) != e->crc || zip_u32(z + p + 18) != e->csize ||
+                          zip_u32(z + p + 22) != e->usize))) return false;
+    p += 30 + local_name_n + local_extra_n;
+    if (p > cd_off || e->csize > cd_off - p || e->usize > ZIP_MAX_BYTES - *total) return false;
+    uint8_t *out = malloc(e->usize ? e->usize : 1);
+    if (!out) return false;
+    unsigned long out_n = e->usize, in_n = e->csize;
+    bool ok = e->method == 0 ? (e->csize == e->usize && (memcpy(out, z + p, e->usize), true))
+              : puff(out, &out_n, z + p, &in_n) == 0 && out_n == e->usize && in_n == e->csize;
+    ok = ok && zip_crc32(out, e->usize) == e->crc;
+    if (ok) {
+        char parent[sizeof path];
+        snprintf(parent, sizeof parent, "%s", path);
+        char *slash = strrchr(parent, '/');
+        if (!slash) ok = false;
+        else {
+            *slash = 0;
+            ok = zip_dirs(dir, parent) && !is_link(path) && !is_dir(path);
+        }
+    }
+    FILE *f = ok ? fopen(path, "wb") : NULL;
+    if (ok) ok = f && fwrite(out, 1, e->usize, f) == e->usize;
+    if (f && fclose(f)) ok = false;
+    free(out);
+    if (ok) *total += e->usize;
+    return ok;
+}
+
+static bool zip_unpack(const char *zip, const char *dir) {
+    size_t n = 0;
+    uint8_t *z = zip_read(zip, &n);
+    if (!z) return false;
+    bool ok = false;
+    size_t stop = n > 65557 ? n - 65557 : 0, eocd = n;
+    if (n >= 22) for (size_t i = n - 22 + 1; i-- > stop;)
+        if (zip_u32(z + i) == 0x06054b50 && i + 22 + zip_u16(z + i + 20) == n) { eocd = i; break; }
+    if (eocd == n) goto done;
+    uint8_t *e = z + eocd;
+    uint16_t disk = zip_u16(e + 4), cd_disk = zip_u16(e + 6), disk_n = zip_u16(e + 8), count = zip_u16(e + 10);
+    uint32_t cd_size = zip_u32(e + 12), cd_off = zip_u32(e + 16);
+    if (disk || cd_disk || disk_n != count || count == 0xffff || count > ZIP_MAX_FILES || cd_size == 0xffffffff ||
+        cd_off == 0xffffffff || (uint64_t)cd_off + cd_size != eocd) goto done;
+    size_t cd_end = (size_t)cd_off + cd_size, at = cd_off, total = 0;
+    for (uint16_t i = 0; i < count; i++) {
+        zip_entry entry;
+        if (!zip_entry_at(z, cd_end, &at, &entry) || !zip_extract(z, n, cd_off, &entry, dir, &total)) goto done;
+    }
+    ok = at == cd_end;
+done:
+    free(z);
+    return ok;
 }
 
 /* The game in a .zip (game.json at its top, or in one folder as tools/pack_game.py makes it) installed as
- * <games>/<its folder's name, or the zip's>, kept to letters, digits, _ and -. A game already there is unpacked over,
- * without the saves the zip may carry, so the player's stay. */
+ * <games>/<its folder's name, or the zip's>, kept to letters, digits, _ and -. Existing games update through a staged
+ * copy and directory rename; saves and files omitted by the update stay. */
 bool desktop_install(const char *zip, const char *games, char *name, size_t name_max) {
     char tmp[1024], json[1100], src[1100] = "", id[41] = "";
     snprintf(tmp, sizeof tmp, "%s/.instalando", games);
-    rm_tree(tmp);
-    if (mkdir(tmp, 0755) || !untar(zip, tmp) || !plain(tmp)) return rm_tree(tmp), false;
+    if (is_link(tmp)) { if (remove(tmp) && rmdir(tmp)) return false; }
+    else rm_tree(tmp);
+    if (mkdir(tmp, 0700)) return false;
+    if (!zip_unpack(zip, tmp) || !plain(tmp)) return rm_tree(tmp), false;
     snprintf(json, sizeof json, "%s/game.json", tmp);
     const char *slash = strrchr(zip, '/'), *back = strrchr(zip, '\\');
     const char *base = back && (!slash || back > slash) ? back + 1 : slash ? slash + 1 : zip;
@@ -215,14 +405,38 @@ bool desktop_install(const char *zip, const char *games, char *name, size_t name
     snprintf(name, name_max, "%s", id);
     bool ok = *src && *id && SDL_strcasecmp(id, CONSOLE_MENU_ID) != 0;
     if (ok) {
-        char to[1024], saves[1200];
+        char to[1024], stage_root[1024], stage[1100], backup[1100], saves[1200];
         snprintf(to, sizeof to, "%s/%s", games, id);
-        if (is_dir(to)) {
-            snprintf(saves, sizeof saves, "%s/saves", src); /* (src/game.c's save folder) */
-            rm_tree(saves);
-            ok = copy_tree(src, to); /* ponytail: files the new version dropped stay; harmless, the game never reads them */
-        } else
-            ok = rename(src, to) == 0 || copy_tree(src, to);
+        snprintf(stage_root, sizeof stage_root, "%s/.actualizando", games);
+        snprintf(stage, sizeof stage, "%s/%s", stage_root, id);
+        snprintf(backup, sizeof backup, "%s/.respaldo-%s", games, id);
+        if (is_link(to) || is_link(stage_root) || is_link(backup)) ok = false;
+        else {
+            /* Recover a prior interrupted swap before starting another one. */
+            if (is_dir(backup)) {
+                if (is_dir(to)) rm_tree(backup);
+                else ok = rename(backup, to) == 0;
+            }
+            if (ok) {
+                rm_tree(stage_root);
+                ok = mkdir(stage_root, 0700) == 0;
+            }
+            if (ok && is_dir(to)) ok = copy_tree(to, stage, true);
+            if (ok && !is_dir(to)) ok = mkdir(stage, 0700) == 0;
+            if (ok) {
+                snprintf(saves, sizeof saves, "%s/saves", src); /* (src/game.c's save folder) */
+                rm_tree(saves);
+                ok = copy_tree(src, stage, false);
+            }
+            if (ok && is_dir(to)) {
+                ok = rename(to, backup) == 0;
+                if (ok && rename(stage, to)) {
+                    ok = false;
+                    if (rename(backup, to)) hal_log("app: could not restore %s after update failure", id);
+                } else if (ok) rm_tree(backup);
+            } else if (ok) ok = rename(stage, to) == 0;
+            rm_tree(stage_root);
+        }
     }
     rm_tree(tmp);
     return ok;

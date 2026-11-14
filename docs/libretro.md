@@ -184,6 +184,25 @@ in RetroPie is the games' own folder, and their `game.json` would show up in the
 Other Linux frontends (Batocera, Recalbox, Lakka) take a core the same way: the `.so` in their cores folder, and a
 system that opens `.pinyol` or `.zip` with it.
 
+## RetroBat
+
+RetroBat (Windows) carries its own RetroArch. From RetroBat's folder, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/ipaud/pinyol/main/platform/libretro/retrobat-pinyol.ps1 | iex
+```
+
+(or save `retrobat-pinyol.ps1` and run it with `-RetroBat C:\path\to\RetroBat`.) It downloads
+[pinyol_libretro-windows-x86_64.zip](https://github.com/ipaud/pinyol/releases/download/libretro/pinyol_libretro-windows-x86_64.zip),
+puts the core in `emulators\retroarch\cores` and the .info in `emulators\retroarch\info`, makes `roms\pinyol` and adds
+the Pinyol system with `emulationstation\.emulationstation\es_systems_pinyol.cfg`, which starts `retroarch.exe` with the
+core. Copy the games' zips into `roms\pinyol` and restart RetroBat. The same zip works in any Windows RetroArch: the dll
+into its cores folder.
+
+Not tried on a real RetroBat: the dll is cross-built with MinGW-w64 and checked to export only `retro_*` and need only
+Windows' own DLLs, but nothing has run it yet; whether this RetroBat version reads `es_systems_pinyol.cfg` is also
+unchecked. If the system does not show up, add the `<system>` block of that file to RetroBat's `es_systems.cfg`.
+
 ## The controls
 
 | RetroPad | pinyol |
