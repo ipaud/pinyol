@@ -1,0 +1,9 @@
+{
+  "id": "entrehilos",
+  "title": "Entrehilos",
+  "subtitle": "Un mundo por bordar",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "Pau Ávila",
+  "description": "Prototipo: borda un puente para atravesar el río."
+}

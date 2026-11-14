@@ -1,0 +1,27 @@
+{
+  "asset": "BOX_NATIVE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 92,
+  "w": 144,
+  "h": 127,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    72,
+    126
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 33723,
+    "as_rgb565": 73152
+  }
+}

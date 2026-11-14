@@ -31,6 +31,19 @@ M.KEYS = {
 -- frame ticks (ms) start again at 0 each session: a saved one would wait for a moment that never comes
 M.FRAME_MS = {"_minigame_last_ms", "farewell_next_ms", "_hide_cd_until_ms"}
 
+local function valid_base(base)
+  if type(base) ~= "table" then return false end
+  local y, m, d = base[1], base[2], base[3]
+  if type(y) ~= "number" or y ~= y or y < 1 or y > 9999 or y ~= math.floor(y)
+    or type(m) ~= "number" or m ~= m or m < 1 or m > 12 or m ~= math.floor(m)
+    or type(d) ~= "number" or d ~= d or d ~= math.floor(d) then
+    return false
+  end
+  local days = {31, ((y % 4 == 0 and y % 100 ~= 0) or y % 400 == 0) and 29 or 28, 31, 30, 31, 30,
+                31, 31, 30, 31, 30, 31}
+  return d >= 1 and d <= days[m]
+end
+
 function M.dump(s)
   s.save_counter = (s.save_counter or 0) + 1
   local fields = {}
@@ -39,10 +52,11 @@ function M.dump(s)
 end
 
 function M.load(data, now_ms) -- a game, or nil when data is not one
-  if type(data) ~= "table" or data.v ~= M.VERSION or type(data.s) ~= "table" or type(data.base) ~= "table" then
+  if type(data) ~= "table" or data.v ~= M.VERSION or type(data.s) ~= "table" or not valid_base(data.base)
+    or type(data.now) ~= "number" or data.now ~= data.now or data.now == math.huge or data.now == -math.huge then
     return nil
   end
-  local clock = Clock.new(data.base, math.floor(tonumber(data.now) or 0))
+  local clock = Clock.new(data.base, math.floor(data.now))
   local s = State.new(clock)
   for _, k in ipairs(M.KEYS) do
     local v = data.s[k]

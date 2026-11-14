@@ -30,7 +30,13 @@ uv run --with pyserial tools/send_game.py games/shift
 ./build/pinyol_headless --game games/shift --validate --strict-assets
 ```
 
-See [SHIFT_DESIGN.md](SHIFT_DESIGN.md), [SHIFT_TECH.md](SHIFT_TECH.md), and [SHIFT_TODO.md](SHIFT_TODO.md). No generated art, external assets, or new engine APIs required.
+Runtime visuals use packed Pinyol assets: four NODI sprite variants, layered 8-bit/Game Boy/16-bit scenery, and Arcade's neon street. NODI source sheet lives in `art/`; scenery source comes from Pinyol's `examples/plataformas` and `examples/calle`. Regenerate with:
+
+```sh
+uv run games/shift/art.py
+```
+
+See [SHIFT_DESIGN.md](SHIFT_DESIGN.md), [SHIFT_TECH.md](SHIFT_TECH.md), and [SHIFT_TODO.md](SHIFT_TODO.md). No engine changes or new runtime APIs required.
 
 ## Screenshots
 

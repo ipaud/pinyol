@@ -1,0 +1,27 @@
+{
+  "asset": "SHUTTER_NATIVE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 84,
+  "w": 157,
+  "h": 161,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    78,
+    160
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 36899,
+    "as_rgb565": 101108
+  }
+}

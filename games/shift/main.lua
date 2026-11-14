@@ -11,6 +11,10 @@ local fx = particles.new()
 world, player, era, state, sync = {}, {}, 3, "boot", 100
 local camera_x, render_x, render_y, timer, shift_lock, debug = 0, 0, 0, 0, 0, false
 local message, message_t, swipe_x = "", 0, nil
+local MIRROR, nodi_look = {flip_x = true}, {}
+local NODI_ART = {"NODI_8", "NODI_GB", "NODI_16", "NODI_ARCADE"}
+local BG_ART = {{"BG_8_FAR", "BG_8_NEAR"}, {"BG_GB_FAR", "BG_GB_NEAR"},
+                {"BG_16_FAR", "BG_16_NEAR"}}
 
 local function overlap(ax, ay, aw, ah, bx, by, bw, bh)
   return ax < bx + bw and bx < ax + aw and ay < by + bh and by < ay + ah
@@ -232,39 +236,43 @@ local function world_line(x1, y1, x2, y2, col)
   pixel_line(x1 - render_x, y1 - render_y, x2 - render_x, y2 - render_y, col)
 end
 local function world_circ(x, y, radius, col) pixel_circ(x - render_x, y - render_y, radius, col) end
+local function repeat_image(id, width, speed)
+  local offset = render_x * 2 * speed
+  local slot = math.floor(offset / width)
+  local x = math.floor(slot * width - offset)
+  img(id, x, math.floor(-render_y * 2 * speed), slot % 2 ~= 0 and MIRROR or nil)
+  img(id, x + width, math.floor(-render_y * 2 * speed), (slot + 1) % 2 ~= 0 and MIRROR or nil)
+end
 local function draw_backdrop(pal)
   pixel_rect(0, 0, W, H, pal.sky)
-  if era == 1 then
-    for x = -((camera_x // 20) % 32), W, 32 do
-      pixel_rect(x, 30, 14, 22 + (x * 7 % 22), pal.deep)
-      pixel_rect(x + 5, 34, 3, 3, pal.light)
-    end
-  elseif era == 2 then
-    -- Four-tone handheld view; border marks this as a distinct hardware mode.
-    pixel_rect(0, 0, W, 10, pal.ink); pixel_rect(0, 150, W, 10, pal.ink)
-    for x = 8, W, 40 do pixel_rect(x - (camera_x // 3) % 40, 44, 16, 2, pal.light) end
+  if era == 4 then
+    repeat_image("BG_ARCADE", 720, 1)
   else
-    for x = -((camera_x // 3) % 72), W, 72 do
-      pixel_line(x, 50, x + 22, 32, pal.deep); pixel_line(x + 22, 32, x + 46, 51, pal.deep)
-      pixel_line(x + 46, 51, x + 70, 35, pal.deep)
-    end
-    -- Circuit landscape and warm apertures, fixed palette per era.
-    for x = -((camera_x // 2) % 80), W, 80 do
-      pixel_rect(x + 11, 62 + (x % 13), 2, 18, pal.deep)
-      pixel_rect(x + 5, 78 + (x % 13), 16, 2, pal.deep)
-      pixel_circ(x + 13, 78 + (x % 13), 2, pal.light)
-    end
+    repeat_image(BG_ART[era][1], 512, 0.16)
+    repeat_image(BG_ART[era][2], 512, 0.38)
   end
 end
 local function draw_floor(pal)
-  world_rect(0, FLOOR, 394, H - FLOOR, pal.ink)
-  world_rect(650, FLOOR, 85, H - FLOOR, pal.ink)
-  world_rect(830, FLOOR, LEVEL_W - 830, H - FLOOR, pal.ink)
+  local floor_colour = era == 1 and pal.deep or pal.ink
+  world_rect(0, FLOOR, 394, H - FLOOR, floor_colour)
+  world_rect(650, FLOOR, 85, H - FLOOR, floor_colour)
+  world_rect(830, FLOOR, LEVEL_W - 830, H - FLOOR, floor_colour)
   for x = -((camera_x // 8) % 16), W, 16 do
     world_rect(x, FLOOR, 14, 3, pal.ground)
-    if era == 3 or era == 4 then
+    if era == 1 then
+      world_rect(x + 3, FLOOR + 8, 7, 3, pal.deep)
+      world_rect(x + 6, FLOOR + 14, 4, 3, pal.deep)
+    elseif era == 2 then
+      world_rect(x + 3, FLOOR + 9, 9, 2, pal.deep)
+      world_rect(x + 6, FLOOR + 13, 4, 2, pal.deep)
+    elseif era == 3 then
+      world_rect(x + 1, FLOOR + 5, 13, 2, 0x397D55)
+      world_rect(x + 4, FLOOR + 12, 7, 7, pal.deep)
+      world_rect(x + 2, FLOOR + 21, 12, 2, pal.ground)
+    else
       world_line(x + 2, FLOOR + 8, x + 13, FLOOR + 8, pal.deep)
       world_line(x + 5, FLOOR + 12, x + 5, FLOOR + 19, pal.deep)
+      if x % 32 == 0 then world_rect(x + 3, FLOOR + 23, 8, 3, pal.light) end
     end
   end
   -- Shared landmarks: identical world coordinates, different visual readings.
@@ -335,29 +343,13 @@ local function draw_player(pal)
   local p, x, y = player, math.floor(player.x - render_x), math.floor(player.y - render_y)
   local blink = p.hurt > 0 and p.hurt % 6 < 3
   if blink then return end
-  if era == 1 then
-    pixel_rect(x + 2, y + 4, 9, 9, pal.light); pixel_rect(x + 4, y + 1, 5, 4, pal.ground)
-    pixel_rect(x + (p.face > 0 and 8 or 4), y + 6, 2, 2, pal.ink)
-    pixel_rect(x + 2, y + 13, 3, 3, pal.deep); pixel_rect(x + 8, y + 13, 3, 3, pal.deep)
-  elseif era == 2 then
-    pixel_rect(x + 2, y + 3, 9, 11, pal.ink); pixel_rect(x + 4, y + 1, 5, 4, pal.light)
-    pixel_rect(x + (p.face > 0 and 8 or 4), y + 7, 2, 2, pal.light)
-    pixel_rect(x + 1, y + 13, 4, 3, pal.deep); pixel_rect(x + 8, y + 13, 4, 3, pal.deep)
-  elseif era == 4 then
-    pixel_rect(x, y + 4, 14, 10, pal.deep); pixel_rect(x + 2, y + 1, 10, 6, pal.light)
-    pixel_rect(x + (p.face > 0 and 8 or 3), y + 3, 3, 2, 0xFFFFFF)
-    pixel_rect(x + 1, y + 13, 5, 3, pal.ground); pixel_rect(x + 9, y + 13, 5, 3, pal.ground)
-    if p.attack > 0 then
-      local reach = p.heavy > 0 and 18 or 10
-      pixel_line(x + 7, y + 8, x + 7 + p.face * reach, y + 8, 0xFFF5D0)
-    end
-  else
-    -- NODI: compact seed shape, twin feet and asymmetric antenna.
-    pixel_circ(x + 6, y + 8, 6, pal.light); pixel_rect(x + 3, y + 6, 8, 7, pal.light)
-    pixel_line(x + 8, y + 3, x + 11, y, pal.ground); pixel_circ(x + 11, y, 1, pal.light)
-    pixel_rect(x + (p.face > 0 and 8 or 4), y + 6, 2, 2, pal.ink)
-    pixel_line(x + 4, y + 13, x + 3, y + 15, pal.ink); pixel_line(x + 9, y + 13, x + 10, y + 15, pal.ink)
-    if p.attack > 0 then pixel_line(x + 7, y + 8, x + 14 + p.face * 7, y + 8, pal.light) end
+  local pose = p.hurt > 0 and 3 or (not p.ground and 3 or (math.abs(p.vx) > 0.15 and 1 + timer // 6 % 2 or 0))
+  if era == 4 and p.attack > 0 then pose = 3 end
+  nodi_look.frame, nodi_look.flip_x, nodi_look.scale = pose, p.face < 0, 1.4
+  img(NODI_ART[era], x * 2 - 6, y * 2 - 13, nodi_look)
+  if era == 4 and p.attack > 0 then
+    local reach = p.heavy > 0 and 18 or 10
+    pixel_line(x + 7, y + 8, x + 7 + p.face * reach, y + 8, 0xFFF5D0)
   end
 end
 

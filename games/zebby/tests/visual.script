@@ -1,0 +1,5 @@
+new
+press A
+lua P.x, P.y, P.flat, P.face = 227, 108, false, 1
+shot visual
+expect_ok

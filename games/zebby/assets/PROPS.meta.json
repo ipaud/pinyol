@@ -1,0 +1,37 @@
+{
+  "asset": "PROPS",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 10,
+  "w": 32,
+  "h": 32,
+  "frames": 7,
+  "frame_ms": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "anchor": [
+    16,
+    31
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 3946,
+    "as_rgb565": 14336
+  }
+}

@@ -1,0 +1,63 @@
+# P1: fragmentos, forma plana, persiana, REC, retorno y guardado.
+new
+expect_lua state == "title"
+shot titulo
+press A
+expect_lua state == "play" and fragments == 0
+hold RIGHT 20
+expect_lua P.x > 25
+lua P.x, P.y = 95, 108
+hold RIGHT 4
+expect_lua P.x < 96
+press B
+expect_lua box_x == 171
+hold RIGHT 8
+expect_lua P.x + 20 <= box_x - 45
+lua P.x, P.y = 117, 80
+press A
+tick 5
+expect_lua fragments >= 1
+lua P.x, P.y, P.vy, P.ground = 202, 108, 0, true
+hold RIGHT 5
+expect_lua P.flat
+shot plano
+# Omite fragmento 1: rodillo permite volver a ser plano y regresar.
+lua P.x, P.y, P.vx, P.vy, P.ground, P.flat, P.face = 322, 108, 0, 0, true, false, -1
+tick 2
+expect_lua P.flat
+hold LEFT 85
+expect_lua P.x < 260
+hold LEFT 40
+expect_lua not P.flat
+# Restaura posición para comprobar cruce y completar recorrido.
+lua P.x, P.y, P.vx, P.vy, P.ground, P.flat, P.face = 242, 124, 0, 0, true, true, 1
+hold RIGHT 20
+expect_lua P.x > 260
+lua P.x, P.y = 300, 108
+tick 2
+expect_lua fragments >= 2
+lua P.x, P.y = 413, 80
+tick 2
+expect_lua fragments == 3
+lua P.x, P.y, P.flat, P.ground, invuln, tick_count = 510, 124, true, true, 0, 0
+tick 1
+expect_lua P.x == 488 and P.y == 108 and not P.flat
+lua P.x, P.y = 671, 108
+press B
+expect_lua state == "escape" and remaining > 0
+shot rec
+lua remaining = 1
+tick 2
+expect_lua state == "retry" and fragments == 3
+press A
+expect_lua state == "escape" and fragments == 3 and remaining > 0
+lua P.x, P.y = 230, 108
+hold LEFT 8
+expect_lua P.x < 230
+lua P.x, P.y = 18, 108
+tick 2
+expect_lua state == "won" and stored("progress").p1 == true
+shot resultado
+new
+expect_lua stored("progress").p1 == true
+expect_ok

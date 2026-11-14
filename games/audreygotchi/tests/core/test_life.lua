@@ -6,6 +6,15 @@ local Clock = require("core.clock")
 local State = require("core.state")
 local save = require("core.save")
 
+for _, base in ipairs({{}, {2026, 13, 1}, {2026, 2, 30}, {2026, 4, 31}, {2026, 1.5, 1}}) do
+  assert(save.load({v = save.VERSION, base = base, now = 0, s = {}}) == nil, "invalid save date is rejected")
+end
+assert(save.load({v = save.VERSION, base = {2026, 1, 1}, s = {}}) == nil, "missing save timestamp is rejected")
+for _, timestamp in ipairs({"bad", 0 / 0, math.huge}) do
+  assert(save.load({v = save.VERSION, base = {2026, 1, 1}, now = timestamp, s = {}}) == nil,
+         "invalid save timestamp is rejected")
+end
+
 local DAYS = tonumber(arg and arg[1]) or 60
 math.randomseed(tonumber(arg and arg[2]) or 1)
 local CARELESS = arg and arg[3] == "careless"

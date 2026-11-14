@@ -6,10 +6,11 @@ Pinyol's local instructions and both README files identify Lua games under `game
 
 ## Modules
 
-- `main.lua`: loop, movement, collisions, level, drawing, HUD, input.
+- `main.lua`: loop, movement, collisions, level, asset rendering, HUD, input.
 - `world.lua`: authoritative switch, checkpoint, enemy HP, wall and unlock state; functions map entity IDs to visibility/collision.
 - `era.lua`: four era definitions and availability/cycling rules.
 - `audio.lua`: one tune step counter, era-specific timbre, shift cue and SFX registration.
+- `art.py`: source PNGs to compact packed backgrounds and four-frame NODI sheets via `tools/png2asset.py`.
 
 `fresh()` resets world as a new session. `world.guardian_hp`, `world.wall_broken`, `world.switch`, `world.exit_open`, and `world.checkpoint` are logical state; drawing and collision query these values on each frame. Era switching carries player coordinates and velocity. A shift into overlapping solid geometry is refused.
 
@@ -19,11 +20,11 @@ Add one entry to `Era.list`, add an index in `Era.index`, and update `World.visi
 
 ## Controls and hardware
 
-D-pad, A, B, C map to documented Cirera inputs. `touch()` supports swipe and era strip selection. Primitive drawing avoids texture memory and custom assets. Effects use Pinyol's existing `mosaic`, `haze`, `juice`, and `particles`; no C API or engine allocation changes.
+D-pad, A, B, C map to documented Cirera inputs. `touch()` supports swipe and era strip selection. Backgrounds and animated NODI use Pinyol's packed-image pipeline: recolored mountain/hill art from `examples/plataformas`, arcade street art from `examples/calle`, and a four-era generated sprite sheet. Gameplay collision and persistent state remain independent of these visuals. Effects use Pinyol's existing `mosaic`, `haze`, `juice`, and `particles`; no C API or engine allocation changes.
 
 ## Launch and tests
 
-Run simulator/headless commands in [README.md](README.md). `tests/shift.script` checks boot, unlocks, one-world persistence and ending. Cirera hardware profiling and physical controls remain pending; desktop/headless cannot establish device frame pacing or memory headroom.
+Run `uv run games/shift/art.py` to rebuild runtime art, then use simulator/headless commands in [README.md](README.md). `tests/shift.script` checks boot, unlocks, one-world persistence and ending. Cirera hardware profiling and physical controls remain pending; desktop/headless cannot establish device frame pacing or memory headroom.
 
 Host Lua profile:
 

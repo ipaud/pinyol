@@ -1,0 +1,9 @@
+{
+  "id": "zebby",
+  "title": "Zebby: Fora de guió",
+  "subtitle": "El magatzem impossible · prototip",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "Pau Ávila / Zeba Produccions",
+  "description": "Prototipo jugable del primer plató: tres fragmentos, transformación plana y retorno desde REC."
+}

@@ -1,0 +1,28 @@
+# Digestión: caminar, equivocarse, corregir y terminar la escena.
+new
+shot titulo
+expect_lua state == "title"
+press A
+expect_lua state == "play" and processed == 0
+lua x0 = yuri_x
+hold RIGHT 130
+expect_lua yuri_x > x0 + 200
+shot cinta
+press DOWN
+press A
+expect_lua processed == 0 and misery == 1
+shot error
+press UP
+press A
+expect_lua processed == 1
+press DOWN
+press A
+expect_lua state == "stanley" and processed == 2
+shot stanley
+press A
+expect_lua state == "play" and stanley_seen
+press UP
+press A
+expect_lua state == "won" and processed == 3
+shot final
+expect_ok

@@ -1,0 +1,27 @@
+{
+  "asset": "EXIT_NATIVE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 77,
+  "w": 144,
+  "h": 160,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    72,
+    159
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 41007,
+    "as_rgb565": 92160
+  }
+}

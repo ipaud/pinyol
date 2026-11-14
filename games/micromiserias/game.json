@@ -1,0 +1,8 @@
+{
+  "id": "micromiserias",
+  "title": "Micromiserias: Digestión",
+  "engine": "pinyol@2",
+  "main": "main.lua",
+  "author": "Micromiserias",
+  "description": "Yuri clasifica tres objetos mientras Stanley le distrae."
+}

@@ -1,0 +1,27 @@
+{
+  "asset": "CAMERA_NATIVE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 8,
+  "colours": 74,
+  "w": 121,
+  "h": 138,
+  "frames": 2,
+  "frame_ms": [
+    0,
+    0
+  ],
+  "order": [
+    0,
+    1
+  ],
+  "anchor": [
+    60,
+    137
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 25456,
+    "as_rgb565": 66792
+  }
+}

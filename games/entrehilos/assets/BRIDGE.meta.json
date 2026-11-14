@@ -1,0 +1,25 @@
+{
+  "asset": "BRIDGE",
+  "type": "sprite",
+  "format": "packed",
+  "bpp": 4,
+  "colours": 6,
+  "w": 88,
+  "h": 62,
+  "frames": 1,
+  "frame_ms": [
+    0
+  ],
+  "order": [
+    0
+  ],
+  "anchor": [
+    44,
+    61
+  ],
+  "tile": null,
+  "memory_bytes": {
+    "total": 4252,
+    "as_rgb565": 10912
+  }
+}

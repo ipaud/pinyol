@@ -1,6 +1,6 @@
 # Same camera and logical room, four actual era interpretations.
-tick 220
-lua player.x = 110 player.y = 124 world.unlock[1] = true world.unlock[2] = true world.unlock[4] = true
+tick 440
+lua player.x = 320 player.y = 124 world.unlock[1] = true world.unlock[2] = true world.unlock[4] = true
 lua era = 1
 shot same_room_8bit
 lua era = 2

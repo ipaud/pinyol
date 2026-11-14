@@ -15,6 +15,10 @@ Brief system boot leads straight into play. The player crosses an industrial mem
 | 16-BIT | understand | Richest scene; shared machine, switch, guardian and route are legible |
 | ARCADE | force | Stronger movement and strikes; guardian loses persistent health; barrier breaks permanently |
 
+## Visual direction
+
+The supplied blueprints define one camera-sized slice of the same route, rendered with distinct hardware readings. 8-bit uses four bold colors and block silhouettes; Game Boy uses four green tones and precision platforms; 16-bit adds blue sky, clouds, hills and foliage; Arcade uses a dense night skyline, lit windows and hazard accents. Shared landmarks keep identical world coordinates and collision rules.
+
 Adjacent shifts cost 10 SYNC; a two-era jump costs 18. SYNC recovers slowly, at checkpoints, and on key actions. At zero, DESYNC picks a neighboring unlocked era, restores 42 SYNC and briefly locks shifts. Shift is rejected if newly solid geometry would overlap NODI.
 
 ## World rules
@@ -23,4 +27,4 @@ One entity state is authoritative. Era code only interprets that state: machine 
 
 ## Feel and tone
 
-NODI is a seed-shaped digital creature built from primitive forms. Industrial geometry, restrained warm highlights and low-detail silhouettes avoid generic neon/glitch imagery. Era cues use shape and layout alongside palette. No licensed assets or references in game content.
+NODI is a seed-shaped digital creature with era-specific packed sprite sheets. The 16-bit backdrop reads as a layered landscape; Arcade shifts the same route into a dense neon street; 8-bit and Game Boy reduce those layers to four tones. Landmarks keep shared coordinates and collision, so scenery deepens each hardware reading without creating alternate level state. Environment source art comes from Pinyol examples; NODI is original generated art.

@@ -1,0 +1,33 @@
+# Entrehilos: bloqueo, bordado, cruce, retorno y guardado.
+new
+expect_lua state == "title" and not bridge_done
+shot titulo
+press A
+expect_lua state == "play"
+shot inicio
+hold RIGHT 55
+expect_lua player.x > 180
+hold RIGHT 30
+expect_lua player.x + 15 < 214
+press A
+expect_lua state == "stitch"
+shot bordado
+press A
+expect_lua stitches[1] and not bridge_done
+press A
+expect_lua not stitches[2] and state == "stitch"
+press DOWN
+press A
+expect_lua stitches[2] and not bridge_done
+press DOWN
+press A
+expect_lua bridge_done and state == "play" and stored("bridge_done") == true
+shot puente
+hold RIGHT 125
+expect_lua room == "farbank"
+shot otra_orilla
+hold LEFT 125
+expect_lua room == "river" and bridge_done
+new
+expect_lua bridge_done and stored("bridge_done") == true
+expect_ok
