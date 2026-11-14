@@ -4,7 +4,7 @@ idf_component_register(SRCS main.c display.c sd.c input.c audio_out.c power.c la
                        REQUIRES pinyol_core esp_timer esp_psram esp_driver_spi esp_driver_ledc esp_driver_gpio
                                 esp_driver_sdmmc esp_driver_i2c esp_driver_i2s esp_adc fatfs sdmmc vfs wear_levelling app_update
                                 esp_driver_usb_serial_jtag mbedtls esp_wifi esp_event)
-target_compile_options(${COMPONENT_LIB} PRIVATE -Wall -Wextra -Werror -Wno-format-truncation) # bounded snprintf, as in pinyol_core
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wall -Wextra -Werror -Wno-format-truncation -O2) # bounded snprintf, as in pinyol_core; -O2: the screen at full speed, the system built for size
 # the engine (pinyol_core) calls the radio's hal_link_* (link_radio.c), which nothing in main does: link it in anyway
 target_link_libraries(${COMPONENT_LIB} INTERFACE "-u hal_link_open")
 if(BP_REMOTE) # -DBP_REMOTE=ON: taps, keys and screenshots over the USB cable (remote.c, tools/remote.py)

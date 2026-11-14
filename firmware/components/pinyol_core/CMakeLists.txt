@@ -14,7 +14,7 @@ idf_component_register(SRCS ${CORE_SRC} ${ROOT}/third_party/cjson/cJSON.c ${ROOT
                        LDFRAGMENTS linker.lf)
 target_compile_definitions(${COMPONENT_LIB} PUBLIC LUA_32BITS=1) # as on the desktop: games behave the same
 # gcc 14 flags bounded snprintf truncation, which src/ uses on purpose (clang on the desktop does not)
-target_compile_options(${COMPONENT_LIB} PRIVATE -Wall -Wextra -Werror -Wno-format-truncation)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wall -Wextra -Werror -Wno-format-truncation -O2) # the engine and the screen at full speed; the rest of the image may be built for size
 set_source_files_properties(${ROOT}/third_party/cjson/cJSON.c ${LUA_SRC} PROPERTIES COMPILE_OPTIONS "-Wno-error")
 set_source_files_properties(${ROOT}/third_party/cjson/cJSON.c PROPERTIES COMPILE_DEFINITIONS "CJSON_NESTING_LIMIT=32") # as the desktop (CMakeLists.txt)
 # physics as the Lua code did it and as the desktop does it: no fused multiply-adds (linked consoles agree)

@@ -1,6 +1,16 @@
 CONFIG_IDF_TARGET="esp32s3"
 CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
-CONFIG_COMPILER_OPTIMIZATION_PERF=y
+# The system's code is built for size; the engine and the screen (pinyol_core, main) pin -O2 in their CMakeLists.
+# Measured 2026-11-14 on 0.9.2: 86 KB less flash, 6 KB more internal RAM, selva and juntos at the same fps.
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+# The system's INFO logs (hal_log and the perf lines are printf: untouched) and what ESP-NOW never uses
+CONFIG_LOG_DEFAULT_LEVEL_WARN=y
+CONFIG_LOG_MAXIMUM_LEVEL_WARN=y
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y
+CONFIG_ESP_WIFI_ENTERPRISE_SUPPORT=n
+CONFIG_ESP_WIFI_ENABLE_WPA3_SAE=n
+CONFIG_ESP_WIFI_ENABLE_WPA3_OWE_STA=n
+CONFIG_ESP_ERR_TO_NAME_LOOKUP=n
 
 # 16 MB quad flash, 8 MB octal PSRAM inside the ESP32-S3R8 (docs/hardware.md)
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
