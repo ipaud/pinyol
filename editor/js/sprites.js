@@ -75,6 +75,18 @@ function cellAt(e) {
   return x >= 0 && y >= 0 && x < d.w && y < d.h ? { x, y } : null;
 }
 
+function announcePixel(at = kb) {
+  const d = drawing();
+  if (!d) return;
+  const value = d.frames[frame][at.y * d.w + at.x];
+  const look = lookOf(app.project), palette = look.palette || PALETTE;
+  const names = look.palette ? look.names || look.palette : COLOUR_NAMES;
+  const index = palette.findIndex(hex => hex565(hex) === value);
+  const state = value < 0 ? t('transparente') : index >= 0 ? names[index] : hexOf(value);
+  $('pixels-status').textContent = t('Píxel {x}, {y}, fotograma {frame}: {state}.',
+    { x: at.x + 1, y: at.y + 1, frame: frame + 1, state });
+}
+
 function fill(d, f, x, y, to) {
   const px = d.frames[f], from = px[y * d.w + x];
   if (from === to) return;
@@ -111,6 +123,7 @@ function canvasKeys(e) { // arrows move the cursor; Space or Enter paints with t
   else if (e.key === 'Delete' || e.key === 'Backspace') paint({ buttons: 2 }, true, { ...kb });
   else return;
   e.preventDefault();
+  announcePixel();
   renderCanvas();
 }
 
@@ -472,10 +485,11 @@ export function initDrawings(ctx) {
   for (const [k, label] of Object.entries(DRIFTS)) $('d-drift').append(new Option(label, k));
   for (const b of document.querySelectorAll('[data-tool]')) b.addEventListener('click', () => setTool(b.dataset.tool));
   const c = $('pixels');
-  c.addEventListener('pointerdown', e => { if (!e.isPrimary) return; c.setPointerCapture(e.pointerId); paint(e, true); });
+  c.addEventListener('pointerdown', e => { if (!e.isPrimary) return; c.focus(); c.setPointerCapture(e.pointerId); const at = cellAt(e); if (at) kb = at; paint(e, true, at); announcePixel(); });
   c.addEventListener('pointermove', e => { if (e.isPrimary && e.buttons && tool !== 'fill' && tool !== 'pick') paint(e, false); }); // (the pivot follows)
+  c.addEventListener('pointerup', e => { const at = cellAt(e); if (at) kb = at; announcePixel(); });
   c.addEventListener('keydown', canvasKeys);
-  c.addEventListener('focus', renderCanvas);
+  c.addEventListener('focus', () => { renderCanvas(); announcePixel(); });
   c.addEventListener('blur', renderCanvas);
   c.addEventListener('contextmenu', e => e.preventDefault());
   for (const [id, i] of [['d-pivot-x', 0], ['d-pivot-y', 1]])

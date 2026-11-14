@@ -8,6 +8,7 @@ import { t } from './i18n.js';
 const $ = id => document.getElementById(id);
 const CW = 18, RH = 16, LABEL = 52, GAP = 12; // a step's width, a row's height, the names' column, between the parts
 const COLOURS = { lead: '#ffc94a', bass: '#6cb4e0', drums: '#e86fa8' };
+const PART_NAMES = { lead: t('melodía'), bass: t('bajo'), drums: t('batería') };
 let app, s, cur = { part: 'lead', row: 0, step: 0 }, drag = null, raf = 0, stretch = false; // stretch: taps lengthen
 
 function layout() { // each part's first row and how many: lead, bass, drums
@@ -28,6 +29,16 @@ function cellAt(e) {
 }
 
 const noteAt = (track, row, step) => s.song[track].notes.findIndex(([st, r, len]) => r === row && step >= st && step < st + len);
+
+function announceSong(at = cur) {
+  const part = at.part, label = part === 'drums' ? DRUMS[at.row][1] : noteName(rows(s.song, part)[at.row]);
+  const active = part === 'drums' ? s.song.drums[DRUMS[at.row][0]].includes(at.step)
+    : noteAt(part, at.row, at.step) >= 0;
+  $('song-status').textContent = t('{part}, {label}, paso {step}: {state}.', {
+    part: PART_NAMES[part], label,
+    step: at.step + 1, state: active ? t('nota puesta') : t('sin nota'),
+  });
+}
 
 function toggle(at) { // a note put or taken away; returns what a drag does next: 'add' (lengthen) or 'remove'
   if (at.part === 'drums') {
@@ -126,7 +137,8 @@ function keys(e) {
     else if (row >= L[cur.part].n && p < 2) cur.part = order[p + 1], row = 0;
     cur.row = Math.max(0, Math.min(L[cur.part].n - 1, row));
     draw();
-  } else if (e.key === ' ') { toggle(cur); edited(); }
+    announceSong();
+  } else if (e.key === ' ') { toggle(cur); edited(); announceSong(); }
   else if (e.key === 'Enter') { if (position() >= 0) stop(); else play(s).then(tick); draw(); }
   else return;
   e.preventDefault();
@@ -167,6 +179,7 @@ export function renderComposer(box, sound, ctx) {
     control(t('Escala'), select(SCALE_NAMES, s.song.scale, v => {
       s.song.scale = v;
       for (const t of ['lead', 'bass']) { const max = rows(s.song, t).length - 1; for (const n of s.song[t].notes) n[1] = Math.min(n[1], max); }
+      if (cur.part !== 'drums') cur.row = Math.min(cur.row, rows(s.song, cur.part).length - 1);
     })),
     control(t('Melodía'), select(WAVES, s.song.lead.wave, v => { s.song.lead.wave = v; })),
     control(t('Bajo'), select(WAVES, s.song.bass.wave, v => { s.song.bass.wave = v; })));
@@ -182,32 +195,46 @@ export function renderComposer(box, sound, ctx) {
     textContent: t('Clic para poner o quitar una nota; arrástrala a la derecha para que dure más.') + ' ' +
                  t('Con el teclado: flechas para moverte, Espacio para poner o quitar, Mayús+→ para alargar, Intro para escuchar o parar.') + ' ' +
                  t('Amarillo: melodía. Azul: bajo. Rosa: batería.') });
+  const status = Object.assign(document.createElement('p'), { id: 'song-status', className: 'vh', role: 'status',
+    textContent: '' });
+  status.setAttribute('aria-live', 'polite');
+  status.setAttribute('aria-atomic', 'true');
   const longer = Object.assign(document.createElement('button'), { type: 'button', textContent: '↔ ' + t('Alargar notas') });
   longer.setAttribute('aria-pressed', String(stretch));
   longer.title = t('Mientras está pulsado, al tocar una casilla, la nota que tiene a su izquierda se alarga hasta ella');
   longer.addEventListener('click', () => { stretch = !stretch; longer.setAttribute('aria-pressed', String(stretch)); });
   controls.append(longer);
-  box.append(controls, scroll, help);
+  box.append(controls, scroll, help, status);
+  grid.setAttribute('aria-describedby', 'song-help song-status');
   grid.addEventListener('pointerdown', e => {
     if (!e.isPrimary) return;
     const at = cellAt(e);
     if (!at) return;
-    if (stretch) { stretchTo(at); edited(); return; }
+    cur = { ...at };
+    if (stretch) { stretchTo(at); edited(); announceSong(at); return; }
     if (e.pointerType === 'mouse' || e.pointerType === 'pen') grid.setPointerCapture(e.pointerId); // a finger may scroll
     drag = { from: at, mode: toggle(at) };
     edited();
+    announceSong(at);
   });
   grid.addEventListener('pointermove', e => {
     if (!drag || !e.buttons) return;
     const at = cellAt(e);
     if (at && drag.mode === 'add') { lengthen(at, drag.from); draw(); }
   });
-  grid.addEventListener('pointerup', () => { if (drag) { drag = null; edited(); } });
+  grid.addEventListener('pointerup', e => {
+    if (!drag) return;
+    cur = cellAt(e) || cur;
+    drag = null;
+    edited();
+    announceSong();
+  });
   grid.addEventListener('pointercancel', () => { drag = null; }); // the finger scrolled instead
   grid.addEventListener('keydown', keys);
-  grid.addEventListener('focus', draw);
+  grid.addEventListener('focus', () => { draw(); announceSong(); });
   grid.addEventListener('blur', draw);
   draw();
+  announceSong();
   if (position() >= 0) tick();
 }
 

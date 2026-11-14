@@ -487,7 +487,7 @@ async function init() {
   $('restart').addEventListener('click', play);
   $('toast-close').addEventListener('click', () => $('toast').classList.remove('shown'));
   addEventListener('message', e => { /* the player: what went wrong, or the way out of the game (Mayús+Esc) */
-    if (e.origin !== location.origin || !e.data) return;
+    if (e.origin !== location.origin || e.source !== $('player').contentWindow || !e.data) return;
     if (e.data.pinyol === 'error') {
       $('game-status').textContent = e.data.message;
       $('game-status').classList.add('error');

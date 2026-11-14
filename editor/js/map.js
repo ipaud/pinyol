@@ -72,6 +72,18 @@ function renderMap() {
   }
 }
 
+function announceMap(x = kb.x, y = kb.y) {
+  const l = level(), m = l.map, cell = m.cells[y * m.w + x];
+  const tile = cell ? m.tiles[cell - 1] : t('vacía');
+  const contents = l.objects.filter(o => {
+    const d = byName(o.kind) || { w: 16, h: 16 };
+    return x * T() < o.x + d.w && (x + 1) * T() > o.x && y * T() < o.y + d.h && (y + 1) * T() > o.y;
+  }).map(o => o.kind);
+  const selected = piece.type === 'erase' ? t('Goma') : piece.name;
+  $('map-status').textContent = t('Baldosa {x}, {y}: {tile}. Objetos: {objects}. Pieza elegida: {selected}.',
+    { x: x + 1, y: y + 1, tile, objects: contents.length ? contents.join(', ') : t('ninguno'), selected });
+}
+
 function renderPieces() {
   const p = app.project, l = level();
   const box = (id, list, type) => {
@@ -209,6 +221,7 @@ function mapKeys(e) { // arrows move the cursor a tile; Space or Enter puts the 
   else return;
   e.preventDefault();
   renderMap();
+  announceMap();
   const c = $('map'), box = c.parentElement; // the cursor stays in view
   const cx = kb.x * T() * S, cy = kb.y * T() * S;
   if (cx < box.scrollLeft || cx + T() * S > box.scrollLeft + box.clientWidth) box.scrollLeft = cx - box.clientWidth / 2;
@@ -372,13 +385,18 @@ export function initMap(ctx) {
   const c = $('map');
   c.addEventListener('pointerdown', e => {
     if (!e.isPrimary || c.classList.contains('pan')) return; // a second finger, or moving the map: no painting
+    c.focus();
+    const p = at(e);
+    kb = { x: Math.max(0, Math.min(level().map.w - 1, Math.floor(p.x / T()))),
+           y: Math.max(0, Math.min(level().map.h - 1, Math.floor(p.y / T()))) };
     painting = true;
     c.setPointerCapture(e.pointerId);
     act(e, true);
+    announceMap(kb.x, kb.y);
   });
   c.addEventListener('pointermove', e => { if (painting && e.isPrimary && e.buttons) act(e, false); });
   c.addEventListener('keydown', mapKeys);
-  c.addEventListener('focus', renderMap);
+  c.addEventListener('focus', () => { renderMap(); announceMap(); });
   c.addEventListener('blur', renderMap);
   $('map-undo').addEventListener('click', () => back(undo, redo));
   $('map-redo').addEventListener('click', () => back(redo, undo));
@@ -391,7 +409,13 @@ export function initMap(ctx) {
     const on = c.classList.toggle('pan');
     e.currentTarget.setAttribute('aria-pressed', String(on));
   });
-  c.addEventListener('pointerup', () => { painting = false; });
+  c.addEventListener('pointerup', e => {
+    painting = false;
+    const p = at(e);
+    kb = { x: Math.max(0, Math.min(level().map.w - 1, Math.floor(p.x / T()))),
+           y: Math.max(0, Math.min(level().map.h - 1, Math.floor(p.y / T()))) };
+    announceMap();
+  });
   c.addEventListener('contextmenu', e => e.preventDefault());
   $('map-w').addEventListener('change', e => resize(Number(e.target.value), level().map.h));
   $('map-h').addEventListener('change', e => resize(level().map.w, Number(e.target.value)));

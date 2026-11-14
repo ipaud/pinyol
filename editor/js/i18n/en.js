@@ -699,4 +699,16 @@ export default {
   'El juego de ahora queda guardado como «anterior» (se recupera desde el menú Nuevo). ¿Seguir?': 'The game you have now is kept as "previous" (the New menu brings it back). Go on?',
   'El juego de ahora no se ha podido guardar como anterior y se perderá. ¿Seguir?': 'The game you have now could not be kept as previous and will be lost. Go on?',
   'El juego guardado en este navegador no se ha podido abrir: se ha apartado como «anterior» y se empieza con una plantilla.': 'The game kept in this browser could not be opened: it was set aside as "previous" and a template starts instead.',
+  // live feedback for the pixel, map and song canvases
+  'Píxel {x}, {y}, fotograma {frame}: {state}.': 'Pixel {x}, {y}, frame {frame}: {state}.',
+  'transparente': 'transparent',
+  'Baldosa {x}, {y}: {tile}. Objetos: {objects}. Pieza elegida: {selected}.': 'Tile {x}, {y}: {tile}. Objects: {objects}. Selected piece: {selected}.',
+  'vacía': 'empty',
+  'ninguno': 'none',
+  'melodía': 'melody',
+  'bajo': 'bass',
+  'batería': 'drums',
+  '{part}, {label}, paso {step}: {state}.': '{part}, {label}, step {step}: {state}.',
+  'nota puesta': 'note on',
+  'sin nota': 'no note',
 };

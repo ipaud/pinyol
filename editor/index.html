@@ -65,8 +65,9 @@
         <button id="redo" title="Rehacer (Ctrl+Y)" aria-keyshortcuts="Control+Y"><span aria-hidden="true">↷ </span>Rehacer</button>
       </div>
       <canvas id="pixels" width="384" height="384" tabindex="0" role="application" aria-roledescription="lienzo"
-              aria-label="El dibujo, píxel a píxel" aria-describedby="pixels-help"></canvas>
+              aria-label="El dibujo, píxel a píxel" aria-describedby="pixels-help pixels-status"></canvas>
       <p class="hint" id="pixels-help">Clic para pintar; botón derecho para borrar. Con el teclado: flechas para moverte, Espacio para pintar, Supr para borrar.</p>
+      <p class="vh" id="pixels-status" role="status" aria-live="polite" aria-atomic="true"></p>
       <div class="frames">
         <span class="label">Fotogramas</span>
         <div id="frames" role="group" aria-label="Fotogramas"></div>
@@ -161,8 +162,9 @@
         <span class="hint">El recuadro amarillo es lo que cabe en la pantalla.</span>
       </div>
       <div class="map-scroll"><canvas id="map" tabindex="0" role="application" aria-roledescription="mapa"
-           aria-label="El mapa del nivel" aria-describedby="map-help"></canvas></div>
+           aria-label="El mapa del nivel" aria-describedby="map-help map-status"></canvas></div>
       <p class="hint" id="map-help">Con el teclado: flechas para moverte, Espacio para poner la pieza, Supr para quitar.</p>
+      <p class="vh" id="map-status" role="status" aria-live="polite" aria-atomic="true"></p>
     </div>
     <div class="work cover-work" id="cover-work" hidden>
       <h2>Portada</h2>
@@ -239,7 +241,7 @@
       <label class="inline">Empezar en <select id="play-start"></select></label>
       <span id="game-status" role="status"></span>
     </div>
-    <iframe id="player" title="El juego" allow="autoplay; fullscreen"></iframe>
+    <iframe id="player" title="El juego" aria-describedby="game-status" allow="autoplay; fullscreen"></iframe>
   </section>
 </main>
 

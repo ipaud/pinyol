@@ -699,4 +699,16 @@ export default {
   'El juego de ahora queda guardado como «anterior» (se recupera desde el menú Nuevo). ¿Seguir?': "El joc d'ara queda desat com a «anterior» (es recupera des del menú Nou). Seguir?",
   'El juego de ahora no se ha podido guardar como anterior y se perderá. ¿Seguir?': "El joc d'ara no s'ha pogut desar com a anterior i es perdrà. Seguir?",
   'El juego guardado en este navegador no se ha podido abrir: se ha apartado como «anterior» y se empieza con una plantilla.': "El joc desat en aquest navegador no s'ha pogut obrir: s'ha apartat com a «anterior» i es comença amb una plantilla.",
+  // live feedback for the pixel, map and song canvases
+  'Píxel {x}, {y}, fotograma {frame}: {state}.': 'Píxel {x}, {y}, fotograma {frame}: {state}.',
+  'transparente': 'transparent',
+  'Baldosa {x}, {y}: {tile}. Objetos: {objects}. Pieza elegida: {selected}.': 'Rajola {x}, {y}: {tile}. Objectes: {objects}. Peça triada: {selected}.',
+  'vacía': 'buida',
+  'ninguno': 'cap',
+  'melodía': 'melodia',
+  'bajo': 'baix',
+  'batería': 'bateria',
+  '{part}, {label}, paso {step}: {state}.': '{part}, {label}, pas {step}: {state}.',
+  'nota puesta': 'nota posada',
+  'sin nota': 'sense nota',
 };
