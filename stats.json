@@ -1,0 +1,886 @@
+{
+ "updated": "2026-11-14T14:14:09+00:00",
+ "week": "2026-W46",
+ "featured": {
+  "id": "dedos",
+  "reason": "random",
+  "week": "2026-W46"
+ },
+ "history": [
+  {
+   "id": "ilustres",
+   "reason": "pick",
+   "week": "2026-W42"
+  },
+  {
+   "id": "abella",
+   "reason": "votes",
+   "week": "2026-W43"
+  },
+  {
+   "id": "time_fighters",
+   "reason": "votes",
+   "week": "2026-W44"
+  },
+  {
+   "id": "estilos",
+   "reason": "random",
+   "week": "2026-W45"
+  },
+  {
+   "id": "dedos",
+   "reason": "random",
+   "week": "2026-W46"
+  }
+ ],
+ "week_start": {
+  "aldea": {
+   "likes": 0,
+   "comments": 0
+  },
+  "botin": {
+   "likes": 0,
+   "comments": 0
+  },
+  "cajas": {
+   "likes": 0,
+   "comments": 0
+  },
+  "calle": {
+   "likes": 0,
+   "comments": 0
+  },
+  "careta": {
+   "likes": 0,
+   "comments": 0
+  },
+  "carreras": {
+   "likes": 0,
+   "comments": 0
+  },
+  "celler": {
+   "likes": 0,
+   "comments": 0
+  },
+  "cerezo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "combate": {
+   "likes": 0,
+   "comments": 0
+  },
+  "control": {
+   "likes": 0,
+   "comments": 0
+  },
+  "costa_relampago": {
+   "likes": 0,
+   "comments": 0
+  },
+  "cripta": {
+   "likes": 0,
+   "comments": 0
+  },
+  "dedos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "dos_pantallas": {
+   "likes": 0,
+   "comments": 0
+  },
+  "duelo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "estilos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "faro": {
+   "likes": 0,
+   "comments": 0
+  },
+  "futbol": {
+   "likes": 0,
+   "comments": 0
+  },
+  "hola": {
+   "likes": 0,
+   "comments": 0
+  },
+  "horizonte": {
+   "likes": 0,
+   "comments": 0
+  },
+  "inventos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "isla": {
+   "likes": 0,
+   "comments": 0
+  },
+  "juntos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "malabar": {
+   "likes": 0,
+   "comments": 0
+  },
+  "mazmorra": {
+   "likes": 0,
+   "comments": 0
+  },
+  "microjuegos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "moto": {
+   "likes": 0,
+   "comments": 0
+  },
+  "museo_nocturno": {
+   "likes": 0,
+   "comments": 0
+  },
+  "naves": {
+   "likes": 0,
+   "comments": 0
+  },
+  "niebla": {
+   "likes": 0,
+   "comments": 0
+  },
+  "nubes": {
+   "likes": 0,
+   "comments": 0
+  },
+  "oxigeno": {
+   "likes": 0,
+   "comments": 0
+  },
+  "paella": {
+   "likes": 0,
+   "comments": 0
+  },
+  "paletes": {
+   "likes": 0,
+   "comments": 0
+  },
+  "pinball": {
+   "likes": 0,
+   "comments": 0
+  },
+  "poncho": {
+   "likes": 0,
+   "comments": 0
+  },
+  "pozo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "psx_demo": {
+   "likes": 0,
+   "comments": 0
+  },
+  "psx_views": {
+   "likes": 0,
+   "comments": 0
+  },
+  "puzle": {
+   "likes": 0,
+   "comments": 0
+  },
+  "raton_de_biblioteca": {
+   "likes": 0,
+   "comments": 0
+  },
+  "recortes": {
+   "likes": 0,
+   "comments": 0
+  },
+  "selva": {
+   "likes": 0,
+   "comments": 0
+  },
+  "sima": {
+   "likes": 0,
+   "comments": 0
+  },
+  "socavon": {
+   "likes": 0,
+   "comments": 0
+  },
+  "sonidos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "stylus": {
+   "likes": 0,
+   "comments": 0
+  },
+  "tablero": {
+   "likes": 0,
+   "comments": 0
+  },
+  "taller": {
+   "likes": 0,
+   "comments": 0
+  },
+  "traca": {
+   "likes": 0,
+   "comments": 0
+  },
+  "tumba": {
+   "likes": 0,
+   "comments": 0
+  },
+  "trece": {
+   "likes": 0,
+   "comments": 0
+  },
+  "cromota": {
+   "likes": 0,
+   "comments": 0
+  },
+  "poncho_y_el_silencio": {
+   "likes": 0,
+   "comments": 0
+  },
+  "maqueta": {
+   "likes": 0,
+   "comments": 0
+  },
+  "time_fighters": {
+   "likes": 1,
+   "comments": 0
+  },
+  "ilustres": {
+   "likes": 0,
+   "comments": 0
+  },
+  "brujita_globos": {
+   "likes": 0,
+   "comments": 0
+  },
+  "linea_0": {
+   "likes": 0,
+   "comments": 0
+  },
+  "abella": {
+   "likes": 1,
+   "comments": 0
+  }
+ },
+ "ranking": [
+  "time_fighters",
+  "abella",
+  "ilustres",
+  "brujita_globos",
+  "cerezo",
+  "maqueta",
+  "botin",
+  "malabar",
+  "paella",
+  "poncho_y_el_silencio",
+  "pozo",
+  "cromota",
+  "linea_0",
+  "trece",
+  "celler",
+  "costa_relampago",
+  "faro",
+  "socavon",
+  "taller",
+  "tumba",
+  "aldea",
+  "cajas",
+  "calle",
+  "careta",
+  "carreras",
+  "combate",
+  "control",
+  "cripta",
+  "dedos",
+  "dos_pantallas",
+  "duelo",
+  "estilos",
+  "futbol",
+  "hola",
+  "horizonte",
+  "inventos",
+  "isla",
+  "juntos",
+  "mazmorra",
+  "microjuegos",
+  "moto",
+  "museo_nocturno",
+  "naves",
+  "niebla",
+  "nubes",
+  "oxigeno",
+  "paletes",
+  "pinball",
+  "poncho",
+  "psx_demo",
+  "psx_views",
+  "puzle",
+  "raton_de_biblioteca",
+  "recortes",
+  "selva",
+  "sima",
+  "sonidos",
+  "stylus",
+  "tablero",
+  "traca"
+ ],
+ "games": {
+  "aldea": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "botin": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 1,
+   "plays": 3,
+   "minutes": 6
+  },
+  "cajas": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "calle": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "careta": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "carreras": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "celler": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 1,
+   "minutes": 1
+  },
+  "cerezo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 4,
+   "minutes": 9
+  },
+  "combate": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "control": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "costa_relampago": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 1,
+   "minutes": 0
+  },
+  "cripta": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "dedos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "dos_pantallas": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "duelo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "estilos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "faro": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 1,
+   "minutes": 1
+  },
+  "futbol": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "hola": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "horizonte": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "inventos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "isla": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "juntos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "malabar": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 2,
+   "plays": 3,
+   "minutes": 1
+  },
+  "mazmorra": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "microjuegos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "moto": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "museo_nocturno": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "naves": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "niebla": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "nubes": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "oxigeno": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "paella": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 2,
+   "plays": 3,
+   "minutes": 2
+  },
+  "paletes": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "pinball": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "poncho": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "pozo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 1,
+   "plays": 3,
+   "minutes": 4
+  },
+  "psx_demo": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "psx_views": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "puzle": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "raton_de_biblioteca": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "recortes": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "selva": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "sima": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "socavon": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 1,
+   "minutes": 0
+  },
+  "sonidos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "stylus": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "tablero": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "taller": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 3,
+   "plays": 1,
+   "minutes": 0
+  },
+  "traca": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 0,
+   "minutes": 0
+  },
+  "tumba": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 1,
+   "minutes": 0
+  },
+  "trece": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 0,
+   "plays": 2,
+   "minutes": 31
+  },
+  "cromota": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 3,
+   "plays": 2,
+   "minutes": 10
+  },
+  "poncho_y_el_silencio": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 4,
+   "plays": 3,
+   "minutes": 14
+  },
+  "maqueta": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 2,
+   "plays": 4,
+   "minutes": 15
+  },
+  "time_fighters": {
+   "likes": 1,
+   "comments": 0,
+   "reactions": {
+    "HOORAY": 1
+   },
+   "url": "https://github.com/ipaud/pinyol/discussions/13",
+   "visits": 5,
+   "plays": 11,
+   "minutes": 49
+  },
+  "ilustres": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 20,
+   "plays": 26,
+   "minutes": 121
+  },
+  "brujita_globos": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 4,
+   "plays": 6,
+   "minutes": 9
+  },
+  "linea_0": {
+   "likes": 0,
+   "comments": 0,
+   "reactions": {},
+   "url": null,
+   "visits": 1,
+   "plays": 2,
+   "minutes": 2
+  },
+  "abella": {
+   "likes": 1,
+   "comments": 0,
+   "reactions": {
+    "ROCKET": 1
+   },
+   "url": "https://github.com/ipaud/pinyol/discussions/5",
+   "visits": 2,
+   "plays": 2,
+   "minutes": 5
+  }
+ }
+}
