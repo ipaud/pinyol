@@ -350,6 +350,7 @@ const char *klaus_variant(const char *id); /* player sprites and portrait -> the
 
 /* ------------------------------------------------------------------ content.c */
 char *read_file(const char *path, long *len);
+char *read_file_limit(const char *path, long *len, long max);
 size_t fread_chunked(void *dst, size_t n, FILE *f); /* fread in pieces the sound mixer can slip between */
 bool game_has(const char *rel); /* "folder/file" in the game: false only when surely not (its folder listed once) */
 cJSON *json_file(const char *rel); /* parsed <game_dir>/<rel>, NULL + log on failure */

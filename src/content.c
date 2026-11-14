@@ -59,14 +59,14 @@ bool game_has(const char *rel) {
     return !listed[i].n || bsearch(&name, listed[i].names, (size_t)listed[i].n, sizeof(char *), by_name);
 }
 
-char *read_file(const char *path, long *len) {
+static char *read_file_max(const char *path, long *len, long max) {
     struct stat st; /* only a file: Linux opens a folder too, and its "length" is LONG_MAX */
-    if (stat(path, &st) || !S_ISREG(st.st_mode)) return NULL;
+    if (max < 0 || stat(path, &st) || !S_ISREG(st.st_mode)) return NULL;
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
     long n = fseek(f, 0, SEEK_END) ? -1 : ftell(f);
     fseek(f, 0, SEEK_SET);
-    char *d = n >= 0 && n < LONG_MAX ? malloc((size_t)n + 1) : NULL;
+    char *d = n >= 0 && n <= max && n < LONG_MAX ? malloc((size_t)n + 1) : NULL;
     if (d && fread_chunked(d, (size_t)n, f) != (size_t)n) {
         free(d);
         d = NULL;
@@ -77,6 +77,10 @@ char *read_file(const char *path, long *len) {
     if (len) *len = n;
     return d;
 }
+
+char *read_file(const char *path, long *len) { return read_file_max(path, len, LONG_MAX - 1); }
+
+char *read_file_limit(const char *path, long *len, long max) { return read_file_max(path, len, max); }
 
 cJSON *json_file(const char *rel) {
     char path[384];

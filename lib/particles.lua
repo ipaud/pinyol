@@ -23,6 +23,7 @@
 -- the 48 youngest sprites that are scaled; the older ones of those shapes are skipped: many small lights are for a few sparks, not
 -- for a snowstorm. On the console each particle costs about 50 us of Lua a frame (update and draw) besides its pixels: a camp
 -- fire of ~110 (flames, embers, smoke) is 2.5 ms of tick, 3 of drawing and 8 of strips; keep a scene to some 100.
+local looks = require("rng").new(0x50A7) -- a stream of their own: a spark must not shift the next throw or room
 local M = {}
 local Group = {}
 Group.__index = Group
@@ -39,9 +40,9 @@ local function spawn(self, x, y, n, o)
   local speed, angle, spread = o.speed or 2, math.rad(o.angle or -90), math.rad(o.spread or 360)
   local life, colours = o.life or 30, o.colours or {0xFFFFFF}
   for _ = 1, n do
-    local a = angle + (math.random() - 0.5) * spread
-    local v = speed * (0.3 + 0.7 * math.random())
-    local l = math.max(1, math.floor(life * (0.6 + 0.8 * math.random())))
+    local a = angle + (looks:float() - 0.5) * spread
+    local v = speed * (0.3 + 0.7 * looks:float())
+    local l = math.max(1, math.floor(life * (0.6 + 0.8 * looks:float())))
     local p = {x = x, y = y, vx = math.cos(a) * v, vy = math.sin(a) * v, life = l, left = l, size = o.size or 2,
                size_end = o.size_end or 0, gravity = o.gravity or 0, wind = o.wind or 0, drag = o.drag or 0.02,
                colours = colours, nc = #colours, shape = o.shape or "circle", image = o.image, frame = o.frame, blend = o.blend, fade = o.fade}

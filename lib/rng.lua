@@ -1,4 +1,4 @@
--- rng: random numbers a game can count on. math.random is one stream for everything, so a particle drawn changes the
+-- rng: random numbers a game can count on. math.random is one stream for everything, so anything that draws from it changes the
 -- next room's layout; here each thing gets its own stream from a seed (a level, a run, a creature), and the same seed
 -- always gives the same numbers whatever else happened. Underneath, Squirrel Eiserloh's noise (GDC 2017, "Noise-based
 -- RNG"): a hash of (position, seed), so the n-th number can also be asked for directly, in any order.

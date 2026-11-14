@@ -23,6 +23,7 @@
 --   end)
 -- Tweens chain and repeat: juice.tween(...):delay(0.2):loops(3):yoyo():after(other, {y = 0}, 0.5):on_done(fn).
 -- juice.cancel(handle) stops a tween, a timer or a script; juice.cancel(obj) every tween of obj.
+local looks = require("rng").new(0x5A1E) -- shake runs while drawing: it must not touch the game's random numbers
 local M = {}
 
 -- easing curves: t from 0 to 1 -> how far along, 0 to 1 (some go past it and come back)
@@ -259,7 +260,7 @@ end
 
 function M.offset() -- where the screen is pushed this frame: camera(juice.offset()); a third value, the angle in degrees
   local ox, oy, ang = 0, 0, 0
-  if shake > 0 then ox, oy = (math.random() * 2 - 1) * shake, (math.random() * 2 - 1) * shake end
+  if shake > 0 then ox, oy = looks:float(-1, 1) * shake, looks:float(-1, 1) * shake end
   if trauma > 0 then -- smooth noise, not random: the screen swings instead of jittering (Eiserloh)
     local t, s = shake_t * 0.6, trauma * trauma
     ox, oy = ox + noise(t, 0.5) * 16 * s, oy + noise(t, 7.5) * 16 * s

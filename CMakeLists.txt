@@ -103,9 +103,10 @@ old_name(pinyol_headless bp_headless)
 
 find_package(SDL2 CONFIG QUIET)
 if(SDL2_FOUND)
-  add_executable(pinyol_sim platform/sdl/main.c platform/sdl/desktop.c platform/sdl/capture.c platform/sdl/update.c platform/link_udp.c)
+  add_executable(pinyol_sim platform/sdl/main.c platform/sdl/desktop.c platform/sdl/capture.c platform/sdl/update.c platform/link_udp.c
+                 third_party/puff/puff.c)
   target_compile_options(pinyol_sim PRIVATE -Wall -Wextra ${SAN})
-  target_include_directories(pinyol_sim PRIVATE third_party/msf_gif) # the GIF of the last eight seconds (F9)
+  target_include_directories(pinyol_sim PRIVATE third_party/msf_gif third_party/puff) # the GIF (F9) and ZIP inflater
   set_source_files_properties(platform/sdl/capture.c PROPERTIES COMPILE_OPTIONS "-Wno-missing-field-initializers;-Wno-unused-parameter") # (msf_gif's)
   # the captures on a made-up screen, and PIL reads the files back
   add_executable(capture_test tests/capture_test.c platform/sdl/capture.c platform/null/hal_null.c platform/link_udp.c)
@@ -268,10 +269,15 @@ add_executable(files_test tests/files_test.c platform/null/hal_null.c platform/l
 target_compile_options(files_test PRIVATE -Wall -Wextra -Werror ${SAN})
 target_link_libraries(files_test pinyol_core)
 add_test(NAME files COMMAND files_test)
+add_executable(ota_host_test tests/ota_host_test.c firmware/main/ota.c)
+target_include_directories(ota_host_test BEFORE PRIVATE tests/ota_mocks firmware/main)
+target_compile_definitions(ota_host_test PRIVATE BP_OTA_FILE=\"firmware.bin\")
+target_compile_options(ota_host_test PRIVATE -Wall -Wextra -Werror)
+add_test(NAME ota_host COMMAND ota_host_test)
 # Every example opens and validates; tests/<name>.script plays examples/<name> (with its strips checked).
 file(GLOB EXAMPLES LIST_DIRECTORIES true CONFIGURE_DEPENDS examples/*)
 foreach(dir ${EXAMPLES})
-  if(IS_DIRECTORY ${dir})
+  if(IS_DIRECTORY ${dir} AND EXISTS ${dir}/game.json)
     get_filename_component(n ${dir} NAME)
     add_test(NAME validate_${n} COMMAND pinyol_headless --game ${dir} --validate)
   endif()
@@ -290,13 +296,15 @@ if(Python3_FOUND) # the site's numbers: the minutes played, the ranking, the cov
            $<TARGET_FILE:pinyol_headless> ${CMAKE_BINARY_DIR}/vag)
   add_test(NAME strict_assets COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/strict_assets_test.py
            $<TARGET_FILE:pinyol_headless>)
+  add_test(NAME lua_limits COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/lua_limits_test.py
+           $<TARGET_FILE:pinyol_headless>)
 endif()
 # The desktop app's install of a dropped .zip (platform/sdl/desktop.c: the system's tar on macOS and Windows, unzip on
 # Linux)
 if(SDL2_FOUND AND Python3_FOUND)
-  add_executable(desktop_test tests/desktop_test.c platform/sdl/desktop.c)
+  add_executable(desktop_test tests/desktop_test.c platform/sdl/desktop.c third_party/puff/puff.c)
   target_compile_options(desktop_test PRIVATE -Wall -Wextra -Werror)
-  target_include_directories(desktop_test PRIVATE src platform/sdl)
+  target_include_directories(desktop_test PRIVATE src platform/sdl third_party/puff)
   target_link_libraries(desktop_test ${PINYOL_SDL})
   if(WIN32) # as the app: one file, UTF-8 paths (the manifest)
     target_sources(desktop_test PRIVATE platform/desktop/cirera.rc)
@@ -364,7 +372,7 @@ if(Python3_FOUND)
   add_test(NAME store_atomic COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/store_test.py
            $<TARGET_FILE:pinyol_headless>) # the saves: two files in turn, a checksum, a failed save leaves the last good one
   add_test(NAME playtest_bots COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/playtest_test.py) # tools/playtest.py: bots play malabar, the report is written
-  set_tests_properties(playtest_bots PROPERTIES TIMEOUT 600)
+  set_tests_properties(playtest_bots PROPERTIES TIMEOUT 600 ENVIRONMENT "PINYOL_HEADLESS=$<TARGET_FILE:pinyol_headless>") # the one just built, not build/
 endif()
 # damaged zip or one reaching outside its folder is refused (tests/libretro_test.c is the frontend)
 add_executable(libretro_test tests/libretro_test.c)
@@ -414,7 +422,7 @@ foreach(s ${SCRIPTS})
     set(game ${CMAKE_CURRENT_SOURCE_DIR}/firmware/cirera) # the console's menu
   elseif(n STREQUAL "careta_aventura")
     set(game ${CMAKE_CURRENT_SOURCE_DIR}/examples/hola) # the engine's careta before an adventure's title
-  elseif(NOT IS_DIRECTORY ${game})
+  elseif(NOT EXISTS ${game}/game.json)
     set(game ${CMAKE_CURRENT_SOURCE_DIR}/tests/games/${n}) # games that only exist to be tested
   endif()
   set(splash "")
@@ -462,11 +470,11 @@ if(Python3_FOUND)
     add_test(NAME mesh_pixels COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/mesh_check.py ${CMAKE_BINARY_DIR}/saves_mesh)
     set_tests_properties(script_mesh PROPERTIES FIXTURES_SETUP mesh_shots)
     set_tests_properties(mesh_pixels PROPERTIES FIXTURES_REQUIRED mesh_shots)
-  endif()
     # quad() against what a real PlayStation drew (tests/ps1cube_ref): silhouette, box and colour of a lit, textured cube
     add_test(NAME ps1cube_pixels COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/ps1cube_check.py ${CMAKE_BINARY_DIR}/saves_ps1cube)
     set_tests_properties(script_ps1cube PROPERTIES FIXTURES_SETUP ps1cube_shots)
     set_tests_properties(ps1cube_pixels PROPERTIES FIXTURES_REQUIRED ps1cube_shots)
+  endif()
 endif()
 # the console's menu (a game too) lists the examples as the console lists its games
 set_tests_properties(script_cirera PROPERTIES ENVIRONMENT "PINYOL_GAMES=${CMAKE_CURRENT_SOURCE_DIR}/examples")

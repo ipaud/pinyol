@@ -339,12 +339,14 @@ static bool call(const char *fn, int nargs) { /* args are on the stack; true if 
 }
 
 
+#define FILE_MAX (1024 * 1024)
+
 static int load_chunk(lua_State *L, const char *rel) { /* pushes the compiled chunk, or raises */
     char path[384];
     snprintf(path, sizeof path, "%s/%s", G.game_dir, rel);
     long len = 0;
-    char *src = read_file(path, &len);
-    if (!src) return luaL_error(L, "cannot read %s", rel);
+    char *src = read_file_limit(path, &len, FILE_MAX);
+    if (!src) return luaL_error(L, "cannot read %s (missing or over %d KB)", rel, FILE_MAX / 1024);
     char name[96];
     snprintf(name, sizeof name, "@%s", rel);
     int rc = luaL_loadbufferx(L, src, (size_t)len, name, "t");
@@ -437,8 +439,6 @@ bool v2_hotswap(const char *rel, const char *mod) {
     return true;
 }
 
-#define FILE_MAX (1024 * 1024)
-
 /* file(name) -> the text of one of the game's files ("story/es.txt", "maps/metro.csv"), or nil if it has none */
 static int l_file(lua_State *L) {
     const char *rel = luaL_checkstring(L, 1);
@@ -451,7 +451,7 @@ static int l_file(lua_State *L) {
     fclose(f);
     if (n > FILE_MAX) return luaL_error(L, "file: %s is bigger than %d KB", rel, FILE_MAX / 1024);
     long len = 0;
-    char *txt = n >= 0 ? read_file(path, &len) : NULL;
+    char *txt = n >= 0 ? read_file_limit(path, &len, FILE_MAX) : NULL;
     if (!txt) return lua_pushnil(L), 1;
     lua_pushlstring(L, txt, (size_t)len);
     free(txt);
@@ -1823,8 +1823,8 @@ static bool splash_load(void) {
     if (!jstr(G.game, "splash") && !f) return true; /* none: the engine's */
     if (f) fclose(f);
     long len = 0;
-    char *src = read_file(path, &len);
-    if (!src) return fail(file, "cannot read it"), false;
+    char *src = read_file_limit(path, &len, FILE_MAX);
+    if (!src) return fail(file, "cannot read it (missing or over 1024 KB)"), false;
     char name[96];
     snprintf(name, sizeof name, "@%s", file);
     int rc = luaL_loadbufferx(Ls, src, (size_t)len, name, "t");
@@ -2001,9 +2001,9 @@ bool v2_load(void) {
         char path[384];
         snprintf(path, sizeof path, "%s/%s", G.game_dir, entry);
         long len = 0;
-        char *src = read_file(path, &len);
+        char *src = read_file_limit(path, &len, FILE_MAX);
         if (!src) {
-            fail(entry, "cannot read it");
+            fail(entry, "cannot read it (missing or over 1024 KB)");
             return false;
         }
         char name[96];

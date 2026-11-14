@@ -89,6 +89,9 @@ lua e.hp = 2 for i = 1, 6 do b:update(e) end
 expect_lua b.current == "flee" and e.log[2] == "flee" and b.since >= 1
 lua b:force("wander", e)
 expect_lua b.current == "wander"
+lua forced_calls = 0 forced = brain.new({idle = {score = 1}, forced = {score = 0, update = function() forced_calls = forced_calls + 1 end}}, {every = 5})
+lua forced:force("forced") forced:update({})
+expect_lua forced.current == "forced" and forced_calls == 1
 # rng: a seed gives the same numbers again, another seed others; ranges hold; hash is a function of its index
 lua r1, r2, r3 = rng.new(7), rng.new(7), rng.new(8) a, b2, c = r1:int(1, 6), r2:int(1, 6), r3:int(1, 6)
 expect_lua a == b2 and a >= 1 and a <= 6
@@ -144,3 +147,10 @@ expect_lua lang.code == "ca" and lang.tr("hello", {name = "Pau"}) == "Hola, Pau"
 lua lang.set("en") lang.set("es") lang.set("ca")
 expect_lua lang.code == "ca" and lang.plural("coins", 3) == "3 monedes" and lang.tr("only_es") == "solo español"
 expect_lua lang.parse('key,es,ca\nq,"a, ""b""",x\n', {ca = true}).ca.q == "x" and lang.parse('key,es,ca\nq,"a, ""b""",x\n').es.q == 'a, "b"'
+# looks do not move the game's random numbers: particles and shake keep a stream of their own, so a cosmetic
+# change cannot change a later throw or room
+lua pfx = require("particles") math.randomseed(7) want = math.random()
+lua math.randomseed(7) g = pfx.new() g:burst(10, 10, 50, {}) g:emit({rate = 3, ticks = 2}) g:update()
+lua juice.shake(4) juice.offset() juice.offset()
+expect_lua math.random() == want
+expect_ok

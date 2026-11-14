@@ -1,5 +1,6 @@
 /* The game's folders listed once (game_has, src/content.c): a file there, one not there, any case, a new load. */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -34,6 +35,17 @@ int main(void) {
     CHECK(!game_has("assets/B.meta.json"));
     touch(p);
     CHECK(!game_has("assets/B.meta.json")); /* listed once: a file made since is not seen... */
+    snprintf(p, sizeof p, "%s/source.lua", dir);
+    FILE *source = fopen(p, "wb");
+    CHECK(source != NULL);
+    if (source) {
+        CHECK(fwrite("1234", 1, 4, source) == 4);
+        fclose(source);
+    }
+    char *bounded = read_file_limit(p, NULL, 4);
+    CHECK(bounded != NULL);
+    free(bounded);
+    CHECK(read_file_limit(p, NULL, 3) == NULL);
     content_free();
     CHECK(game_has("assets/B.meta.json"));  /* ...until the game is loaded again */
     CHECK(game_has("nothere/x.wav"));       /* a folder that cannot be listed: every file is tried */

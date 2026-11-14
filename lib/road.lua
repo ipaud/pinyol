@@ -49,6 +49,39 @@ function R:update(speed)
   self.z = (self.z + (speed or 0)) % math.max(self.length, 1)
 end
 
+function R:elevation(z)
+  if self.length == 0 then return 0 end
+  local lap = math.floor(z / self.length)
+  local pos, height = z % self.length, 0
+  for _, s in ipairs(self.segments) do
+    if s.length > 0 then height = height + s.hill * math.min(1, math.max(0, (pos - s.z0) / s.length)) end
+  end
+  local lap_height = 0
+  for _, s in ipairs(self.segments) do lap_height = lap_height + s.hill end
+  return lap * lap_height + height
+end
+
+function R:height_ahead(distance)
+  return self:elevation(self.z + distance) - self:elevation(self.z)
+end
+
+function R:distance_at_y(y)
+  local d = self.camera_h * self.fov / (y - self.horizon)
+  for _ = 1, 3 do
+    d = math.max(1, (self.camera_h - self:height_ahead(d)) * self.fov / (y - self.horizon))
+  end
+  return d
+end
+
+function R:curve_at_y(y)
+  local dx, cum = 0, 0
+  for line = self.horizon + 1, math.min(159, math.floor(y)) do
+    local s = self:segment_at(self.z + self:distance_at_y(line))
+    if s then dx = dx + s.curve * 0.01; cum = cum + dx end
+  end
+  return cum
+end
+
 -- the lines of this frame: for each screen line below the horizon, the distance it looks at, the road's centre there
 -- (the curves adding up), its width on screen, and the band's colours
 function R:draw(steer)
@@ -56,7 +89,7 @@ function R:draw(steer)
   local x_cam = (steer or 0) * self.width / 2 -- the camera's x on the road
   local dx, cum = 0, 0 -- the curve's bend per line, and the road's centre offset so far (in road units)
   for y = hor + 1, H - 1 do
-    local d = self.camera_h * self.fov / (y - hor) -- distance to the line, in road units
+    local d = self:distance_at_y(y) -- distance to the line, in road units
     local z = self.z + d
     local s = self:segment_at(z)
     dx = dx + s.curve * 0.01
@@ -75,8 +108,8 @@ end
 function R:project(z_ahead, x_on_road)
   if z_ahead <= 1 then return 0, 0, 0, false end
   local scale = self.fov / z_ahead
-  local y = self.horizon + self.camera_h * scale
-  local x = 120 + (x_on_road or 0) * self.width / 2 * scale
+  local y = self.horizon + (self.camera_h - self:height_ahead(z_ahead)) * scale
+  local x = 120 + (self:curve_at_y(y) + (x_on_road or 0) * self.width / 2) * scale
   return x, y, scale, y < 160
 end
 

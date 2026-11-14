@@ -42,6 +42,13 @@ lua mode = "road"
 tick 3
 shot looks_road
 expect_lua select(4, rd:project(3000, 0)) == true and select(4, rd:project(0, 0)) == false and select(2, rd:project(3000, 0)) == 48 + 300 * 240 / 3000
+lua flat = road.new({horizon = 48}) flat:add(2000, 0, 0)
+lua bend = road.new({horizon = 48}) bend:add(2000, 2, 0)
+lua hill = road.new({horizon = 48}) hill:add(2000, 0, 100)
+lua flat_x, flat_y = flat:project(1000, 0) bend_x = select(1, bend:project(1000, 0)) hill_y = select(2, hill:project(1000, 0))
+expect_lua bend_x > flat_x and hill_y < flat_y
+lua edge = road.new({horizon = 48}) edge:add(0, 0, 100) edge:add(2000, 0, 0)
+expect_lua select(2, edge:project(1000, 0)) == flat_y
 # stack: the first angle's canvas is made on the first draw and has pixels in it; a second angle makes another
 lua mode = "stack"
 shot looks_stack0

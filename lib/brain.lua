@@ -61,12 +61,15 @@ end
 function B:force(name, e)
   assert(self.actions[name], "brain: no action called " .. tostring(name))
   self:switch(name, e)
-  self.t = 0
+  self.forced = true
 end
 
 function B:update(e)
   self.t = self.t - 1
-  if self.t <= 0 or not self.current then
+  if self.forced then
+    self.forced = false
+    self.t = self.every
+  elseif self.t <= 0 or not self.current then
     self.t = self.every
     local want = self:think(e)
     if want ~= self.current then self:switch(want, e) end
