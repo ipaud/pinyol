@@ -691,4 +691,12 @@ export default {
   'Una hoja de fotogramas se corta en casillas iguales, fila a fila (hasta 64).': 'Un full de fotogrames es talla en caselles iguals, fila a fila (fins a 64).',
   'Elegir el punto sobre el que se da la vuelta (tecla O)': 'Triar el punt sobre el qual es gira (tecla O)',
   'Qué animación se ve': 'Quina animació es veu',
+  // what the editor says when a file asks for more than it takes, and before a game is replaced
+  'Ya hay {n} dibujos: el máximo.': 'Ja hi ha {n} dibuixos: el màxim.',
+  'Ya hay {n} sonidos: el máximo.': 'Ja hi ha {n} sons: el màxim.',
+  'Ya hay {n} vídeos: el máximo.': 'Ja hi ha {n} vídeos: el màxim.',
+  'Ya hay {n} objetos en este nivel: el máximo.': 'Ja hi ha {n} objectes en aquest nivell: el màxim.',
+  'El juego de ahora queda guardado como «anterior» (se recupera desde el menú Nuevo). ¿Seguir?': "El joc d'ara queda desat com a «anterior» (es recupera des del menú Nou). Seguir?",
+  'El juego de ahora no se ha podido guardar como anterior y se perderá. ¿Seguir?': "El joc d'ara no s'ha pogut desar com a anterior i es perdrà. Seguir?",
+  'El juego guardado en este navegador no se ha podido abrir: se ha apartado como «anterior» y se empieza con una plantilla.': "El joc desat en aquest navegador no s'ha pogut obrir: s'ha apartat com a «anterior» i es comença amb una plantilla.",
 };

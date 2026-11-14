@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Editor pinyol</title>
 <meta name="description" content="Haz un juego para la consola pinyol sin programar: dibujos, mapa, sonidos y bloques.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="stylesheet" href="editor.css">
 <script src="vendor/blockly/blockly_compressed.js"></script>
 <script src="vendor/blockly/blocks_compressed.js"></script>
@@ -244,6 +245,7 @@
 
 <dialog id="import" aria-labelledby="import-title">
   <form method="dialog">
+    <button value="ok" class="vh" tabindex="-1" aria-hidden="true"></button>
     <h2 id="import-title">Añadir una imagen</h2>
     <canvas id="import-preview" role="img" aria-label="Así quedará en el juego"></canvas>
     <p><output id="import-size"></output></p>

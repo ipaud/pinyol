@@ -47,7 +47,9 @@ export const DRAWING = { use: 'tile', solid: false, behaviour: 'still', speed: 1
 
 export const SIZES = [8, 16, 24, 32, 48, 64];
 export const MAX_FRAMES = 64; // a drawing's frames: room for named animations (still, walking, hit), views and actions
-export const MAX_DRAWINGS = 512; // a game's drawings: tiles a map is made of count one each
+export const MAX_DRAWINGS = 360; // a game's drawings: tiles a map is made of count one each (the engine keeps 384 pictures, gfx.c, fonts and cover among them)
+export const MAX_SOUNDS = 48, MAX_VIDEOS = 8, MAX_OBJECTS = 500; // (objects: a level's)
+export const MAX_PIXELS = 12 << 20; // every frame of every drawing: a file could ask for more memory than the browser has
 export const ANIMS = { idle: t('Quieto'), walk: t('Andar'), hit: t('Golpe'), // kit.lua's named animations: the front,
   idle_side: t('Quieto de lado'), walk_side: t('Andar de lado'), idle_up: t('Quieto de espaldas'), // its side and back
   walk_up: t('Andar de espaldas'), act1: t('Acción 1'), act2: t('Acción 2'), act3: t('Acción 3'), act4: t('Acción 4'), // views, actions
@@ -212,12 +214,14 @@ export function newLevel(id, name) {
            camera: '', hide: [], music: '' };
 }
 
+const oneLine = v => String(v).replace(/[\r\n]+/g, ' '); // a name or a title: Lua gets it inside a comment or a string
+
 // made safe after loading: a file from anywhere may be anything
 export function check(p) {
   if (!p || typeof p !== 'object') throw new Error('No es un proyecto');
-  const out = { format: FORMAT, id: safeName(p.id, 'juego'), title: String(p.title || t('Juego')).slice(0, 40), drawings: [],
-                author: String(p.author || '').slice(0, 40), about: String(p.about || '').slice(0, 140), // game.json's
-                tagline: String(p.tagline || '').slice(0, 40), // the line under the name in the console's menu
+  const out = { format: FORMAT, id: safeName(p.id, 'juego'), title: oneLine(p.title || t('Juego')).slice(0, 40), drawings: [],
+                author: oneLine(p.author || '').slice(0, 40), about: oneLine(p.about || '').slice(0, 140), // game.json's
+                tagline: oneLine(p.tagline || '').slice(0, 40), // the line under the name in the console's menu
                 look: LOOKS[p.look] ? p.look : '', tile: p.tile === 8 ? 8 : 16, font: FONTS[p.font] !== undefined ? p.font : '',
                 lang: LANGS[p.lang] ? p.lang : 'es', // (before languages: Spanish; a new game is in the editor's, templates.js)
                 levels: [], sounds: [], videos: [], blocks: p.blocks && typeof p.blocks === 'object' ? p.blocks : null,
@@ -225,13 +229,17 @@ export function check(p) {
   const names = new Set();
   const old = !(p.format >= 2), palette = PALETTE.map(hex565); // format 1: indices into the palette
   const pixel = v => (!Number.isInteger(v) || v < 0 ? -1 : old ? (v < palette.length ? palette[v] : -1) : v <= 0xFFFF ? v : -1);
+  let pixels = 0; // of every frame so far: past MAX_PIXELS the rest stays out
   for (const d of Array.isArray(p.drawings) ? p.drawings.slice(0, MAX_DRAWINGS) : []) {
     const w = clampInt(d.w, 1, MAX_SIDE, 16), h = clampInt(d.h, 1, MAX_SIDE, 16);
-    const frames = (Array.isArray(d.frames) ? d.frames.slice(0, MAX_FRAMES) : []).map(f =>
+    if (pixels + w * h > MAX_PIXELS) break;
+    const room = Math.floor((MAX_PIXELS - pixels) / (w * h));
+    const frames = (Array.isArray(d.frames) ? d.frames.slice(0, Math.min(MAX_FRAMES, room)) : []).map(f =>
       (typeof f === 'string' ? decodeFrame(f, w * h) : null) ||
       Array.from({ length: w * h }, (_, i) => (Array.isArray(f) ? pixel(f[i]) : -1)));
     const name = uniqueName(safeName(d.name), names);
     names.add(name);
+    pixels += w * h * Math.max(1, frames.length);
     out.drawings.push({ name, w, h, frames: frames.length ? frames : [blankFrame(w, h)],
                         use: ['object', 'backdrop'].includes(d.use) ? d.use : 'tile', solid: !!d.solid,
                         behaviour: BEHAVIOURS[d.behaviour] ? d.behaviour : 'still',
@@ -250,24 +258,24 @@ export function check(p) {
     const m = l.map || {};
     const mw = clampInt(m.w, 1, MAP_MAX, 15), mh = clampInt(m.h, 1, MAP_MAX, 10);
     const tiles = (Array.isArray(m.tiles) ? m.tiles : []).map(t => safeName(t)).filter(t => names.has(t)).slice(0, 250);
-    const level = { id, name: String(l.name || id).slice(0, 40), objects: [], background: colour(l.background, '#1D2B53'),
+    const level = { id, name: oneLine(l.name || id).slice(0, 40), objects: [], background: colour(l.background, '#1D2B53'),
                     camera: typeof l.camera === 'string' ? safeName(l.camera, '') : '',
                     hide: (Array.isArray(l.hide) ? l.hide : []).map(n => safeName(n)).filter(n => names.has(n)),
                     map: { w: mw, h: mh, tiles, cells: Array.from({ length: mw * mh }, (_, i) => {
                       const c = Array.isArray(m.cells) ? m.cells[i] : 0;
                       return Number.isInteger(c) && c >= 0 && c <= tiles.length ? c : 0;
                     }) } };
-    for (const o of Array.isArray(l.objects) ? l.objects.slice(0, 500) : [])
+    for (const o of Array.isArray(l.objects) ? l.objects.slice(0, MAX_OBJECTS) : [])
       if (names.has(safeName(o.kind))) level.objects.push({ kind: safeName(o.kind), x: clampNum(o.x, 0, 1024, 0), y: clampNum(o.y, 0, 1024, 0) });
     out.levels.push(level);
   }
   if (!out.levels.length) out.levels.push(newLevel('nivel1', t('Nivel {n}', { n: 1 })));
   const c = p.cover && typeof p.cover === 'object' ? p.cover : {};
-  out.cover = { on: c.on !== false, subtitle: String(c.subtitle ?? t('Pulsa A para empezar')).slice(0, 60),
+  out.cover = { on: c.on !== false, subtitle: oneLine(c.subtitle ?? t('Pulsa A para empezar')).slice(0, 60),
                 picture: names.has(safeName(c.picture, '')) ? safeName(c.picture) : '', background: colour(c.background, '#1D2B53') };
-  out.ending = String(p.ending || t('¡Has ganado!')).slice(0, 60);
+  out.ending = oneLine(p.ending || t('¡Has ganado!')).slice(0, 60);
   const snames = new Set();
-  for (const s of Array.isArray(p.sounds) ? p.sounds.slice(0, 48) : []) {
+  for (const s of Array.isArray(p.sounds) ? p.sounds.slice(0, MAX_SOUNDS) : []) {
     const name = uniqueName(safeName(s.name, 'sonido'), snames);
     snames.add(name);
     if (s.song && typeof s.song === 'object') // composed in the editor (song.js): always music
@@ -282,7 +290,7 @@ export function check(p) {
                         params: s.params && typeof s.params === 'object' ? s.params : null });
   }
   const vnames = new Set(); // videos made in the editor (videos.js): a clip's bytes as base64, and its numbers
-  for (const v of Array.isArray(p.videos) ? p.videos.slice(0, 8) : []) {
+  for (const v of Array.isArray(p.videos) ? p.videos.slice(0, MAX_VIDEOS) : []) {
     if (typeof v.npv !== 'string' || !v.npv || v.npv.length > VIDEO_B64_MAX) continue;
     const name = uniqueName(safeName(v.name, 'video'), vnames);
     vnames.add(name);
@@ -311,12 +319,20 @@ function store(mode, use) {
       const db = open.result, t = db.transaction('projects', mode), r = use(t.objectStore('projects'));
       t.oncomplete = () => { db.close(); done(r.result); };
       t.onerror = () => { db.close(); fail(t.error); };
+      t.onabort = () => { db.close(); fail(t.error); }; // (a quota that runs out at commit only aborts)
     };
   });
 }
 // key "current": the game being made; "previous": the one Nuevo or Abrir replaced, to get it back
 export async function saveLocal(p, key = 'current') {
   try { await store('readwrite', s => s.put(pack(p), key)); return true; } catch { return false; }
+}
+export async function keepLocal(from = 'current', to = 'previous') { // the bytes as they are: a game that cannot be opened is still kept
+  try {
+    const raw = await store('readonly', s => s.get(from));
+    if (raw !== undefined) await store('readwrite', s => s.put(raw, to));
+    return raw !== undefined;
+  } catch { return false; }
 }
 export async function loadLocal(key = 'current') {
   try { const p = await store('readonly', s => s.get(key)); if (p) return check(p); } catch { /* none kept */ }

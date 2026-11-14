@@ -691,4 +691,12 @@ export default {
   'Una hoja de fotogramas se corta en casillas iguales, fila a fila (hasta 64).': 'A sheet of frames is cut into equal cells, row after row (up to 64).',
   'Elegir el punto sobre el que se da la vuelta (tecla O)': 'Pick the point it turns round (key O)',
   'Qué animación se ve': 'Which animation is shown',
+  // what the editor says when a file asks for more than it takes, and before a game is replaced
+  'Ya hay {n} dibujos: el máximo.': 'There are {n} drawings already: the most there can be.',
+  'Ya hay {n} sonidos: el máximo.': 'There are {n} sounds already: the most there can be.',
+  'Ya hay {n} vídeos: el máximo.': 'There are {n} videos already: the most there can be.',
+  'Ya hay {n} objetos en este nivel: el máximo.': 'There are {n} objects in this level already: the most there can be.',
+  'El juego de ahora queda guardado como «anterior» (se recupera desde el menú Nuevo). ¿Seguir?': 'The game you have now is kept as "previous" (the New menu brings it back). Go on?',
+  'El juego de ahora no se ha podido guardar como anterior y se perderá. ¿Seguir?': 'The game you have now could not be kept as previous and will be lost. Go on?',
+  'El juego guardado en este navegador no se ha podido abrir: se ha apartado como «anterior» y se empieza con una plantilla.': 'The game kept in this browser could not be opened: it was set aside as "previous" and a template starts instead.',
 };

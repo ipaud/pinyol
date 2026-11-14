@@ -1,7 +1,7 @@
 // The Map tab: the game's levels in the order they are played, and its cover. A level is tiles painted on a grid,
 // objects put where they start, its size, background colour, the pictures behind it and whom the camera follows;
 // shown at twice the world's pixels, as on the console's screen. The cover is the title screen before them.
-import { MAP_MAX, LEVELS_MAX, FONTS, LANGS, newLevel, uniqueName, lookOf } from './project.js';
+import { MAP_MAX, LEVELS_MAX, FONTS, LANGS, newLevel, uniqueName, lookOf, MAX_OBJECTS } from './project.js';
 import { drawPixels, thumbnail } from './sprites.js';
 import { t } from './i18n.js';
 
@@ -134,14 +134,14 @@ function pieceButton(pc, d, label) {
 }
 
 // undo, redo: what a level's map and objects were
-const snap = () => ({ sel, map: JSON.stringify(level().map), objects: JSON.stringify(level().objects) });
+const snap = () => ({ id: level().id, map: JSON.stringify(level().map), objects: JSON.stringify(level().objects) }); // (by id: levels move and go)
 function remember() { undo.push(snap()); if (undo.length > 80) undo.shift(); redo.length = 0; }
 function back(from, to) {
   const s = from.pop();
   if (!s) return;
-  const was = sel;
-  sel = s.sel;
-  if (!level()) { sel = was; return; } // that level is gone
+  const i = app.project.levels.findIndex(l => l.id === s.id);
+  if (i < 0) return; // that level is gone
+  sel = i;
   to.push(snap());
   Object.assign(level(), { map: JSON.parse(s.map), objects: JSON.parse(s.objects) });
   app.changed();
@@ -187,6 +187,7 @@ function act(e, first, p = at(e)) {
     if (hit >= 0 && objects[hit].kind === piece.name) objects.splice(hit, 1);
     else {
       const d = byName(piece.name);
+      if (objects.length >= MAX_OBJECTS) { app.toast(t('Ya hay {n} objetos en este nivel: el máximo.', { n: MAX_OBJECTS })); return; }
       objects.push({ kind: piece.name, x: Math.max(0, Math.round((x - d.w / 2) / 4) * 4), y: Math.max(0, Math.round((y - d.h / 2) / 4) * 4) });
     }
   } else if (erase) {

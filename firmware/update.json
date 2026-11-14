@@ -1,0 +1,21 @@
+{
+ "name": "pinyol",
+ "version": "43d703a",
+ "new_install_prompt_erase": false,
+ "new_install_improv_wait_time": 0,
+ "builds": [
+  {
+   "chipFamily": "ESP32-S3",
+   "parts": [
+    {
+     "path": "ota_data_initial.bin",
+     "offset": 61440
+    },
+    {
+     "path": "pinyol_console.bin",
+     "offset": 131072
+    }
+   ]
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 // The editor: the project kept in the browser as it changes, the tabs, and the game built from it for the player
 // (Jugar), the console's card (a .zip) or the console itself over its cable.
 /* global Blockly */
-import { check, pack, safeName, saveLocal, loadLocal, LOOKS, LANGS, MAP_MAX, lookColour, hex565, hexOf } from './project.js';
+import { check, pack, safeName, saveLocal, loadLocal, LOOKS, LANGS, MAP_MAX, lookColour, hex565, hexOf, keepLocal } from './project.js';
 import { TEMPLATES, templateEmpty } from './templates.js';
 import { buildFiles } from './build.js';
 import { audioFiles } from './audio.js';
@@ -21,7 +21,7 @@ const $ = id => document.getElementById(id);
 const GAME_FILES = ['fonts/FONT_MAIN.fnt', 'fonts/FONT_BOLD.fnt', 'fonts/FONT_MAIN_L.fnt', 'fonts/FONT_BOLD_L.fnt',
   'lib/kit.lua', 'lib/juice.lua', 'lib/particles.lua'];
 const TOUCH = matchMedia('(pointer: coarse)').matches;
-let project, ws, tabs = {}, saveTimer = 0, loading = false, blocksBroken = false;
+let project, ws, tabs = {}, saveTimer = 0, dirty = false, loading = false, blocksBroken = false;
 
 // A message at the bottom: read aloud, long enough to read; an error stays until closed; an action can undo something.
 function toast(text, { error = false, action = null } = {}) {
@@ -34,7 +34,7 @@ function toast(text, { error = false, action = null } = {}) {
   act.hidden = !action;
   if (action) act.textContent = action.label, act.onclick = () => { hide(); action.run(); };
   $('toast-close').hidden = !error && !action;
-  const hide = () => box.classList.remove('shown');
+  const hide = () => { box.classList.remove('shown'); act.hidden = $('toast-close').hidden = true; }; // (hidden: off the Tab order too)
   if (!error) toast.timer = setTimeout(hide, Math.max(action ? 9000 : 4000, text.length * 70));
 }
 const oops = text => toast(text, { error: true });
@@ -43,13 +43,14 @@ const oops = text => toast(text, { error: true });
 
 function changed() {
   clearTimeout(saveTimer);
+  dirty = true;
   $('saved').textContent = t('Guardando…');
   saveTimer = setTimeout(save, 400);
 }
 async function save() { // -> kept; now: also before the page goes (another language)
   clearTimeout(saveTimer);
   if (ws && !blocksBroken) project.blocks = Blockly.serialization.workspaces.save(ws); // broken: the stored ones stay
-  if (await saveLocal(project)) { $('saved').textContent = t('Guardado en este navegador'); return true; }
+  if (await saveLocal(project)) { dirty = false; $('saved').textContent = t('Guardado en este navegador'); return true; }
   $('saved').textContent = '';
   oops(t('No se ha podido guardar en este navegador. Pulsa «Guardar archivo» para no perder el juego.'));
   return false;
@@ -203,16 +204,19 @@ function load(p, blocks) {
 
 // Nuevo and Abrir replace the game being made: it is kept as "previous", and the message offers it back.
 async function replace(p, blocks, said) {
-  await saveLocal(project, 'previous');
+  const kept = await saveLocal(project, 'previous');
+  if (!confirm(kept ? t('El juego de ahora queda guardado como «anterior» (se recupera desde el menú Nuevo). ¿Seguir?')
+                    : t('El juego de ahora no se ha podido guardar como anterior y se perderá. ¿Seguir?'))) return;
   load(p, blocks);
   showTab('draw');
-  toast(said, { action: { label: t('Recuperar el anterior'), run: async () => {
-    const prev = await loadLocal('previous');
-    if (!prev) return oops(t('No queda ningún juego anterior.'));
-    await saveLocal(project, 'previous');
-    load(prev);
-    toast(t('Has vuelto al juego anterior.'));
-  } } });
+  toast(said, { action: { label: t('Recuperar el anterior'), run: recoverPrevious } });
+}
+async function recoverPrevious() { // the game Nuevo or Abrir replaced; the one being made takes its place as "previous"
+  const prev = await loadLocal('previous');
+  if (!prev) return oops(t('No queda ningún juego anterior.'));
+  await saveLocal(project, 'previous');
+  load(prev);
+  toast(t('Has vuelto al juego anterior.'));
 }
 
 // ------------------------------------------------------------------ the game
@@ -390,6 +394,7 @@ function initMenu() { // Nuevo: a list that opens under the button, closes with 
     fresh(tpl.label, async () => replace(await tpl.make(), tpl.blocks ? await tpl.blocks() : templateBlocks(tpl.key),
                                          t('Juego nuevo: {name}.', { name: tpl.label })));
   fresh(t('Vacío'), () => replace(templateEmpty(), { blocks: { languageVersion: 0, blocks: [] } }, t('Juego nuevo, vacío.')));
+  fresh(t('Recuperar el anterior'), recoverPrevious); // (always here, not only in a message that goes away)
 }
 
 function initBlockly() {
@@ -406,7 +411,7 @@ function initBlockly() {
                        insertionMarkerColour: '#ffffff', insertionMarkerOpacity: 0.3, cursorColour: '#d0d0d0' },
     fontStyle: { family: 'system-ui, sans-serif', size: 12 },
   });
-  ws = Blockly.inject('blockly', { toolbox: TOOLBOX, theme, trashcan: true, renderer: 'zelos',
+  ws = Blockly.inject('blockly', { toolbox: TOOLBOX, theme, trashcan: true, renderer: 'zelos', media: 'vendor/blockly/media/',
                                    zoom: { controls: true, wheel: true, startScale: 0.8 }, grid: { spacing: 24, length: 2, colour: '#2b2539' } });
   ws.addChangeListener(Blockly.Events.disableOrphans); // a block outside an event does nothing: it looks off
   document.querySelector('.blocklyComputeCanvas')?.setAttribute('aria-hidden', 'true'); // Blockly's, to measure text
@@ -435,9 +440,17 @@ async function init() {
   tabs.video = initVideos(app);
   try { await blocklyWords(); } catch (e) { console.error(e); } // without them the blocks still work (their own words do)
   initBlockly();
-  const saved = await loadLocal();
-  if (saved) load(saved);
-  else load(TEMPLATES[0].make(), templateBlocks(TEMPLATES[0].key));
+  let saved = null;
+  try { saved = await loadLocal(); if (saved) load(saved); }
+  catch (e) { // a stored game the editor cannot open: set aside, so that nothing writes over it, and said
+    console.error(e);
+    saved = null;
+    await keepLocal('current', 'previous');
+    oops(t('El juego guardado en este navegador no se ha podido abrir: se ha apartado como «anterior» y se empieza con una plantilla.'));
+  }
+  if (!saved) load(TEMPLATES[0].make(), templateBlocks(TEMPLATES[0].key));
+  addEventListener('pagehide', () => { if (dirty) save(); }); // the last change, before the page goes
+  navigator.storage?.persist?.(); // (asked once: a browser that clears idle sites keeps the game)
 
   initTabs();
   initMenu();

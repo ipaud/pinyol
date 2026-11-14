@@ -110,7 +110,7 @@ export function decode(bytes) {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const w = v.getUint16(4, true), h = v.getUint16(6, true), fps = v.getUint16(8, true) / 100, ncol = v.getUint16(10, true);
   const count = v.getUint32(12, true), head = 20 + 2 * ncol;
-  if (!w || !h || !ncol || !count || bytes.length < head + 4 * (count + 1)) return null;
+  if (!w || !h || w > 1024 || h > 1024 || !ncol || !count || count > 100000 || bytes.length < head + 4 * (count + 1)) return null; // (a header may say anything)
   const pal = Array.from({ length: ncol }, (_, i) => of565(v.getUint16(20 + 2 * i, true)));
   const px = new Uint8ClampedArray(w * h * 4).fill(255), frames = [];
   for (let k = 0; k < count; k++) {
