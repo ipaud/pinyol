@@ -15,7 +15,7 @@ Digests of what the real hardware did, audits of np2d against it, measurements, 
 
 | Change | Where | Host | Board |
 |---|---|---|---|
-| Whole-frame golden test, 30 scenes | `tests/ppu_golden_test.c`, `ppu_golden.txt` | yes | the 15 bench scenes: **15 of 15 hashes equal the host's**, with the fidelity fixes in |
+| Whole-frame golden test, 35 scenes | `tests/ppu_golden_test.c`, `ppu_golden.txt` | yes | original 15-scene hashes match; four RGB565/bitmap scenes match host goldens; timings and hashes for all 22 are recorded |
 | Sprites per line (mask of the sprites each line crosses; off-screen ones dropped) | `src/ppu.c` | goldens unchanged | mode 0 -14 %, 128 sprites -41 % (before the fixes below) |
 | PPU fidelity: blending sprite over a sprite, empty object window, blend sprite in a window that bars effects | `src/ppu.c`, `tests/ppu_test.c` | pixel checks fail on the old code | hashes match; the scenes that blend are 7-17 % faster |
 | `line_fx(y, amount)` (a fade or blend amount per line) | `src/lua_game.c`, `docs/lua.md` | yes (CRC test) | the PPU side runs (`fx_ev`); no Lua game on the board yet |

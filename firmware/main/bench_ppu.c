@@ -31,6 +31,10 @@ static uint8_t *tiles;     /* NTILES * 64, 8 bpp index tiles */
 static uint16_t *tilerows; /* NTILES */
 static uint16_t *maps;     /* 4 * MAP * MAP */
 static uint8_t *spr;       /* 32 * 256 */
+static uint16_t *rgb_spr;  /* 16 * 16 RGB565, shared by every direct-colour sprite */
+static uint8_t *rgb_mask;  /* 16 * 2 */
+static uint16_t *bitmap;   /* PPU_W * PPU_H RGB565 */
+static uint8_t *bitmap_mask; /* ceil(PPU_W / 8) * PPU_H */
 static uint8_t *atiles;    /* 256 * 64 */
 static uint16_t *amap;     /* MAP * MAP */
 static ppu_line_affine *aline;
@@ -43,17 +47,23 @@ static bool alloc_all(uint32_t c) {
     tilerows = heap_caps_malloc(NTILES * 2, c | MALLOC_CAP_8BIT);
     maps = heap_caps_malloc(4 * MAP * MAP * 2, c | MALLOC_CAP_8BIT);
     spr = heap_caps_malloc(32 * 256, c | MALLOC_CAP_8BIT);
+    rgb_spr = heap_caps_malloc(16 * 16 * sizeof *rgb_spr, c | MALLOC_CAP_8BIT);
+    rgb_mask = heap_caps_malloc(16 * 2, c | MALLOC_CAP_8BIT);
+    bitmap = heap_caps_malloc(PPU_W * PPU_H * sizeof *bitmap, c | MALLOC_CAP_8BIT);
+    bitmap_mask = heap_caps_malloc(((PPU_W + 7) / 8) * PPU_H, c | MALLOC_CAP_8BIT);
     atiles = heap_caps_malloc(256 * 64, c | MALLOC_CAP_8BIT);
     amap = heap_caps_malloc(MAP * MAP * 2, c | MALLOC_CAP_8BIT);
     aline = heap_caps_malloc(PPU_H * sizeof *aline, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     frame = heap_caps_malloc(PPU_W * PPU_H * 2, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-    return tiles && tilerows && maps && spr && atiles && amap && aline && frame;
+    return tiles && tilerows && maps && spr && rgb_spr && rgb_mask && bitmap && bitmap_mask && atiles && amap && aline && frame;
 }
 
 static void free_all(void) {
     heap_caps_free(tiles), heap_caps_free(tilerows), heap_caps_free(maps), heap_caps_free(spr);
+    heap_caps_free(rgb_spr), heap_caps_free(rgb_mask), heap_caps_free(bitmap), heap_caps_free(bitmap_mask);
     heap_caps_free(atiles), heap_caps_free(amap), heap_caps_free(aline), heap_caps_free(frame);
-    tiles = NULL, tilerows = NULL, maps = NULL, spr = NULL, atiles = NULL, amap = NULL, aline = NULL, frame = NULL;
+    tiles = NULL, tilerows = NULL, maps = NULL, spr = NULL, rgb_spr = NULL, rgb_mask = NULL, bitmap = NULL, bitmap_mask = NULL;
+    atiles = NULL, amap = NULL, aline = NULL, frame = NULL;
 }
 
 static void make_content(void) {
@@ -77,6 +87,19 @@ static void make_content(void) {
                 int dx = 2 * x - 15, dy = 2 * y - 15;
                 spr[s * 256 + y * 16 + x] = (uint8_t)(dx * dx + dy * dy < 200 ? 1 + (s + x / 4) % 15 : 0);
             }
+    memset(rgb_mask, 0, 16 * 2);
+    memset(bitmap_mask, 0, ((PPU_W + 7) / 8) * PPU_H);
+    for (int y = 0; y < 16; y++)
+        for (int x = 0; x < 16; x++) {
+            rgb_spr[y * 16 + x] = (uint16_t)((x * 2) << 11 | (y * 4) << 5 | (x ^ y));
+            if ((x + y) % 4) rgb_mask[y * 2 + x / 8] |= (uint8_t)(0x80 >> (x % 8));
+        }
+    for (int y = 0; y < PPU_H; y++)
+        for (int x = 0; x < PPU_W; x++) {
+            bitmap[y * PPU_W + x] = (uint16_t)(((x * 5) & 31) << 11 | ((y * 9) & 63) << 5 | ((x * y) & 31));
+            if ((x / 6 + y / 5) % 3)
+                bitmap_mask[y * ((PPU_W + 7) / 8) + x / 8] |= (uint8_t)(0x80 >> (x % 8));
+        }
     for (int i = 0; i < MAP * MAP; i++) amap[i] = (uint16_t)(1 + (i * 7 + i / MAP) % 255);
     for (int t = 0; t < 256; t++)
         for (int p = 0; p < 64; p++) atiles[t * 64 + p] = (uint8_t)(t == 0 ? 0 : 128 + ((t + p / 8 + p % 8) % 120));
@@ -96,7 +119,10 @@ typedef struct {
     bool affine, alpha, window, half_blend, offscreen;
     int line_pals; /* entries replaced on every line, in each palette (line_pal), 0: none */
     bool turned;   /* the sprites turned 30 degrees, in their double area */
+    int path;      /* 0: indexed tiles, 1/2: RGB565 sprites with/without mask, 3/4: full-width bitmap with/without mask */
 } scene;
+
+enum { RGB565_MASKED = 1, RGB565_OPAQUE, BITMAP_MASKED, BITMAP_OPAQUE };
 
 static EXT_RAM_BSS_ATTR ppu_line_pal lpal_bg[PPU_H], lpal_obj[PPU_H]; /* in PSRAM, as the engine's own line tables */
 
@@ -113,10 +139,15 @@ static void setup(const scene *s) {
         }
         PPU.line.pal_bg = lpal_bg, PPU.line.pal_obj = lpal_obj;
     }
-    for (int l = 0; l < s->layers; l++)
-        PPU.bg[l] = (ppu_bg){.mode = BG_TILES, .prio = (uint8_t)l, .wrap = true, .tiles = tiles, .ntiles = NTILES,
-                             .rows = tilerows, .map = maps + l * MAP * MAP, .map_w = MAP, .map_h = MAP,
-                             .scroll_x = 13 * l, .scroll_y = 7 * l};
+    if (s->path < BITMAP_MASKED)
+        for (int l = 0; l < s->layers; l++)
+            PPU.bg[l] = (ppu_bg){.mode = BG_TILES, .prio = (uint8_t)l, .wrap = true, .tiles = tiles, .ntiles = NTILES,
+                                 .rows = tilerows, .map = maps + l * MAP * MAP, .map_w = MAP, .map_h = MAP,
+                                 .scroll_x = 13 * l, .scroll_y = 7 * l};
+    else
+        PPU.bg[0] = (ppu_bg){.mode = BG_BITMAP, .prio = 0, .wrap = true, .bitmap = bitmap,
+                             .bitmap_mask = s->path == BITMAP_MASKED ? bitmap_mask : NULL,
+                             .bitmap_w = PPU_W, .bitmap_h = PPU_H};
     if (s->affine) {
         PPU.bg[3] = (ppu_bg){.mode = BG_AFFINE, .prio = 3, .wrap = true, .tiles = atiles, .ntiles = 256, .map = amap,
                              .map_w = MAP, .map_h = MAP};
@@ -125,7 +156,9 @@ static void setup(const scene *s) {
     for (int i = 0; i < s->sprites; i++)
         PPU.obj[i] = (ppu_obj){.on = true, .w = 16, .h = 16, .prio = 0, .bank = (uint8_t)(i % 16), .affine = -1,
                                .hflip = i & 1, .mode = (s->half_blend && (i & 1)) ? OBJ_BLEND : OBJ_NORMAL,
-                               .idx = spr + (i % 32) * 256};
+                               .idx = s->path == RGB565_MASKED || s->path == RGB565_OPAQUE ? NULL : spr + (i % 32) * 256,
+                               .rgb = s->path == RGB565_MASKED || s->path == RGB565_OPAQUE ? rgb_spr : NULL,
+                               .mask = s->path == RGB565_MASKED ? rgb_mask : NULL};
     if (s->turned) { /* 30 degrees: a sprite's double area is four times its pixels, most of them outside it */
         PPU.affine[0] = (ppu_affine){222, 128, -128, 222};
         for (int i = 0; i < s->sprites; i++) PPU.obj[i].affine = 0, PPU.obj[i].dbl = true;
@@ -208,24 +241,28 @@ static void run_scene(const scene *s, const char *where) {
 }
 
 static const scene SCENES[] = {
-    {"clear only", 0, 0, false, false, false, false, false, 0, false},
-    {"1 layer", 1, 0, false, false, false, false, false, 0, false},
-    {"4 layers", 4, 0, false, false, false, false, false, 0, false},
-    {"128 sprites 16x16", 0, 128, false, false, false, false, false, 0, false},
-    {"1 affine layer", 0, 0, true, false, false, false, false, 0, false},
-    {"light: 2L+32 spr", 2, 32, false, false, false, false, false, 0, false},
-    {"GBA mode 0: 4L+128 spr", 4, 128, false, false, false, false, false, 0, false},
-    {"Mode 7: aff+1L+64 spr", 1, 64, true, false, false, false, false, 0, false},
-    {"Max: aff+3L+128 spr", 3, 128, true, false, false, false, false, 0, false},
-    {"FX: 4L+alpha+window", 4, 0, false, true, true, false, false, 0, false},
-    {"FX: 128 spr half OBJ_BLEND", 0, 128, false, false, false, true, false, 0, false},
-    {"x: 4L+alpha only", 4, 0, false, true, false, false, false, 0, false},
-    {"x: 4L+window only", 4, 0, false, false, true, false, false, 0, false},
-    {"x: 4L+128 spr half OBJ_BLEND", 4, 128, false, false, false, true, false, 0, false},
-    {"x: 128 sprites off-screen", 0, 128, false, false, false, false, true, 0, false},
-    {"x: 1 layer, 1 palette entry on every line", 1, 0, false, false, false, false, false, 1, false},
-    {"x: 4L+128 spr, 8+8 palette entries on every line", 4, 128, false, false, false, false, false, 8, false},
-    {"x: 128 sprites 16x16 turned, double area", 0, 128, false, false, false, false, false, 0, true},
+    {"clear only", 0, 0, false, false, false, false, false, 0, false, 0},
+    {"1 layer", 1, 0, false, false, false, false, false, 0, false, 0},
+    {"4 layers", 4, 0, false, false, false, false, false, 0, false, 0},
+    {"128 sprites 16x16", 0, 128, false, false, false, false, false, 0, false, 0},
+    {"1 affine layer", 0, 0, true, false, false, false, false, 0, false, 0},
+    {"light: 2L+32 spr", 2, 32, false, false, false, false, false, 0, false, 0},
+    {"GBA mode 0: 4L+128 spr", 4, 128, false, false, false, false, false, 0, false, 0},
+    {"Mode 7: aff+1L+64 spr", 1, 64, true, false, false, false, false, 0, false, 0},
+    {"Max: aff+3L+128 spr", 3, 128, true, false, false, false, false, 0, false, 0},
+    {"FX: 4L+alpha+window", 4, 0, false, true, true, false, false, 0, false, 0},
+    {"FX: 128 spr half OBJ_BLEND", 0, 128, false, false, false, true, false, 0, false, 0},
+    {"x: 4L+alpha only", 4, 0, false, true, false, false, false, 0, false, 0},
+    {"x: 4L+window only", 4, 0, false, false, true, false, false, 0, false, 0},
+    {"x: 4L+128 spr half OBJ_BLEND", 4, 128, false, false, false, true, false, 0, false, 0},
+    {"x: 128 sprites off-screen", 0, 128, false, false, false, false, true, 0, false, 0},
+    {"x: 1 layer, 1 palette entry on every line", 1, 0, false, false, false, false, false, 1, false, 0},
+    {"x: 4L+128 spr, 8+8 palette entries on every line", 4, 128, false, false, false, false, false, 8, false, 0},
+    {"x: 128 sprites 16x16 turned, double area", 0, 128, false, false, false, false, false, 0, true, 0},
+    {"rgb565.128.masked", 0, 128, false, false, false, false, false, 0, false, RGB565_MASKED},
+    {"rgb565.128.opaque", 0, 128, false, false, false, false, false, 0, false, RGB565_OPAQUE},
+    {"bitmap240.masked", 1, 0, false, false, false, false, false, 0, false, BITMAP_MASKED},
+    {"bitmap240.opaque", 1, 0, false, false, false, false, false, 0, false, BITMAP_OPAQUE},
 };
 
 void bench_ppu_run(void) {

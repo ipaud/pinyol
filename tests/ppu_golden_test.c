@@ -26,6 +26,8 @@ static uint8_t spr[32][16 * 16];
 static uint8_t big[64 * 64];
 static uint16_t rgbspr[16 * 16];
 static uint8_t rgbmask[16 * 2];
+static uint16_t full_bmp[PPU_W * PPU_H];
+static uint8_t full_bmpmask[((PPU_W + 7) / 8) * PPU_H];
 static uint8_t atiles[256 * 64];
 static uint16_t amap[MAP * MAP];
 static uint16_t bmp[100 * 70];
@@ -74,6 +76,12 @@ static void make_content(char kind) {
         for (int x = 0; x < 100; x++) {
             bmp[y * 100 + x] = (uint16_t)((x * 5) << 11 | (y * 9) << 5 | ((x * y) & 31));
             if ((x / 6 + y / 5) % 3) bmpmask[y * 13 + x / 8] |= (uint8_t)(0x80 >> (x % 8));
+        }
+    memset(full_bmpmask, 0, sizeof full_bmpmask);
+    for (int y = 0; y < PPU_H; y++)
+        for (int x = 0; x < PPU_W; x++) {
+            full_bmp[y * PPU_W + x] = (uint16_t)(((x * 5) & 31) << 11 | ((y * 9) & 63) << 5 | ((x * y) & 31));
+            if ((x / 6 + y / 5) % 3) full_bmpmask[y * ((PPU_W + 7) / 8) + x / 8] |= (uint8_t)(0x80 >> (x % 8));
         }
     for (int y = 0; y < PPU_H; y++) {
         lscroll[y] = (ppu_line_scroll){(int16_t)((y * 37) % 23 - 11), (int16_t)(y % 3)};
@@ -152,6 +160,21 @@ static void s_half_blend(int n) {
     scatter(n, 128, 1);
     alpha_fx(0, PPU_BG0 | PPU_BG1 | PPU_BG2 | PPU_BG3 | PPU_BACK, 8, 8);
 }
+
+static void s_rgb128(int n, bool masked) {
+    scatter(n, 128, 0);
+    for (int i = 0; i < 128; i++)
+        PPU.obj[i].idx = NULL, PPU.obj[i].rgb = rgbspr, PPU.obj[i].mask = masked ? rgbmask : NULL, PPU.obj[i].hflip = i & 1;
+}
+static void s_rgb128_masked(int n) { s_rgb128(n, true); }
+static void s_rgb128_opaque(int n) { s_rgb128(n, false); }
+static void s_bitmap240(int n, bool masked) {
+    PPU.bg[0] = (ppu_bg){.mode = BG_BITMAP, .prio = 0, .wrap = true, .bitmap = full_bmp,
+                         .bitmap_mask = masked ? full_bmpmask : NULL, .bitmap_w = PPU_W, .bitmap_h = PPU_H,
+                         .scroll_x = n, .scroll_y = 0};
+}
+static void s_bitmap240_masked(int n) { s_bitmap240(n, true); }
+static void s_bitmap240_opaque(int n) { s_bitmap240(n, false); }
 
 static void g_banks(int n) { (void)n; tiled(0, 0, 0, 0); PPU.obj_pal[1] = 0xFFE0; sprite(0, 100, 60, 0, OBJ_NORMAL); }
 static void g_nonpow2(int n) {
@@ -299,6 +322,8 @@ static const scene S[] = {
     {"sprites128", s_spr128, HASH_FRAMES, 'A'}, {"affine", s_affine, HASH_FRAMES, 'A'}, {"light", s_light, HASH_FRAMES, 'A'},
     {"mode0", s_mode0, HASH_FRAMES, 'A'}, {"mode7", s_mode7, HASH_FRAMES, 'A'}, {"max", s_max, HASH_FRAMES, 'A'},
     {"fx.alpha-window", s_alpha_win, HASH_FRAMES, 'A'}, {"fx.half-blend", s_half_blend, HASH_FRAMES, 'A'},
+    {"rgb565.128.masked", s_rgb128_masked, 120, 'A'}, {"rgb565.128.opaque", s_rgb128_opaque, 120, 'A'},
+    {"bitmap240.masked", s_bitmap240_masked, 120, 'A'}, {"bitmap240.opaque", s_bitmap240_opaque, 120, 'A'},
     {"g.banks", g_banks, 1, 'A'}, {"g.nonpow2-nowrap", g_nonpow2, 1, 'A'}, {"g.ties", g_ties, 2, 'A'},
     {"g.obj-order", g_obj_order, 1, 'A'}, {"g.obj-flip-clip", g_obj_flip_clip, 1, 'A'}, {"g.obj-affine", g_obj_affine, 1, 'A'},
     {"g.obj-affine-turns", g_obj_affine_turns, HASH_FRAMES, 'A'}, {"g.affine-bg", g_affine_bg, 1, 'A'}, {"g.bitmap", g_bitmap, 1, 'A'}, {"g.alpha-kinds", g_alpha_kinds, 8, 'A'},

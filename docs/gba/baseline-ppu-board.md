@@ -155,3 +155,25 @@ panel just flashed can time 61.24-61.25 Hz at the start, past the 61.23 where 1A
 1A8h from then on and 59.98-60.03 Hz for 90 s; the menu, 17 slow frames a minute. Watched on the screen (the v0.3.0 firmware, booted with no
 microSD): no flicker in the first seconds, when the trim rewrites RTN.
 
+## Added PPU paths on the board (2026-10-23)
+
+`-DBP_BENCH=ppu`, current checkout (`b2db64e-dirty`), ESP-IDF 5.4.2, ESP32-S3 at 240 MHz. Content in PSRAM at 80 MHz;
+frame in internal RAM. Median of 300 timed frames. The internal-content pass skipped: after allocation attempt, 66 KB
+internal free, largest block 54 KB. These seven scenes extend the original 15-scene board table above to the current 22.
+
+| Scene | median cycles | median ms | core at 60 fps | hash |
+|---|---:|---:|---:|---|
+| x: 1 layer, 1 palette entry on every line | 1,462,693 | 6.09 | 36.6 % | `19355cb5496122ab` |
+| x: 4L+128 spr, 8+8 palette entries on every line | 4,383,083 | 18.26 | 109.6 % | `96f73508c21575e4` |
+| x: 128 sprites 16x16 turned, double area | 4,237,704 | 17.66 | 105.9 % | `b5ffd249cb468be0` |
+| rgb565.128.masked | 3,127,163 | 13.03 | 78.2 % | `3a2ec046c38a2edd` |
+| rgb565.128.opaque | 3,041,676 | 12.67 | 76.0 % | `1b5098f95952cfe7` |
+| bitmap240.masked | 1,261,627 | 5.26 | 31.5 % | `1b7f0351cc2533ed` |
+| bitmap240.opaque | 716,042 | 2.98 | 17.9 % | `231df29a769a8525` |
+
+The four RGB565/bitmap hashes match the host goldens in `tests/ppu_golden.txt`; the original 15 hashes still match the
+table above. The three `x:` hashes are recorded here for board repeatability; no matching host scenes exist yet. RGB565
+sprites are the clearest next optimization target in this synthetic set: 128 sprites cost 3.04-3.13 M cycles, about
+3.3-3.4x the indexed-sprite scene (0.923 M). The bitmap mask adds 546 k cycles (+76 %) over the opaque full-screen row.
+Treat both as candidates only: each result comes from one generated scene, not a game trace.
+

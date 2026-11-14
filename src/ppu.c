@@ -437,6 +437,16 @@ ALWAYS void obj_line_x(lines *L, const ppu_obj *o, int y, bool win, bool track, 
             }
         return;
     }
+    if (o->affine < 0 && mw == 1 && mh == 1 && !o->idx && o->rgb && !o->mask) {
+        int v = y - o->y;
+        if (o->vflip) v = o->h - 1 - v;
+        const uint16_t *src = o->rgb + v * o->w;
+        if (o->hflip)
+            for (int x = xa; x < xb; x++) put_obj(L, x, src[o->w - 1 - (x - o->x)] | id, win, track);
+        else
+            for (int x = xa; x < xb; x++) put_obj(L, x, src[x - o->x] | id, win, track);
+        return;
+    }
     if (o->affine >= 0 && mw == 1 && mh == 1) { obj_affine_line(L, o, y, xa, xb, opal, id, win, track); return; }
     int sy = mh > 1 ? y - y % mh : y;
     for (int x = xa; x < xb;) { /* a block of mw screen pixels (mosaic) shows its left edge */

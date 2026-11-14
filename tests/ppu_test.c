@@ -124,6 +124,16 @@ static void sprites(void) {
     CHECK(fb[156][0] == BLUE && fb[156][3] == BLUE && fb[156][4] == GREY);
 }
 
+static void rgb565_sprite_flips_and_clipping(void) {
+    setup();
+    static const uint16_t pixels[3 * 3] = {0x1001, 0x1002, 0x1003, 0x2001, 0x2002, 0x2003, 0x3001, 0x3002, 0x3003};
+    PPU.obj[0] = (ppu_obj){.on = true, .x = -1, .y = -1, .w = 3, .h = 3, .affine = -1, .rgb = pixels, .hflip = true, .vflip = true};
+    ppu_render(&fb[0][0]);
+    CHECK(fb[0][0] == pixels[4] && fb[0][1] == pixels[3]);
+    CHECK(fb[1][0] == pixels[1] && fb[1][1] == pixels[0]);
+    CHECK(fb[0][2] == GREY && fb[2][0] == GREY);
+}
+
 static void affine(void) {
     setup();
     map[0] = 1, map[1] = 2, map[32] = 3;
@@ -387,6 +397,7 @@ int main(void) {
     tiles_scroll_flip_bank();
     priorities();
     sprites();
+    rgb565_sprite_flips_and_clipping();
     affine();
     effects();
     mosaic_and_lines();

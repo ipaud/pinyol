@@ -11,6 +11,10 @@ mode7 735aa29ce7db4d35
 max 9d8b0c57545e296d
 fx.alpha-window d0de2a46ed16c355
 fx.half-blend 35f41aa7571f7046
+rgb565.128.masked 3a2ec046c38a2edd
+rgb565.128.opaque 1b5098f95952cfe7
+bitmap240.masked 1b7f0351cc2533ed
+bitmap240.opaque 231df29a769a8525
 g.banks 4857fec9ce9a49c9
 g.nonpow2-nowrap 820ac87105086555
 g.ties babf9bfad3b39c64

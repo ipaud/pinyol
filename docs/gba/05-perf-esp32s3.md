@@ -117,27 +117,22 @@ firmware already has.
 
 Everything below is gated by a baseline. The aim is to find where `ppu.c` really spends its cycles.
 
-### 3.1 Bench `ppu_render` itself, in `firmware/main/bench.c`
+### 3.1 Real-renderer baseline: `firmware/main/bench_ppu.c` (implemented)
 
-`bench_run()` runs before `part1_task` exists, so `hal_parallel` runs part 0 then part 1 **serially on the calling
-core** [V, `main.c`]. A cycle count around `ppu_render()` is therefore the whole-frame, one-core number, directly
-comparable with the table in `docs/measurements.md`. Add scenes that call `ppu_reset()`, fill `PPU.bg[]` / `PPU.obj[]`
-with synthetic content like the existing kernels, and time `ppu_render(buf)` best-of-5 with `esp_cpu_get_cycle_count()`:
+`-DBP_BENCH=ppu` runs `bench_ppu_run()` before `part1_task` exists, so `hal_parallel` renders both halves **serially on
+one core**. The benchmark times `ppu_render()` directly: 50 warm-up frames, 300 timed frames, median/min/p95, and an
+FNV-1a hash over the first 120 frames. Its 22 current scenes cover clear, tile layers, indexed and RGB565 sprites (masked
+and opaque), affine, full-width bitmap layers (masked and opaque), common FX, windows, palette changes, off-screen sprites,
+and turned sprites. It runs once with content allocated internally and once in PSRAM when allocation permits.
 
-1. One `BG_TILES` layer: (a) all opaque, `rows` set; (b) ~1/3 transparent tiles (like `make_content`), `rows` set;
-   (c) same with `rows == NULL`; (d) scroll_x % 8 == 0 and != 0; (e) with hflip entries; (f) tiles+maps in PSRAM, 160 KB.
-2. Four layers + 128 indexed 16x16 sprites (the "GBA mode 0" scene, now through the real code), and the same with 128
-   sprites entirely off screen, and with 8 sprites of 64x64.
-3. 128 **RGB565** sprites (`rgb` set, with and without `mask`) and 128 with `affine >= 0`.
-4. `BG_BITMAP` 240-wide, wrapping and not, mask NULL and mask present, bitmap in PSRAM.
-5. FX: alpha with one first-target layer; alpha with a `OBJ_BLEND` sprite; fade (`FX_DARKEN`, ey = 8); fade with
-   `evy = 0`; per-line `fx_ev`.
-6. Windows: one rectangle; two; an object window.
-7. Affine: pow2 map wrap, non-wrap, with and without the per-line table; `pc == 0` (no rotation) and `pc != 0`.
-8. Calibration: the synthetic `bench.c` kernel scene "4 layers + 128 sprites" vs the same scene through `ppu_render`. The
-   ratio tells you how much the real renderer costs over the simplified one.
-9. Core scaling: time `render_part(0, ...)` alone vs both parts after `part1_task` is running (the `BP_BENCH=play`
-   build), to learn whether the 1.6-1.9x loss is imbalance, barrier, or contention.
+Use the board results in [`baseline-ppu-board.md`](baseline-ppu-board.md); the host baseline is in
+[`baseline-ppu-host.md`](baseline-ppu-host.md). These real-renderer numbers supersede comparisons against the simplified
+kernels in `bench.c` when estimating game frame cost. `docs/measurements.md` remains useful for those isolated kernels.
+
+The four path-specific scenes have matching host goldens in `tests/ppu_golden.txt`. Board timings and hashes for all seven
+scenes added after the original table are recorded in [`baseline-ppu-board.md`](baseline-ppu-board.md). The three added
+palette/turned-sprite scenes have board hashes but no matching host scenes. Host timings cannot stand in for board cycles,
+PSRAM placement, or core scaling.
 
 ### 3.2 Counters to add to `ppu.c` (behind `#ifdef PPU_PROFILE`, compiled out otherwise)
 
@@ -283,11 +278,11 @@ Costs in the current code [E from reading, not measured]:
 - **Row extents.** Compute per sprite row `[first_opaque, last_opaque]` once when a sheet is loaded (like
   `ppu_tile_rows` does for tiles; ~2 bytes per row). Trim the loop and skip empty rows. 10-25% fewer pixel visits for
   roundish sprites [E]. Sheets are `s->idx` frames of up to 255x255 (`sheet_get`); store the extents in the sheet.
-- **An RGB565 fast path.** For `o->rgb`, `affine < 0`, no mosaic, there is no row fast path today: each pixel goes through
-  `obj_pixel` (affine test, flip tests, `idx` test, `rgb` test, a mask bit test, plus `x - x % mw`, a divide, even for
-  `mw == 1`). Copy the opaque run straight from `rgb + v * w`, with the mask read a byte at a time as `bitmap_row` does.
-  [E] 3-4x on those sprites. Whether games hit this depends on whether they use runtime-asset sprites (editor "kit" games
-  do, per `ppu.h`); the section 3 counter answers it.
+- **Opaque RGB565 row path implemented.** Direct, non-affine sprites without mosaic or transparency mask now read a source
+  row directly and keep `put_obj` for priority, windows, and blending. Flip and negative-edge clipping have host coverage.
+  The board timing remains pending because the connected board stopped answering serial resets during the run; the existing
+  indexed-sprite benchmark does not measure this fast path. Masked RGB565 sprites still use the generic per-pixel path.
+  Whether games hit this depends on runtime-asset sprites (editor "kit" games do, per `ppu.h`); the section 3 counter answers it.
 - The `x % mw` for `mw == 1` can be removed in the general path too (`mw == 1` and `mh == 1` branch).
 
 ### 4.6 Dynamic line distribution (#7)
