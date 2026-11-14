@@ -250,6 +250,8 @@ desde Chrome o Edge, con quince juegos en su memoria flash.
 
 El firmware de [firmware/](firmware/) es la plataforma de la consola: pantalla, táctil, botones, audio, microSD, batería y actualizaciones por la tarjeta. Necesita [ESP-IDF 5.4](https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32s3/get-started/).
 
+Para preparar actualizaciones OTA firmadas y Secure Boot v2, sigue [la guía de firmware seguro](firmware/SECURE_BOOT.md). La provisión quema eFuses irreversiblemente.
+
 ```sh
 . $IDF_PATH/export.sh
 cd firmware

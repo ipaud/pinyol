@@ -7,9 +7,9 @@ name: firmware
 on:
   push:
     branches: [main]
-    paths: ["src/**", "lib/**", "third_party/**", "firmware/**", ".github/workflows/firmware.yml"]
+    paths: ["src/**", "lib/**", "third_party/**", "firmware/**", "tests/secure_boot_artifacts.py", ".github/workflows/firmware.yml"]
   pull_request:
-    paths: ["src/**", "lib/**", "third_party/**", "firmware/**", ".github/workflows/firmware.yml"]
+    paths: ["src/**", "lib/**", "third_party/**", "firmware/**", "tests/secure_boot_artifacts.py", ".github/workflows/firmware.yml"]
   workflow_dispatch:
 permissions: {}
 jobs:
@@ -31,6 +31,23 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           . "$IDF_PATH/export.sh"
           idf.py -DBP_BENCH=OFF build
+      - name: Build signed Secure Boot image
+        shell: bash
+        working-directory: firmware
+        run: |
+          . "$IDF_PATH/export.sh"
+          openssl genrsa -out secure_boot_signing_key.pem 3072
+          idf.py -B build-secure \
+            -D SDKCONFIG=build-secure/sdkconfig \
+            -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.secure" \
+            -DBP_BENCH=OFF build
+      - name: Verify signed Secure Boot artifacts
+        shell: bash
+        working-directory: firmware
+        run: |
+          . "$IDF_PATH/export.sh"
+          python ../tests/secure_boot_artifacts.py \
+            "$IDF_PATH/components/esptool_py/esptool/espsecure.py" build-secure
       - name: Internal RAM left by the statics
         shell: bash
         working-directory: firmware

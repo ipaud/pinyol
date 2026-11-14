@@ -50,6 +50,7 @@ void ota_from_card(uint16_t *frame) {
     esp_err_t err = !f || !to ? ESP_ERR_NOT_FOUND
                     : size <= 0 || size > (long)to->size ? ESP_ERR_INVALID_SIZE
                                                          : esp_ota_begin(to, size, &h);
+    int begun = err == ESP_OK;
     static uint8_t buf[CHUNK];
     long done = 0;
     int shown = -1;
@@ -65,7 +66,7 @@ void ota_from_card(uint16_t *frame) {
         if (pc / 5 != shown) launcher_message(frame, "Actualizando la consola", pc), shown = pc / 5;
     }
     if (f) fclose(f);
-    if (h) err = err == ESP_OK ? esp_ota_end(h) : (esp_ota_abort(h), err); /* end validates the image */
+    if (begun) err = err == ESP_OK ? esp_ota_end(h) : (esp_ota_abort(h), err); /* end validates the image */
     esp_app_desc_t desc = {0};
     if (err == ESP_OK && esp_ota_get_partition_description(to, &desc) != ESP_OK) err = ESP_ERR_INVALID_ARG;
     if (err == ESP_OK && strcmp(desc.project_name, "pinyol_console")) { /* a good image of some other project (a stray firmware.bin on the card) */

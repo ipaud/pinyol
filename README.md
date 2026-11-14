@@ -249,6 +249,8 @@ USB, from Chrome or Edge, with fifteen games in its flash.
 
 The firmware in [firmware/](firmware/) is the console's platform: screen, touch, buttons, audio, microSD, battery and updates over the card. It needs [ESP-IDF 5.4](https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32s3/get-started/).
 
+For signed OTA updates and Secure Boot v2, follow the [secure firmware guide](firmware/SECURE_BOOT.md). Provisioning burns eFuses irreversibly.
+
 ```sh
 . $IDF_PATH/export.sh
 cd firmware

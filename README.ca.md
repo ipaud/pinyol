@@ -251,6 +251,8 @@ des de Chrome o Edge, amb quinze jocs a la seva memòria flash.
 
 El firmware de [firmware/](firmware/) és la plataforma de la consola: pantalla, tàctil, botons, àudio, microSD, bateria i actualitzacions per la targeta. Necessita [ESP-IDF 5.4](https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32s3/get-started/).
 
+Per preparar actualitzacions OTA signades i Secure Boot v2, segueix [la guia de firmware segur](firmware/SECURE_BOOT.md). La provisió crema eFuses irreversiblement.
+
 ```sh
 . $IDF_PATH/export.sh
 cd firmware
